@@ -1,11 +1,36 @@
+"""Blackboard memory integration for the SEO agent.
+
+Reads and writes to the shared blackboard memory system.
+Path is configurable via MEMORY_DIR environment variable.
+"""
 from __future__ import annotations
 
 import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-MEMORY_DIR = Path(__file__).resolve().parent.parent.parent / "agent-memory" / "agents"
 
+def _get_memory_dir() -> Path:
+    """Get the memory directory from environment or use relative path."""
+    env_path = os.getenv("MEMORY_DIR")
+    if env_path:
+        return Path(env_path) / "agents"
+    
+    # Fallback: relative to this file (src/memory.py)
+    # Goes up: memory.py -> src/ -> seo-agent/ -> qwen/ -> agent-memory/
+    project_root = Path(__file__).resolve().parent.parent
+    qwen_root = project_root.parent
+    agent_memory = qwen_root / "agent-memory"
+    
+    if not agent_memory.exists():
+        # Try creating it if we're in a fresh deployment
+        agent_memory.mkdir(parents=True, exist_ok=True)
+        (agent_memory / "agents").mkdir(exist_ok=True)
+    
+    return agent_memory / "agents"
+
+
+MEMORY_DIR = _get_memory_dir()
 AGENT_NAME = "seo-agent"
 
 

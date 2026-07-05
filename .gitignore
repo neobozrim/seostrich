@@ -4,3 +4,6 @@ seo-agent-reference/
 # Personal runtime memory data (keeps protocol/structure public, hides accumulated data)
 agent-memory/qwen/
 agent-memory/agents/
+
+# Blog content (personal articles, not for repo)
+blog/
