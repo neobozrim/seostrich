@@ -17,17 +17,15 @@ from .tools.generate_draft import generate_draft
 from .tools.preflight_draft import preflight_draft
 from .tools.seo_linter import seo_linter
 from .tools.geo_scorer import geo_scorer
-from .tools.site_scraper import scrape_site
 from .tools.technical_seo import technical_audit
 from .tools.indexnow import submit_indexnow, submit_single_url
 from .tools.bing_wmt import get_site_keywords, submit_url as bing_submit_url
 from .tools.web_search import web_search, research_topic
-from .tools.competitor_analysis import analyze_competitor, compare_strategies
 from .tools.dataforseo import keyword_overview, keyword_difficulty
 
 
 SYSTEM_PROMPT = """You are a versatile SEO agent. You help businesses grow through
-data-driven content strategy, technical SEO audits, competitor analysis, and more.
+data-driven content strategy, technical SEO audits, and more.
 
 You have access to the following tools. Use them to accomplish the user's goals.
 Think step-by-step. Always explain your reasoning between tool calls.
@@ -43,7 +41,6 @@ When given a business intake:
 8. Run SEO lint and GEO scoring on each draft
 
 When asked to audit a site, run the technical SEO audit.
-When asked to analyze a competitor, run competitor analysis.
 When asked to submit URLs for indexing, use IndexNow or Bing submission.
 When asked to research a topic, use web search.
 
@@ -214,52 +211,6 @@ TOOL_DEFINITIONS = [
     {
         "type": "function",
         "function": {
-            "name": "scrape_site",
-            "description": "Scrape a website's pages for structure and content analysis",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "url": {"type": "string"},
-                    "max_pages": {"type": "integer", "default": 10},
-                },
-                "required": ["url"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "analyze_competitor",
-            "description": "Reverse-engineer a competitor's SEO strategy and find opportunities",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "competitor_url": {"type": "string"},
-                    "our_domain": {"type": "string", "default": ""},
-                    "our_description": {"type": "string", "default": ""},
-                },
-                "required": ["competitor_url"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "compare_strategies",
-            "description": "Compare two SEO strategies and identify gaps",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "our_strategy": {"type": "object"},
-                    "competitor_strategy": {"type": "object"},
-                },
-                "required": ["our_strategy", "competitor_strategy"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
             "name": "submit_indexnow",
             "description": "Submit URLs to IndexNow for faster indexing",
             "parameters": {
@@ -380,9 +331,6 @@ TOOL_CALLABLES = {
     "seo_linter": seo_linter,
     "geo_scorer": geo_scorer,
     "technical_audit": technical_audit,
-    "scrape_site": scrape_site,
-    "analyze_competitor": analyze_competitor,
-    "compare_strategies": compare_strategies,
     "submit_indexnow": submit_indexnow,
     "bing_submit_url": bing_submit_url,
     "get_site_keywords": get_site_keywords,

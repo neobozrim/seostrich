@@ -175,6 +175,18 @@ def _check_meta_tags(soup) -> list[dict]:
         status, detail = "warn", f"Found {h1_count} H1 tags (should be exactly 1)"
     checks.append({"id": "B3", "category": "Meta Tags", "title": "H1 Tag", "status": status, "detail": detail})
 
+    # B4: Duplicate title / description (title == meta description on same page)
+    if title and desc_text:
+        title_normalized = title.lower().strip()
+        desc_normalized = desc_text.lower().strip()
+        if title_normalized == desc_normalized:
+            status, detail = "warn", "Title and meta description are identical — Google may pick wrong snippet"
+        else:
+            status, detail = "pass", "Title and meta description are distinct"
+    else:
+        status, detail = "skip", "Cannot compare — title or description missing"
+    checks.append({"id": "B4", "category": "Meta Tags", "title": "Duplicate Title/Desc", "status": status, "detail": detail})
+
     return checks
 
 
