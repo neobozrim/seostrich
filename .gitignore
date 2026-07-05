@@ -1,2 +1,6 @@
 .env
 seo-agent/
+
+# Personal runtime memory data (keeps protocol/structure public, hides accumulated data)
+agent-memory/qwen/
+agent-memory/agents/
