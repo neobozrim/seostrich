@@ -22,6 +22,7 @@ from .tools.indexnow import submit_indexnow, submit_single_url
 from .tools.bing_wmt import get_site_keywords, submit_url as bing_submit_url
 from .tools.web_search import web_search, research_topic
 from .tools.dataforseo import keyword_overview, keyword_difficulty
+from .tools.memory_tools import read_memory, record_fact, record_learning, record_decision
 
 
 SYSTEM_PROMPT = """You are a versatile SEO agent. You help businesses grow through
@@ -44,8 +45,18 @@ When asked to audit a site, run the technical SEO audit.
 When asked to submit URLs for indexing, use IndexNow or Bing submission.
 When asked to research a topic, use web search.
 
-After each significant action, summarize what you found and what's next.
-Record key findings in the memory system when appropriate."""
+You have memory tools to read and record information:
+- read_memory: Load facts/learnings/decisions from the blackboard (already loaded at run start, but you can refresh if needed)
+- record_fact: Record an observed truth (e.g., "User's blog has 5 posts")
+- record_learning: Record a pattern or rule learned (e.g., "Staggering publication dates looks more natural to Google")
+- record_decision: Record a choice made and why (e.g., "Using Astro over WordPress for full SEO control")
+
+Use memory tools to:
+- Check past context before making decisions (read_memory)
+- Record important findings as you work (record_fact/learning/decision)
+- Build up knowledge across runs
+
+After each significant action, summarize what you found and what's next."""
 
 
 TOOL_DEFINITIONS = [
@@ -316,6 +327,62 @@ TOOL_DEFINITIONS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "read_memory",
+            "description": "Read memory from the blackboard system (facts, learnings, decisions, tasks)",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "memory_type": {"type": "string", "enum": ["facts", "learnings", "decisions", "tasks", "all"], "default": "all"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "record_fact",
+            "description": "Record an observed truth (what IS, was, or happened)",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "fact": {"type": "string"},
+                },
+                "required": ["fact"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "record_learning",
+            "description": "Record a concluded rule or pattern (what WORKS or is TRUE based on experience)",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "learning": {"type": "string"},
+                },
+                "required": ["learning"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "record_decision",
+            "description": "Record a choice made and why (what we CHOSE to do)",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "decision": {"type": "string"},
+                },
+                "required": ["decision"],
+            },
+        },
+    },
 ]
 
 # Map tool names to actual callables
@@ -338,6 +405,10 @@ TOOL_CALLABLES = {
     "research_topic": research_topic,
     "keyword_overview": keyword_overview,
     "keyword_difficulty": keyword_difficulty,
+    "read_memory": read_memory,
+    "record_fact": record_fact,
+    "record_learning": record_learning,
+    "record_decision": record_decision,
 }
 
 

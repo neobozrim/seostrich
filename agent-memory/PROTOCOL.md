@@ -65,18 +65,43 @@ superseded entries). Check `artefacts-index.md` for relevant deliverables.
 - Record new facts, learnings, decisions as they arise.
 
 ### 5. Record learnings
-- **Fact** (observed truth): append to `facts.md`:
+- **Fact** (observed truth — what IS, was, or happened): append to `facts.md`:
   ```
   [{agent-name}][{datetime}] {the fact}
   ```
-- **Learning** (concluded rule): append to `learnings.md`:
+  
+  Examples:
+  - "User's blog has 5 posts"
+  - "productpirates.club is not indexed by Google"
+  - "DataForSEO keyword limit is 100 per request"
+  - "User works on Windows with Python 3.11"
+  
+- **Learning** (concluded rule — what WORKS or is TRUE based on experience): append to `learnings.md`:
   ```
   [{agent-name}][{datetime}] {the rule}
   ```
-- **Decision** (choice for the future): append to `decisions.md`:
+  
+  Examples:
+  - "Staggering blog post publication dates looks more natural to Google than publishing all on same date"
+  - "Qwen Cloud token plan keys use different base URL than pay-as-you-go keys"
+  - "Technical SEO audit needs all 24 checks to be comprehensive"
+  - "User prefers minimal tools — use web_search instead of dedicated scraper/analyzer tools"
+  
+- **Decision** (choice made — what we CHOSE to do and why): append to `decisions.md`:
   ```
   [{agent-name}][{datetime}] {the choice, and optionally the expectation}
   ```
+  
+  Examples:
+  - "Using productpirates.club for testing SEO tools (blog.yavorpopov.com is employer-provided and temporary)"
+  - "Blog articles all dated 2026-07-02 for immediate publication (user wants them out soon)"
+  - "Astro chosen over WordPress for full control over meta tags, schema, IndexNow"
+  - "Removed analyze_competitor, compare_strategies, site_scraper tools — competitor analysis handled by web_search"
+
+**How to choose:**
+- If it's an observation about the current state → **Fact**
+- If it's a pattern or insight gained from doing something → **Learning**  
+- If it's a choice about how to proceed (and why) → **Decision**
 
 ### 6. Finalize at run boundary
 - Write or revise your run summary in `runs-summaries.md` as `final`:
