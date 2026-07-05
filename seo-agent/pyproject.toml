@@ -13,6 +13,7 @@ dependencies = [
     "rich>=13.7",
     "python-dotenv>=1.0",
     "lxml>=5.0",
+    "google-auth>=2.0",
 ]
 
 [project.scripts]

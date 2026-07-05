@@ -23,6 +23,7 @@ from .tools.bing_wmt import get_site_keywords, submit_url as bing_submit_url
 from .tools.web_search import web_search, research_topic
 from .tools.dataforseo import keyword_overview, keyword_difficulty
 from .tools.memory_tools import read_memory, record_fact, record_learning, record_decision
+from .tools.gsc import gsc_performance, gsc_submit_sitemap, gsc_list_sitemaps, gsc_inspect_url, gsc_list_sites
 
 
 SYSTEM_PROMPT = """You are a versatile SEO agent. You help businesses grow through
@@ -44,6 +45,7 @@ When given a business intake:
 When asked to audit a site, run the technical SEO audit.
 When asked to submit URLs for indexing, use IndexNow or Bing submission.
 When asked to research a topic, use web search.
+When asked about search performance or indexing, use Google Search Console tools (gsc_performance, gsc_inspect_url, gsc_list_sitemaps, gsc_submit_sitemap, gsc_list_sites).
 
 You have memory tools to read and record information:
 - read_memory: Load facts/learnings/decisions from the blackboard (already loaded at run start, but you can refresh if needed)
@@ -383,6 +385,78 @@ TOOL_DEFINITIONS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "gsc_performance",
+            "description": "Get Google Search Console performance data (clicks, impressions, CTR, position) for a site",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "site_url": {"type": "string", "description": "Site URL as registered in GSC"},
+                    "days": {"type": "integer", "default": 28, "description": "Number of days to look back"},
+                    "dimensions": {"type": "array", "items": {"type": "string"}, "default": ["query"], "description": "Grouping: query, page, date, device, country"},
+                },
+                "required": ["site_url"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "gsc_submit_sitemap",
+            "description": "Submit a sitemap to Google Search Console",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "site_url": {"type": "string", "description": "Site URL as registered in GSC"},
+                    "sitemap_url": {"type": "string", "description": "Full URL of the sitemap"},
+                },
+                "required": ["site_url", "sitemap_url"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "gsc_list_sitemaps",
+            "description": "List all sitemaps submitted to Google Search Console",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "site_url": {"type": "string", "description": "Site URL as registered in GSC"},
+                },
+                "required": ["site_url"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "gsc_inspect_url",
+            "description": "Inspect a URL's indexing status in Google Search Console",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "site_url": {"type": "string", "description": "Site URL as registered in GSC"},
+                    "inspection_url": {"type": "string", "description": "The specific URL to inspect"},
+                },
+                "required": ["site_url", "inspection_url"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "gsc_list_sites",
+            "description": "List all sites in the Google Search Console account",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+            },
+        },
+    },
 ]
 
 # Map tool names to actual callables
@@ -409,6 +483,11 @@ TOOL_CALLABLES = {
     "record_fact": record_fact,
     "record_learning": record_learning,
     "record_decision": record_decision,
+    "gsc_performance": gsc_performance,
+    "gsc_submit_sitemap": gsc_submit_sitemap,
+    "gsc_list_sitemaps": gsc_list_sitemaps,
+    "gsc_inspect_url": gsc_inspect_url,
+    "gsc_list_sites": gsc_list_sites,
 }
 
 

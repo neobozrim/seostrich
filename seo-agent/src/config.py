@@ -29,6 +29,10 @@ class Settings(BaseSettings):
 
     pagespeed_api_key: str = Field(default="", alias="PAGESPEED_API_KEY")
 
+    gsc_credentials_path: str = Field(
+        default="gsc-console-creds.json", alias="GSC_CREDENTIALS_PATH"
+    )
+
     budget_per_job_dfs: float = 1.0
     budget_per_job_llm: float = 5.0
 
