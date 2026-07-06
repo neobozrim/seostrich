@@ -6,14 +6,14 @@ from typing import Dict, Any
 def read_memory(memory_type: str = "all") -> Dict[str, Any]:
     """
     Read memory from the blackboard system.
-    
+
     Args:
         memory_type: "facts", "learnings", "decisions", "tasks", or "all"
-    
+
     Returns:
         Dict with memory content
     """
-    from . import memory
+    from .. import memory
     
     result = {}
     
@@ -44,7 +44,7 @@ def record_fact(fact: str) -> Dict[str, Any]:
     Returns:
         Success status
     """
-    from . import memory
+    from .. import memory
     memory.record_fact(fact)
     return {"status": "success", "recorded": "fact", "content": fact}
 
@@ -64,7 +64,7 @@ def record_learning(learning: str) -> Dict[str, Any]:
     Returns:
         Success status
     """
-    from . import memory
+    from .. import memory
     memory.record_learning(learning)
     return {"status": "success", "recorded": "learning", "content": learning}
 
@@ -84,6 +84,6 @@ def record_decision(decision: str) -> Dict[str, Any]:
     Returns:
         Success status
     """
-    from . import memory
+    from .. import memory
     memory.record_decision(decision)
     return {"status": "success", "recorded": "decision", "content": decision}
