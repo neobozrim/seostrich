@@ -33,6 +33,8 @@ class Settings(BaseSettings):
         default="gsc-console-creds.json", alias="GSC_CREDENTIALS_PATH"
     )
 
+    braintrust_api_key: str = Field(default="", alias="BRAINTRUST_API_KEY")
+
     budget_per_job_dfs: float = 1.0
     budget_per_job_llm: float = 5.0
 

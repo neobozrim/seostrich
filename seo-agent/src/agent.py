@@ -17,13 +17,17 @@ from .tools.generate_draft import generate_draft
 from .tools.preflight_draft import preflight_draft
 from .tools.seo_linter import seo_linter
 from .tools.geo_scorer import geo_scorer
-from .tools.technical_seo import technical_audit
+from .tools.technical_seo import technical_seo_audit
 from .tools.indexnow import submit_indexnow, submit_single_url
 from .tools.bing_wmt import get_site_keywords, submit_url as bing_submit_url
-from .tools.web_search import web_search, research_topic
-from .tools.dataforseo import keyword_overview, keyword_difficulty
-from .tools.memory_tools import read_memory, record_fact, record_learning, record_decision
+from .tools.web_search import web_search
+from .tools.memory_tools import (
+    read_memory, record_fact, record_learning, record_decision,
+    tool_post_task, tool_complete_task, tool_record_artefact, tool_draft_run_summary
+)
+from .tools.run_discovery import run_discovery
 from .tools.gsc import gsc_performance, gsc_submit_sitemap, gsc_list_sitemaps, gsc_inspect_url, gsc_list_sites
+from .tools.braintrust import log_conversation, suggest_improvements
 
 
 SYSTEM_PROMPT = """You are a versatile SEO agent. You help businesses grow through
@@ -32,7 +36,9 @@ data-driven content strategy, technical SEO audits, and more.
 You have access to the following tools. Use them to accomplish the user's goals.
 Think step-by-step. Always explain your reasoning between tool calls.
 
-When given a business intake:
+When a new user needs SEO help, start with run_discovery to gather their business intake.
+
+When you have a business intake:
 1. Extract keyword seeds from the business description
 2. Pull keyword universe from DataForSEO
 3. Cluster keywords into themes
@@ -48,14 +54,19 @@ When asked to research a topic, use web search.
 When asked about search performance or indexing, use Google Search Console tools (gsc_performance, gsc_inspect_url, gsc_list_sitemaps, gsc_submit_sitemap, gsc_list_sites).
 
 You have memory tools to read and record information:
-- read_memory: Load facts/learnings/decisions from the blackboard (already loaded at run start, but you can refresh if needed)
+- read_memory: Load facts/learnings/decisions/tasks from the blackboard (already loaded at run start, but you can refresh if needed)
 - record_fact: Record an observed truth (e.g., "User's blog has 5 posts")
 - record_learning: Record a pattern or rule learned (e.g., "Staggering publication dates looks more natural to Google")
 - record_decision: Record a choice made and why (e.g., "Using Astro over WordPress for full SEO control")
+- post_task: Post a task to the blackboard
+- complete_task: Mark a task as completed
+- record_artefact: Record a durable deliverable
+- draft_run_summary: Draft a run summary (you can call this mid-run when you sense a run is wrapping up)
 
 Use memory tools to:
 - Check past context before making decisions (read_memory)
 - Record important findings as you work (record_fact/learning/decision)
+- Track your work (post_task/complete_task)
 - Build up knowledge across runs
 
 After each significant action, summarize what you found and what's next."""
@@ -212,8 +223,8 @@ TOOL_DEFINITIONS = [
     {
         "type": "function",
         "function": {
-            "name": "technical_audit",
-            "description": "Run comprehensive technical SEO audit on a URL",
+            "name": "technical_seo_audit",
+            "description": "Run comprehensive technical SEO audit on a URL (24 checks across 9 categories)",
             "parameters": {
                 "type": "object",
                 "properties": {"url": {"type": "string"}},
@@ -279,53 +290,6 @@ TOOL_DEFINITIONS = [
                     "context": {"type": "string", "default": ""},
                 },
                 "required": ["query"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "research_topic",
-            "description": "Research a topic and return structured findings",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "topic": {"type": "string"},
-                    "depth": {"type": "string", "default": "brief"},
-                },
-                "required": ["topic"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "keyword_overview",
-            "description": "Get volume, difficulty, CPC for keywords via DataForSEO",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "keywords": {"type": "array", "items": {"type": "string"}},
-                    "location_code": {"type": "integer", "default": 2840},
-                    "language_code": {"type": "string", "default": "en"},
-                },
-                "required": ["keywords"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "keyword_difficulty",
-            "description": "Get keyword difficulty scores via DataForSEO",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "keywords": {"type": "array", "items": {"type": "string"}},
-                    "location_code": {"type": "integer", "default": 2840},
-                    "language_code": {"type": "string", "default": "en"},
-                },
-                "required": ["keywords"],
             },
         },
     },
@@ -457,6 +421,116 @@ TOOL_DEFINITIONS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "post_task",
+            "description": "Post a task to the blackboard task board",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "task_goal": {"type": "string", "description": "What the task aims to accomplish"},
+                    "affects": {"type": "string", "default": "", "description": "Files/assets/pages it will touch"},
+                },
+                "required": ["task_goal"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "complete_task",
+            "description": "Mark a task as completed on the blackboard",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "task_goal": {"type": "string", "description": "What the task accomplished"},
+                    "affects": {"type": "string", "default": "", "description": "Files/assets/pages it touched"},
+                },
+                "required": ["task_goal"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "record_artefact",
+            "description": "Record a durable deliverable in the artefacts index",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "description": "Name of the artefact"},
+                    "summary": {"type": "string", "description": "One-line summary"},
+                    "location": {"type": "string", "description": "Where the artefact lives"},
+                },
+                "required": ["name", "summary", "location"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "draft_run_summary",
+            "description": "Draft a run summary (can be called mid-run when wrapping up)",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "goal": {"type": "string", "description": "What this run aimed to accomplish"},
+                    "did": {"type": "string", "description": "What was actually done"},
+                    "found": {"type": "string", "default": "", "description": "What was discovered"},
+                    "artifacts": {"type": "string", "default": "", "description": "Links to any artefact touched"},
+                },
+                "required": ["goal", "did"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "run_discovery",
+            "description": "Drive an interactive discovery conversation to gather business intake for SEO strategy",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "conversation_history": {"type": "array", "items": {"type": "object"}, "description": "List of message dicts with role/content"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "log_conversation",
+            "description": "Log conversation to Braintrust for tracing and analysis",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "session_id": {"type": "string", "description": "Session identifier"},
+                    "messages": {"type": "array", "items": {"type": "object"}},
+                    "tool_results": {"type": "array", "items": {"type": "object"}},
+                    "metadata": {"type": "object", "default": {}},
+                },
+                "required": ["session_id", "messages", "tool_results"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "suggest_improvements",
+            "description": "Analyze a run and suggest improvements to tools, prompts, or setup",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "session_id": {"type": "string", "description": "Session to analyze"},
+                    "conversation_summary": {"type": "string", "description": "Summary of what happened"},
+                    "memory_context": {"type": "string", "description": "Current memory state"},
+                },
+                "required": ["session_id", "conversation_summary"],
+            },
+        },
+    },
 ]
 
 # Map tool names to actual callables
@@ -471,23 +545,27 @@ TOOL_CALLABLES = {
     "preflight_draft": preflight_draft,
     "seo_linter": seo_linter,
     "geo_scorer": geo_scorer,
-    "technical_audit": technical_audit,
+    "technical_seo_audit": technical_seo_audit,
     "submit_indexnow": submit_indexnow,
     "bing_submit_url": bing_submit_url,
     "get_site_keywords": get_site_keywords,
     "web_search": web_search,
-    "research_topic": research_topic,
-    "keyword_overview": keyword_overview,
-    "keyword_difficulty": keyword_difficulty,
     "read_memory": read_memory,
     "record_fact": record_fact,
     "record_learning": record_learning,
     "record_decision": record_decision,
+    "post_task": tool_post_task,
+    "complete_task": tool_complete_task,
+    "record_artefact": tool_record_artefact,
+    "draft_run_summary": tool_draft_run_summary,
+    "run_discovery": run_discovery,
     "gsc_performance": gsc_performance,
     "gsc_submit_sitemap": gsc_submit_sitemap,
     "gsc_list_sitemaps": gsc_list_sitemaps,
     "gsc_inspect_url": gsc_inspect_url,
     "gsc_list_sites": gsc_list_sites,
+    "log_conversation": log_conversation,
+    "suggest_improvements": suggest_improvements,
 }
 
 
@@ -577,5 +655,24 @@ def run_agent(
     if session_data["tool_results"]:
         tools_used = [t["tool"] for t in session_data["tool_results"]]
         memory.record_fact(f"Run {sid}: used tools {', '.join(set(tools_used))}")
+
+        # Finalize run summary
+        tools_summary = ", ".join(sorted(set(tools_used)))
+        memory.finalize_run_summary(
+            goal=user_message[:100],
+            did=f"Used {len(tools_used)} tool calls: {tools_summary}",
+            artifacts="see session " + sid,
+        )
+
+        # Auto-log to Braintrust if configured
+        try:
+            log_conversation(
+                session_id=sid,
+                messages=session_data.get("messages", []),
+                tool_results=session_data.get("tool_results", []),
+                metadata={"user_request": user_message[:200]},
+            )
+        except Exception:
+            pass  # Braintrust is optional, don't fail the run
 
     return session_data

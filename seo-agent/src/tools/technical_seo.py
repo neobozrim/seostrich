@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from ..config import settings
 
 
-def technical_audit(url: str) -> dict:
+def technical_seo_audit(url: str) -> dict:
     """Run comprehensive technical SEO audit on a URL."""
     if not url.startswith("http"):
         url = f"https://{url}"

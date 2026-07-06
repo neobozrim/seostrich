@@ -1,5 +1,4 @@
 .env
-seo-agent-reference/
 
 # Personal runtime memory data (keeps protocol/structure public, hides accumulated data)
 agent-memory/qwen/

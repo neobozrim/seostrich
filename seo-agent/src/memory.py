@@ -92,3 +92,34 @@ def read_tasks() -> str:
     if path.exists():
         return path.read_text(encoding="utf-8")
     return ""
+
+
+def record_artefact(name: str, summary: str, location: str) -> None:
+    """Record an artefact in the artefacts index."""
+    _append("artefacts-index.md", f"{name} | {AGENT_NAME} | {summary} | {location}")
+
+
+def draft_run_summary(goal: str, did: str, found: str = "", artifacts: str = "") -> None:
+    """Write a draft run summary (can be called mid-run by the agent)."""
+    now = _now()
+    summary = (
+        f"## {now} | {AGENT_NAME} | {goal[:50]} | draft\n"
+        f"Goal: {goal}\n"
+        f"Did: {did}\n"
+        f"Found: {found or 'nothing notable'}\n"
+        f"Artefacts: {artifacts or 'none'}"
+    )
+    _append("runs-summaries.md", summary)
+
+
+def finalize_run_summary(goal: str, did: str, found: str = "", artifacts: str = "") -> None:
+    """Finalize a run summary (called by orchestrator at run end)."""
+    now = _now()
+    summary = (
+        f"## {now} | {AGENT_NAME} | {goal[:50]} | final\n"
+        f"Goal: {goal}\n"
+        f"Did: {did}\n"
+        f"Found: {found or 'nothing notable'}\n"
+        f"Artefacts: {artifacts or 'none'}"
+    )
+    _append("runs-summaries.md", summary)

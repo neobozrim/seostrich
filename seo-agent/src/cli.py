@@ -13,7 +13,7 @@ from .agent import run_agent
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Versatile SEO Agent — keyword research, content strategy, technical audit, competitor analysis"
+        description="SEO Agent — 31 tools for keyword research, content strategy, technical audit, indexing, GSC, and more"
     )
     sub = parser.add_subparsers(dest="command")
 
@@ -32,11 +32,8 @@ def main():
     audit_p = sub.add_parser("audit", help="Run technical SEO audit")
     audit_p.add_argument("url", help="URL to audit")
 
-    # Competitor analysis
-    comp_p = sub.add_parser("competitor", help="Analyze a competitor")
-    comp_p.add_argument("url", help="Competitor URL")
-    comp_p.add_argument("--our-domain", default="", help="Our domain for comparison")
-    comp_p.add_argument("--our-description", default="", help="Our business description")
+    # Discovery
+    disc_p = sub.add_parser("discover", help="Interactive business discovery for SEO strategy")
 
     # Submit URL for indexing
     idx_p = sub.add_parser("index", help="Submit URL for indexing (IndexNow)")
@@ -77,14 +74,26 @@ def main():
         result = run_agent(f"Run a technical SEO audit on {args.url}")
         _print_result(result)
 
-    elif args.command == "competitor":
-        msg = f"Analyze competitor {args.url}"
-        if args.our_domain:
-            msg += f" compared to our domain {args.our_domain}"
-        if args.our_description:
-            msg += f". Our business: {args.our_description}"
-        result = run_agent(msg)
-        _print_result(result)
+    elif args.command == "discover":
+        print("Starting interactive SEO discovery...")
+        print("The agent will ask questions to understand your business.\n")
+        from .tools.run_discovery import run_discovery
+        
+        history = []
+        while True:
+            result = run_discovery(history)
+            if result.get("status") == "complete":
+                print("\n✓ Discovery complete! Business intake:")
+                print(json.dumps(result.get("intake", {}), indent=2))
+                break
+            elif result.get("status") == "asking":
+                print(f"\n[Agent]: {result.get('question', '')}")
+                user_input = input("\n[You]: ")
+                history.append({"role": "assistant", "content": result.get("question", "")})
+                history.append({"role": "user", "content": user_input})
+            else:
+                print(f"\n[Agent]: {result}")
+                break
 
     elif args.command == "index":
         result = run_agent(f"Submit this URL for indexing via IndexNow: {args.url} with key {args.key}")
