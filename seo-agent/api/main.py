@@ -58,14 +58,19 @@ async def health():
     return {"status": "ok"}
 
 
+def _memory_lines(text: str) -> List[str]:
+    """Split memory file content into entries, dropping blank lines."""
+    return [line for line in text.split("\n") if line.strip()]
+
+
 @app.get("/api/memory")
 async def get_memory(_auth: None = Depends(require_auth)):
     """Get current memory state."""
     return {
-        "facts": memory.read_facts().split("\n"),
-        "learnings": memory.read_learnings().split("\n"),
-        "decisions": memory.read_decisions().split("\n"),
-        "tasks": memory.read_tasks().split("\n"),
+        "facts": _memory_lines(memory.read_facts()),
+        "learnings": _memory_lines(memory.read_learnings()),
+        "decisions": _memory_lines(memory.read_decisions()),
+        "tasks": _memory_lines(memory.read_tasks()),
     }
 
 
@@ -200,10 +205,10 @@ async def chat_stream(
 
             # Get updated memory state
             memory_state = {
-                "facts": memory.read_facts().split("\n")[:10],
-                "learnings": memory.read_learnings().split("\n")[:10],
-                "decisions": memory.read_decisions().split("\n")[:10],
-                "tasks": memory.read_tasks().split("\n")[:10],
+                "facts": _memory_lines(memory.read_facts())[:10],
+                "learnings": _memory_lines(memory.read_learnings())[:10],
+                "decisions": _memory_lines(memory.read_decisions())[:10],
+                "tasks": _memory_lines(memory.read_tasks())[:10],
             }
             memory_chunk = {"type": "memory_update", "memory": memory_state}
             yield f"data: {json.dumps(memory_chunk, ensure_ascii=False)}\n\n"
