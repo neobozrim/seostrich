@@ -13,7 +13,10 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_PATH = Path(__file__).resolve().parent.parent.parent / "shared" / "schema" / "brand_profile_schema.json"
+_LOCAL_SCHEMA = Path(__file__).resolve().parent.parent / "shared" / "schema" / "brand_profile_schema.json"
+_ROOT_SCHEMA = Path(__file__).resolve().parent.parent.parent / "shared" / "schema" / "brand_profile_schema.json"
+# Prefer the copy inside the deploy root; fall back to the repo-root one locally
+SCHEMA_PATH = _LOCAL_SCHEMA if _LOCAL_SCHEMA.exists() else _ROOT_SCHEMA
 
 
 def validate_schema(profile: dict[str, Any]) -> list[str]:

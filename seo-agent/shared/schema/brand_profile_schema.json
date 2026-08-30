@@ -1,0 +1,399 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Brand Profile",
+  "description": "Anti-branding agent system brand identity profile",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "client_id",
+    "generated_at",
+    "status",
+    "mode",
+    "positioning",
+    "naming",
+    "voice",
+    "typography",
+    "color",
+    "texture_and_grade",
+    "logo_concept",
+    "exclusion_list",
+    "seo_constraints",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "client_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "approved"]
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["handmade", "bold"]
+    },
+    "positioning": {
+      "type": "object",
+      "required": ["one_line", "enemy", "refusal", "audience_filter"],
+      "properties": {
+        "one_line": {
+          "type": "string",
+          "description": "Who this is, in the founder's own register"
+        },
+        "enemy": {
+          "type": "string",
+          "description": "What the brand rejects"
+        },
+        "refusal": {
+          "type": "string",
+          "description": "What it will never do"
+        },
+        "audience_filter": {
+          "type": "string",
+          "description": "Who this deliberately excludes"
+        }
+      }
+    },
+    "naming": {
+      "type": "object",
+      "required": ["name", "rationale", "verification"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Traceable to interview material"
+        },
+        "verification": {
+          "type": "object",
+          "required": ["web_checked", "trademark_checked", "linguistic_checked", "collisions"],
+          "properties": {
+            "web_checked": {
+              "type": "boolean",
+              "const": true
+            },
+            "trademark_checked": {
+              "type": "boolean",
+              "const": true
+            },
+            "linguistic_checked": {
+              "type": "boolean",
+              "const": true
+            },
+            "collisions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "voice": {
+      "type": "object",
+      "required": [
+        "descriptors",
+        "casing",
+        "sentence_feel",
+        "person",
+        "banned_words",
+        "signature_phrases",
+        "example_on_brand",
+        "example_off_brand"
+      ],
+      "properties": {
+        "descriptors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "casing": {
+          "type": "string",
+          "enum": ["sentence", "lowercase", "title"]
+        },
+        "sentence_feel": {
+          "type": "string",
+          "minLength": 10
+        },
+        "person": {
+          "type": "string",
+          "enum": ["first-person singular", "first-person plural", "none"]
+        },
+        "banned_words": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "signature_phrases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Verbatim from interview"
+        },
+        "example_on_brand": {
+          "type": "string",
+          "minLength": 10,
+          "description": "A real sentence in this voice"
+        },
+        "example_off_brand": {
+          "type": "string",
+          "minLength": 10,
+          "description": "The same idea written wrong"
+        }
+      }
+    },
+    "typography": {
+      "type": "object",
+      "required": ["primary", "secondary", "pairing_logic", "scale"],
+      "properties": {
+        "primary": {
+          "type": "object",
+          "required": ["family", "role", "rationale"],
+          "properties": {
+            "family": {
+              "type": "string",
+              "minLength": 1
+            },
+            "role": {
+              "type": "string",
+              "enum": ["display", "heading"]
+            },
+            "rationale": {
+              "type": "string",
+              "minLength": 10
+            },
+            "webfont_url": {
+              "type": "string"
+            },
+            "license": {
+              "type": "string"
+            }
+          }
+        },
+        "secondary": {
+          "type": "object",
+          "required": ["family", "role", "rationale"],
+          "properties": {
+            "family": {
+              "type": "string",
+              "minLength": 1
+            },
+            "role": {
+              "type": "string",
+              "enum": ["body", "text"]
+            },
+            "rationale": {
+              "type": "string",
+              "minLength": 10
+            },
+            "webfont_url": {
+              "type": "string"
+            },
+            "license": {
+              "type": "string"
+            }
+          }
+        },
+        "pairing_logic": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Why the contrast works"
+        },
+        "scale": {
+          "type": "object",
+          "required": ["base_px", "ratio"],
+          "properties": {
+            "base_px": {
+              "type": "integer",
+              "minimum": 12,
+              "maximum": 24
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 1.0,
+              "maximum": 2.0
+            }
+          }
+        }
+      }
+    },
+    "color": {
+      "type": "object",
+      "required": [
+        "base",
+        "primaries",
+        "accent",
+        "warm_dark",
+        "warm_light",
+        "rationale",
+        "contrast_checked"
+      ],
+      "properties": {
+        "base": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "primaries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          },
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "accent": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "warm_dark": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "warm_light": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 10
+        },
+        "contrast_checked": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "texture_and_grade": {
+      "type": "object",
+      "required": ["texture", "photo_grade"],
+      "properties": {
+        "texture": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "photo_grade": {
+          "type": "object",
+          "required": ["temperature", "saturation", "grain", "retouching"],
+          "properties": {
+            "temperature": {
+              "type": "string"
+            },
+            "saturation": {
+              "type": "string"
+            },
+            "grain": {
+              "type": "string"
+            },
+            "retouching": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "logo_concept": {
+      "type": "object",
+      "required": ["metaphor", "form_language", "construction", "constraints", "rationale"],
+      "properties": {
+        "metaphor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "form_language": {
+          "type": "string",
+          "enum": ["stamped", "badge", "wordmark", "lettermark"]
+        },
+        "construction": {
+          "type": "string",
+          "minLength": 10
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 10
+        }
+      }
+    },
+    "exclusion_list": {
+      "type": "object",
+      "required": ["category_conventions_banned", "source"],
+      "properties": {
+        "category_conventions_banned": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 10
+        }
+      }
+    },
+    "seo_constraints": {
+      "type": "object",
+      "required": ["voice_is_hard_constraint", "headlines_must_be_real_text"],
+      "properties": {
+        "voice_is_hard_constraint": {
+          "type": "boolean",
+          "const": true
+        },
+        "headlines_must_be_real_text": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["interview_specifics_used", "distant_wells_mined"],
+      "properties": {
+        "interview_specifics_used": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 3,
+          "description": "Verbatim quotes that drove decisions"
+        },
+        "distant_wells_mined": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

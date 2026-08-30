@@ -17,7 +17,9 @@ def _get_memory_dir() -> Path:
     """Get the memory directory from environment or use relative path."""
     env_path = os.getenv("MEMORY_DIR")
     if env_path:
-        return Path(env_path)
+        p = Path(env_path)
+        p.mkdir(parents=True, exist_ok=True)
+        return p
 
     # Fallback: relative to this file (src/memory.py)
     # Goes up: memory.py -> src/ -> seo-agent/ -> qwen/ -> agent-memory/
