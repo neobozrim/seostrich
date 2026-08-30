@@ -17,6 +17,7 @@ def get_client() -> OpenAI:
         _client = OpenAI(
             api_key=settings.qwen_api_key,
             base_url=settings.qwen_base_url,
+            timeout=120.0,  # 2 minute timeout for LLM calls
         )
     return _client
 
@@ -48,6 +49,12 @@ def chat(
     if tools:
         kwargs["tools"] = tools
         kwargs["tool_choice"] = "auto"
+
+    if settings.mock_llm:
+        return {
+            "content": "[]",
+            "usage": {"prompt_tokens": 0, "completion_tokens": 0},
+        }
 
     resp = get_client().chat.completions.create(**kwargs)
     choice = resp.choices[0]

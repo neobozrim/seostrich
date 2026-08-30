@@ -1,0 +1,22 @@
+domain: productpirates.club
+description: |
+  AI Product Management Community of Practice based in Sofia, Bulgaria. 
+  We run events, workshops, and peer learning groups for product managers 
+  integrating AI/LLM features — prompt engineering, agent design, evals, 
+  GTM for AI products, governance. Members are senior PMs at tech companies 
+  and AI-native startups in Central and Eastern Europe.
+goal: |
+  Become the go-to community in CEE for AI product managers via SEO + AI citations.
+  Build credibility to launch a Maven course on AI product management.
+locale:
+  location_code: 2100  # Bulgaria
+  language_code: en
+competitors:
+  - https://lennysnewsletter.com
+  - https://www.reforge.com
+  - https://www.marilynnika.com
+optimization_mix: balanced
+notes: |
+  Targeting CEE region with English-language content. Focus on community building,
+  networking events, career development for PMs working with AI. Content should be
+  strategic and leadership-focused, not technical tutorials.

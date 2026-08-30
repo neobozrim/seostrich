@@ -87,3 +87,70 @@ def record_decision(decision: str) -> Dict[str, Any]:
     from .. import memory
     memory.record_decision(decision)
     return {"status": "success", "recorded": "decision", "content": decision}
+
+
+def tool_post_task(task_goal: str, affects: str = "") -> Dict[str, Any]:
+    """
+    Post a new task to the tasks board.
+
+    Args:
+        task_goal: What needs to be done (short description)
+        affects: Which systems/areas this task touches
+
+    Returns:
+        Success status
+    """
+    from .. import memory
+    memory.post_task(task_goal, affects)
+    return {"status": "success", "recorded": "task", "content": task_goal}
+
+
+def tool_complete_task(task_goal: str, affects: str = "") -> Dict[str, Any]:
+    """
+    Mark a task as completed on the tasks board.
+
+    Args:
+        task_goal: The task that was completed
+        affects: Which systems/areas this task touched
+
+    Returns:
+        Success status
+    """
+    from .. import memory
+    memory.complete_task(task_goal, affects)
+    return {"status": "success", "completed": "task", "content": task_goal}
+
+
+def tool_record_artefact(name: str, summary: str, location: str) -> Dict[str, Any]:
+    """
+    Record a durable deliverable/artefact in the artefacts index.
+
+    Args:
+        name: Artefact name (e.g., "article-seo-best-practices.md")
+        summary: Short description of the artefact
+        location: File path or URL where it lives
+
+    Returns:
+        Success status
+    """
+    from .. import memory
+    memory.record_artefact(name, summary, location)
+    return {"status": "success", "recorded": "artefact", "name": name}
+
+
+def tool_draft_run_summary(goal: str, did: str, found: str = "", artifacts: str = "") -> Dict[str, Any]:
+    """
+    Draft a run summary (can be called mid-run when wrapping up).
+
+    Args:
+        goal: What this run aimed to accomplish
+        did: What was actually done
+        found: Notable findings or discoveries
+        artifacts: Artefacts produced during this run
+
+    Returns:
+        Success status
+    """
+    from .. import memory
+    memory.draft_run_summary(goal, did, found, artifacts)
+    return {"status": "success", "recorded": "run_summary", "goal": goal}

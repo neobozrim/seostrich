@@ -20,8 +20,10 @@ def save_session(session_id: str, data: dict[str, Any]) -> None:
         json.dump(data, f, indent=2, ensure_ascii=False, default=str)
 
 
-def load_session(session_id: str) -> dict[str, Any]:
+def load_session(session_id: str) -> dict[str, Any] | None:
     path = SESSIONS_DIR / f"{session_id}.json"
+    if not path.exists():
+        return None
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 

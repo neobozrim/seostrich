@@ -75,54 +75,58 @@ def keywords_for_site(url: str, limit: int = 100) -> list[dict]:
 
 def keyword_overview(keywords: list[str], location_code: int = 2840, language_code: str = "en") -> list[dict]:
     async def _inner():
-        data = await _post("/v3/dataforseo_labs/keyword_overview/live", [
-            {
-                "keywords": keywords,
-                "location_code": location_code,
-                "language_code": language_code,
-            }
-        ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
         results = []
-        for item in items:
-            info = item.get("keyword_info", {})
-            results.append({
-                "keyword": item.get("keyword", ""),
-                "volume": info.get("search_volume", 0),
-                "difficulty": info.get("keyword_difficulty", 0),
-                "cpc": info.get("cpc", 0),
-                "competition": info.get("competition", 0),
-                "intent": info.get("search_intent", _intent_for(item.get("keyword", ""))),
-            })
+        # Use keyword_suggestions endpoint to get data for specific keywords
+        for kw in keywords:
+            data = await _post("/v3/dataforseo_labs/google/keyword_suggestions/live", [
+                {
+                    "keyword": kw,
+                    "location_code": location_code,
+                    "language_code": language_code,
+                    "limit": 1,  # Just get the keyword itself
+                }
+            ])
+            items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+            if items:
+                item = items[0]
+                info = item.get("keyword_info", {})
+                props = item.get("keyword_properties", {})
+                intent_info = item.get("search_intent_info", {})
+                results.append({
+                    "keyword": item.get("keyword", kw),
+                    "volume": info.get("search_volume", 0),
+                    "difficulty": props.get("keyword_difficulty", 0),
+                    "cpc": info.get("cpc", 0),
+                    "competition": info.get("competition", 0),
+                    "intent": intent_info.get("type", _intent_for(kw)),
+                })
         return results
     return _run(_inner())
 
 
 def related_keywords(seed: str, limit: int = 50, location_code: int = 2840, language_code: str = "en") -> list[dict]:
     async def _inner():
-        data = await _post("/v3/dataforseo_labs/related_keywords/live", [
+        data = await _post("/v3/dataforseo_labs/google/related_keywords/live", [
             {
                 "keyword": seed,
                 "location_code": location_code,
                 "language_code": language_code,
                 "limit": limit,
-                "order_by": ["search_volume.desc"],
             }
         ])
         items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
-        return [_kw_item(i) for i in items]
+        return [_kw_item_related(i) for i in items]
     return _run(_inner())
 
 
 def keyword_suggestions(seed: str, limit: int = 50, location_code: int = 2840, language_code: str = "en") -> list[dict]:
     async def _inner():
-        data = await _post("/v3/keywords_data/keywords_for_keywords/live", [
+        data = await _post("/v3/dataforseo_labs/google/keyword_suggestions/live", [
             {
-                "keywords": [seed],
+                "keyword": seed,
                 "location_code": location_code,
                 "language_code": language_code,
                 "limit": limit,
-                "order_by": ["search_volume.desc"],
             }
         ])
         items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
@@ -282,14 +286,71 @@ def _normalize(url: str) -> str:
 
 
 def _kw_item(i: dict) -> dict:
-    info = i.get("keyword_info", i)
+    """Parse keyword_suggestions response item."""
+    info = i.get("keyword_info", {})
+    props = i.get("keyword_properties", {})
+    intent_info = i.get("search_intent_info", {})
     return {
         "keyword": i.get("keyword", ""),
         "volume": info.get("search_volume", 0),
-        "difficulty": info.get("keyword_difficulty", 0),
+        "difficulty": props.get("keyword_difficulty", info.get("keyword_difficulty", 0)),
         "cpc": info.get("cpc", 0),
-        "intent": info.get("search_intent", _intent_for(i.get("keyword", ""))),
+        "intent": intent_info.get("type", _intent_for(i.get("keyword", ""))),
     }
+
+
+def _kw_item_related(i: dict) -> dict:
+    """Parse related_keywords response item (nested under keyword_data)."""
+    kd = i.get("keyword_data", {})
+    info = kd.get("keyword_info", {})
+    props = kd.get("keyword_properties", {})
+    intent_info = kd.get("search_intent_info", {})
+    return {
+        "keyword": kd.get("keyword", ""),
+        "volume": info.get("search_volume", 0),
+        "difficulty": props.get("keyword_difficulty", info.get("keyword_difficulty", 0)),
+        "cpc": info.get("cpc", 0),
+        "intent": intent_info.get("type", _intent_for(kd.get("keyword", ""))),
+    }
+
+
+def ai_mentions(domain: str, limit: int = 20) -> list[dict]:
+    """Get AI mentions for a domain - tracks how AI systems cite/reference the domain.
+
+    Args:
+        domain: Target domain (e.g., "example.com")
+        limit: Maximum number of mentions to return
+
+    Returns:
+        List of dicts with mention data including source, query, and citation details
+    """
+    async def _inner():
+        data = await _post("/v3/ai_optimization/llm_mentions/search_mentions/live", [
+            {
+                "target": _normalize(domain),
+                "limit": limit,
+            }
+        ])
+        # Handle response structure safely
+        tasks = data.get("tasks", [])
+        if not tasks or not tasks[0].get("result"):
+            print(f"[ai_mentions] No results in response for {domain}")
+            return []
+        
+        items = tasks[0]["result"][0].get("items", [])
+        results = []
+        for item in items:
+            results.append({
+                "source": item.get("source", ""),
+                "query": item.get("query", ""),
+                "mention_type": item.get("mention_type", ""),
+                "cited_url": item.get("cited_url", ""),
+                "cited_title": item.get("cited_title", ""),
+                "snippet": item.get("snippet", ""),
+                "date": item.get("date", ""),
+            })
+        return results
+    return _run(_inner())
 
 
 _INTENT_PATTERNS = {

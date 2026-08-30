@@ -1,0 +1,63 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#FFF0F6',
+          100: '#FFE0ED',
+          200: '#FFC2DA',
+          300: '#FFA3C7',
+          400: '#FF84BA',
+          500: '#FF6AAD',
+          600: '#E6559A',
+          700: '#CC4087',
+          800: '#B32B74',
+          900: '#991661',
+        },
+        accent: {
+          50: '#FFF9E6',
+          100: '#FFF3CC',
+          200: '#FFE799',
+          300: '#FFE382',
+          400: '#FFDF82',
+          500: '#F5D060',
+          600: '#D4B44A',
+          700: '#B39934',
+          800: '#927E1E',
+          900: '#716308',
+        },
+        secondary: {
+          50: '#EDF4FF',
+          100: '#DBE9FF',
+          200: '#B5D1FF',
+          300: '#99C2FF',
+          400: '#7AB0FF',
+          500: '#5B9EFF',
+          600: '#3D85E6',
+          700: '#1F6CCC',
+          800: '#0153B3',
+          900: '#003E99',
+        },
+        surface: {
+          50: '#FFFDF9',
+          100: '#FFFAF4',
+          200: '#FFEFE3',
+          300: '#FFE4D0',
+          400: '#FFD9BD',
+          500: '#FFCEAA',
+          600: '#E6B48F',
+          700: '#CC9A74',
+          800: '#B38059',
+          900: '#99663E',
+        },
+      },
+    },
+  },
+  plugins: [],
+}

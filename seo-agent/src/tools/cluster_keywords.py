@@ -38,11 +38,17 @@ def cluster_keywords(keywords: list[dict], max_clusters: int = 8) -> dict:
         f"- {k.get('keyword', '')} (volume: {k.get('volume', 0)}, difficulty: {k.get('difficulty', 0)}, intent: {k.get('intent', 'unknown')})"
         for k in keywords[:150]  # Limit to top 150
     ])
-    
+
     user_msg = f"""Keywords to cluster:
 {kw_text}
 
 Create {max_clusters} thematic clusters."""
 
-    resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3)
-    return llm.parse_json_response(resp)
+    try:
+        resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3)
+        result = llm.parse_json_response(resp)
+        if result and (isinstance(result, dict) or isinstance(result, list)):
+            return {"success": True, "clusters": result}
+        return {"success": False, "error": "LLM returned invalid cluster format", "clusters": None}
+    except Exception as e:
+        return {"success": False, "error": f"LLM clustering failed: {str(e)}", "clusters": None}

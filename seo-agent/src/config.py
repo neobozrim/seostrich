@@ -12,12 +12,12 @@ if ENV_FILE.exists():
 
 
 class Settings(BaseSettings):
-    qwen_api_key: str = Field(default="", alias="QWEN_CLOUD_API_KEY")
+    qwen_api_key: str = Field(default="", alias="QWEN_TOKEN_PLAN_API_KEY")
     qwen_base_url: str = Field(
         default="https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
         alias="QWEN_BASE_URL",
     )
-    qwen_model: str = Field(default="qwen3.7-plus", alias="QWEN_MODEL")
+    qwen_model: str = Field(default="qwen3.6-plus", alias="QWEN_MODEL")
 
     dataforseo_login: str = Field(default="", alias="DATAFORSEO_LOGIN")
     dataforseo_password: str = Field(default="", alias="DATAFORSEO_PASSWORD")
@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     )
 
     braintrust_api_key: str = Field(default="", alias="BRAINTRUST_API_KEY")
+    braintrust_project_id: str = Field(default="", alias="BRAINTRUST_PROJECT_ID")
+
+    fal_key: str = Field(default="", alias="FAL_KEY")
 
     budget_per_job_dfs: float = 1.0
     budget_per_job_llm: float = 5.0

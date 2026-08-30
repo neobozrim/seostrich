@@ -3,6 +3,16 @@
 # Personal runtime memory data (keeps protocol/structure public, hides accumulated data)
 agent-memory/qwen/
 agent-memory/agents/
+seo-agent/agent-memory/
+
+# Local tooling / build / runtime artifacts
+.qwen/
+node_modules/
+.next/
+seo-agent/cache/
+seo-agent/outputs/
+seo-agent/research/
+pp_*.json
 
 # Blog content (personal articles, not for repo)
 blog/
