@@ -22,15 +22,28 @@ import os
 # Add parent directory to Python path so we can import src
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+# GSC service-account creds may arrive as raw JSON (hosted environments)
+_gsc_json = os.getenv("GSC_CREDENTIALS_JSON")
+if _gsc_json:
+    _gsc_path = os.getenv("GSC_CREDENTIALS_PATH", "/tmp/gsc-console-creds.json")
+    Path(_gsc_path).parent.mkdir(parents=True, exist_ok=True)
+    Path(_gsc_path).write_text(_gsc_json, encoding="utf-8")
+    os.environ["GSC_CREDENTIALS_PATH"] = _gsc_path
+
 from src.orchestrator import run_orchestrator
 from src import memory
 
 app = FastAPI(title="SEO Agent API")
 
-# CORS middleware
+# CORS middleware — origins come from CORS_ORIGINS (comma-separated)
+_cors_origins = [
+    o.strip()
+    for o in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+    if o.strip()
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js dev server
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -206,4 +219,4 @@ async def chat_stream(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", "8001")))

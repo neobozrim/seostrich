@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import json
+import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-SESSIONS_DIR = Path(__file__).resolve().parent.parent / "sessions"
+_env_sessions_dir = os.getenv("SESSIONS_DIR")
+SESSIONS_DIR = (
+    Path(_env_sessions_dir)
+    if _env_sessions_dir
+    else Path(__file__).resolve().parent.parent / "sessions"
+)
 
 
 def new_session_id() -> str:

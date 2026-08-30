@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
-CACHE_DIR = Path("cache")
+CACHE_DIR = Path(os.getenv("CACHE_DIR", "cache"))
 CACHE_TTL_HOURS = 24 * 7  # 1 week default
 
 
