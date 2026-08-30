@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
-from pydantic import Field
+from pydantic import AliasChoices, Field
 
 ENV_FILE = Path(__file__).resolve().parent.parent.parent / ".env"
 if ENV_FILE.exists():
@@ -12,7 +12,10 @@ if ENV_FILE.exists():
 
 
 class Settings(BaseSettings):
-    qwen_api_key: str = Field(default="", alias="QWEN_TOKEN_PLAN_API_KEY")
+    qwen_api_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("QWEN_TOKEN_PLAN_API_KEY", "QWEN_CLOUD_API_KEY"),
+    )
     qwen_base_url: str = Field(
         default="https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
         alias="QWEN_BASE_URL",
