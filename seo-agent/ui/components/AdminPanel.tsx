@@ -2,6 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { FileText, Lightbulb, Target, ListTodo, BookOpen, Package, TrendingUp } from 'lucide-react';
+import { getToken } from '@/lib/api';
+
+function authHeaders(): Record<string, string> {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 interface AdminPanelProps {
   apiBaseUrl: string;
@@ -25,7 +31,9 @@ export function AdminPanel({ apiBaseUrl }: AdminPanelProps) {
 
   const fetchFile = async (filename: string) => {
     try {
-      const response = await fetch(`${apiBaseUrl}/api/memory/file/${filename}`);
+      const response = await fetch(`${apiBaseUrl}/api/memory/file/${filename}`, {
+        headers: authHeaders(),
+      });
       if (response.ok) {
         const content = await response.text();
         setFiles(prev => ({ ...prev, [filename]: content }));
@@ -38,7 +46,9 @@ export function AdminPanel({ apiBaseUrl }: AdminPanelProps) {
   const fetchImprovements = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${apiBaseUrl}/api/memory/improvements`);
+      const response = await fetch(`${apiBaseUrl}/api/memory/improvements`, {
+        headers: authHeaders(),
+      });
       if (response.ok) {
         const data = await response.json();
         setImprovements(data);

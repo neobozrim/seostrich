@@ -6,7 +6,8 @@ import { Message, MemoryState, ToolCall } from '@/types';
 import { ChatMessage } from '@/components/ChatMessage';
 import { MemoryPanel } from '@/components/MemoryPanel';
 import { AdminPanel } from '@/components/AdminPanel';
-import { sendMessage, getMemory } from '@/lib/api';
+import { LoginForm } from '@/components/LoginForm';
+import { sendMessage, getMemory, checkAuth, clearToken, AuthError } from '@/lib/api';
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -23,6 +24,9 @@ export default function Home() {
   const [showMemory, setShowMemory] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
+  const [authRequired, setAuthRequired] = useState(false);
+  const [authed, setAuthed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -86,9 +90,25 @@ export default function Home() {
   }, [messages]);
 
   useEffect(() => {
+    checkAuth()
+      .then(({ auth_required, authenticated }) => {
+        setAuthRequired(auth_required);
+        setAuthed(auth_required ? authenticated : true);
+      })
+      .catch(() => {
+        // API unreachable — proceed and let chat surface the error
+        setAuthRequired(false);
+        setAuthed(true);
+      })
+      .finally(() => setAuthReady(true));
+  }, []);
+
+  useEffect(() => {
+    if (!authReady) return;
+    if (authRequired && !authed) return;
     // Load initial memory state
     getMemory().then(setMemory).catch(console.error);
-  }, []);
+  }, [authReady, authRequired, authed]);
 
   // Handle browser back button to close panels
   useEffect(() => {
@@ -221,6 +241,12 @@ export default function Home() {
       });
     } catch (error) {
       console.error('Failed to send message:', error);
+      if (error instanceof AuthError) {
+        clearToken();
+        setAuthed(false);
+        setIsStreaming(false);
+        return;
+      }
       setIsStreaming(false);
       setMessages((prev) =>
         prev.map((msg) =>
@@ -232,12 +258,31 @@ export default function Home() {
     }
   };
 
+  const handleLogout = () => {
+    clearToken();
+    setAuthed(false);
+    setMessages([]);
+    setSessionId(null);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
+
+  if (!authReady) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-surface-50">
+        <p className="text-sm text-gray-400">Loading...</p>
+      </div>
+    );
+  }
+
+  if (authRequired && !authed) {
+    return <LoginForm onLoggedIn={() => setAuthed(true)} />;
+  }
 
   return (
     <div className="flex h-screen bg-surface-50">
@@ -266,6 +311,14 @@ export default function Home() {
                   className="px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
                 >
                   Memory
+                </button>
+              )}
+              {authRequired && (
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-red-50 text-gray-700 hover:text-red-600"
+                >
+                  Log out
                 </button>
               )}
             </div>

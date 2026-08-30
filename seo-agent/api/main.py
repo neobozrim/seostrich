@@ -12,7 +12,7 @@ import json
 import asyncio
 import sys
 from typing import List, Optional
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import Depends, FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import StreamingResponse, PlainTextResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
@@ -32,8 +32,10 @@ if _gsc_json:
 
 from src.orchestrator import run_orchestrator
 from src import memory
+from api.auth import router as auth_router, require_auth
 
 app = FastAPI(title="SEO Agent API")
+app.include_router(auth_router)
 
 # CORS middleware — origins come from CORS_ORIGINS (comma-separated)
 _cors_origins = [
@@ -57,7 +59,7 @@ async def health():
 
 
 @app.get("/api/memory")
-async def get_memory():
+async def get_memory(_auth: None = Depends(require_auth)):
     """Get current memory state."""
     return {
         "facts": memory.read_facts().split("\n"),
@@ -68,7 +70,7 @@ async def get_memory():
 
 
 @app.get("/api/sessions")
-async def get_sessions():
+async def get_sessions(_auth: None = Depends(require_auth)):
     """Get list of sessions."""
     from src import session as session_store
     sessions = session_store.list_sessions()
@@ -76,7 +78,7 @@ async def get_sessions():
 
 
 @app.get("/api/memory/file/{filename}")
-async def get_memory_file(filename: str):
+async def get_memory_file(filename: str, _auth: None = Depends(require_auth)):
     """Get content of a specific memory file."""
     # Validate filename to prevent directory traversal
     allowed_files = [
@@ -99,7 +101,7 @@ async def get_memory_file(filename: str):
 
 
 @app.get("/api/memory/improvements")
-async def get_improvements():
+async def get_improvements(_auth: None = Depends(require_auth)):
     """Get list of improvement proposals."""
     improvements_dir = memory._get_memory_dir() / "improvements"
     
@@ -153,6 +155,7 @@ async def chat_stream(
     message: str = Form(...),
     session_id: Optional[str] = Form(None),
     files: List[UploadFile] = File(default=[]),
+    _auth: None = Depends(require_auth),
 ):
     """Stream chat responses from orchestrator."""
 
