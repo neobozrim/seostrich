@@ -65,7 +65,10 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
       new `ai_mentions_keywords` (≤10 terms/call) + `serp_paa` wrappers; deterministic `ai_citability_brief` tool →
       `ai_citability` stage; workflow step 5 makes it part of every strategy run)
       VERIFIED: citability test PASS (assembly, attribution, shares, PAA, stage recording)
-- [ ] WebMCP additions: seo_get_stage_artifact, seo_list_clusters_all, seo_promote_cluster, seo_discard_cluster, seo_propose_cluster, seo_get_ai_citability
+- [x] WebMCP additions: seo_get_stage_artifact, seo_list_clusters_all, seo_promote_cluster, seo_discard_cluster, seo_propose_cluster, seo_get_ai_citability
+      (+ bonus seo_analyze_run: deterministic health/gap analysis — findings + next steps, zero LLM/DFS — so an
+      external agent can inspect what needs fixing; api.ts gained governance/stage REST clients with AbortSignal)
+      VERIFIED: `npx tsc --noEmit` clean; FastAPI TestClient integration test PASS (200/404/422 paths + promote/discard/propose)
 
 ## Verification (I test end-to-end myself)
 - [ ] Unit: parse helper vs malformed samples; budget cap with low test cap

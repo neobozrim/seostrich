@@ -15,7 +15,17 @@
  *
  * Registration is defensive: on browsers without `modelContext` we no-op.
  */
-import { getRuns, getRun, addRunFeedback, restoreDefaultRuns } from './api';
+import {
+  getRuns,
+  getRun,
+  addRunFeedback,
+  restoreDefaultRuns,
+  getRunClusters,
+  getRunStage,
+  promoteRunCluster,
+  discardRunCluster,
+  proposeRunCluster,
+} from './api';
 
 interface ModelContextLike {
   registerTool?: (tool: any, options?: any) => Promise<unknown>;
@@ -34,6 +44,25 @@ async function currentRun() {
   if (!summaries.length) return null;
   return getRun(summaries[0].id);
 }
+
+// Resolve a run by explicit id, else fall back to the most recent run.
+async function resolveRun(runId?: string) {
+  if (runId) {
+    try {
+      return await getRun(runId);
+    } catch {
+      return null;
+    }
+  }
+  return currentRun();
+}
+
+const RUN_ID_PROP = {
+  run_id: {
+    type: 'string',
+    description: 'Optional run id. Defaults to the most recent pipeline run.',
+  },
+};
 
 const READ_ONLY = { readOnlyHint: true };
 const READ_WRITE = { readOnlyHint: false };
@@ -131,7 +160,211 @@ function buildTools() {
         return res;
       },
     },
+    {
+      name: 'seo_get_stage_artifact',
+      title: 'SEO stage artifact',
+      description:
+        'Inspect the artifact of one pipeline stage (intake, seeds, keywords, clusters, pillars, mix, audit, competitors, onpage, ai_citability). Returns the raw artifact so the calling agent can analyze any step.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...RUN_ID_PROP,
+          stage_id: {
+            type: 'string',
+            description:
+              'Stage to inspect: intake|seeds|keywords|clusters|pillars|mix|audit|competitors|onpage|ai_citability',
+          },
+        },
+        required: ['stage_id'],
+      },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string; stage_id: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        try {
+          return await getRunStage(run.id, input.stage_id, options?.signal);
+        } catch {
+          return `Stage '${input.stage_id}' not found in run ${run.id}.`;
+        }
+      },
+    },
+    {
+      name: 'seo_list_clusters_all',
+      title: 'SEO clusters (selected + discarded)',
+      description:
+        'List BOTH the selected keyword clusters and the discarded ones (with discard reasons and full stats) for a run. Use this to see what was dropped before promoting or proposing.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return getRunClusters(run.id, options?.signal);
+      },
+    },
+    {
+      name: 'seo_promote_cluster',
+      title: 'Promote discarded cluster',
+      description:
+        'Promote a previously discarded keyword cluster back into the active selection (reversible governance op).',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...RUN_ID_PROP,
+          cluster_name: { type: 'string', description: 'Name of the discarded cluster to promote.' },
+        },
+        required: ['cluster_name'],
+      },
+      annotations: READ_WRITE,
+      execute: async (input: { run_id?: string; cluster_name: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return promoteRunCluster(run.id, input.cluster_name, options?.signal);
+      },
+    },
+    {
+      name: 'seo_discard_cluster',
+      title: 'Discard selected cluster',
+      description:
+        'Discard a currently selected keyword cluster (moves it to the discarded set, stats preserved, reversible).',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...RUN_ID_PROP,
+          cluster_name: { type: 'string', description: 'Name of the selected cluster to discard.' },
+          reason: { type: 'string', description: 'Why it is being discarded.' },
+        },
+        required: ['cluster_name'],
+      },
+      annotations: READ_WRITE,
+      execute: async (
+        input: { run_id?: string; cluster_name: string; reason?: string },
+        options?: any
+      ) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return discardRunCluster(run.id, input.cluster_name, input.reason, options?.signal);
+      },
+    },
+    {
+      name: 'seo_propose_cluster',
+      title: 'Propose new cluster',
+      description:
+        'Propose a NEW keyword cluster the pipeline missed: a scoped keyword re-seed on one topic (1 DataForSEO call), assembled with real volume/difficulty/intent stats and merged into the run.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...RUN_ID_PROP,
+          topic: { type: 'string', description: 'The topic/head term to re-seed.' },
+        },
+        required: ['topic'],
+      },
+      annotations: READ_WRITE,
+      execute: async (input: { run_id?: string; topic: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return proposeRunCluster(run.id, input.topic, options?.signal);
+      },
+    },
+    {
+      name: 'seo_get_ai_citability',
+      title: 'AI citability brief',
+      description:
+        'Get the AI-citability stage: how AI engines (ChatGPT/Google AI) answer questions around the selected head terms — AI demand, answer share, currently cited sources, top questions and People-also-ask.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        try {
+          return await getRunStage(run.id, 'ai_citability', options?.signal);
+        } catch {
+          return 'No AI-citability stage yet — run ai_citability_brief in the pipeline first.';
+        }
+      },
+    },
+    {
+      name: 'seo_analyze_run',
+      title: 'Analyze pipeline run',
+      description:
+        'Deterministic health/gap analysis of a pipeline run (no LLM): which stages exist, which expected stages are missing, run status issues, and whether cluster validation/selection happened. Returns findings + suggested next steps so the orchestrator (or an external agent) knows what to fix.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string }) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return analyzeRun(run);
+      },
+    },
   ];
+}
+
+// Deterministic run health/gap analysis — no LLM, no DataForSEO.
+function analyzeRun(run: any) {
+  const stageIds = new Set((run.stages || []).map((s: any) => s.id));
+  const findings: string[] = [];
+  const nextSteps: string[] = [];
+
+  if (run.status === 'error') {
+    findings.push('Run ended in an error state.');
+    nextSteps.push('Inspect the failing stage artifact and re-run the failed step.');
+  } else if (run.status === 'stopped') {
+    findings.push('Run was stopped before completion.');
+    nextSteps.push('Resume or re-run the pipeline to complete the remaining stages.');
+  } else if (run.status === 'running') {
+    findings.push('Run is still in progress.');
+  }
+
+  // Core pipeline order expectations
+  const core: Array<[string, string, string]> = [
+    ['seeds', 'No seed keywords extracted.', 'Run extract_seeds.'],
+    ['keywords', 'No keyword discovery stage.', 'Run keyword research (pull_universe / keyword_suggestions).'],
+    ['clusters', 'No clustering stage.', 'Cluster the discovered keywords.'],
+    ['pillars', 'No content pillars yet.', 'Recommend pillars from the selected clusters.'],
+  ];
+  for (const [id, problem, fix] of core) {
+    if (!stageIds.has(id)) {
+      findings.push(problem);
+      nextSteps.push(fix);
+    }
+  }
+
+  // Cluster governance quality checks
+  if (stageIds.has('clusters')) {
+    const clusterStage = run.stages.find((s: any) => s.id === 'clusters');
+    const art = clusterStage?.artifact || {};
+    if (!art.selected) {
+      findings.push('Clusters were never selected/curated (no selected vs discarded split).');
+      nextSteps.push('Run select_clusters to pick the top 3-4 and park the rest with reasons.');
+    } else {
+      const sel = (art.clusters || []).length;
+      const disc = (art.discarded || []).length;
+      findings.push(`Cluster selection made: ${sel} selected, ${disc} discarded.`);
+      if (sel > 5) {
+        findings.push('More than 5 clusters are still selected — the strategy may be unfocused.');
+        nextSteps.push('Consider discarding weaker clusters to focus on 3-4 pillars.');
+      }
+    }
+  }
+
+  // Optional/enrichment stages — informational only
+  const enrichment: Array<[string, string]> = [
+    ['ai_citability', 'AI-citability brief not generated (run ai_citability_brief on the selected head terms).'],
+    ['mix', 'No content calendar yet (offer plan_calendar if the user wants a schedule).'],
+    ['audit', 'No technical audit run (on-demand only).'],
+  ];
+  const missingEnrichment: string[] = [];
+  for (const [id, note] of enrichment) {
+    if (!stageIds.has(id)) missingEnrichment.push(note);
+  }
+
+  return {
+    run_id: run.id,
+    status: run.status,
+    stages_present: Array.from(stageIds),
+    findings,
+    missing_enrichment: missingEnrichment,
+    next_steps: nextSteps,
+  };
 }
 
 let registerPromise: Promise<boolean> | null = null;

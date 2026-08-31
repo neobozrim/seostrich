@@ -202,6 +202,76 @@ export async function restoreDefaultRuns(): Promise<any> {
   return response.json();
 }
 
+// --- Cluster governance + stage inspection ---------------------------------
+
+export async function getRunClusters(runId: string, signal?: AbortSignal): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/clusters`, {
+    headers: authHeaders(),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function getRunStage(
+  runId: string,
+  stageId: string,
+  signal?: AbortSignal
+): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/stages/${stageId}`, {
+    headers: authHeaders(),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function promoteRunCluster(
+  runId: string,
+  clusterName: string,
+  signal?: AbortSignal
+): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/clusters/promote`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cluster_name: clusterName }),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function discardRunCluster(
+  runId: string,
+  clusterName: string,
+  reason?: string,
+  signal?: AbortSignal
+): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/clusters/discard`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cluster_name: clusterName, reason: reason || '' }),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function proposeRunCluster(
+  runId: string,
+  topic: string,
+  signal?: AbortSignal
+): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/clusters/propose`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic }),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
 // --- Memory files (for the consolidated System panel) ----------------------
 
 export async function getMemoryFile(filename: string): Promise<string> {
