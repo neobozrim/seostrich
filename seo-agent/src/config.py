@@ -47,6 +47,10 @@ class Settings(BaseSettings):
     mock_llm: bool = Field(default=False, alias="MOCK_LLM")
     mock_dfs: bool = Field(default=False, alias="MOCK_DFS")
 
+    # Local-only pacing: token-plan queues burst traffic (4+ rapid calls),
+    # so space LLM calls when set. Production leaves it unset (0).
+    llm_min_interval: float = Field(default=0.0, alias="LLM_MIN_INTERVAL_SECONDS")
+
     class Config:
         env_file = str(ENV_FILE) if ENV_FILE.exists() else None
         extra = "ignore"

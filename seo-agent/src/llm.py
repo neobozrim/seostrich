@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import re
+import threading
+import time
 from typing import Any
 
 from openai import OpenAI
@@ -9,6 +11,23 @@ from openai import OpenAI
 from .config import settings
 
 _client: OpenAI | None = None
+
+_pace_lock = threading.Lock()
+_last_call = 0.0
+
+
+def _pace() -> None:
+    """Enforce LLM_MIN_INTERVAL_SECONDS between calls (token-plan queues bursts)."""
+    global _last_call
+    interval = settings.llm_min_interval
+    if interval <= 0:
+        return
+    with _pace_lock:
+        now = time.monotonic()
+        wait = _last_call + interval - now
+        _last_call = now + max(wait, 0.0)
+    if wait > 0:
+        time.sleep(wait)
 
 
 def get_client() -> OpenAI:
@@ -56,6 +75,7 @@ def chat(
             "usage": {"prompt_tokens": 0, "completion_tokens": 0},
         }
 
+    _pace()
     resp = get_client().chat.completions.create(**kwargs)
     choice = resp.choices[0]
     result: dict[str, Any] = {
