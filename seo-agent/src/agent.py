@@ -53,6 +53,7 @@ from .tools.pagination_audit import pagination_audit
 from .tools.validate_clusters import validate_clusters
 from .tools.submit_deliverable import submit_deliverable
 from .tools.select_clusters import select_clusters
+from .tools.ai_citability import ai_citability_brief
 from .tools.cluster_ops import (
     list_clusters_all, promote_cluster, discard_cluster, propose_cluster,
 )
@@ -85,7 +86,7 @@ When starting a new conversation, ask what the user wants to accomplish. Then pl
 - Site-wide analysis (validate_sitemap, check_redirects, internal_link_audit, duplicate_content_scan, hreflang_validator, content_freshness_scan, pagination_audit)
 - Indexing and submission (submit_indexnow, bing_submit_url, gsc_submit_sitemap)
 - Search performance analysis (gsc_performance, gsc_inspect_url, gsc_list_sitemaps, gsc_list_sites)
-- AI visibility tracking (ai_mentions, geo_scorer)
+- AI visibility tracking (ai_mentions, ai_citability_brief, geo_scorer)
 - Web search for research (web_search)
 
 **Tool fallbacks:** execute_with_fallback is available for non-data tools only (e.g., technical_seo_audit → composable sub-audits). DataForSEO tools have NO fallbacks — never substitute web_search for keyword/SERP data. If a DataForSEO call fails, retry it ONCE (transient errors only); if it fails again or you hit a budget error, stop calling DataForSEO, report what you have so far, and ask the user how to proceed.
@@ -108,21 +109,24 @@ When starting a new conversation, ask what the user wants to accomplish. Then pl
 2. **MANDATORY: validate_clusters** — self-critique the clusters for coherence. If verdict is "needs_revision", revise and re-validate. If "rejected", re-cluster. NEVER proceed without "approved" verdict.
 3. score_clusters
 4. **select_clusters** — pick the top 3-4 clusters to pursue; every discarded cluster gets a concrete reason. Discarded clusters keep their stats and can be promoted back.
-5. recommend_pillars (from the SELECTED clusters only) → plan_calendar ONLY if the user confirms they want a calendar
+5. **ai_citability_brief** on the selected head terms — the headline stage: AI demand, answer share, who AI engines currently cite, and the questions to answer first. Cheap and deterministic — run it as part of every strategy run.
+6. recommend_pillars (from the SELECTED clusters only) → plan_calendar ONLY if the user confirms they want a calendar
 
 Cluster governance (user can adjust after the run — same session):
 - list_clusters_all: show selected + discarded with reasons
 - promote_cluster / discard_cluster: move clusters between the two sets (reversible)
 - propose_cluster: new cluster via scoped re-seed on one topic
 
+**Optional steps — confirm, don't assume:** at the end of a strategy run, offer in one short line: (a) on-page recommendations for a real page, (b) the content calendar. Run them ONLY if the user says yes in this chat. Technical SEO audits run only when the user explicitly asks — they are deterministic and their results stay queryable in the Run view.
+
 Bad clusters produce bad pillars produce bad content. validate_clusters is the gate.
 
 **Example workflows (not prescriptive — adapt to user's actual goal):**
-- Full SEO strategy: discover business → extract seeds → pull universe → cluster → VALIDATE clusters → score → recommend pillars → plan calendar → draft articles → lint drafts
+- Full SEO strategy: discover business → extract seeds → pull universe → cluster (over-generate) → VALIDATE clusters → score → SELECT top 3-4 → AI-citability brief on selected head terms → recommend pillars → (if confirmed) plan calendar → draft articles → lint drafts
 - Quick content audit: audit site → identify issues → recommend fixes
 - Indexing new content: submit URLs to IndexNow → verify in GSC
 - Performance analysis: check GSC performance → identify opportunities → suggest optimizations
-- AI visibility check: check ai_mentions → analyze geo_scorer → recommend optimizations for AI citations
+- AI visibility check: ai_citability_brief on key head terms (demand, answer share, cited sources, PAA) → recommend answer-first content; domain-level tracking via ai_mentions
 
 You have memory tools to read and record information:
 - read_memory: Load facts/learnings/decisions/tasks from the blackboard
@@ -275,6 +279,22 @@ TOOL_DEFINITIONS = [
                     "topic": {"type": "string"},
                 },
                 "required": ["topic"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "ai_citability_brief",
+            "description": "Headline AI-citability stage: how AI engines (ChatGPT/Google AI) answer questions around the SELECTED head terms — AI demand, answer share, currently cited sources, top questions + People-also-ask. Deterministic (no LLM), 1 mentions call + 1 SERP call per head term. Run after select_clusters on the selected head terms.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "head_terms": {"type": "array", "items": {"type": "string"}, "description": "up to 6 head terms from the selected clusters"},
+                    "location_code": {"type": "integer", "default": 2840},
+                    "language_code": {"type": "string", "default": "en"},
+                },
+                "required": ["head_terms"],
             },
         },
     },
@@ -1095,6 +1115,7 @@ TOOL_CALLABLES = {
     "validate_clusters": validate_clusters,
     "submit_deliverable": submit_deliverable,
     "select_clusters": select_clusters,
+    "ai_citability_brief": ai_citability_brief,
     "list_clusters_all": list_clusters_all,
     "promote_cluster": promote_cluster,
     "discard_cluster": discard_cluster,
@@ -1129,7 +1150,7 @@ TOOL_CATEGORIES = {
     "research": [
         "extract_seeds", "pull_universe", "cluster_keywords", "validate_clusters",
         "score_clusters", "select_clusters", "list_clusters_all", "promote_cluster",
-        "discard_cluster", "propose_cluster",
+        "discard_cluster", "propose_cluster", "ai_citability_brief",
         "recommend_pillars", "serp_organic", "serp_ai_mode",
         "keyword_difficulty", "historical_search_volume", "competitors_domain",
         "domain_intersection", "keywords_for_site", "web_search",

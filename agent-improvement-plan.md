@@ -54,8 +54,13 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
       + `/api/runs/{id}/stages/{stage}`; propose = 1 scoped keyword_suggestions call budget-keyed to the run via `use_run`)
       VERIFIED: governance test PASS (split, promote/discard round-trip, propose stats + budget keying, dup + error paths); all prior suites re-PASS
 - [ ] Inspector enrichment: per-keyword vol/difficulty/intent/CPC in RunView keywords + cluster members; discarded section
-- [ ] Optional steps: after core run, agent offers on-page + calendar; "yes" continues in same session (state in session_data); technical audit on-demand only (deterministic tools, artifact queryable)
-- [ ] AI-citability stage (headline): verify DataForSEO AI-optimization docs first; per-keyword search_mentions (AI demand/has-answers/open-share/current cited sources) on selected head terms → PAA free from SERP-advanced → answer-first brief artifact
+- [x] Optional steps: after core run, agent offers on-page + calendar; "yes" continues in same session (state in session_data); technical audit on-demand only (deterministic tools, artifact queryable)
+      (system-prompt "Optional steps — confirm, don't assume" + calendar gated on confirmation)
+- [x] AI-citability stage (headline): verify DataForSEO AI-optimization docs first; per-keyword search_mentions (AI demand/has-answers/open-share/current cited sources) on selected head terms → PAA free from SERP-advanced → answer-first brief artifact
+      (docs verified: target[] accepts keyword entities, items carry question/answer/sources/ai_search_volume;
+      new `ai_mentions_keywords` (≤10 terms/call) + `serp_paa` wrappers; deterministic `ai_citability_brief` tool →
+      `ai_citability` stage; workflow step 5 makes it part of every strategy run)
+      VERIFIED: citability test PASS (assembly, attribution, shares, PAA, stage recording)
 - [ ] WebMCP additions: seo_get_stage_artifact, seo_list_clusters_all, seo_promote_cluster, seo_discard_cluster, seo_propose_cluster, seo_get_ai_citability
 
 ## Verification (I test end-to-end myself)

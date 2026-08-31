@@ -408,6 +408,96 @@ def ai_mentions(domain: str, limit: int = 20) -> list[dict]:
     return _run(_inner())
 
 
+def ai_mentions_keywords(
+    keywords: list[str],
+    location_code: int = 2840,
+    language_code: str = "en",
+    limit: int = 100,
+) -> list[dict]:
+    """AI-engine answers that mention the given KEYWORDS (ChatGPT + Google AI).
+
+    One call covers up to 10 head terms. Each returned item is one
+    question an AI engine answered, with its answer, cited sources and
+    AI search volume — the raw material for the AI-citability stage.
+    """
+    clean = [k.strip() for k in (keywords or []) if isinstance(k, str) and k.strip()][:10]
+    if not clean:
+        return []
+
+    async def _inner():
+        data = await _post("/v3/ai_optimization/llm_mentions/search_mentions/live", [
+            {
+                "target": [
+                    {
+                        "keyword": kw,
+                        "search_filter": "include",
+                        "search_scope": ["any"],
+                        "match_type": "word_match",
+                    }
+                    for kw in clean
+                ],
+                "location_code": location_code,
+                "language_code": language_code,
+                "limit": limit,
+            }
+        ])
+        tasks = data.get("tasks", [])
+        if not tasks or not tasks[0].get("result"):
+            return []
+        items = tasks[0]["result"][0].get("items", [])
+        results = []
+        for item in items:
+            sources = []
+            for s in (item.get("sources") or [])[:5]:
+                sources.append({
+                    "domain": s.get("domain", ""),
+                    "url": s.get("url", ""),
+                    "title": s.get("title", ""),
+                })
+            results.append({
+                "platform": item.get("platform", ""),
+                "model_name": item.get("model_name", ""),
+                "question": item.get("question", ""),
+                "answer_snippet": (item.get("answer") or "")[:300],
+                "has_answer": bool((item.get("answer") or "").strip()),
+                "sources": sources,
+                "ai_search_volume": item.get("ai_search_volume") or 0,
+            })
+        return results
+    return _run(_inner())
+
+
+def serp_paa(keyword: str, location_code: int = 2840, language_code: str = "en") -> list[dict]:
+    """People-also-ask questions for a keyword, from SERP advanced (free add-on to the SERP call)."""
+    async def _inner():
+        data = await _post("/v3/serp/google/organic/live/advanced", [
+            {
+                "keyword": keyword,
+                "location_code": location_code,
+                "language_code": language_code,
+                "depth": 20,
+            }
+        ])
+        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        questions = []
+        for item in items:
+            if item.get("type") != "people_also_ask":
+                continue
+            for sub in item.get("items", []) or []:
+                title = sub.get("title") or ""
+                if title:
+                    questions.append({
+                        "question": title,
+                        "domain": sub.get("domain", ""),
+                        "url": sub.get("url", ""),
+                    })
+            # some payloads carry the question at top level
+            if not item.get("items") and item.get("title"):
+                questions.append({"question": item.get("title", ""), "domain": item.get("domain", ""), "url": item.get("url", "")})
+        return questions[:12]
+    return _run(_inner())
+
+
 _INTENT_PATTERNS = {
     "transactional": ["buy", "price", "discount", "deal", "coupon", "order", "cheap"],
     "commercial": ["best", "top", "review", "compare", "vs", "alternative", "tool", "software", "platform"],

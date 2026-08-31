@@ -312,6 +312,12 @@ def record_tool(tool_name: str, args: dict, result, success: bool) -> None:
         stage = _upsert_stage(run, "competitors")
         sources = stage["artifact"].setdefault("sources", {})
         sources[tool_name] = _trim(result)
+    elif tool_name == "ai_citability_brief":
+        brief = result.get("brief") if isinstance(result, dict) else None
+        if not brief:
+            return
+        stage = _upsert_stage(run, "ai_citability")
+        stage["artifact"] = _trim(brief)
     else:
         return
 
