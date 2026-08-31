@@ -1,0 +1,209 @@
+"""Deterministic keyword-strategy pipeline (enforced process graph).
+
+The node order and the validation gate live in CODE so the agent cannot
+skip research steps or invent numbers when executing strategy work: the
+LLM fills the judgment nodes (seeds, clustering, validation, selection,
+pillars) while all market data flows from DataForSEO tools. Every node
+logs live activity and records its stage artifact, so each step's output
+is inspectable in the chat, the Run view and via WebMCP as it happens.
+"""
+from __future__ import annotations
+
+from .. import pipeline_recorder as rec
+from .ai_citability import ai_citability_brief
+from .cluster_keywords import cluster_keywords
+from .extract_seeds import extract_seeds
+from .pull_universe import pull_universe
+from .recommend_pillars import recommend_pillars
+from .score_clusters import score_clusters
+from .select_clusters import select_clusters
+from .validate_clusters import validate_clusters
+
+
+def _norm_clusters(raw) -> list[dict]:
+    """Normalize cluster_keywords LLM output to [{name, keywords: [str], ...}]."""
+    if isinstance(raw, dict):
+        raw = raw.get("clusters", raw)
+        if isinstance(raw, dict):
+            return [
+                {
+                    "cluster_id": i,
+                    "name": str(name),
+                    "keywords": [k for k in (kws if isinstance(kws, list) else []) if isinstance(k, str)],
+                }
+                for i, (name, kws) in enumerate(raw.items(), 1)
+            ]
+    if isinstance(raw, list):
+        out = []
+        for i, c in enumerate(raw, 1):
+            if not isinstance(c, dict):
+                continue
+            name = c.get("cluster_name") or c.get("name") or c.get("theme") or f"Cluster {i}"
+            kws = c.get("keywords") or []
+            if kws and isinstance(kws[0], dict):
+                kws = [k.get("keyword") for k in kws if isinstance(k, dict) and k.get("keyword")]
+            entry = dict(c)
+            entry.update({
+                "cluster_id": c.get("cluster_id", i),
+                "name": str(name),
+                "keywords": [k for k in kws if isinstance(k, str)],
+            })
+            out.append(entry)
+        return out
+    return []
+
+
+def _head_term(cluster: dict) -> str:
+    head = cluster.get("head_term")
+    if isinstance(head, str) and head.strip():
+        return head.strip()
+    return cluster.get("name", "").strip()
+
+
+def run_keyword_strategy(
+    business_description: str,
+    location_code: int = 2840,
+    language_code: str = "en",
+    site_description: str = "",
+    competitor_urls: list[str] | None = None,
+    max_select: int = 4,
+) -> dict:
+    """Run the enforced strategy graph end-to-end inside the active run.
+
+    Nodes: seeds -> keyword universe (DataForSEO) -> over-cluster (10) ->
+    validate gate (<=2 attempts) -> score -> select top N -> AI-citability
+    brief on selected head terms -> pillars from the selection only.
+    """
+    if not rec.active_run_id():
+        return {"success": False, "error": "run_keyword_strategy must run inside a pipeline run"}
+    if not (business_description or "").strip():
+        return {"success": False, "error": "business_description is required"}
+
+    competitors = competitor_urls or []
+    steps: list[str] = []
+
+    rec.log_activity("step", detail="node: extract seeds")
+    seeds = extract_seeds(business_description, site_description, competitors)
+    rec.record_tool("extract_seeds", {"business_description": business_description}, seeds, True)
+    steps.append("seeds")
+
+    rec.log_activity("step", detail="node: keyword universe via DataForSEO")
+    universe = pull_universe(
+        seeds, location_code=location_code, language_code=language_code,
+        competitor_urls=competitors,
+    )
+    keywords = universe.get("keywords") or []
+    rec.record_tool(
+        "pull_universe",
+        {"location_code": location_code, "language_code": language_code},
+        universe, True,
+    )
+    if not keywords:
+        return {
+            "success": False,
+            "error": "keyword research returned no keywords (DataForSEO empty or budget exhausted)",
+            "steps": steps,
+        }
+    steps.append("keywords")
+
+    rec.log_activity("step", detail=f"node: cluster {len(keywords)} keywords (over-generate 10)")
+    clustered = cluster_keywords(
+        keywords, max_clusters=10,
+        location_code=location_code, language_code=language_code,
+    )
+    clusters = _norm_clusters(clustered.get("clusters"))
+    if not clustered.get("success") or not clusters:
+        return {"success": False, "error": clustered.get("error") or "clustering failed", "steps": steps}
+    rec.record_tool(
+        "cluster_keywords",
+        {"keywords": keywords, "location_code": location_code, "language_code": language_code},
+        {"clusters": clusters}, True,
+    )
+    steps.append("clusters")
+
+    # Validation gate: approve, or re-cluster once on needs_revision (bounded).
+    verdict = "rejected"
+    validation: dict = {}
+    for attempt in (1, 2):
+        rec.log_activity("step", detail=f"node: validate clusters (attempt {attempt})")
+        validation = validate_clusters(
+            {c["name"]: c["keywords"] for c in clusters},
+            seeds=seeds, domain_description=business_description,
+        )
+        verdict = str(validation.get("verdict") or "rejected")
+        if verdict in ("approved", "rejected"):
+            break
+        rec.log_activity("step", detail="gate: needs_revision -> re-clustering")
+        reclustered = cluster_keywords(
+            keywords, max_clusters=max(6, len(clusters) - 2),
+            location_code=location_code, language_code=language_code,
+        )
+        clusters = _norm_clusters(reclustered.get("clusters")) or clusters
+        rec.record_tool(
+            "cluster_keywords",
+            {"keywords": keywords, "location_code": location_code, "language_code": language_code},
+            {"clusters": clusters}, True,
+        )
+
+    rec.log_activity("step", detail="node: score clusters")
+    scored = score_clusters({"clusters": clusters}) or {}
+    rec.record_tool("score_clusters", {}, scored, True)
+
+    rec.log_activity("step", detail=f"node: select top {max_select} clusters")
+    selection_res = select_clusters(scored or {"clusters": clusters}, max_select=max_select)
+    if not selection_res.get("success") or not selection_res.get("selection", {}).get("selected"):
+        names = [c["name"] for c in clusters]
+        selection_res = {
+            "success": True,
+            "selection": {
+                "selected": names[:max_select],
+                "discarded": [
+                    {"cluster_name": n, "reason": "not selected (deterministic fallback)"}
+                    for n in names[max_select:]
+                ],
+            },
+        }
+    rec.record_tool("select_clusters", {}, selection_res, True)
+    steps.append("selection")
+
+    selected_names = {str(n).lower() for n in selection_res["selection"]["selected"]}
+    selected = [c for c in clusters if c["name"].lower() in selected_names] or clusters[:max_select]
+    head_terms = [_head_term(c) for c in selected if _head_term(c)][:6]
+
+    brief: dict = {}
+    if head_terms:
+        rec.log_activity("step", detail=f"node: AI-citability brief on {len(head_terms)} head terms")
+        brief = ai_citability_brief(head_terms, location_code=location_code, language_code=language_code)
+        if brief.get("brief"):
+            rec.record_tool("ai_citability_brief", {}, brief, True)
+            steps.append("ai_citability")
+
+    rec.log_activity("step", detail="node: pillars from selected clusters only")
+    scored_list = scored.get("scored_clusters") or scored.get("clusters") or []
+    if isinstance(scored_list, list):
+        sel_scored = [
+            s for s in scored_list
+            if isinstance(s, dict)
+            and str(s.get("cluster_name") or s.get("name") or "").lower() in selected_names
+        ]
+        pillars_input = {"scored_clusters": sel_scored or scored_list}
+    else:
+        pillars_input = scored or {"clusters": selected}
+    pillars = recommend_pillars(pillars_input) or {}
+    rec.record_tool("recommend_pillars", {}, pillars, True)
+    steps.append("pillars")
+
+    rec.log_activity("step", detail="graph complete")
+    return {
+        "success": True,
+        "market": rec.market_label(location_code, language_code),
+        "keyword_count": len(keywords),
+        "cluster_count": len(clusters),
+        "validation_verdict": verdict,
+        "validation_issues": validation.get("global_issues", []),
+        "selected_clusters": [c["name"] for c in selected],
+        "discarded": selection_res["selection"].get("discarded", []),
+        "head_terms": head_terms,
+        "pillars": pillars,
+        "steps": steps,
+    }

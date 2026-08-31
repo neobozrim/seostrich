@@ -213,6 +213,19 @@ export async function getRunClusters(runId: string, signal?: AbortSignal): Promi
   return response.json();
 }
 
+export async function getRunActivity(
+  runId: string,
+  cursor = 0,
+  signal?: AbortSignal
+): Promise<{ events: any[]; cursor: number }> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/activity?cursor=${cursor}`, {
+    headers: authHeaders(),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
 export async function getRunStage(
   runId: string,
   stageId: string,

@@ -485,9 +485,13 @@ Be concise. Each step should be <10 words.
                 worker.start()
 
                 seen_stages = set(before_stages)
+                act_cursor = 0
                 try:
                     while True:
                         worker.join(timeout=0.5)
+                        activity, act_cursor = pipeline_recorder.new_activity(run_id, act_cursor)
+                        for ev in activity:
+                            yield {"type": "activity", "run_id": run_id, **ev}
                         for stage in pipeline_recorder.new_stages(run_id, seen_stages):
                             seen_stages.add(stage["stage_id"])
                             yield {"type": "stage", "run_id": run_id, **stage}
@@ -505,6 +509,11 @@ Be concise. Each step should be <10 words.
                             run_id, str(worker_outcome.get("error") or "stream closed")
                         )
                     raise
+
+                # Drain anything the worker logged in its final half-second
+                activity, act_cursor = pipeline_recorder.new_activity(run_id, act_cursor)
+                for ev in activity:
+                    yield {"type": "activity", "run_id": run_id, **ev}
 
                 if "error" in worker_outcome:
                     err = worker_outcome["error"]

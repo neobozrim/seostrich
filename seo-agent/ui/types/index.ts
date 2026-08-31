@@ -7,6 +7,15 @@ export interface Message {
   attachments?: FileAttachment[];
   statusText?: string;
   stages?: StageCard[];
+  activity?: ActivityEvent[];
+}
+
+export interface ActivityEvent {
+  ts: string;
+  kind: string;
+  tool?: string;
+  success?: boolean | null;
+  detail?: string;
 }
 
 export interface StageCard {

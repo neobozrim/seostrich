@@ -2,7 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Plus, X, Settings2, Workflow, Square } from 'lucide-react';
-import { Message, MemoryState, ToolCall } from '@/types';
+import { Message, MemoryState, ToolCall, ActivityEvent } from '@/types';
+import { activityLine } from '@/lib/activity';
 import { ChatMessage } from '@/components/ChatMessage';
 import { SystemPanel } from '@/components/SystemPanel';
 import { RunView } from '@/components/RunView';
@@ -270,6 +271,25 @@ export default function Home() {
                       ...(msg.stages || []),
                       { run_id: chunk.run_id, stage_id: chunk.stage_id, label: chunk.label },
                     ],
+                  }
+                : msg
+            )
+          );
+        } else if (chunk.type === 'activity') {
+          const ev: ActivityEvent = {
+            ts: chunk.ts,
+            kind: chunk.kind,
+            tool: chunk.tool,
+            success: chunk.success,
+            detail: chunk.detail,
+          };
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantMessage.id
+                ? {
+                    ...msg,
+                    activity: [...(msg.activity || []), ev],
+                    statusText: activityLine(ev),
                   }
                 : msg
             )

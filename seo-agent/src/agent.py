@@ -57,6 +57,7 @@ from .tools.ai_citability import ai_citability_brief
 from .tools.cluster_ops import (
     list_clusters_all, promote_cluster, discard_cluster, propose_cluster,
 )
+from .tools.strategy_pipeline import run_keyword_strategy
 
 # --- Exposed DataForSEO functions (previously internal only) ---
 from .tools.dataforseo import (
@@ -104,13 +105,11 @@ When starting a new conversation, ask what the user wants to accomplish. Then pl
 - Don't stop after one tool call unless the task is truly complete. If you say "let me dig deeper", actually call the next tool.
 - Produce a **structured final report** that synthesizes findings from all tools called.
 
-**CRITICAL — Keyword Research Workflow (mandatory validation + governance steps):**
-1. extract_seeds → pull_universe → cluster_keywords with max_clusters=10 — OVER-GENERATE on purpose
-2. **MANDATORY: validate_clusters** — self-critique the clusters for coherence. If verdict is "needs_revision", revise and re-validate. If "rejected", re-cluster. NEVER proceed without "approved" verdict.
-3. score_clusters
-4. **select_clusters** — pick the top 3-4 clusters to pursue; every discarded cluster gets a concrete reason. Discarded clusters keep their stats and can be promoted back.
-5. **ai_citability_brief** on the selected head terms — the headline stage: AI demand, answer share, who AI engines currently cite, and the questions to answer first. Cheap and deterministic — run it as part of every strategy run.
-6. recommend_pillars (from the SELECTED clusters only) → plan_calendar ONLY if the user confirms they want a calendar
+**CRITICAL — Keyword/strategy requests run the ENFORCED pipeline:**
+For ANY request for keyword strategy, clusters, pillars or a content plan you MUST call `run_keyword_strategy` FIRST. It executes the fixed graph in code — seeds → DataForSEO keyword universe → over-cluster (10) → validate gate (re-clusters once on "needs_revision") → score → select top 3-4 → AI-citability brief on the selected head terms → pillars from the selection only. Every node records its output as an inspectable stage.
+- "Keep it short / quick / compact" limits the LENGTH of your final answer — it NEVER skips or shortens the pipeline.
+- Never quote volumes, difficulties, intents or CPCs that did not come from tool output. Invented numbers are a hard failure.
+- If the pipeline returns an error (e.g. DataForSEO budget exhausted), report exactly what it produced so far and ask how to proceed.
 
 Cluster governance (user can adjust after the run — same session):
 - list_clusters_all: show selected + discarded with reasons
@@ -122,7 +121,7 @@ Cluster governance (user can adjust after the run — same session):
 Bad clusters produce bad pillars produce bad content. validate_clusters is the gate.
 
 **Example workflows (not prescriptive — adapt to user's actual goal):**
-- Full SEO strategy: discover business → extract seeds → pull universe → cluster (over-generate) → VALIDATE clusters → score → SELECT top 3-4 → AI-citability brief on selected head terms → recommend pillars → (if confirmed) plan calendar → draft articles → lint drafts
+- Full SEO strategy: run_keyword_strategy (enforced graph: seeds → research → cluster → validate → score → select → AI-citability → pillars) → governance adjustments if the user asks → (if confirmed) plan calendar → draft articles → lint drafts
 - Quick content audit: audit site → identify issues → recommend fixes
 - Indexing new content: submit URLs to IndexNow → verify in GSC
 - Performance analysis: check GSC performance → identify opportunities → suggest optimizations
@@ -228,6 +227,25 @@ TOOL_DEFINITIONS = [
                     "max_select": {"type": "integer", "default": 4},
                 },
                 "required": ["scored_clusters"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "run_keyword_strategy",
+            "description": "Enforced end-to-end strategy graph: seeds -> DataForSEO keyword universe -> over-cluster (10) -> validate gate -> score -> select top 3-4 -> AI-citability brief on selected head terms -> pillars. MANDATORY for any keyword/strategy/cluster/pillar request — the step order and gates live in code, and every step's output is recorded as an inspectable stage. 'Keep it short' limits your final answer length, never the pipeline.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "business_description": {"type": "string", "description": "What the business/site is and does"},
+                    "location_code": {"type": "integer", "default": 2840, "description": "Google Ads location code of the target market (2840 US, 2826 UK, 2100 BG)"},
+                    "language_code": {"type": "string", "default": "en"},
+                    "site_description": {"type": "string", "default": ""},
+                    "competitor_urls": {"type": "array", "items": {"type": "string"}},
+                    "max_select": {"type": "integer", "default": 4},
+                },
+                "required": ["business_description"],
             },
         },
     },
@@ -1116,6 +1134,7 @@ TOOL_CALLABLES = {
     "submit_deliverable": submit_deliverable,
     "select_clusters": select_clusters,
     "ai_citability_brief": ai_citability_brief,
+    "run_keyword_strategy": run_keyword_strategy,
     "list_clusters_all": list_clusters_all,
     "promote_cluster": promote_cluster,
     "discard_cluster": discard_cluster,
@@ -1148,9 +1167,9 @@ TOOL_CATEGORIES = {
         "content_quality_assessment",
     ],
     "research": [
-        "extract_seeds", "pull_universe", "cluster_keywords", "validate_clusters",
-        "score_clusters", "select_clusters", "list_clusters_all", "promote_cluster",
-        "discard_cluster", "propose_cluster", "ai_citability_brief",
+        "run_keyword_strategy", "extract_seeds", "pull_universe", "cluster_keywords",
+        "validate_clusters", "score_clusters", "select_clusters", "list_clusters_all",
+        "promote_cluster", "discard_cluster", "propose_cluster", "ai_citability_brief",
         "recommend_pillars", "serp_organic", "serp_ai_mode",
         "keyword_difficulty", "historical_search_volume", "competitors_domain",
         "domain_intersection", "keywords_for_site", "web_search",
@@ -1277,6 +1296,7 @@ def run_agent(
         if stop_check is not None:
             stop_check()
 
+        pipeline_recorder.log_activity("llm_round", detail=f"round {round_num + 1}")
         resp = llm.chat(messages, system=system, tools=tools_for_session, temperature=0.3)
 
         content = resp.get("content", "")
@@ -1288,6 +1308,7 @@ def run_agent(
             print(f"\n[Agent]: {content[:200]}...")
 
         if not tool_calls:
+            pipeline_recorder.log_activity("answer")
             break
 
         # Execute tool calls in parallel if multiple
@@ -1337,6 +1358,9 @@ def run_agent(
                         "success": False,
                     }
             
+            for tc in tool_calls:
+                pipeline_recorder.log_activity("tool_start", tool=tc["name"])
+
             # Execute all tools in parallel
             with ThreadPoolExecutor(max_workers=min(len(tool_calls), 8)) as executor:
                 futures = {executor.submit(execute_tool, tc): tc for tc in tool_calls}
@@ -1388,6 +1412,7 @@ def run_agent(
             tool_args = tc["arguments"]
 
             print(f"\n[Tool call]: {tool_name}({tool_args[:100] if isinstance(tool_args, str) else '...'}...)")
+            pipeline_recorder.log_activity("tool_start", tool=tool_name)
 
             parsed_args, parse_error = llm.safe_parse_tool_args(tool_args)
             if parse_error is not None:

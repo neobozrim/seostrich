@@ -190,6 +190,17 @@ async def get_run_clusters(run_id: str, _auth: None = Depends(require_auth)):
     return data
 
 
+@app.get("/api/runs/{run_id}/activity")
+async def get_run_activity(run_id: str, cursor: int = 0, _auth: None = Depends(require_auth)):
+    """Live activity feed (LLM rounds, graph nodes, tool starts/ends) for a run."""
+    if runs.get_run(run_id) is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    from src import pipeline_recorder
+
+    events, next_cursor = pipeline_recorder.new_activity(run_id, cursor)
+    return {"events": events, "cursor": next_cursor}
+
+
 @app.get("/api/runs/{run_id}/stages/{stage_id}")
 async def get_run_stage(run_id: str, stage_id: str, _auth: None = Depends(require_auth)):
     """One stage artifact of a run (inspectable by the UI and external agents)."""

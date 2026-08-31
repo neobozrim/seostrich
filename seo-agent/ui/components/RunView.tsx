@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   X,
   ChevronDown,
@@ -13,8 +13,9 @@ import {
   Loader2,
   RefreshCw,
 } from 'lucide-react';
-import { Run, RunStage, RunFeedback, RunSummary } from '@/types';
-import { getRuns, getRun, addRunFeedback, getUsername, AuthError } from '@/lib/api';
+import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent } from '@/types';
+import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, AuthError } from '@/lib/api';
+import { activityLabel } from '@/lib/activity';
 
 function fmtVol(n: number): string {
   return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
@@ -708,6 +709,43 @@ export function RunView({ tasks, onClose }: RunViewProps) {
     return () => clearInterval(t);
   }, [run?.id, run?.status]);
 
+  // Live activity feed (graph nodes, tool starts/ends) — cursor-based polling
+  const [activity, setActivity] = useState<ActivityEvent[]>([]);
+  const actCursor = useRef(0);
+
+  useEffect(() => {
+    setActivity([]);
+    actCursor.current = 0;
+  }, [run?.id]);
+
+  useEffect(() => {
+    if (!run || run.status !== 'running') return;
+    const t = setInterval(async () => {
+      try {
+        const res = await getRunActivity(run.id, actCursor.current);
+        actCursor.current = res.cursor;
+        if (res.events.length) setActivity((prev) => [...prev, ...res.events].slice(-60));
+      } catch {
+        /* transient poll errors — keep last good feed */
+      }
+    }, 1200);
+    return () => clearInterval(t);
+  }, [run?.id, run?.status]);
+
+  // One final drain when the run leaves "running" so the tail isn't lost
+  useEffect(() => {
+    if (!run || run.status === 'running') return;
+    (async () => {
+      try {
+        const res = await getRunActivity(run.id, actCursor.current);
+        actCursor.current = res.cursor;
+        if (res.events.length) setActivity((prev) => [...prev, ...res.events].slice(-60));
+      } catch {
+        /* ignore */
+      }
+    })();
+  }, [run?.id, run?.status]);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -828,6 +866,23 @@ export function RunView({ tasks, onClose }: RunViewProps) {
                       <span className="text-primary-400">▸</span>
                       <span className="truncate">{t}</span>
                     </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Live activity — what the agent is doing right now */}
+            {activity.length > 0 && (
+              <div className="mb-8 bg-white border border-surface-300 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-sm font-semibold text-gray-800">Live activity</h3>
+                  {run.status === 'running' && (
+                    <Loader2 className="w-3 h-3 animate-spin text-gray-400" />
+                  )}
+                </div>
+                <ul className="space-y-0.5 font-mono text-[11px] text-gray-500">
+                  {activity.slice(-10).map((ev, i) => (
+                    <li key={`${ev.ts}-${i}`}>{activityLabel(ev)}</li>
                   ))}
                 </ul>
               </div>

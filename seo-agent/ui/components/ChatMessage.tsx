@@ -4,6 +4,7 @@ import React from 'react';
 import { Message, ToolCall } from '@/types';
 import ReactMarkdown from 'react-markdown';
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { activityLabel } from '@/lib/activity';
 
 interface ChatMessageProps {
   message: Message;
@@ -42,6 +43,15 @@ export function ChatMessage({ message, onViewRun }: ChatMessageProps) {
             <div className={`flex items-center gap-1 text-xs mb-1 ${isUser ? 'opacity-80' : 'text-gray-600'}`}>
               <Loader2 className="w-3 h-3 animate-spin" />
               <span>{message.statusText}</span>
+            </div>
+          )}
+
+          {/* Live activity feed — what the agent is doing between stages */}
+          {!isUser && message.activity && message.activity.length > 0 && (
+            <div className="text-[11px] leading-5 mb-1 text-gray-500 font-mono space-y-0.5">
+              {message.activity.slice(-6).map((ev, i) => (
+                <div key={i}>{activityLabel(ev)}</div>
+              ))}
             </div>
           )}
 

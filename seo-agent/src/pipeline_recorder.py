@@ -13,6 +13,7 @@ flow through the tool arguments (volume, difficulty, intent) plus the market
 from __future__ import annotations
 
 import contextvars
+import threading
 from contextlib import contextmanager
 from datetime import datetime, timezone
 
@@ -21,6 +22,44 @@ from . import runs
 _active_run_id: contextvars.ContextVar[str | None] = contextvars.ContextVar(
     "active_run_id", default=None
 )
+
+# Live activity feed per run (LLM rounds, tool starts/ends) — in-memory only,
+# drained by the orchestrator stream and the /activity REST endpoint so the
+# UI is never blind between stage completions.
+_ACTIVITY_LOCK = threading.Lock()
+_ACTIVITY: dict[str, list[dict]] = {}
+_ACTIVITY_MAX = 500
+
+
+def log_activity(
+    kind: str,
+    tool: str | None = None,
+    success: bool | None = None,
+    detail: str = "",
+) -> None:
+    """Append a live activity event to the active run (no-op outside a run)."""
+    run_id = _active_run_id.get()
+    if not run_id:
+        return
+    event = {
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "kind": kind,
+        "tool": tool,
+        "success": success,
+        "detail": (detail or "")[:300],
+    }
+    with _ACTIVITY_LOCK:
+        events = _ACTIVITY.setdefault(run_id, [])
+        events.append(event)
+        if len(events) > _ACTIVITY_MAX:
+            del events[: len(events) - _ACTIVITY_MAX]
+
+
+def new_activity(run_id: str, cursor: int) -> tuple[list[dict], int]:
+    """Activity events recorded after `cursor`, plus the next cursor."""
+    with _ACTIVITY_LOCK:
+        events = list(_ACTIVITY.get(run_id, [])[cursor:])
+    return events, cursor + len(events)
 
 STAGE_LABELS = {
     "intake": "Intake",
@@ -42,7 +81,7 @@ MARKET_LABELS = {
     2704: "ES", 2380: "IT", 2616: "PL", 2642: "RO", 2300: "GR",
 }
 
-KEYWORD_TOOLS = {"keyword_suggestions", "related_keywords", "keywords_for_site", "keyword_overview"}
+KEYWORD_TOOLS = {"keyword_suggestions", "related_keywords", "keywords_for_site", "keyword_overview", "pull_universe"}
 
 AUDIT_TOOLS = {
     "technical_seo_audit", "audit_crawlability", "audit_meta_tags",
@@ -289,6 +328,7 @@ def _record_scores(run: dict, result: dict) -> None:
 
 def record_tool(tool_name: str, args: dict, result, success: bool) -> None:
     """Record a finished tool call as a pipeline stage (no-op outside a run)."""
+    log_activity("tool_end", tool=tool_name, success=success)
     run_id = _active_run_id.get()
     if not run_id or not success or result is None:
         return
