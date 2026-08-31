@@ -17,6 +17,10 @@ const STAGE_ICONS: Record<string, string> = {
   clusters: '🧩',
   pillars: '🏛️',
   mix: '🗓️',
+  audit: '🔧',
+  competitors: '🎯',
+  onpage: '📄',
+  ai_citability: '🤖',
 };
 
 export function ChatMessage({ message, onViewRun }: ChatMessageProps) {

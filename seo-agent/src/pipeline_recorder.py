@@ -195,17 +195,27 @@ def _record_clusters(run: dict, args: dict, result: dict) -> None:
             entry.get("cluster_name") or entry.get("head_term") or f"Cluster {entry.get('cluster_id', i)}",
         )
         members = [k for k in entry.get("keywords", []) if isinstance(k, str)]
-        vols, diffs, intents = [], [], []
+        vols, diffs, intents, cpcs = [], [], [], []
+        member_stats: dict[str, dict] = {}
         for m in members:
             s = stats.get(m.lower())
             if not s:
                 continue
+            row = {}
             if s.get("volume"):
                 vols.append(s["volume"])
+                row["volume"] = s["volume"]
             if s.get("difficulty"):
                 diffs.append(s["difficulty"])
+                row["difficulty"] = s["difficulty"]
             if s.get("intent"):
                 intents.append(s["intent"])
+                row["intent"] = s["intent"]
+            if s.get("cpc"):
+                cpcs.append(s["cpc"])
+                row["cpc"] = s["cpc"]
+            if row:
+                member_stats[m] = row
         if intents:
             entry.setdefault("intent", max(set(intents), key=intents.count))
         if entry.get("avg_volume"):
@@ -214,6 +224,8 @@ def _record_clusters(run: dict, args: dict, result: dict) -> None:
             entry["total_volume"] = sum(vols)
         entry["avg_difficulty"] = entry.get("avg_difficulty") or (round(sum(diffs) / len(diffs)) if diffs else None)
         entry["market"] = market
+        if member_stats:
+            entry["keyword_stats"] = member_stats
         enriched.append(entry)
     stage = _upsert_stage(run, "clusters")
     stage["artifact"] = {"count": len(enriched), "clusters": enriched}

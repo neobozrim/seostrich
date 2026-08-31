@@ -53,7 +53,11 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
       (`src/cluster_governance.py` core + `cluster_ops.py` chat tools on active run + REST `/api/runs/{id}/clusters[/promote|/discard|/propose]`
       + `/api/runs/{id}/stages/{stage}`; propose = 1 scoped keyword_suggestions call budget-keyed to the run via `use_run`)
       VERIFIED: governance test PASS (split, promote/discard round-trip, propose stats + budget keying, dup + error paths); all prior suites re-PASS
-- [ ] Inspector enrichment: per-keyword vol/difficulty/intent/CPC in RunView keywords + cluster members; discarded section
+- [x] Inspector enrichment: per-keyword vol/difficulty/intent/CPC in RunView keywords + cluster members; discarded section
+      (recorder stores per-member `keyword_stats` incl. CPC; RunView: KeywordRow/ClusterMember stat chips, KD badge,
+      selected-vs-discarded split + collapsible discarded section with reasons, proposed/promoted badges;
+      AuditArtifact, CompetitorsArtifact, AiCitabilityArtifact renderers; run StatusBadge + silent refresh + live poll while running)
+      VERIFIED: `npx tsc --noEmit` clean; recorder/governance/citability/stream suites re-PASS
 - [x] Optional steps: after core run, agent offers on-page + calendar; "yes" continues in same session (state in session_data); technical audit on-demand only (deterministic tools, artifact queryable)
       (system-prompt "Optional steps — confirm, don't assume" + calendar gated on confirmation)
 - [x] AI-citability stage (headline): verify DataForSEO AI-optimization docs first; per-keyword search_mentions (AI demand/has-answers/open-share/current cited sources) on selected head terms → PAA free from SERP-advanced → answer-first brief artifact

@@ -11,6 +11,7 @@ import {
   Sparkles,
   MessageSquare,
   Loader2,
+  RefreshCw,
 } from 'lucide-react';
 import { Run, RunStage, RunFeedback, RunSummary } from '@/types';
 import { getRuns, getRun, addRunFeedback, getUsername, AuthError } from '@/lib/api';
@@ -31,7 +32,28 @@ const STAGE_ICONS: Record<string, string> = {
   clusters: '🧩',
   pillars: '🏛️',
   mix: '🗓️',
+  audit: '🔧',
+  competitors: '🎯',
+  onpage: '📄',
+  ai_citability: '🤖',
 };
+
+const STATUS_META: Record<string, { label: string; cls: string }> = {
+  running: { label: 'Running', cls: 'bg-accent-100 text-accent-700' },
+  done: { label: 'Done', cls: 'bg-green-100 text-green-700' },
+  stopped: { label: 'Stopped', cls: 'bg-surface-200 text-gray-600' },
+  error: { label: 'Error', cls: 'bg-red-100 text-red-700' },
+};
+
+function StatusBadge({ status }: { status?: string }) {
+  const meta = STATUS_META[status || ''] || { label: status || 'unknown', cls: 'bg-surface-200 text-gray-600' };
+  return (
+    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${meta.cls}`}>
+      {status === 'running' && <Loader2 className="w-3 h-3 inline mr-1 animate-spin" />}
+      {meta.label}
+    </span>
+  );
+}
 
 function ScoreBadge({ value }: { value: number | null | undefined }) {
   if (value === null || value === undefined) return null;
@@ -163,18 +185,53 @@ function SeedsArtifact({ artifact }: { artifact: Record<string, any> }) {
   );
 }
 
+function fmtCpc(n: number | undefined): string {
+  if (n === undefined || n === null) return '';
+  return `$${Number(n).toFixed(2)}`;
+}
+
+function DiffBadge({ value }: { value: number | undefined }) {
+  if (value === undefined || value === null) return null;
+  const tone =
+    value < 30
+      ? 'bg-green-100 text-green-700'
+      : value < 60
+        ? 'bg-amber-100 text-amber-700'
+        : 'bg-red-100 text-red-700';
+  return <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${tone}`}>KD {value}</span>;
+}
+
+function KeywordRow({ k }: { k: string | Record<string, any> }) {
+  if (typeof k === 'string') return <Chip>{k}</Chip>;
+  const kw = k.keyword || k.query || '';
+  const hasStats = k.volume != null || k.difficulty != null || k.intent || k.cpc != null;
+  if (!hasStats) return <Chip>{kw}</Chip>;
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2 py-1 m-0.5 text-xs bg-surface-100 border border-surface-300 rounded-lg text-gray-700">
+      <span className="font-medium">{kw}</span>
+      {k.volume != null && <span className="text-gray-500">vol {fmtVol(k.volume)}</span>}
+      <DiffBadge value={k.difficulty} />
+      {k.intent && <span className="px-1.5 py-0.5 rounded bg-surface-200 text-[10px] capitalize text-gray-600">{k.intent}</span>}
+      {k.cpc != null && k.cpc > 0 && <span className="text-gray-500">{fmtCpc(k.cpc)}</span>}
+    </span>
+  );
+}
+
 function KeywordsArtifact({ artifact }: { artifact: Record<string, any> }) {
   const [open, setOpen] = useState(false);
   const keywords: Array<string | Record<string, any>> = artifact.keywords || [];
   const shown = open ? keywords : keywords.slice(0, 24);
-  const label = (k: string | Record<string, any>) =>
-    typeof k === 'string' ? k : k.keyword || k.query || JSON.stringify(k);
+  const totalVol = keywords.reduce(
+    (acc, k) => acc + (typeof k === 'object' ? k.volume || 0 : 0),
+    0
+  );
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm text-gray-700">
           <span className="font-semibold">{artifact.count ?? keywords.length}</span>{' '}
           keywords discovered
+          {totalVol > 0 && <span className="text-gray-400"> · combined vol {fmtVol(totalVol)}</span>}
         </span>
         <button
           onClick={() => setOpen(!open)}
@@ -186,7 +243,7 @@ function KeywordsArtifact({ artifact }: { artifact: Record<string, any> }) {
       </div>
       <div>
         {shown.map((k, i) => (
-          <Chip key={i}>{label(k)}</Chip>
+          <KeywordRow key={i} k={k} />
         ))}
         {!open && keywords.length > 24 && (
           <span className="text-xs text-gray-400"> +{keywords.length - 24} more…</span>
@@ -196,64 +253,120 @@ function KeywordsArtifact({ artifact }: { artifact: Record<string, any> }) {
   );
 }
 
+function ClusterMember({ name, stats }: { name: string; stats?: Record<string, any> }) {
+  if (!stats || Object.keys(stats).length === 0) return <Chip>{name}</Chip>;
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2 py-1 m-0.5 text-xs bg-surface-100 border border-surface-300 rounded-lg text-gray-700">
+      <span className="font-medium">{name}</span>
+      {stats.volume != null && <span className="text-gray-500">vol {fmtVol(stats.volume)}</span>}
+      <DiffBadge value={stats.difficulty} />
+      {stats.intent && <span className="px-1.5 py-0.5 rounded bg-surface-200 text-[10px] capitalize text-gray-600">{stats.intent}</span>}
+      {stats.cpc != null && stats.cpc > 0 && <span className="text-gray-500">{fmtCpc(stats.cpc)}</span>}
+    </span>
+  );
+}
+
+function ClusterCard({ c }: { c: any }) {
+  const [open, setOpen] = useState(false);
+  const stats: Record<string, any> = c.keyword_stats || {};
+  return (
+    <div className="border border-surface-300 rounded-lg">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-3 py-2 hover:bg-surface-50 rounded-lg transition-colors text-left"
+      >
+        <span className="flex items-center gap-2 min-w-0">
+          {open ? (
+            <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          ) : (
+            <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          )}
+          <span className="text-sm font-medium text-gray-800 truncate">{c.name}</span>
+          {c.proposed && <span className="px-1.5 py-0.5 rounded bg-accent-100 text-accent-700 text-[10px] font-semibold">proposed</span>}
+          {c.promoted && <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-semibold">promoted</span>}
+        </span>
+        <span className="flex items-center gap-1 flex-shrink-0">
+          {c.combined_score != null ? (
+            <ScoreBadge value={c.combined_score} />
+          ) : c.total_volume != null ? (
+            <span className="text-xs text-gray-400">vol {fmtVol(c.total_volume)}</span>
+          ) : null}
+        </span>
+      </button>
+      {open && (
+        <div className="px-3 pb-3">
+          {(c.market || c.intent || c.total_volume != null || c.avg_difficulty != null) && (
+            <div className="mb-2">
+              {c.market && <Chip>{c.market}</Chip>}
+              {c.intent && <Chip>{c.intent} intent</Chip>}
+              {c.total_volume != null && <Chip>vol {fmtVol(c.total_volume)}</Chip>}
+              {c.avg_difficulty != null && <Chip>difficulty {c.avg_difficulty}</Chip>}
+            </div>
+          )}
+          {(c.seo_score != null || c.geo_score != null || c.combined_score != null) && (
+            <div className="flex gap-4 text-xs text-gray-500 mb-2">
+              <span>SEO <b>{c.seo_score}</b></span>
+              <span>GEO <b>{c.geo_score}</b></span>
+              <span>Combined <b>{c.combined_score}</b></span>
+            </div>
+          )}
+          {(c.rationale || c.seo_rationale || c.geo_rationale) && (
+            <p className="text-xs text-gray-600 mb-2">
+              {c.rationale || [c.seo_rationale, c.geo_rationale].filter(Boolean).join(' · ')}
+            </p>
+          )}
+          <div>
+            {(c.keywords || []).map((k: string, ki: number) => (
+              <ClusterMember key={ki} name={k} stats={stats[k]} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ClustersArtifact({ artifact }: { artifact: Record<string, any> }) {
-  const [openId, setOpenId] = useState<number | null>(null);
   const clusters = artifact.clusters || [];
+  const discarded = artifact.discarded || [];
+  const [showDiscarded, setShowDiscarded] = useState(false);
   return (
     <div className="space-y-2">
+      {artifact.selected && (
+        <div className="text-xs text-gray-500 mb-1">
+          <span className="font-semibold text-gray-700">{clusters.length}</span> selected ·{' '}
+          <span className="font-semibold text-gray-700">{discarded.length}</span> discarded
+        </div>
+      )}
       {clusters.map((c: any, i: number) => (
-        <div key={i} className="border border-surface-300 rounded-lg">
+        <ClusterCard key={`sel-${i}`} c={c} />
+      ))}
+
+      {discarded.length > 0 && (
+        <div className="pt-2">
           <button
-            onClick={() => setOpenId(openId === i ? null : i)}
-            className="w-full flex items-center justify-between px-3 py-2 hover:bg-surface-50 rounded-lg transition-colors text-left"
+            onClick={() => setShowDiscarded(!showDiscarded)}
+            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
           >
-            <span className="flex items-center gap-2 min-w-0">
-              {openId === i ? (
-                <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
-              )}
-              <span className="text-sm font-medium text-gray-800 truncate">{c.name}</span>
-            </span>
-            <span className="flex items-center gap-1 flex-shrink-0">
-              {c.combined_score != null ? (
-                <ScoreBadge value={c.combined_score} />
-              ) : c.total_volume != null ? (
-                <span className="text-xs text-gray-400">vol {fmtVol(c.total_volume)}</span>
-              ) : null}
-            </span>
+            {showDiscarded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+            Discarded clusters ({discarded.length})
           </button>
-          {openId === i && (
-            <div className="px-3 pb-3">
-              {(c.market || c.intent || c.total_volume != null || c.avg_difficulty != null) && (
-                <div className="mb-2">
-                  {c.market && <Chip>{c.market}</Chip>}
-                  {c.intent && <Chip>{c.intent} intent</Chip>}
-                  {c.total_volume != null && <Chip>vol {fmtVol(c.total_volume)}</Chip>}
-                  {c.avg_difficulty != null && <Chip>difficulty {c.avg_difficulty}</Chip>}
+          {showDiscarded && (
+            <div className="mt-2 space-y-2">
+              {discarded.map((c: any, i: number) => (
+                <div key={`disc-${i}`} className="border border-surface-200 rounded-lg bg-surface-50">
+                  <ClusterCard c={c} />
+                  {c.discard_reason && (
+                    <div className="px-3 pb-2 -mt-1 text-xs text-gray-500">
+                      <span className="font-medium text-gray-600">Why discarded:</span> {c.discard_reason}
+                    </div>
+                  )}
                 </div>
-              )}
-              {(c.seo_score != null || c.geo_score != null || c.combined_score != null) && (
-                <div className="flex gap-4 text-xs text-gray-500 mb-2">
-                  <span>SEO <b>{c.seo_score}</b></span>
-                  <span>GEO <b>{c.geo_score}</b></span>
-                  <span>Combined <b>{c.combined_score}</b></span>
-                </div>
-              )}
-              {(c.rationale || c.seo_rationale || c.geo_rationale) && (
-                <p className="text-xs text-gray-600 mb-2">
-                  {c.rationale || [c.seo_rationale, c.geo_rationale].filter(Boolean).join(' · ')}
-                </p>
-              )}
-              <div>
-                {(c.keywords || []).map((k: string, ki: number) => (
-                  <Chip key={ki}>{k}</Chip>
-                ))}
-              </div>
+              ))}
             </div>
           )}
         </div>
-      ))}
+      )}
     </div>
   );
 }
@@ -371,6 +484,150 @@ function MixArtifact({
   );
 }
 
+function AuditArtifact({ artifact }: { artifact: Record<string, any> }) {
+  const checks = artifact.checks || {};
+  const names = Object.keys(checks);
+  return (
+    <div className="space-y-2">
+      <div className="text-sm text-gray-700">
+        <span className="font-semibold">{artifact.checks_count ?? names.length}</span> audit checks run
+        {artifact.title && <span className="text-gray-400"> · {artifact.title}</span>}
+      </div>
+      <div className="space-y-1">
+        {names.map((n) => {
+          const v = checks[n];
+          const issues = Array.isArray(v?.issues) ? v.issues.length : v?.issues_count ?? v?.errors ?? null;
+          return (
+            <div key={n} className="flex items-center justify-between text-sm border border-surface-200 rounded-lg px-3 py-2">
+              <span className="text-gray-700 font-medium">{n}</span>
+              {issues != null ? (
+                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${issues > 0 ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
+                  {issues > 0 ? `${issues} issues` : 'clean'}
+                </span>
+              ) : (
+                <span className="text-xs text-gray-400">done</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CompetitorsArtifact({ artifact }: { artifact: Record<string, any> }) {
+  const sources = artifact.sources || {};
+  const names = Object.keys(sources);
+  return (
+    <div className="space-y-2">
+      <div className="text-sm text-gray-700">
+        <span className="font-semibold">{names.length}</span> competitor data source{names.length === 1 ? '' : 's'}
+      </div>
+      {names.map((n) => {
+        const v = sources[n];
+        const count = Array.isArray(v) ? v.length : v?.count ?? null;
+        return (
+          <div key={n} className="flex items-center justify-between text-sm border border-surface-200 rounded-lg px-3 py-2">
+            <span className="text-gray-700 font-medium">{n}</span>
+            {count != null && <span className="text-xs text-gray-400">{count} result{count === 1 ? '' : 's'}</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function AiCitabilityArtifact({ artifact }: { artifact: Record<string, any> }) {
+  const terms = artifact.head_terms || [];
+  const [openTerm, setOpenTerm] = useState<string | null>(null);
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-3 text-sm text-gray-700">
+        <span>
+          <span className="font-semibold">{artifact.questions_captured ?? 0}</span> AI questions captured
+        </span>
+        {artifact.overall_answer_share != null && (
+          <span className="text-gray-500">
+            answer share <b>{Math.round(artifact.overall_answer_share * 100)}%</b>
+          </span>
+        )}
+      </div>
+
+      {artifact.top_cited_sources?.length > 0 && (
+        <div>
+          <div className="text-xs text-gray-400 mb-1">Most cited by AI engines</div>
+          <div>
+            {artifact.top_cited_sources.map((s: any) => (
+              <Chip key={s.domain}>{s.domain} ×{s.mentions}</Chip>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-2 pt-1">
+        {terms.map((t: any) => (
+          <div key={t.head_term} className="border border-surface-300 rounded-lg">
+            <button
+              onClick={() => setOpenTerm(openTerm === t.head_term ? null : t.head_term)}
+              className="w-full flex items-center justify-between px-3 py-2 hover:bg-surface-50 rounded-lg text-left"
+            >
+              <span className="flex items-center gap-2 min-w-0">
+                {openTerm === t.head_term ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
+                <span className="text-sm font-medium text-gray-800 truncate">{t.head_term}</span>
+              </span>
+              <span className="text-xs text-gray-400 flex-shrink-0">
+                {t.questions_asked} Qs{t.ai_search_volume ? ` · vol ${fmtVol(t.ai_search_volume)}` : ''}
+              </span>
+            </button>
+            {openTerm === t.head_term && (
+              <div className="px-3 pb-3 space-y-2">
+                <div className="flex gap-4 text-xs text-gray-500">
+                  <span>Answer share <b>{Math.round((t.answer_share ?? 0) * 100)}%</b></span>
+                </div>
+                {t.top_questions?.length > 0 && (
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">Top AI questions</div>
+                    <ul className="text-xs text-gray-700 space-y-1 list-disc list-inside">
+                      {t.top_questions.map((q: string, i: number) => <li key={i}>{q}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {t.paa?.length > 0 && (
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">People also ask</div>
+                    <div>{t.paa.map((q: string) => <Chip key={q}>{q}</Chip>)}</div>
+                  </div>
+                )}
+                {t.top_cited_sources?.length > 0 && (
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">Cited for this term</div>
+                    <div>{t.top_cited_sources.map((d: string) => <Chip key={d}>{d}</Chip>)}</div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GenericArtifact({ artifact }: { artifact: Record<string, any> }) {
+  return (
+    <div className="space-y-2">
+      {artifact.title && <div className="text-sm font-semibold text-gray-800">{artifact.title}</div>}
+      <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-auto max-h-64">
+        {JSON.stringify(
+          Object.fromEntries(Object.entries(artifact).filter(([k]) => !['title', 'source'].includes(k))),
+          null,
+          2
+        )}
+      </pre>
+    </div>
+  );
+}
+
 function renderStage(
   stage: RunStage,
   feedback: RunFeedback[],
@@ -388,6 +645,12 @@ function renderStage(
       return <ClustersArtifact artifact={stage.artifact} />;
     case 'pillars':
       return <PillarsArtifact artifact={stage.artifact} />;
+    case 'audit':
+      return <AuditArtifact artifact={stage.artifact} />;
+    case 'competitors':
+      return <CompetitorsArtifact artifact={stage.artifact} />;
+    case 'ai_citability':
+      return <AiCitabilityArtifact artifact={stage.artifact} />;
     case 'mix':
       return (
         <MixArtifact
@@ -398,11 +661,7 @@ function renderStage(
         />
       );
     default:
-      return (
-        <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-auto max-h-64">
-          {JSON.stringify(stage.artifact, null, 2)}
-        </pre>
-      );
+      return <GenericArtifact artifact={stage.artifact} />;
   }
 }
 
@@ -429,6 +688,25 @@ export function RunView({ tasks, onClose }: RunViewProps) {
       setLoading(false);
     }
   };
+
+  // Silent refetch (no spinner) — used by manual refresh + live polling
+  const refresh = async (id?: string) => {
+    const target = id || run?.id;
+    if (!target) return;
+    try {
+      const full = await getRun(target);
+      setRun(full);
+    } catch {
+      /* keep the last good copy on transient errors */
+    }
+  };
+
+  // While a run is in progress, poll so stages stream in without a manual refresh
+  useEffect(() => {
+    if (run?.status !== 'running') return;
+    const t = setInterval(() => refresh(run.id), 1500);
+    return () => clearInterval(t);
+  }, [run?.id, run?.status]);
 
   useEffect(() => {
     let cancelled = false;
@@ -480,9 +758,12 @@ export function RunView({ tasks, onClose }: RunViewProps) {
         <div className="flex items-center gap-3">
           <Sparkles className="w-5 h-5 text-primary-500" />
           <div>
-            <h2 className="text-lg font-semibold text-primary-700">
-              {run ? run.title || run.project || 'Pipeline run' : 'Pipeline run'}
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-primary-700">
+                {run ? run.title || run.project || 'Pipeline run' : 'Pipeline run'}
+              </h2>
+              {run?.status && <StatusBadge status={run.status} />}
+            </div>
             {run?.project && (
               <p className="text-xs text-gray-500">{run.project}</p>
             )}
@@ -503,6 +784,13 @@ export function RunView({ tasks, onClose }: RunViewProps) {
               ))}
             </select>
           )}
+          <button
+            onClick={() => refresh()}
+            className="p-2 hover:bg-surface-200 rounded-lg transition-colors"
+            title="Refresh run"
+          >
+            <RefreshCw className="w-4 h-4 text-gray-500" />
+          </button>
           <button
             onClick={onClose}
             className="p-2 hover:bg-surface-200 rounded-lg transition-colors"
