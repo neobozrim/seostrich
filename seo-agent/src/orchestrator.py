@@ -11,6 +11,7 @@ It doesn't know domain details, just recognizes agent capabilities.
 """
 
 import json
+import threading
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
@@ -23,6 +24,40 @@ from .agent import run_agent
 from .brand_agent import run_brand_agent
 from .builder_agent import run_builder_agent
 from .monitoring_agent import run_monitoring_agent
+
+
+# Short user replies that approve continuing a budget-stopped run.
+_CONTINUATION_WORDS = {
+    "continue", "proceed", "go on", "keep going", "yes", "yes, continue",
+    "да", "продължи",
+}
+
+
+class StopRequested(Exception):
+    """Raised inside a stream when the user asked to stop it."""
+
+
+# Cooperative stop: /api/chat/stop sets the flag for a session id; the
+# stream checks it between yields and run_agent checks it between rounds.
+_stop_flags: dict[str, bool] = {}
+_stop_lock = threading.Lock()
+
+
+def request_stop(session_id: str) -> bool:
+    """Ask a live stream to stop. False when no stream is armed for this session."""
+    with _stop_lock:
+        if session_id in _stop_flags:
+            _stop_flags[session_id] = True
+            return True
+        return False
+
+
+def _check_stop(sid: str | None) -> None:
+    if not sid:
+        return
+    with _stop_lock:
+        if _stop_flags.get(sid):
+            raise StopRequested()
 
 
 ORCHESTRATOR_SYSTEM_PROMPT = """You are an intelligent orchestrator agent. Your job is to:
@@ -331,6 +366,10 @@ def run_orchestrator_stream(
 
     orchestrator_system = ORCHESTRATOR_SYSTEM_PROMPT + mem_context
 
+    # Arm the cooperative-stop flag for this session
+    with _stop_lock:
+        _stop_flags[sid] = False
+
     try:
         # Step 1: Send session_id to frontend
         yield {"type": "session_id", "session_id": sid}
@@ -391,8 +430,13 @@ Be concise. Each step should be <10 words.
         # Step 2: Process tool calls (route to agents)
         agent_responses = []
         for tc in tool_calls:
+            _check_stop(sid)
             tool_name = tc["name"]
-            tool_args = json.loads(tc["arguments"]) if isinstance(tc["arguments"], str) else tc["arguments"]
+            tool_args, parse_error = llm.safe_parse_tool_args(tc["arguments"])
+            if parse_error is not None:
+                print(f"[Orchestrator] Skipping {tool_name}: {parse_error}")
+                yield {"type": "status", "content": f"Skipped {tool_name} (unreadable arguments)"}
+                continue
 
             if tool_name == "seo_agent":
                 task = tool_args.get("task", "")
@@ -407,10 +451,62 @@ Be concise. Each step should be <10 words.
 
                 agent_message = f"{task}\n\n{context}".strip()
                 run_id = f"chat-{sid}"
+                # User approved continuing after a budget stop → extend the cap
+                if initial_message.strip().lower() in _CONTINUATION_WORDS:
+                    from .tools.dataforseo import continue_dfs_budget
+
+                    new_cap = continue_dfs_budget(run_id)
+                    if new_cap:
+                        yield {
+                            "type": "status",
+                            "content": f"DataForSEO budget extended to {new_cap} calls",
+                        }
                 pipeline_recorder.begin_run(run_id, initial_message or task)
                 before_stages = pipeline_recorder.stage_ids(run_id)
-                result = run_agent(agent_message)
-                pipeline_recorder.end_run(run_id)
+                try:
+                    result = run_agent(agent_message, stop_check=lambda: _check_stop(sid))
+                    pipeline_recorder.end_run(run_id)
+                except StopRequested:
+                    pipeline_recorder.end_run(run_id, status="stopped")
+                    for stage in pipeline_recorder.new_stages(run_id, before_stages):
+                        yield {"type": "stage", "run_id": run_id, **stage}
+                    session_data["agent_calls"].append({
+                        "task": task,
+                        "context": context,
+                        "agent_session_id": None,
+                        "tool_calls": 0,
+                        "response": "Stopped by user",
+                    })
+                    yield {
+                        "type": "tool_end",
+                        "tool": "seo_agent",
+                        "result": {"response": "Stopped by user", "tool_calls_made": 0},
+                        "success": False,
+                    }
+                    yield {"type": "status", "content": "Stopped"}
+                    break
+                except Exception as e:
+                    import traceback
+                    traceback.print_exc()
+                    pipeline_recorder.fail_run(run_id, str(e))
+                    # Surface stages recorded before the crash — they're real work
+                    for stage in pipeline_recorder.new_stages(run_id, before_stages):
+                        yield {"type": "stage", "run_id": run_id, **stage}
+                    session_data["agent_calls"].append({
+                        "task": task,
+                        "context": context,
+                        "agent_session_id": None,
+                        "tool_calls": 0,
+                        "response": f"SEO agent failed: {e}",
+                    })
+                    yield {
+                        "type": "tool_end",
+                        "tool": "seo_agent",
+                        "result": {"response": f"SEO agent failed: {e}", "tool_calls_made": 0},
+                        "success": False,
+                    }
+                    yield {"type": "error", "content": str(e)}
+                    continue
 
                 for stage in pipeline_recorder.new_stages(run_id, before_stages):
                     yield {"type": "stage", "run_id": run_id, **stage}
@@ -575,10 +671,15 @@ Be concise. Each step should be <10 words.
         session_store.save_session(sid, session_data)
         yield {"type": "done"}
 
+    except StopRequested:
+        yield {"type": "status", "content": "Stopped"}
     except Exception as e:
         import traceback
         traceback.print_exc()
         yield {"type": "error", "content": str(e)}
+    finally:
+        with _stop_lock:
+            _stop_flags.pop(sid, None)
 
 
 def route_to_agent(

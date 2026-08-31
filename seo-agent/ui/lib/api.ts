@@ -84,7 +84,8 @@ export async function sendMessage(
   message: string,
   attachments?: File[],
   sessionId?: string | null,
-  onChunk?: (chunk: any) => void
+  onChunk?: (chunk: any) => void,
+  signal?: AbortSignal
 ): Promise<void> {
   const formData = new FormData();
   formData.append('message', message);
@@ -102,6 +103,7 @@ export async function sendMessage(
     method: 'POST',
     headers: authHeaders(),
     body: formData,
+    signal,
   });
 
   await ensureOk(response);
@@ -136,6 +138,16 @@ export async function sendMessage(
 export async function getMemory(): Promise<any> {
   const response = await fetch(`${API_BASE}/api/memory`, {
     headers: authHeaders(),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function stopSession(sessionId: string): Promise<{ ok: boolean }> {
+  const response = await fetch(`${API_BASE}/api/chat/stop`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session_id: sessionId }),
   });
   await ensureOk(response);
   return response.json();

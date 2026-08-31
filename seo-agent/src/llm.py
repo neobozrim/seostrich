@@ -133,3 +133,30 @@ def extract_json(text: str) -> dict | list:
         return json.loads(text)
     except json.JSONDecodeError:
         raise ValueError(f"Could not parse JSON from LLM output: {text[:200]}")
+
+
+def safe_parse_tool_args(arguments: Any) -> tuple[dict, str | None]:
+    """Defensively parse LLM tool-call arguments.
+
+    Returns (args, error): args is a dict on success; error is a short
+    explanation when parsing fails (args is then {}). Applies the same
+    repair heuristics as extract_json before giving up, so a malformed
+    tool call becomes an error result the model can self-correct instead
+    of an exception that kills the whole stream.
+    """
+    if arguments is None:
+        return {}, None
+    if isinstance(arguments, dict):
+        return arguments, None
+    if not isinstance(arguments, str):
+        return {}, f"expected object or JSON string, got {type(arguments).__name__}"
+    try:
+        parsed = json.loads(arguments)
+    except json.JSONDecodeError:
+        try:
+            parsed = extract_json(arguments)
+        except (ValueError, TypeError):
+            return {}, f"arguments are not valid JSON ({arguments[:120]}...)"
+    if isinstance(parsed, dict):
+        return parsed, None
+    return {}, f"arguments parsed to {type(parsed).__name__}, expected an object"

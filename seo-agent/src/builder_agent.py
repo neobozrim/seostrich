@@ -375,17 +375,22 @@ def run_builder_agent(
 
         for tc in tool_calls:
             tool_name = tc["name"]
-            tool_args = json.loads(tc["arguments"]) if isinstance(tc["arguments"], str) else tc["arguments"]
+            tool_args, parse_error = llm.safe_parse_tool_args(tc["arguments"])
 
             print(f"\n[Builder Tool call]: {tool_name}({json.dumps(tool_args, default=str)[:100]}...)")
 
-            try:
-                result = TOOL_CALLABLES[tool_name](**tool_args)
-                result_str = llm.format_json(result)
-            except Exception as e:
-                print(f"[Builder Tool error]: {tool_name}: {e}")
-                result = {"error": str(e)}
-                result_str = json.dumps({"error": str(e)})
+            if parse_error is not None:
+                print(f"[Builder Tool args parse error]: {tool_name}: {parse_error}")
+                result = {"error": f"Tool arguments could not be parsed as JSON: {parse_error}"}
+                result_str = json.dumps(result)
+            else:
+                try:
+                    result = TOOL_CALLABLES[tool_name](**tool_args)
+                    result_str = llm.format_json(result)
+                except Exception as e:
+                    print(f"[Builder Tool error]: {tool_name}: {e}")
+                    result = {"error": str(e)}
+                    result_str = json.dumps({"error": str(e)})
 
             session_data["tool_results"].append({
                 "tool": tool_name,
@@ -472,7 +477,7 @@ def run_builder_agent_stream(
 
             for tc in tool_calls:
                 tool_name = tc["name"]
-                tool_args = json.loads(tc["arguments"]) if isinstance(tc["arguments"], str) else tc["arguments"]
+                tool_args, parse_error = llm.safe_parse_tool_args(tc["arguments"])
 
                 yield {
                     "type": "tool_start",
@@ -481,14 +486,19 @@ def run_builder_agent_stream(
                 }
                 yield {"type": "status", "content": f"Running {tool_name}..."}
 
-                try:
-                    result = TOOL_CALLABLES[tool_name](**tool_args)
-                    result_str = llm.format_json(result)
-                    success = "error" not in result if isinstance(result, dict) else True
-                except Exception as e:
-                    result = {"error": str(e)}
-                    result_str = json.dumps({"error": str(e)})
+                if parse_error is not None:
+                    result = {"error": f"Tool arguments could not be parsed as JSON: {parse_error}"}
+                    result_str = json.dumps(result)
                     success = False
+                else:
+                    try:
+                        result = TOOL_CALLABLES[tool_name](**tool_args)
+                        result_str = llm.format_json(result)
+                        success = "error" not in result if isinstance(result, dict) else True
+                    except Exception as e:
+                        result = {"error": str(e)}
+                        result_str = json.dumps({"error": str(e)})
+                        success = False
 
                 session_data["tool_results"].append({
                     "tool": tool_name,

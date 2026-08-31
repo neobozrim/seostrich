@@ -14,7 +14,58 @@ def _auth_header() -> str:
     return "Basic " + base64.b64encode(creds.encode()).decode()
 
 
+class DFSBudgetExceeded(RuntimeError):
+    """The run hit its DataForSEO call cap — stop and ask the user."""
+
+
+# Per-run call accounting. Keyed by pipeline run id (chat sessions reuse
+# their run id across messages, so the cap spans the whole conversation).
+_RUN_STATS: dict[str, dict] = {}
+_CAP_OVERRIDES: dict[str, int] = {}
+
+
+def _budget_key() -> str:
+    from .. import pipeline_recorder
+
+    return pipeline_recorder.active_run_id() or "_no_run"
+
+
+def dfs_usage_report(run_id: str | None = None) -> str:
+    stats = _RUN_STATS.get(run_id or _budget_key())
+    if not stats or not stats["calls"]:
+        return "No DataForSEO calls made yet this run"
+    parts = ", ".join(f"{n} x{c}" for n, c in sorted(stats["by_endpoint"].items()))
+    return f"{stats['calls']} calls so far ({parts})"
+
+
+def _account(endpoint: str) -> None:
+    key = _budget_key()
+    stats = _RUN_STATS.setdefault(key, {"calls": 0, "by_endpoint": {}})
+    cap = _CAP_OVERRIDES.get(key, settings.dfs_max_calls_per_run)
+    if stats["calls"] >= cap:
+        raise DFSBudgetExceeded(
+            f"DataForSEO call budget reached: {dfs_usage_report(key)} against a cap of {cap} per run. "
+            "Do NOT retry this call. Report progress to the user and ask whether to continue."
+        )
+    stats["calls"] += 1
+    segments = [s for s in endpoint.strip("/").split("/") if s not in ("v3", "live", "advanced")]
+    name = segments[-1] if segments else endpoint
+    stats["by_endpoint"][name] = stats["by_endpoint"].get(name, 0) + 1
+
+
+def continue_dfs_budget(run_id: str, extra: int = 25) -> int | None:
+    """Extend the cap after the user approved continuing. Returns the new cap,
+    or None when this run never hit its cap."""
+    stats = _RUN_STATS.get(run_id)
+    cap = _CAP_OVERRIDES.get(run_id, settings.dfs_max_calls_per_run)
+    if not stats or stats["calls"] < cap:
+        return None
+    _CAP_OVERRIDES[run_id] = cap + extra
+    return _CAP_OVERRIDES[run_id]
+
+
 async def _post(endpoint: str, payload: list[dict] | dict) -> dict:
+    _account(endpoint)
     url = f"{settings.dataforseo_base_url}{endpoint}"
     headers = {
         "Authorization": _auth_header(),
@@ -76,8 +127,12 @@ def keywords_for_site(url: str, limit: int = 100) -> list[dict]:
 def keyword_overview(keywords: list[str], location_code: int = 2840, language_code: str = "en") -> list[dict]:
     async def _inner():
         results = []
+        # One paid call per keyword — cap the batch to keep runs affordable
+        selected = list(keywords)[:20]
+        if len(keywords) > 20:
+            print(f"[keyword_overview] capping {len(keywords)} keywords to 20 (one paid call each)")
         # Use keyword_suggestions endpoint to get data for specific keywords
-        for kw in keywords:
+        for kw in selected:
             data = await _post("/v3/dataforseo_labs/google/keyword_suggestions/live", [
                 {
                     "keyword": kw,
@@ -205,7 +260,7 @@ def historical_search_volume(keywords: list[str], location_code: int = 2840, lan
     async def _inner():
         data = await _post("/v3/keywords_data/historical_search_volume/live", [
             {
-                "keywords": keywords[:700],
+                "keywords": keywords[:150],
                 "location_code": location_code,
                 "language_code": language_code,
             }

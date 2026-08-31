@@ -11,8 +11,9 @@ if sys.platform == "win32":
 import json
 import asyncio
 import sys
+from datetime import datetime, timezone
 from typing import List, Optional
-from fastapi import Depends, FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import Depends, FastAPI, Request, UploadFile, File, Form, HTTPException
 from fastapi.responses import StreamingResponse, PlainTextResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -43,6 +44,16 @@ app.include_router(auth_router)
 def _seed_default_runs():
     """Populate the example run(s) on first boot so judges see real data."""
     runs.seed_defaults(force=False)
+    # Runs left in "running" are orphans from a crash or restart — close them
+    # so the Run view never shows forever-running pipelines.
+    for summary in runs.list_runs():
+        if summary.get("status") == "running":
+            run = runs.get_run(summary["id"])
+            if run:
+                run["status"] = "error"
+                run["error"] = "interrupted by server restart"
+                run["ended"] = datetime.now(timezone.utc).isoformat()
+                runs.save_run(summary["id"], run)
 
 # CORS middleware — origins come from CORS_ORIGINS (comma-separated)
 _cors_origins = [
@@ -228,8 +239,21 @@ async def get_improvements(_auth: None = Depends(require_auth)):
     return improvements
 
 
+class StopIn(BaseModel):
+    session_id: str
+
+
+@app.post("/api/chat/stop")
+async def chat_stop(body: StopIn, _auth: None = Depends(require_auth)):
+    """Ask a running chat stream to stop (cooperative: takes effect between steps)."""
+    from src.orchestrator import request_stop
+
+    return {"ok": request_stop(body.session_id)}
+
+
 @app.post("/api/chat/stream")
 async def chat_stream(
+    request: Request,
     message: str = Form(...),
     session_id: Optional[str] = Form(None),
     files: List[UploadFile] = File(default=[]),
@@ -259,20 +283,27 @@ async def chat_stream(
                     attachment_context += f"\n{att['name']}:\n{att['content'][:500]}...\n"
                 full_message += attachment_context
 
-            from src.orchestrator import run_orchestrator_stream
+            from src.orchestrator import run_orchestrator_stream, request_stop
 
             # Run the sync generator in a thread and stream results
             gen = run_orchestrator_stream(full_message, session_id)
+            chat_sid: Optional[str] = session_id
 
             while True:
                 try:
                     chunk = await asyncio.to_thread(next, gen, None)
                     if chunk is None:
                         break
+                    if chunk.get("type") == "session_id":
+                        chat_sid = chunk.get("session_id")
                     yield f"data: {json.dumps(chunk, ensure_ascii=False)}\n\n"
                     # Small delay after text chunks to force separate SSE frames
                     if chunk.get("type") == "text":
                         await asyncio.sleep(0.02)
+                    # Client left (closed tab) → stop the stream so it doesn't
+                    # keep burning LLM/DataForSEO calls server-side
+                    if chat_sid and await request.is_disconnected():
+                        request_stop(chat_sid)
                 except StopIteration:
                     break
 

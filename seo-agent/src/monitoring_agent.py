@@ -415,17 +415,22 @@ def run_monitoring_agent(
 
         for tc in tool_calls:
             tool_name = tc["name"]
-            tool_args = json.loads(tc["arguments"]) if isinstance(tc["arguments"], str) else tc["arguments"]
+            tool_args, parse_error = llm.safe_parse_tool_args(tc["arguments"])
 
             print(f"\n[Monitoring Tool call]: {tool_name}({json.dumps(tool_args, default=str)[:100]}...)")
 
-            try:
-                result = TOOL_CALLABLES[tool_name](**tool_args)
-                result_str = llm.format_json(result)
-            except Exception as e:
-                print(f"[Monitoring Tool error]: {tool_name}: {e}")
-                result = {"error": str(e)}
-                result_str = json.dumps({"error": str(e)})
+            if parse_error is not None:
+                print(f"[Monitoring Tool args parse error]: {tool_name}: {parse_error}")
+                result = {"error": f"Tool arguments could not be parsed as JSON: {parse_error}"}
+                result_str = json.dumps(result)
+            else:
+                try:
+                    result = TOOL_CALLABLES[tool_name](**tool_args)
+                    result_str = llm.format_json(result)
+                except Exception as e:
+                    print(f"[Monitoring Tool error]: {tool_name}: {e}")
+                    result = {"error": str(e)}
+                    result_str = json.dumps({"error": str(e)})
 
             session_data["tool_results"].append({
                 "round": round_num,

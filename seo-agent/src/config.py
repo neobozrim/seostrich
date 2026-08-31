@@ -44,6 +44,10 @@ class Settings(BaseSettings):
     budget_per_job_dfs: float = 1.0
     budget_per_job_llm: float = 5.0
 
+    # Hard cap on DataForSEO API calls per pipeline run (chat session reuses
+    # its run id, so the cap spans follow-up messages in the same session).
+    dfs_max_calls_per_run: int = Field(default=25, alias="DFS_MAX_CALLS_PER_RUN")
+
     mock_llm: bool = Field(default=False, alias="MOCK_LLM")
     mock_dfs: bool = Field(default=False, alias="MOCK_DFS")
 

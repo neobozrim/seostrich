@@ -83,7 +83,7 @@ When starting a new conversation, ask what the user wants to accomplish. Then pl
 - AI visibility tracking (ai_mentions, geo_scorer)
 - Web search for research (web_search)
 
-**Tool fallbacks:** execute_with_fallback is available for non-data tools only (e.g., technical_seo_audit → composable sub-audits). DataForSEO tools have NO fallbacks — if they fail, report the error and retry. Never substitute web_search for keyword/SERP data.
+**Tool fallbacks:** execute_with_fallback is available for non-data tools only (e.g., technical_seo_audit → composable sub-audits). DataForSEO tools have NO fallbacks — never substitute web_search for keyword/SERP data. If a DataForSEO call fails, retry it ONCE (transient errors only); if it fails again or you hit a budget error, stop calling DataForSEO, report what you have so far, and ask the user how to proceed.
 
 **Composable vs Legacy Audits:**
 - **PREFER composable audit tools** (audit_crawlability, audit_meta_tags, audit_structured_data, audit_performance, audit_mobile, audit_i18n, audit_content) over the legacy `technical_seo_audit`.
@@ -132,7 +132,8 @@ Before making decisions, consult memory to understand past context. Use learning
 - Do NOT call the same tool twice with identical arguments in succession. If you just called `read_memory`, use the returned data — don't call it again.
 - After any tool call, evaluate the output before deciding on the next action. Don't blindly chain tools.
 - If a tool returns empty or no results, don't retry with the same arguments. Either change your query or move on.
-- Prefer one well-crafted search query over multiple similar queries."""
+- Prefer one well-crafted search query over multiple similar queries.
+- DataForSEO calls cost money. Batch keywords into a single call whenever a tool accepts a list, never loop one-call-per-keyword when batching exists, and never re-fetch data you already have in this session."""
 
 
 TOOL_DEFINITIONS = [
@@ -1117,8 +1118,14 @@ def run_agent(
     session_id: str | None = None,
     context: dict[str, Any] | None = None,
     max_rounds: int = 20,
+    stop_check=None,
 ) -> dict[str, Any]:
-    """Run the SEO agent with function calling loop."""
+    """Run the SEO agent with function calling loop.
+
+    stop_check: optional callable that raises StopRequested when the user
+    has asked to stop; checked before every LLM round and before the
+    post-loop tail so a stopped run doesn't burn more calls.
+    """
     sid = session_id or session_store.new_session_id()
     session_data: dict[str, Any] = {
         "session_id": sid,
@@ -1144,6 +1151,9 @@ def run_agent(
     tools_for_session = select_tools_for_intent(user_message)
 
     for round_num in range(max_rounds):
+        if stop_check is not None:
+            stop_check()
+
         resp = llm.chat(messages, system=system, tools=tools_for_session, temperature=0.3)
 
         content = resp.get("content", "")
@@ -1165,16 +1175,30 @@ def run_agent(
             def execute_tool(tc):
                 tool_name = tc["name"]
                 tool_args = tc["arguments"]
-                print(f"\n[Tool call]: {tool_name}({tool_args[:100]}...)")
+                print(f"\n[Tool call]: {tool_name}({tool_args[:100] if isinstance(tool_args, str) else '...'}...)")
+
+                parsed_args, parse_error = llm.safe_parse_tool_args(tool_args)
+                if parse_error is not None:
+                    print(f"[Tool args parse error]: {tool_name}: {parse_error}")
+                    return {
+                        "tc": tc,
+                        "result": None,
+                        "parsed_args": {},
+                        "result_str": json.dumps({
+                            "error": f"Your tool arguments could not be parsed as JSON: {parse_error} "
+                                     "Re-send the tool call with valid JSON arguments."
+                        }),
+                        "error": f"argument parse error: {parse_error}",
+                        "success": False,
+                    }
 
                 try:
-                    result = TOOL_CALLABLES[tool_name](
-                        **(json.loads(tool_args) if isinstance(tool_args, str) else tool_args)
-                    )
+                    result = TOOL_CALLABLES[tool_name](**parsed_args)
                     result_str = llm.format_json(result)
                     return {
                         "tc": tc,
                         "result": result,
+                        "parsed_args": parsed_args,
                         "result_str": result_str,
                         "error": None,
                         "success": True,
@@ -1184,6 +1208,7 @@ def run_agent(
                     return {
                         "tc": tc,
                         "result": None,
+                        "parsed_args": parsed_args,
                         "result_str": json.dumps({"error": str(e)}),
                         "error": str(e),
                         "success": False,
@@ -1224,7 +1249,7 @@ def run_agent(
                 })
                 pipeline_recorder.record_tool(
                     tc["name"],
-                    json.loads(tc["arguments"]) if isinstance(tc["arguments"], str) else tc["arguments"],
+                    res["parsed_args"],
                     res["result"],
                     res["success"],
                 )
@@ -1239,33 +1264,48 @@ def run_agent(
             tool_name = tc["name"]
             tool_args = tc["arguments"]
 
-            print(f"\n[Tool call]: {tool_name}({tool_args[:100]}...)")
+            print(f"\n[Tool call]: {tool_name}({tool_args[:100] if isinstance(tool_args, str) else '...'}...)")
 
-            parsed_args = json.loads(tool_args) if isinstance(tool_args, str) else tool_args
-            try:
-                result = TOOL_CALLABLES[tool_name](**parsed_args)
-                result_str = llm.format_json(result)
-                session_data["tool_results"].append({
-                    "round": round_num,
-                    "tool": tool_name,
-                    "args": tool_args,
-                    "result": result,
-                    "success": True,
-                    "error": None,
+            parsed_args, parse_error = llm.safe_parse_tool_args(tool_args)
+            if parse_error is not None:
+                print(f"[Tool args parse error]: {tool_name}: {parse_error}")
+                result_str = json.dumps({
+                    "error": f"Your tool arguments could not be parsed as JSON: {parse_error} "
+                             "Re-send the tool call with valid JSON arguments."
                 })
-                pipeline_recorder.record_tool(tool_name, parsed_args, result, True)
-            except Exception as e:
-                result_str = json.dumps({"error": str(e)})
-                print(f"[Tool error]: {e}")
                 session_data["tool_results"].append({
                     "round": round_num,
                     "tool": tool_name,
                     "args": tool_args,
                     "result": None,
                     "success": False,
-                    "error": str(e),
+                    "error": f"argument parse error: {parse_error}",
                 })
-                pipeline_recorder.record_tool(tool_name, parsed_args, None, False)
+            else:
+                try:
+                    result = TOOL_CALLABLES[tool_name](**parsed_args)
+                    result_str = llm.format_json(result)
+                    session_data["tool_results"].append({
+                        "round": round_num,
+                        "tool": tool_name,
+                        "args": tool_args,
+                        "result": result,
+                        "success": True,
+                        "error": None,
+                    })
+                    pipeline_recorder.record_tool(tool_name, parsed_args, result, True)
+                except Exception as e:
+                    result_str = json.dumps({"error": str(e)})
+                    print(f"[Tool error]: {e}")
+                    session_data["tool_results"].append({
+                        "round": round_num,
+                        "tool": tool_name,
+                        "args": tool_args,
+                        "result": None,
+                        "success": False,
+                        "error": str(e),
+                    })
+                    pipeline_recorder.record_tool(tool_name, parsed_args, None, False)
 
             messages.append({
                 "role": "assistant",
@@ -1286,6 +1326,10 @@ def run_agent(
             })
 
     # Post-loop synthesis: if agent stopped with planning text but no final report, force synthesis
+    if stop_check is not None:
+        # User asked to stop — skip the expensive post-loop tail entirely
+        stop_check()
+
     if session_data["tool_results"]:
         last_assistant = next(
             (m for m in reversed(messages) if m.get("role") == "assistant" and m.get("content")),

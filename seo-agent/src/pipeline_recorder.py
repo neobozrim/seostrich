@@ -62,10 +62,28 @@ def begin_run(run_id: str, title: str, project: str = "Chat pipeline") -> None:
     _active_run_id.set(run_id)
 
 
-def end_run(run_id: str) -> None:
+def active_run_id() -> str | None:
+    """The run currently open on this thread/context (None outside a run)."""
+    return _active_run_id.get()
+
+
+def end_run(run_id: str, status: str = "done") -> None:
     run = runs.get_run(run_id)
     if run:
-        run["status"] = "done"
+        run["status"] = status
+        run["ended"] = datetime.now(timezone.utc).isoformat()
+        runs.save_run(run_id, run)
+    _active_run_id.set(None)
+
+
+def fail_run(run_id: str, error: str = "") -> None:
+    """Close a run that crashed so it doesn't stay 'running' forever."""
+    run = runs.get_run(run_id)
+    if run:
+        run["status"] = "error"
+        run["ended"] = datetime.now(timezone.utc).isoformat()
+        if error:
+            run["error"] = str(error)[:500]
         runs.save_run(run_id, run)
     _active_run_id.set(None)
 

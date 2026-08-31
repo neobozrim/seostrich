@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Plus, X, Settings2, Workflow } from 'lucide-react';
+import { Send, Plus, X, Settings2, Workflow, Square } from 'lucide-react';
 import { Message, MemoryState, ToolCall } from '@/types';
 import { ChatMessage } from '@/components/ChatMessage';
 import { SystemPanel } from '@/components/SystemPanel';
@@ -14,6 +14,7 @@ import {
   checkAuth,
   clearToken,
   getUsername,
+  stopSession,
   AuthError,
 } from '@/lib/api';
 import { registerWebMcpTools } from '@/lib/webmcp';
@@ -40,6 +41,7 @@ export default function Home() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -174,6 +176,34 @@ export default function Home() {
 
     setMessages((prev) => [...prev, assistantMessage]);
 
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    // Any tool card still 'running' when the stream ends would spin forever
+    // (e.g. agent crashed before emitting tool_end) — resolve them.
+    const resolveRunningTools = (status: 'success' | 'error', note?: string) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantMessage.id
+            ? {
+                ...msg,
+                statusText: undefined,
+                toolCalls: msg.toolCalls?.map((tc) =>
+                  tc.status === 'running'
+                    ? {
+                        ...tc,
+                        status,
+                        endTime: new Date(),
+                        result: tc.result ?? (note ? { response: note } : undefined),
+                      }
+                    : tc
+                ),
+              }
+            : msg
+        )
+      );
+    };
+
     try {
       await sendMessage(input, attachments, sessionId, (chunk) => {
         if (chunk.type === 'session_id') {
@@ -248,15 +278,10 @@ export default function Home() {
           setMemory(chunk.memory);
         } else if (chunk.type === 'done') {
           setIsStreaming(false);
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === assistantMessage.id
-                ? { ...msg, statusText: undefined }
-                : msg
-            )
-          );
+          resolveRunningTools('success');
         } else if (chunk.type === 'error') {
           setIsStreaming(false);
+          resolveRunningTools('error', 'Interrupted by error');
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMessage.id
@@ -265,7 +290,7 @@ export default function Home() {
             )
           );
         }
-      });
+      }, controller.signal);
     } catch (error) {
       console.error('Failed to send message:', error);
       if (error instanceof AuthError) {
@@ -275,15 +300,26 @@ export default function Home() {
         setIsStreaming(false);
         return;
       }
+      const aborted = error instanceof Error && error.name === 'AbortError';
       setIsStreaming(false);
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === assistantMessage.id
-            ? { ...msg, statusText: undefined }
-            : msg
-        )
-      );
+      resolveRunningTools('error', aborted ? 'Stopped by user' : 'Connection lost');
+      if (!aborted) {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMessage.id
+              ? { ...msg, content: msg.content + '\n\n⚠️ Connection error — the run may continue server-side until it reaches a stopping point.', statusText: undefined }
+              : msg
+          )
+        );
+      }
     }
+  };
+
+  const handleStop = () => {
+    if (sessionId) {
+      stopSession(sessionId).catch(console.error);
+    }
+    abortRef.current?.abort();
   };
 
   const handleLogout = () => {
@@ -442,13 +478,24 @@ export default function Home() {
                 rows={2}
                 disabled={isStreaming}
               />
-              <button
-                onClick={handleSend}
-                disabled={isStreaming || (!input.trim() && attachments.length === 0)}
-                className="px-6 py-3 bg-primary-400 text-white rounded-lg hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <Send className="w-5 h-5" />
-              </button>
+              {isStreaming ? (
+                <button
+                  onClick={handleStop}
+                  className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+                  title="Stop the current run (takes effect between steps)"
+                >
+                  <Square className="w-5 h-5" />
+                  Stop
+                </button>
+              ) : (
+                <button
+                  onClick={handleSend}
+                  disabled={!input.trim() && attachments.length === 0}
+                  className="px-6 py-3 bg-primary-400 text-white rounded-lg hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <Send className="w-5 h-5" />
+                </button>
+              )}
             </div>
           </div>
         </div>
