@@ -10,6 +10,7 @@ from typing import Any, List, Optional
 import requests
 
 from ..config import settings
+from .. import memory
 
 
 # ── Session list cache (5-minute TTL to avoid repeated pagination) ──
@@ -17,7 +18,9 @@ _session_cache: dict[str, Any] = {"data": None, "expires": 0}
 _CACHE_TTL = 300  # seconds
 
 # ── Trace disk cache (avoid re-fetching traces we've already read) ──
-_trace_cache_dir = Path(__file__).resolve().parent.parent.parent / "agent-memory" / "traces"
+# Lives in the shared memory dir so all agents/state land in one place.
+def _get_trace_cache_dir() -> Path:
+    return memory._get_memory_dir() / "traces"
 _TRACE_CACHE_TTL = 3600  # 1 hour
 
 
@@ -181,8 +184,9 @@ def read_braintrust_trace(session_id: str) -> Optional[dict]:
         Trace data dict or None if not found
     """
     # Check disk cache first
-    _trace_cache_dir.mkdir(parents=True, exist_ok=True)
-    cache_file = _trace_cache_dir / f"{session_id}.json"
+    trace_cache_dir = _get_trace_cache_dir()
+    trace_cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = trace_cache_dir / f"{session_id}.json"
     
     if cache_file.exists():
         # Check if cache is fresh (less than 1 hour old)

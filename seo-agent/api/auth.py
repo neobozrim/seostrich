@@ -73,9 +73,11 @@ def require_auth(request: Request) -> None:
 @router.get("/auth/check")
 def auth_check(request: Request):
     token = _bearer_token(request)
+    username = verify_token(token) if token else None
     return {
         "auth_required": auth_enabled(),
-        "authenticated": bool(token and verify_token(token)),
+        "authenticated": bool(username),
+        "username": username,
     }
 
 
@@ -88,7 +90,7 @@ def login(username: str = Form(...), password: str = Form(...)):
     pass_ok = hmac.compare_digest(password, expected_pass)
     if not (user_ok and pass_ok):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    return {"token": create_token(username)}
+    return {"token": create_token(username), "username": username}
 
 
 @router.post("/logout")

@@ -1,0 +1,3153 @@
+{
+  "id": "productpirates",
+  "project": "productpirates.club",
+  "title": "Product Pirates Club",
+  "created": "2026-08-30T22:34:26.242748+00:00",
+  "status": "complete",
+  "stages": [
+    {
+      "id": "intake",
+      "label": "Intake",
+      "status": "done",
+      "artifact": {
+        "domain": "productpirates.club",
+        "description": "AI Product Management Community of Practice based in Sofia, Bulgaria. \nWe run events, workshops, and peer learning groups for product managers \nintegrating AI/LLM features — prompt engineering, agent design, evals, \nGTM for AI products, governance. Members are senior PMs at tech companies \nand AI-native startups in Central and Eastern Europe.",
+        "goal": "Become the go-to community in CEE for AI product managers via SEO + AI citations.\nBuild credibility to launch a Maven course on AI product management.",
+        "locale": {
+          "location_code": 2100,
+          "language_code": "en"
+        },
+        "competitors": [
+          "https://lennysnewsletter.com",
+          "https://www.reforge.com",
+          "https://www.marilynnika.com"
+        ],
+        "optimization_mix": "balanced",
+        "notes": "Targeting CEE region with English-language content. Focus on community building,\nnetworking events, career development for PMs working with AI. Content should be\nstrategic and leadership-focused, not technical tutorials."
+      }
+    },
+    {
+      "id": "seeds",
+      "label": "Seed phrases",
+      "status": "done",
+      "artifact": {
+        "business_seeds": [
+          "AI product management",
+          "product management AI",
+          "prompt engineering",
+          "AI product strategy"
+        ],
+        "site_seeds": [
+          "product manager course",
+          "product community",
+          "PM networking"
+        ],
+        "competitor_seeds": [
+          "product management career",
+          "product leadership"
+        ]
+      }
+    },
+    {
+      "id": "keywords",
+      "label": "Keyword universe",
+      "status": "done",
+      "artifact": {
+        "count": 335,
+        "keywords": [
+          {
+            "keyword": "prompt engineering",
+            "volume": 27100,
+            "difficulty": 54,
+            "cpc": 8.83,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering jobs",
+            "volume": 4400,
+            "difficulty": 0,
+            "cpc": 3.98,
+            "intent": "informational"
+          },
+          {
+            "keyword": "artificial intelligence prompt engineering",
+            "volume": 4400,
+            "difficulty": 54,
+            "cpc": 9.4,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai prompt engineering",
+            "volume": 4400,
+            "difficulty": 54,
+            "cpc": 9.4,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering job",
+            "volume": 4400,
+            "difficulty": 0,
+            "cpc": 3.98,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai for product management",
+            "volume": 3600,
+            "difficulty": 11,
+            "cpc": 10.49,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what is prompt engineering",
+            "volume": 3600,
+            "difficulty": 45,
+            "cpc": 4.03,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering course",
+            "volume": 2900,
+            "difficulty": 38,
+            "cpc": 9.77,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering courses",
+            "volume": 2900,
+            "difficulty": 38,
+            "cpc": 9.77,
+            "intent": "informational"
+          },
+          {
+            "keyword": "associate product manager",
+            "volume": 2900,
+            "difficulty": 1,
+            "cpc": 2.47,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai prompt engineering jobs",
+            "volume": 2400,
+            "difficulty": 0,
+            "cpc": 3.68,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product manager jobs",
+            "volume": 1900,
+            "difficulty": 0,
+            "cpc": 2.97,
+            "intent": "informational"
+          },
+          {
+            "keyword": "course for product manager",
+            "volume": 1900,
+            "difficulty": 32,
+            "cpc": 12.7,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product school",
+            "volume": 1900,
+            "difficulty": 29,
+            "cpc": 4.74,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering salary",
+            "volume": 1300,
+            "difficulty": 9,
+            "cpc": 3.41,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering certification",
+            "volume": 1300,
+            "difficulty": 20,
+            "cpc": 10.28,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering certifications",
+            "volume": 1300,
+            "difficulty": 13,
+            "cpc": 10.28,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai prompt engineering courses",
+            "volume": 1000,
+            "difficulty": 18,
+            "cpc": 13.99,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering guide",
+            "volume": 1000,
+            "difficulty": 45,
+            "cpc": 9.7,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering guidelines",
+            "volume": 1000,
+            "difficulty": 53,
+            "cpc": 9.7,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering guides",
+            "volume": 1000,
+            "difficulty": 45,
+            "cpc": 9.7,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai prompt engineering course",
+            "volume": 1000,
+            "difficulty": 33,
+            "cpc": 13.99,
+            "intent": "informational"
+          },
+          {
+            "keyword": "coursera prompt engineering course",
+            "volume": 1000,
+            "difficulty": 39,
+            "cpc": 4.33,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product manager salary",
+            "volume": 880,
+            "difficulty": 3,
+            "cpc": 7.39,
+            "intent": "informational"
+          },
+          {
+            "keyword": "anthropic prompt engineering",
+            "volume": 880,
+            "difficulty": 45,
+            "cpc": 8.42,
+            "intent": "informational"
+          },
+          {
+            "keyword": "google prompt engineering course",
+            "volume": 880,
+            "difficulty": 38,
+            "cpc": 7.45,
+            "intent": "informational"
+          },
+          {
+            "keyword": "google prompt engineering",
+            "volume": 720,
+            "difficulty": 18,
+            "cpc": 7.57,
+            "intent": "informational"
+          },
+          {
+            "keyword": "mind the product",
+            "volume": 720,
+            "difficulty": 29,
+            "cpc": 11.44,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management",
+            "volume": 590,
+            "difficulty": 16,
+            "cpc": 14.71,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering for ai",
+            "volume": 590,
+            "difficulty": 62,
+            "cpc": 10.45,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what does prompt engineering entail",
+            "volume": 590,
+            "difficulty": 54,
+            "cpc": 0.1,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai prompt engineering salary",
+            "volume": 590,
+            "difficulty": 10,
+            "cpc": 17.03,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course online",
+            "volume": 590,
+            "difficulty": 30,
+            "cpc": 16.12,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager online course",
+            "volume": 590,
+            "difficulty": 31,
+            "cpc": 16.12,
+            "intent": "informational"
+          },
+          {
+            "keyword": "women in product",
+            "volume": 590,
+            "difficulty": 18,
+            "cpc": 15.24,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai tools for product management",
+            "volume": 480,
+            "difficulty": 23,
+            "cpc": 14.12,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what is prompt engineering in ai",
+            "volume": 480,
+            "difficulty": 41,
+            "cpc": 5.6,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what is prompt engineering in a i",
+            "volume": 480,
+            "difficulty": 31,
+            "cpc": 5.6,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what is a prompt engineering",
+            "volume": 480,
+            "difficulty": 41,
+            "cpc": 6.69,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering ai",
+            "volume": 480,
+            "difficulty": 63,
+            "cpc": 9.96,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering best practice",
+            "volume": 480,
+            "difficulty": 39,
+            "cpc": 11.07,
+            "intent": "informational"
+          },
+          {
+            "keyword": "openai prompt engineering guide",
+            "volume": 480,
+            "difficulty": 34,
+            "cpc": 65.25,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering best practices",
+            "volume": 480,
+            "difficulty": 39,
+            "cpc": 11.07,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering artificial intelligence",
+            "volume": 480,
+            "difficulty": 29,
+            "cpc": 9.96,
+            "intent": "informational"
+          },
+          {
+            "keyword": "context engineering vs prompt engineering",
+            "volume": 480,
+            "difficulty": 21,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai prompt engineering certification",
+            "volume": 480,
+            "difficulty": 39,
+            "cpc": 15.39,
+            "intent": "informational"
+          },
+          {
+            "keyword": "claude prompt engineering",
+            "volume": 480,
+            "difficulty": 23,
+            "cpc": 6.53,
+            "intent": "informational"
+          },
+          {
+            "keyword": "anthropic prompt engineering course",
+            "volume": 480,
+            "difficulty": 56,
+            "cpc": 9.32,
+            "intent": "informational"
+          },
+          {
+            "keyword": "chatgpt prompt engineering",
+            "volume": 480,
+            "difficulty": 21,
+            "cpc": 10.19,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course",
+            "volume": 480,
+            "difficulty": 31,
+            "cpc": 12.86,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career",
+            "volume": 480,
+            "difficulty": 11,
+            "cpc": 4.05,
+            "intent": "informational"
+          },
+          {
+            "keyword": "career product management",
+            "volume": 480,
+            "difficulty": 11,
+            "cpc": 4.05,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management as a career",
+            "volume": 480,
+            "difficulty": 0,
+            "cpc": 4.05,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management course",
+            "volume": 390,
+            "difficulty": 20,
+            "cpc": 15.43,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management courses",
+            "volume": 390,
+            "difficulty": 20,
+            "cpc": 15.43,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai prompt engineering side hustle",
+            "volume": 390,
+            "difficulty": 0,
+            "cpc": 1.59,
+            "intent": "informational"
+          },
+          {
+            "keyword": "chatgpt prompt engineering for developers",
+            "volume": 390,
+            "difficulty": 34,
+            "cpc": 8.15,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering examples",
+            "volume": 390,
+            "difficulty": 24,
+            "cpc": 1.88,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering example",
+            "volume": 390,
+            "difficulty": 25,
+            "cpc": 1.88,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering for chatgpt",
+            "volume": 390,
+            "difficulty": 29,
+            "cpc": 7.29,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management certification",
+            "volume": 320,
+            "difficulty": 36,
+            "cpc": 15.95,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management certificate",
+            "volume": 320,
+            "difficulty": 24,
+            "cpc": 15.95,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering techniques",
+            "volume": 320,
+            "difficulty": 27,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "anthropic prompt engineering guide",
+            "volume": 320,
+            "difficulty": 58,
+            "cpc": 6.61,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best prompt engineering course",
+            "volume": 320,
+            "difficulty": 3,
+            "cpc": 9.57,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what is ai prompt engineering",
+            "volume": 320,
+            "difficulty": 17,
+            "cpc": 3.34,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering technique",
+            "volume": 320,
+            "difficulty": 29,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering jobs remote",
+            "volume": 320,
+            "difficulty": 0,
+            "cpc": 2.08,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best prompt engineering courses",
+            "volume": 320,
+            "difficulty": 17,
+            "cpc": 9.57,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering meaning",
+            "volume": 320,
+            "difficulty": 41,
+            "cpc": 12.55,
+            "intent": "informational"
+          },
+          {
+            "keyword": "artificial intelligence product manager course",
+            "volume": 320,
+            "difficulty": 29,
+            "cpc": 13.3,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product manager course",
+            "volume": 320,
+            "difficulty": 30,
+            "cpc": 13.3,
+            "intent": "informational"
+          },
+          {
+            "keyword": "gartner product leadership conference",
+            "volume": 320,
+            "difficulty": 15,
+            "cpc": 13.28,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best product manager course",
+            "volume": 260,
+            "difficulty": 30,
+            "cpc": 12.03,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager best course",
+            "volume": 260,
+            "difficulty": 30,
+            "cpc": 12.03,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering book",
+            "volume": 210,
+            "difficulty": 19,
+            "cpc": 3,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering course free",
+            "volume": 210,
+            "difficulty": 17,
+            "cpc": 5.19,
+            "intent": "informational"
+          },
+          {
+            "keyword": "certified product manager course",
+            "volume": 210,
+            "difficulty": 9,
+            "cpc": 17,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager certification course",
+            "volume": 210,
+            "difficulty": 29,
+            "cpc": 17,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager certificate course",
+            "volume": 210,
+            "difficulty": 27,
+            "cpc": 17,
+            "intent": "informational"
+          },
+          {
+            "keyword": "online product manager course",
+            "volume": 170,
+            "difficulty": 29,
+            "cpc": 49.07,
+            "intent": "informational"
+          },
+          {
+            "keyword": "coursera ai product management",
+            "volume": 140,
+            "difficulty": 35,
+            "cpc": 7.58,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai agent for product management",
+            "volume": 140,
+            "difficulty": 0,
+            "cpc": 19,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager free course",
+            "volume": 140,
+            "difficulty": 29,
+            "cpc": 8.24,
+            "intent": "informational"
+          },
+          {
+            "keyword": "pm networking",
+            "volume": 140,
+            "difficulty": 80,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "is product management a good career",
+            "volume": 140,
+            "difficulty": 1,
+            "cpc": 5.65,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership",
+            "volume": 140,
+            "difficulty": 3,
+            "cpc": 10.44,
+            "intent": "informational"
+          },
+          {
+            "keyword": "maven ai product management",
+            "volume": 110,
+            "difficulty": 7,
+            "cpc": 10.88,
+            "intent": "informational"
+          },
+          {
+            "keyword": "will product management be replaced by ai",
+            "volume": 110,
+            "difficulty": 4,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai in product management",
+            "volume": 110,
+            "difficulty": 17,
+            "cpc": 19.77,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai for product management courses",
+            "volume": 110,
+            "difficulty": 20,
+            "cpc": 17.15,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai for product management course",
+            "volume": 110,
+            "difficulty": 22,
+            "cpc": 17.15,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management ai",
+            "volume": 90,
+            "difficulty": 20,
+            "cpc": 20.85,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management tools",
+            "volume": 90,
+            "difficulty": 4,
+            "cpc": 31.75,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management tool",
+            "volume": 90,
+            "difficulty": 0,
+            "cpc": 31.75,
+            "intent": "informational"
+          },
+          {
+            "keyword": "executive certificate in ai strategy and product innovation",
+            "volume": 90,
+            "difficulty": 7,
+            "cpc": 61.05,
+            "intent": "informational"
+          },
+          {
+            "keyword": "mit xpro executive certificate in ai strategy and product innovation",
+            "volume": 90,
+            "difficulty": 7,
+            "cpc": 29.08,
+            "intent": "informational"
+          },
+          {
+            "keyword": "community product",
+            "volume": 90,
+            "difficulty": 0,
+            "cpc": 11.31,
+            "intent": "informational"
+          },
+          {
+            "keyword": "gartner product leadership conference 2026",
+            "volume": 90,
+            "difficulty": 10,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management jobs",
+            "volume": 70,
+            "difficulty": 0,
+            "cpc": 8.16,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best ai product management courses",
+            "volume": 70,
+            "difficulty": 23,
+            "cpc": 14.5,
+            "intent": "informational"
+          },
+          {
+            "keyword": "pendo ai for product management course",
+            "volume": 70,
+            "difficulty": 0,
+            "cpc": 8.35,
+            "intent": "informational"
+          },
+          {
+            "keyword": "pendo ai for product management",
+            "volume": 70,
+            "difficulty": 0,
+            "cpc": 6.93,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product strategy",
+            "volume": 70,
+            "difficulty": 9,
+            "cpc": 7.59,
+            "intent": "informational"
+          },
+          {
+            "keyword": "coursera product manager course",
+            "volume": 70,
+            "difficulty": 26,
+            "cpc": 7.55,
+            "intent": "informational"
+          },
+          {
+            "keyword": "the product folks",
+            "volume": 70,
+            "difficulty": 9,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career path",
+            "volume": 70,
+            "difficulty": 0,
+            "cpc": 2.19,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career paths",
+            "volume": 70,
+            "difficulty": 0,
+            "cpc": 2.19,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management ai tools",
+            "volume": 50,
+            "difficulty": 11,
+            "cpc": 21.42,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management bootcamp",
+            "volume": 50,
+            "difficulty": 3,
+            "cpc": 13.22,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management specialization",
+            "volume": 50,
+            "difficulty": 0,
+            "cpc": 9.33,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management ai tool",
+            "volume": 50,
+            "difficulty": 0,
+            "cpc": 21.42,
+            "intent": "informational"
+          },
+          {
+            "keyword": "generative ai for product management",
+            "volume": 50,
+            "difficulty": 5,
+            "cpc": 20.65,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai startup product management andrew ng",
+            "volume": 50,
+            "difficulty": 11,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product manager course free",
+            "volume": 50,
+            "difficulty": 12,
+            "cpc": 7.43,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best online product management courses",
+            "volume": 50,
+            "difficulty": 27,
+            "cpc": 19.9,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product marketing manager course",
+            "volume": 50,
+            "difficulty": 20,
+            "cpc": 17.07,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course stanford",
+            "volume": 50,
+            "difficulty": 2,
+            "cpc": 14.93,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product coalition",
+            "volume": 50,
+            "difficulty": 6,
+            "cpc": 13.46,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership conference",
+            "volume": 50,
+            "difficulty": 4,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management book",
+            "volume": 40,
+            "difficulty": 0,
+            "cpc": 3.77,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what is ai product management",
+            "volume": 40,
+            "difficulty": 0,
+            "cpc": 12.06,
+            "intent": "informational"
+          },
+          {
+            "keyword": "duke ai product management",
+            "volume": 40,
+            "difficulty": 1,
+            "cpc": 13.17,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai and product management",
+            "volume": 40,
+            "difficulty": 19,
+            "cpc": 15.09,
+            "intent": "informational"
+          },
+          {
+            "keyword": "coursera ai product management courses",
+            "volume": 40,
+            "difficulty": 21,
+            "cpc": 7.96,
+            "intent": "informational"
+          },
+          {
+            "keyword": "maven ai product management certification",
+            "volume": 40,
+            "difficulty": 4,
+            "cpc": 7.98,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management training",
+            "volume": 40,
+            "difficulty": null,
+            "cpc": 9.72,
+            "intent": "informational"
+          },
+          {
+            "keyword": "pendo ai for product management exam answers",
+            "volume": 40,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management books",
+            "volume": 40,
+            "difficulty": 0,
+            "cpc": 3.77,
+            "intent": "informational"
+          },
+          {
+            "keyword": "agentic ai product management certification",
+            "volume": 40,
+            "difficulty": 31,
+            "cpc": 17.28,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager training course",
+            "volume": 40,
+            "difficulty": 39,
+            "cpc": 34.05,
+            "intent": "informational"
+          },
+          {
+            "keyword": "career in product management",
+            "volume": 40,
+            "difficulty": 11,
+            "cpc": 2.67,
+            "intent": "informational"
+          },
+          {
+            "keyword": "institute of product leadership",
+            "volume": 40,
+            "difficulty": 31,
+            "cpc": 9.07,
+            "intent": "informational"
+          },
+          {
+            "keyword": "cost leadership and product differentiation",
+            "volume": 40,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "institute of product leadership bangalore",
+            "volume": 40,
+            "difficulty": 31,
+            "cpc": 9.07,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management and ai",
+            "volume": 30,
+            "difficulty": 22,
+            "cpc": 17.31,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai for product management pendo",
+            "volume": 30,
+            "difficulty": 9,
+            "cpc": 10.65,
+            "intent": "informational"
+          },
+          {
+            "keyword": "reforge ai product management",
+            "volume": 30,
+            "difficulty": 4,
+            "cpc": 8.1,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management ai certification",
+            "volume": 30,
+            "difficulty": 19,
+            "cpc": 18.62,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management ai courses",
+            "volume": 30,
+            "difficulty": 17,
+            "cpc": 12.04,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management specialization duke university coursera",
+            "volume": 30,
+            "difficulty": null,
+            "cpc": 22.44,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management ai course",
+            "volume": 30,
+            "difficulty": 31,
+            "cpc": 12.04,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management certifications",
+            "volume": 30,
+            "difficulty": 17,
+            "cpc": 22.14,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best ai product management certification",
+            "volume": 30,
+            "difficulty": 20,
+            "cpc": 16.37,
+            "intent": "informational"
+          },
+          {
+            "keyword": "stanford ai product management",
+            "volume": 30,
+            "difficulty": 7,
+            "cpc": 12.94,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management specialization duke university",
+            "volume": 30,
+            "difficulty": null,
+            "cpc": 9.53,
+            "intent": "informational"
+          },
+          {
+            "keyword": "prompt engineering types",
+            "volume": 30,
+            "difficulty": 24,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "advanced certificate in ai and product strategy",
+            "volume": 30,
+            "difficulty": null,
+            "cpc": 46.22,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best ai product manager course",
+            "volume": 30,
+            "difficulty": 23,
+            "cpc": 8.57,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager ai course",
+            "volume": 30,
+            "difficulty": 5,
+            "cpc": 15.19,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager interview course",
+            "volume": 30,
+            "difficulty": 29,
+            "cpc": 3.74,
+            "intent": "informational"
+          },
+          {
+            "keyword": "technical product manager course",
+            "volume": 30,
+            "difficulty": 0,
+            "cpc": 9.77,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career ladder",
+            "volume": 30,
+            "difficulty": 5,
+            "cpc": 105.48,
+            "intent": "informational"
+          },
+          {
+            "keyword": "is product management a dying career",
+            "volume": 30,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership book",
+            "volume": 30,
+            "difficulty": 17,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management leadership",
+            "volume": 30,
+            "difficulty": 0,
+            "cpc": 9.49,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership books",
+            "volume": 30,
+            "difficulty": 5,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management salary",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "free ai product management courses",
+            "volume": 20,
+            "difficulty": 13,
+            "cpc": 12.17,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management coursera",
+            "volume": 20,
+            "difficulty": 32,
+            "cpc": 5.19,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how to use ai in product management",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": 14.37,
+            "intent": "informational"
+          },
+          {
+            "keyword": "duke ai product management specialization",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": 12.85,
+            "intent": "informational"
+          },
+          {
+            "keyword": "mit executive certificate in ai strategy and product innovation",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": 28.83,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai-driven product strategy",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": 18.49,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course free",
+            "volume": 20,
+            "difficulty": 7,
+            "cpc": 5.11,
+            "intent": "informational"
+          },
+          {
+            "keyword": "google product manager course",
+            "volume": 20,
+            "difficulty": 55,
+            "cpc": 11.51,
+            "intent": "informational"
+          },
+          {
+            "keyword": "safe product owner product manager course",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "growth product manager course",
+            "volume": 20,
+            "difficulty": 12,
+            "cpc": 5.49,
+            "intent": "informational"
+          },
+          {
+            "keyword": "safe product owner/product manager course",
+            "volume": 20,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "data product manager course",
+            "volume": 20,
+            "difficulty": 0,
+            "cpc": 6.92,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager crash course",
+            "volume": 20,
+            "difficulty": 3,
+            "cpc": 7.29,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ibm ai product manager course",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": 7.03,
+            "intent": "informational"
+          },
+          {
+            "keyword": "free product manager course",
+            "volume": 20,
+            "difficulty": 29,
+            "cpc": 7.62,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product community",
+            "volume": 20,
+            "difficulty": 0,
+            "cpc": 5.69,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management community",
+            "volume": 20,
+            "difficulty": 3,
+            "cpc": 6.64,
+            "intent": "informational"
+          },
+          {
+            "keyword": "supra product community",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product managers community",
+            "volume": 20,
+            "difficulty": 7,
+            "cpc": 6.64,
+            "intent": "informational"
+          },
+          {
+            "keyword": "federal home loan bank of atlanta fhlba community partners product",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager community",
+            "volume": 20,
+            "difficulty": 9,
+            "cpc": 14.77,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager career path and salary",
+            "volume": 20,
+            "difficulty": 25,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career coaching",
+            "volume": 20,
+            "difficulty": 0,
+            "cpc": 25.54,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career coach",
+            "volume": 20,
+            "difficulty": 2,
+            "cpc": 25.54,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership summit",
+            "volume": 20,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "reforge product leadership",
+            "volume": 20,
+            "difficulty": 4,
+            "cpc": 11.92,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what is product leadership",
+            "volume": 20,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product management reddit",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product strategy course",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 18.02,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product strategy certification",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 22.31,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai-driven product strategy kellogg",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 33.79,
+            "intent": "informational"
+          },
+          {
+            "keyword": "the ai-powered product manager: combining strategy and technology",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai strategy and product innovation",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 27.19,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product strategy certificate for leaders",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 75.15,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai for product discovery and strategy",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 10.59,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product strategy ai",
+            "volume": 10,
+            "difficulty": 9,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "the ai powered product manager combining strategy and technology",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "mit xpro ai strategy and product innovation",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 18.4,
+            "intent": "informational"
+          },
+          {
+            "keyword": "kellogg ai-driven product strategy",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 60.75,
+            "intent": "informational"
+          },
+          {
+            "keyword": "leading with ai strategy and product design",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 4.12,
+            "intent": "informational"
+          },
+          {
+            "keyword": "news corp digital product ai strategy externship",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "kellogg advanced certificate in ai and product strategy",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 15.36,
+            "intent": "informational"
+          },
+          {
+            "keyword": "google product management free course",
+            "volume": 10,
+            "difficulty": 53,
+            "cpc": 3.09,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best free online product management courses with certificates",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 8.37,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course udemy",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course for beginners",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product manager course in india",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "online course for product manager",
+            "volume": 10,
+            "difficulty": 30,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager short course",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 6.8,
+            "intent": "informational"
+          },
+          {
+            "keyword": "it product manager course",
+            "volume": 10,
+            "difficulty": 37,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager interview preparation course",
+            "volume": 10,
+            "difficulty": 40,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "best course for ai product manager",
+            "volume": 10,
+            "difficulty": 31,
+            "cpc": 14.87,
+            "intent": "informational"
+          },
+          {
+            "keyword": "which course for product manager",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 12.55,
+            "intent": "informational"
+          },
+          {
+            "keyword": "web3 product manager course",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "linkedin becoming a product manager course",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "course for ai product manager",
+            "volume": 10,
+            "difficulty": 20,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course harvard",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "become a tech literate product manager course",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product manager course microsoft",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course in hyderabad",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 28.52,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course duration",
+            "volume": 10,
+            "difficulty": 58,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager course in bangalore",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "associate product manager course",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "gen ai product manager course",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product marketing community",
+            "volume": 10,
+            "difficulty": 14,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "mind the product community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product dive community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "jira product discovery community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "mesh01 product testing community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product community of practice",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product testing community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "digital product creators community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "magento/product-community-edition",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "kajabi community product",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product led growth slack community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management community of practice",
+            "volume": 10,
+            "difficulty": 11,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "bloom product community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how to scrape amazon product data using python dev community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product needs in community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "community product development",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "community subway product placement",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "magento/product community edition",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product marketing community seattle",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product owner community of practice",
+            "volume": 10,
+            "difficulty": 32,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "community product manager",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "visual studio 2015 community product key",
+            "volume": 10,
+            "difficulty": 52,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "adobe product community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "better product community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "metasploit community edition product key",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "list one product/solution available to community pharmacies",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product hunt slack community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product community manager",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager slack community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product design community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 6.35,
+            "intent": "informational"
+          },
+          {
+            "keyword": "women in product community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "slack community for product managers",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product that can help the community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "serbian product community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "digital product community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 16.96,
+            "intent": "informational"
+          },
+          {
+            "keyword": "data product leadership community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product hunt community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product sampling community walmart",
+            "volume": 10,
+            "difficulty": 45,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product sampling community",
+            "volume": 10,
+            "difficulty": 43,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "community honda product placement",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "visual studio 2017 community product key free",
+            "volume": 10,
+            "difficulty": 50,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "community product placement",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product makers community",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "pm networking reviews",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "pm networking youtube",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "pm networking course",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "pm networking bgp",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career path reddit",
+            "volume": 10,
+            "difficulty": 19,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager career path google",
+            "volume": 10,
+            "difficulty": 22,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how is product management as a career",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career goals",
+            "volume": 10,
+            "difficulty": 27,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how to switch career to product management",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career accelerator",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 4.63,
+            "intent": "informational"
+          },
+          {
+            "keyword": "is product management a good career reddit",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how to start career in product management",
+            "volume": 10,
+            "difficulty": 55,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "career coach product management",
+            "volume": 10,
+            "difficulty": 2,
+            "cpc": 7.63,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career growth",
+            "volume": 10,
+            "difficulty": 2,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "is product management a good career in india",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "career paths after product management",
+            "volume": 10,
+            "difficulty": 55,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "king's product management career accelerator",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "career after product management",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how to start a career in product management",
+            "volume": 10,
+            "difficulty": 55,
+            "cpc": 4.36,
+            "intent": "informational"
+          },
+          {
+            "keyword": "career change from product management",
+            "volume": 10,
+            "difficulty": 23,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "career path in product management",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "king's product management career accelerator cost",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "career change to product management",
+            "volume": 10,
+            "difficulty": 23,
+            "cpc": 7.41,
+            "intent": "informational"
+          },
+          {
+            "keyword": "why product management as a career",
+            "volume": 10,
+            "difficulty": 47,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "is product management still a good career",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how to start your career in product management",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how to start product management career",
+            "volume": 10,
+            "difficulty": 55,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management early career",
+            "volume": 10,
+            "difficulty": 4,
+            "cpc": 5.27,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career progression",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management career roadmap",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership strategy",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership examples",
+            "volume": 10,
+            "difficulty": 23,
+            "cpc": 11.07,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership courses",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": 8.46,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership certification",
+            "volume": 10,
+            "difficulty": 18,
+            "cpc": 31.89,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product oriented leadership",
+            "volume": 10,
+            "difficulty": 26,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product manager leadership",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "xps leadership program product management intern summer 2026",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "o'reilly product leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership value discipline",
+            "volume": 10,
+            "difficulty": 47,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "digital product leadership tera",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership richard banfield pdf",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership customer value proposition",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership strategy examples",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai product leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product development leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "ai leadership for product managers kellogg",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product quality leadership pricing examples",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "cost leadership and product-differentiation strategies are so widely",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "executive mba in product leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership treacy en wiersema",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "what is product leadership strategy",
+            "volume": 10,
+            "difficulty": 48,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership reforge",
+            "volume": 10,
+            "difficulty": 4,
+            "cpc": 2.84,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product management leadership interview questions",
+            "volume": 10,
+            "difficulty": 38,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product attribute leadership strategy",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "customer intimacy operational excellence and product leadership",
+            "volume": 10,
+            "difficulty": 38,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product marketing leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "how can a company establish market leadership for a product",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "institute of product leadership review reddit",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "customer intimacy operational excellence product leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product quality leadership is based on",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership skills",
+            "volume": 10,
+            "difficulty": 52,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership roles",
+            "volume": 10,
+            "difficulty": 43,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "leadership in product management",
+            "volume": 10,
+            "difficulty": 0,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "cost leadership vs product differentiation",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership meaning",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "fractional product leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": 59.64,
+            "intent": "informational"
+          },
+          {
+            "keyword": "define product leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product leadership jobs",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product-quality leadership pricing objective",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          },
+          {
+            "keyword": "product attribute leadership",
+            "volume": 10,
+            "difficulty": null,
+            "cpc": null,
+            "intent": "informational"
+          }
+        ]
+      }
+    },
+    {
+      "id": "clusters",
+      "label": "Keyword clusters",
+      "status": "done",
+      "artifact": {
+        "count": 4,
+        "clusters": [
+          {
+            "name": "Master Prompt Engineering Fundamentals & Best Practices",
+            "seo_score": 80,
+            "geo_score": 85,
+            "combined_score": 82,
+            "rationale": "High search volume with strong long-tail variations targeting PM workflows. Clear informational and commercial intent (guides, examples, platform-specific queries). Moderate competition but excellent topical authority potential due to keyword density and semantic overlap.",
+            "keywords": [
+              "prompt engineering for product managers",
+              "prompt engineering best practices for AI products",
+              "how product managers use prompt engineering",
+              "prompt engineering techniques for product discovery",
+              "prompt engineering examples for PM workflows",
+              "LLM prompt guidelines for product teams",
+              "what is prompt engineering in product management",
+              "artificial intelligence prompt engineering",
+              "ai prompt engineering",
+              "anthropic prompt engineering",
+              "google prompt engineering",
+              "claude prompt engineering",
+              "chatgpt prompt engineering",
+              "chatgpt prompt engineering for developers",
+              "prompt engineering for chatgpt",
+              "anthropic prompt engineering guide",
+              "context engineering vs prompt engineering"
+            ]
+          },
+          {
+            "name": "Integrate AI Strategy & Tools in Product Management",
+            "seo_score": 75,
+            "geo_score": 70,
+            "combined_score": 73,
+            "rationale": "Broad, high-volume terms with strong commercial intent (SaaS tools, strategy frameworks). Competition is steep for head terms, but the cluster offers solid mid-funnel targeting. Good keyword cohesion around AI integration in PM.",
+            "keywords": [
+              "ai for product management",
+              "ai product management",
+              "ai tools for product management",
+              "ai in product management",
+              "ai product management tools",
+              "ai product management tool",
+              "product management ai tools",
+              "product management ai tool",
+              "generative ai for product management",
+              "ai product strategy"
+            ]
+          },
+          {
+            "name": "Pursue AI Product Management Education & Credentials",
+            "seo_score": 85,
+            "geo_score": 80,
+            "combined_score": 83,
+            "rationale": "Strong transactional/commercial intent with high search volume for courses, certifications, and training programs. Clear buyer journey alignment (research -> comparison -> enrollment). Low-to-moderate difficulty for long-tail variations like 'certification vs practical training'.",
+            "keywords": [
+              "ai product management training for senior PMs",
+              "ai product management workshop curriculum",
+              "peer learning for ai product managers",
+              "best ai product management resources 2024",
+              "how to upskill product managers in ai",
+              "ai product management community learning",
+              "ai product management certification vs practical training",
+              "prompt engineering course",
+              "prompt engineering courses",
+              "prompt engineering certification",
+              "prompt engineering certifications",
+              "ai prompt engineering course",
+              "ai prompt engineering courses",
+              "coursera prompt engineering course",
+              "google prompt engineering course",
+              "anthropic prompt engineering course",
+              "best prompt engineering course"
+            ]
+          },
+          {
+            "name": "Navigate Product Management Career Paths & Leadership",
+            "seo_score": 65,
+            "geo_score": 55,
+            "combined_score": 61,
+            "rationale": "High volume but extremely saturated. Mixed intent (informational, networking, conferences). Broad terms like 'product management career path' face heavy competition from established job boards and universities, limiting quick SEO wins.",
+            "keywords": [
+              "associate product manager",
+              "product management career",
+              "product management career path",
+              "product leadership",
+              "gartner product leadership conference",
+              "women in product",
+              "mind the product",
+              "pm networking",
+              "is product management a good career",
+              "career in product management"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pillars",
+      "label": "Content pillars",
+      "status": "done",
+      "artifact": {
+        "count": 3,
+        "pillars": [
+          {
+            "cluster_id": 3,
+            "cluster_name": "Pursue AI Product Management Education & Credentials",
+            "pillar_title": "Comprehensive Guide to AI Product Management Certifications & Training Pathways",
+            "pillar_type": "guide",
+            "priority": 1,
+            "rationale": "Highest combined score (83) with high opportunity. Strong transactional/commercial intent aligns perfectly with the buyer journey, while its highly structured, factual curriculum data ensures excellent AI citation and GEO performance. Ideal for capturing mid-to-bottom funnel traffic with clear conversion pathways."
+          },
+          {
+            "cluster_id": 1,
+            "cluster_name": "Master Prompt Engineering Fundamentals & Best Practices",
+            "pillar_title": "Comprehensive Hub for Prompt Engineering Fundamentals & Best Practices",
+            "pillar_type": "hub",
+            "priority": 2,
+            "rationale": "Second-highest combined score (82) and high opportunity. Excellent topical authority potential with dense semantic overlap and strong long-tail variations targeting PM workflows. Its factual, step-by-step nature is highly optimized for featured snippets and AI model citations, making it a foundational, evergreen content asset."
+          },
+          {
+            "cluster_id": 2,
+            "cluster_name": "Integrate AI Strategy & Tools in Product Management",
+            "pillar_title": "Strategic Comparison of AI Tools & Integration Frameworks for Product Managers",
+            "pillar_type": "comparison",
+            "priority": 3,
+            "rationale": "Solid combined score (73) with strong commercial intent and mid-funnel targeting. While head terms face steep competition, the cluster's focus on tool evaluations and implementation frameworks provides high citability and diversifies the pillar mix with a commercially driven, decision-support asset."
+          }
+        ]
+      }
+    },
+    {
+      "id": "mix",
+      "label": "Content calendar",
+      "status": "done",
+      "artifact": {
+        "count": 12,
+        "calendar": [
+          {
+            "week": 1,
+            "publish_date": "2026-08-05",
+            "pillar_id": 3,
+            "article_title": "The Definitive Guide to AI Product Management Certifications in 2026",
+            "primary_keyword": "AI product management certification",
+            "secondary_keywords": [
+              "best AI PM courses",
+              "certified AI product manager",
+              "AI PM credential ROI"
+            ],
+            "content_type": "guide",
+            "target_words": 2200,
+            "angle": "Focus on industry recognition, salary impact, and curriculum breakdown to capture high commercial intent during back-to-school career pivot season.",
+            "notes": "Include a structured comparison table of top 5 programs with pricing, duration, and accreditation. Optimize for featured snippets with clear FAQ schema."
+          },
+          {
+            "week": 2,
+            "publish_date": "2026-08-12",
+            "pillar_id": 1,
+            "article_title": "How to Engineer Prompts for Product Requirement Documents (PRDs)",
+            "primary_keyword": "prompt engineering for product managers",
+            "secondary_keywords": [
+              "AI PRD generation",
+              "LLM prompt templates",
+              "structured AI prompting"
+            ],
+            "content_type": "howto",
+            "target_words": 1300,
+            "angle": "Step-by-step workflow transforming vague stakeholder inputs into structured, actionable PRDs using iterative prompting techniques.",
+            "notes": "Provide exact prompt syntax, variable placeholders, and iteration examples. Include a downloadable markdown template."
+          },
+          {
+            "week": 3,
+            "publish_date": "2026-08-19",
+            "pillar_id": 2,
+            "article_title": "AI Roadmapping Tools Compared: Jira vs Productboard vs Aha!",
+            "primary_keyword": "AI product management tools comparison",
+            "secondary_keywords": [
+              "AI roadmap software",
+              "product management AI features",
+              "automated prioritization tools"
+            ],
+            "content_type": "comparison",
+            "target_words": 1800,
+            "angle": "Feature-by-feature breakdown focusing on AI-assisted prioritization, automation capabilities, and integration ecosystems for mid-funnel buyers.",
+            "notes": "Target Q3/Q4 tech stack evaluation cycles. Use clear scoring matrices and highlight hidden costs or learning curves."
+          },
+          {
+            "week": 4,
+            "publish_date": "2026-08-26",
+            "pillar_id": 3,
+            "article_title": "7 Top AI PM Bootcamps for Career Switchers in 2026",
+            "primary_keyword": "best AI product management bootcamps",
+            "secondary_keywords": [
+              "AI PM career switch",
+              "intensive AI product training",
+              "bootcamp placement rates"
+            ],
+            "content_type": "listicle",
+            "target_words": 1200,
+            "angle": "Curated list emphasizing hands-on projects, mentorship quality, and verified hiring partnerships over theoretical coursework.",
+            "notes": "Align with late-summer enrollment deadlines. Include direct links to syllabus pages and alumni success metrics."
+          },
+          {
+            "week": 5,
+            "publish_date": "2026-09-02",
+            "pillar_id": 1,
+            "article_title": "Advanced Prompt Engineering Frameworks for Agile Product Teams",
+            "primary_keyword": "advanced prompt engineering frameworks",
+            "secondary_keywords": [
+              "Agile AI workflows",
+              "chain-of-thought prompting for PMs",
+              "system prompt design"
+            ],
+            "content_type": "guide",
+            "target_words": 2100,
+            "angle": "Move beyond basics to structured frameworks (e.g., CREATE, RTF) tailored for sprint planning, backlog grooming, and cross-functional alignment.",
+            "notes": "Include a downloadable cheat sheet. Target experienced PMs looking to scale AI adoption across their squads."
+          },
+          {
+            "week": 6,
+            "publish_date": "2026-09-09",
+            "pillar_id": 2,
+            "article_title": "Case Study: How a SaaS Startup Cut Time-to-Market by 40% Using AI Analytics",
+            "primary_keyword": "AI product analytics case study",
+            "secondary_keywords": [
+              "AI-driven product development",
+              "SaaS AI implementation",
+              "product metrics automation"
+            ],
+            "content_type": "case-study",
+            "target_words": 1600,
+            "angle": "Real-world metrics, exact tool stack used, and lessons learned from overcoming data silos and integration friction.",
+            "notes": "Highlight ROI and implementation challenges. Use anonymized but realistic data to maintain credibility and GEO citability."
+          },
+          {
+            "week": 7,
+            "publish_date": "2026-09-16",
+            "pillar_id": 3,
+            "article_title": "How to Choose the Right AI PM Certification for Your Career Stage",
+            "primary_keyword": "how to choose AI product management course",
+            "secondary_keywords": [
+              "AI PM certification ROI",
+              "entry-level vs senior AI training",
+              "self-paced vs cohort learning"
+            ],
+            "content_type": "howto",
+            "target_words": 1400,
+            "angle": "Decision matrix based on experience level, budget constraints, and preferred learning style to reduce analysis paralysis.",
+            "notes": "Embed a self-assessment quiz link. Optimize for voice search and conversational AI queries."
+          },
+          {
+            "week": 8,
+            "publish_date": "2026-09-23",
+            "pillar_id": 1,
+            "article_title": "10 Prompt Templates Every Product Manager Should Bookmark",
+            "primary_keyword": "prompt templates for product managers",
+            "secondary_keywords": [
+              "AI user story generator",
+              "customer feedback analysis prompts",
+              "competitive analysis AI prompts"
+            ],
+            "content_type": "listicle",
+            "target_words": 1100,
+            "angle": "Ready-to-use, copy-paste templates for daily PM tasks, formatted for quick scanning and immediate implementation.",
+            "notes": "Link to a public Notion template. Keep sections concise to maximize featured snippet capture."
+          },
+          {
+            "week": 9,
+            "publish_date": "2026-09-30",
+            "pillar_id": 2,
+            "article_title": "Implementing AI in Your Product Stack: A Step-by-Step Integration Guide",
+            "primary_keyword": "AI tool integration for product managers",
+            "secondary_keywords": [
+              "enterprise AI adoption",
+              "product tech stack optimization",
+              "AI governance for PMs"
+            ],
+            "content_type": "guide",
+            "target_words": 2300,
+            "angle": "Focus on data privacy, cross-functional alignment, and vendor evaluation during Q4 budget planning season.",
+            "notes": "Include a vendor evaluation checklist and compliance considerations. Target mid-to-senior PMs and product ops."
+          },
+          {
+            "week": 10,
+            "publish_date": "2026-10-07",
+            "pillar_id": 3,
+            "article_title": "University vs Bootcamp vs Self-Paced: Which AI PM Training Path Wins?",
+            "primary_keyword": "AI product management training comparison",
+            "secondary_keywords": [
+              "online AI PM courses",
+              "university AI certificates",
+              "flexible AI learning paths"
+            ],
+            "content_type": "comparison",
+            "target_words": 1900,
+            "angle": "Unbiased breakdown of cost, time commitment, networking value, and credential weight for year-end career planning.",
+            "notes": "Use a weighted scoring model. Address common misconceptions about academic vs industry-recognized credentials."
+          },
+          {
+            "week": 11,
+            "publish_date": "2026-10-14",
+            "pillar_id": 1,
+            "article_title": "Case Study: Optimizing User Research with Generative AI Prompts",
+            "primary_keyword": "AI prompt engineering for user research",
+            "secondary_keywords": [
+              "synthetic user testing",
+              "AI qualitative analysis",
+              "automated interview transcription"
+            ],
+            "content_type": "case-study",
+            "target_words": 1500,
+            "angle": "Demonstrate how AI accelerates insight synthesis without replacing human empathy, addressing bias and ethical guardrails.",
+            "notes": "Include exact prompt chains used for thematic analysis. Emphasize compliance with data privacy regulations."
+          },
+          {
+            "week": 12,
+            "publish_date": "2026-10-21",
+            "pillar_id": 2,
+            "article_title": "How to Build an AI-Driven Product Strategy Framework from Scratch",
+            "primary_keyword": "AI product strategy framework",
+            "secondary_keywords": [
+              "AI product vision",
+              "strategic AI roadmap planning",
+              "AI capability mapping"
+            ],
+            "content_type": "howto",
+            "target_words": 1400,
+            "angle": "Bridge the gap between emerging AI capabilities and core business objectives for year-end strategic planning.",
+            "notes": "Include a visual framework template. Target product leaders preparing 2027 roadmaps and budget requests."
+          }
+        ],
+        "serp_analysis": {
+          "AI product management": [
+            {
+              "rank": 2,
+              "domain": "www.coursera.org",
+              "url": "https://www.coursera.org/specializations/ai-product-management-duke",
+              "title": "AI Product Management Specialization"
+            },
+            {
+              "rank": 3,
+              "domain": "www.reddit.com",
+              "url": "https://www.reddit.com/r/ProductManagement/comments/1ipy10v/what_the_hell_is_an_ai_product_manager_anyway/",
+              "title": "What the hell is an AI Product Manager anyway?"
+            },
+            {
+              "rank": 4,
+              "domain": "www.datascience-pm.com",
+              "url": "https://www.datascience-pm.com/ai-product-manager/",
+              "title": "What is an AI Product Manager?"
+            },
+            {
+              "rank": 5,
+              "domain": "www.egonzehnder.com",
+              "url": "https://www.egonzehnder.com/functions/technology-officers/insights/how-ai-is-redefining-the-product-managers-role",
+              "title": "AI in Product Management: Understanding the Skills and ..."
+            },
+            {
+              "rank": 6,
+              "domain": "www.youtube.com",
+              "url": "https://www.youtube.com/watch?v=KjYCEiBTHFo",
+              "title": "AI Product Management - Complete Course - 3.5 hours ..."
+            },
+            {
+              "rank": 8,
+              "domain": "www.atlassian.com",
+              "url": "https://www.atlassian.com/agile/product-management/pm-and-ai",
+              "title": "AI and product management: What you need to know"
+            },
+            {
+              "rank": 10,
+              "domain": "productschool.com",
+              "url": "https://productschool.com/certifications/ai-for-product-managers",
+              "title": "AI Product Management Certification Course"
+            }
+          ],
+          "prompt engineering for product managers": [
+            {
+              "rank": 2,
+              "domain": "alaniswright.com",
+              "url": "https://alaniswright.com/blog/prompt-engineering-as-a-product-manager/",
+              "title": "AI prompt engineering as a product manager - Alan Wright"
+            },
+            {
+              "rank": 3,
+              "domain": "maven.com",
+              "url": "https://maven.com/p/3d1c0b/prompt-engineering-for-next-level-product-management",
+              "title": "Prompt Engineering for Next Level Product Management"
+            },
+            {
+              "rank": 4,
+              "domain": "sushantkr17.medium.com",
+              "url": "https://sushantkr17.medium.com/everything-about-prompt-engineering-for-product-managers-in-2025-even-after-the-gpt-5-release-ddceee806906",
+              "title": "Everything about Prompt Engineering for Product Managers in ..."
+            },
+            {
+              "rank": 5,
+              "domain": "www.reddit.com",
+              "url": "https://www.reddit.com/r/PromptEngineering/comments/1d206s9/do_you_think_prompt_engineering_will_be_the/",
+              "title": "Do you think Prompt Engineering will be the domain of ..."
+            },
+            {
+              "rank": 6,
+              "domain": "hellopm.co",
+              "url": "https://hellopm.co/prompt-engineering/",
+              "title": "Prompt Engineering Mastery for Product Managers"
+            },
+            {
+              "rank": 7,
+              "domain": "www.prodpad.com",
+              "url": "https://www.prodpad.com/blog/prompt-engineering-for-product-managers/",
+              "title": "Prompt Engineering for Product Managers"
+            },
+            {
+              "rank": 9,
+              "domain": "agenta.ai",
+              "url": "https://agenta.ai/blog/prompt-management-for-non-engineers",
+              "title": "Prompt Management for Non-Engineers: How Product ..."
+            },
+            {
+              "rank": 10,
+              "domain": "www.atlassian.com",
+              "url": "https://www.atlassian.com/blog/enterprise/prompt-engineering",
+              "title": "25 AI prompts to make product managers' lives easier"
+            }
+          ],
+          "AI product manager course": [
+            {
+              "rank": 1,
+              "domain": "www.coursera.org",
+              "url": "https://www.coursera.org/professional-certificates/ibm-ai-product-manager",
+              "title": "IBM AI Product Manager Professional Certificate"
+            },
+            {
+              "rank": 2,
+              "domain": "www.reddit.com",
+              "url": "https://www.reddit.com/r/learnmachinelearning/comments/1qg7alg/best_aiml_courses_for_product_managers/",
+              "title": "Best AI/ML Courses for Product Managers?"
+            },
+            {
+              "rank": 3,
+              "domain": "scaledagile.com",
+              "url": "https://scaledagile.com/blog/ai-certifications-product-managers/",
+              "title": "AI Certifications for Product Managers"
+            },
+            {
+              "rank": 4,
+              "domain": "productschool.com",
+              "url": "https://productschool.com/certifications/ai-for-product-managers",
+              "title": "AI Product Management Certification Course"
+            },
+            {
+              "rank": 5,
+              "domain": "maven.com",
+              "url": "https://maven.com/product-faculty/ai-product-management-certification",
+              "title": "AI Product Management Certification by Product Faculty"
+            },
+            {
+              "rank": 9,
+              "domain": "www.pragmaticinstitute.com",
+              "url": "https://www.pragmaticinstitute.com/product/ai-product-management-expert-certification/",
+              "title": "AI Product Management Expert Certification"
+            },
+            {
+              "rank": 10,
+              "domain": "www.youtube.com",
+              "url": "https://www.youtube.com/watch?v=JKaA6HcxyXU",
+              "title": "How to Become an AI Product Manager in 2026"
+            }
+          ],
+          "product management community": [
+            {
+              "rank": 1,
+              "domain": "www.reddit.com",
+              "url": "https://www.reddit.com/r/ProductManagement/comments/16tzbpc/any_product_communities_you_guys_like/",
+              "title": "Any product communities you guys like?"
+            },
+            {
+              "rank": 2,
+              "domain": "www.productplan.com",
+              "url": "https://www.productplan.com/learn/product-manager-communities",
+              "title": "8 Online Communities Product Managers Should Join"
+            },
+            {
+              "rank": 3,
+              "domain": "cpoclub.com",
+              "url": "https://cpoclub.com/career/best-product-management-communities/",
+              "title": "11 Best Product Management Communities to Join in 2026"
+            },
+            {
+              "rank": 5,
+              "domain": "www.mindtheproduct.com",
+              "url": "https://www.mindtheproduct.com/",
+              "title": "Mind the Product: #1 Product Community"
+            },
+            {
+              "rank": 6,
+              "domain": "www.meetup.com",
+              "url": "https://www.meetup.com/chipma/",
+              "title": "Chicago Product Management Association"
+            },
+            {
+              "rank": 7,
+              "domain": "productschool.com",
+              "url": "https://productschool.com/slack-community",
+              "title": "Number one Slack Community or Product Managers"
+            },
+            {
+              "rank": 8,
+              "domain": "featureupvote.com",
+              "url": "https://featureupvote.com/blog/5-communities-for-product-managers/",
+              "title": "5 communities to help product managers"
+            },
+            {
+              "rank": 9,
+              "domain": "zedaio.medium.com",
+              "url": "https://zedaio.medium.com/communities-for-product-managers-to-learn-collaborate-and-share-54c2c6233faf",
+              "title": "Communities for Product Managers to Learn, Collaborate and ..."
+            },
+            {
+              "rank": 10,
+              "domain": "www.productmanagementsociety.com",
+              "url": "https://www.productmanagementsociety.com/",
+              "title": "Product Management Society | #1 Product Management ..."
+            }
+          ],
+          "AI PM community": [
+            {
+              "rank": 2,
+              "domain": "www.productmanagementexercises.com",
+              "url": "https://www.productmanagementexercises.com/public-ai-product-management-community-sessions",
+              "title": "Free AI Product Management Talks | Learn from Experts"
+            },
+            {
+              "rank": 3,
+              "domain": "thehellopm.substack.com",
+              "url": "https://thehellopm.substack.com/p/the-ultimate-guide-to-ai-native-product",
+              "title": "The Ultimate Guide to AI Native Product Management"
+            },
+            {
+              "rank": 4,
+              "domain": "maven.com",
+              "url": "https://maven.com/marily-nika/ai-pm-bootcamp",
+              "title": "AI Product Management Bootcamp & Certification by AI ..."
+            },
+            {
+              "rank": 5,
+              "domain": "huggingface.co",
+              "url": "https://huggingface.co/AI-PM-Community",
+              "title": "AI-PM-Community (AI Product Management)"
+            },
+            {
+              "rank": 6,
+              "domain": "www.youtube.com",
+              "url": "https://www.youtube.com/playlist?list=PLUYWvzSesvgFvpWR_kOPhu7eBUENxdJNx",
+              "title": "Free AI Product Management Community Sessions"
+            },
+            {
+              "rank": 7,
+              "domain": "ai-pm.net",
+              "url": "https://ai-pm.net/",
+              "title": "AI Product Management"
+            },
+            {
+              "rank": 9,
+              "domain": "aiproducthive.com",
+              "url": "https://aiproducthive.com/",
+              "title": "AI Product Hive: Home"
+            },
+            {
+              "rank": 10,
+              "domain": "www.institutepm.com",
+              "url": "https://www.institutepm.com/knowledge-hub/ai-pm-online-community",
+              "title": "The Best AI PM Online Communities to Join While You're ..."
+            }
+          ],
+          "product management AI tools": [
+            {
+              "rank": 2,
+              "domain": "www.builder.io",
+              "url": "https://www.builder.io/blog/best-ai-tools-for-product-managers",
+              "title": "10 Best AI Tools for Product Managers in 2026"
+            },
+            {
+              "rank": 3,
+              "domain": "www.reddit.com",
+              "url": "https://www.reddit.com/r/ProductManagement/comments/1r7neab/what_ai_tool_do_you_use_most_and_for_what_use/",
+              "title": "What AI tool do you use most ? and for what use cases"
+            },
+            {
+              "rank": 4,
+              "domain": "aakashgupta.medium.com",
+              "url": "https://aakashgupta.medium.com/i-spent-28k-testing-every-ai-tool-for-product-managers-only-9-were-worth-it-ad7ddffa9115",
+              "title": "I Spent $28K Testing Every AI Tool for Product Managers ..."
+            },
+            {
+              "rank": 5,
+              "domain": "productschool.com",
+              "url": "https://productschool.com/blog/artificial-intelligence/ai-tools-for-product-managers",
+              "title": "Top 21 AI Tools for Product Managers and Product Teams"
+            },
+            {
+              "rank": 6,
+              "domain": "www.youtube.com",
+              "url": "https://www.youtube.com/watch?v=WyR5zMBjCiI&vl=en",
+              "title": "5 Best AI Tools for Product Managers in 2026 | ClickUp"
+            },
+            {
+              "rank": 7,
+              "domain": "www.linkedin.com",
+              "url": "https://www.linkedin.com/posts/anshumani_we-ranked-every-ai-tool-for-product-managers-activity-7388746540686708736-F2o_",
+              "title": "What are the top AI tools for PMs? | Anshumani Ruddra"
+            },
+            {
+              "rank": 8,
+              "domain": "www.prodmgmt.world",
+              "url": "https://www.prodmgmt.world/resources/ai-tools-for-product-managers",
+              "title": "15 AI Tools Product Managers Use Daily (2026 Tested)"
+            },
+            {
+              "rank": 9,
+              "domain": "www.chatprd.ai",
+              "url": "https://www.chatprd.ai/",
+              "title": "ChatPRD - The #1 AI Platform for Product Managers"
+            },
+            {
+              "rank": 10,
+              "domain": "www.lennysnewsletter.com",
+              "url": "https://www.lennysnewsletter.com/p/a-guide-to-ai-prototyping-for-product",
+              "title": "A guide to AI prototyping for product managers"
+            }
+          ],
+          "AI product strategy": [
+            {
+              "rank": 2,
+              "domain": "www.kellogg.northwestern.edu",
+              "url": "https://www.kellogg.northwestern.edu/executive-education/individual-programs/online-programs/psai.aspx",
+              "title": "AI-Driven Product Strategy | Kellogg Executive Education"
+            },
+            {
+              "rank": 3,
+              "domain": "www.news.aakashg.com",
+              "url": "https://www.news.aakashg.com/p/ai-product-strategy",
+              "title": "Your Guide to AI Product Strategy"
+            },
+            {
+              "rank": 4,
+              "domain": "productschool.com",
+              "url": "https://productschool.com/certifications/ai-product-strategy",
+              "title": "AI Product Strategy Certification"
+            },
+            {
+              "rank": 5,
+              "domain": "romanpichler.medium.com",
+              "url": "https://romanpichler.medium.com/how-to-use-ai-to-create-a-winning-product-strategy-921a71043621",
+              "title": "How to Use AI to Create a Winning Product Strategy"
+            },
+            {
+              "rank": 6,
+              "domain": "online.stanford.edu",
+              "url": "https://online.stanford.edu/programs/leading-ai-strategy-and-product-transformation-program",
+              "title": "Leading with AI: Strategy and Product Transformation Program"
+            },
+            {
+              "rank": 7,
+              "domain": "www.merge.dev",
+              "url": "https://www.merge.dev/blog/ai-product-strategy",
+              "title": "AI product strategy: key steps, examples, and best practices"
+            },
+            {
+              "rank": 10,
+              "domain": "www.reforge.com",
+              "url": "https://www.reforge.com/courses/ai-strategy/details",
+              "title": "AI Strategy Course by Reforge"
+            }
+          ],
+          "product leadership course": [
+            {
+              "rank": 1,
+              "domain": "productschool.com",
+              "url": "https://productschool.com/certifications/product-leader",
+              "title": "Product Leadership Certification Course"
+            },
+            {
+              "rank": 2,
+              "domain": "www.reddit.com",
+              "url": "https://www.reddit.com/r/ProductManagement/comments/1c2zpme/courses_for_product_leaders/",
+              "title": "Courses for product leaders : r/ProductManagement"
+            },
+            {
+              "rank": 3,
+              "domain": "www.gsb.stanford.edu",
+              "url": "https://www.gsb.stanford.edu/exec-ed/programs/innovative-product-leadership",
+              "title": "Innovative Product Leadership: The Emerging Chief Product ..."
+            },
+            {
+              "rank": 4,
+              "domain": "www.reforge.com",
+              "url": "https://www.reforge.com/courses/product-leadership",
+              "title": "Product Leadership Course"
+            },
+            {
+              "rank": 5,
+              "domain": "cpoclub.com",
+              "url": "https://cpoclub.com/career/best-product-leadership-courses/",
+              "title": "12 Product Leadership Courses That'll Level You Up"
+            },
+            {
+              "rank": 6,
+              "domain": "brainstation.io",
+              "url": "https://brainstation.io/course/new-york/product-leadership",
+              "title": "Product Leadership Certification NYC"
+            },
+            {
+              "rank": 7,
+              "domain": "www.coursera.org",
+              "url": "https://www.coursera.org/learn/modern-product-leadership-umd",
+              "title": "Modern Product Leadership"
+            },
+            {
+              "rank": 8,
+              "domain": "www.productleadership.com",
+              "url": "https://www.productleadership.com/",
+              "title": "On Campus & Live Online Product Management Courses"
+            },
+            {
+              "rank": 9,
+              "domain": "www.romanpichler.com",
+              "url": "https://www.romanpichler.com/training-courses/product-leadership/",
+              "title": "Product Leadership Workshop"
+            },
+            {
+              "rank": 10,
+              "domain": "www.insead.edu",
+              "url": "https://www.insead.edu/executive-education/partner-programmes/product-leadership-programme",
+              "title": "Product Leadership Programme"
+            }
+          ]
+        },
+        "competitor_overlap": {}
+      }
+    }
+  ],
+  "feedback": []
+}

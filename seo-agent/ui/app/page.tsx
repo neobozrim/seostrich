@@ -1,13 +1,22 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Plus, X } from 'lucide-react';
+import { Send, Plus, X, Settings2, Workflow } from 'lucide-react';
 import { Message, MemoryState, ToolCall } from '@/types';
 import { ChatMessage } from '@/components/ChatMessage';
-import { MemoryPanel } from '@/components/MemoryPanel';
-import { AdminPanel } from '@/components/AdminPanel';
+import { SystemPanel } from '@/components/SystemPanel';
+import { RunView } from '@/components/RunView';
+import { ProfileMenu } from '@/components/ProfileMenu';
 import { LoginForm } from '@/components/LoginForm';
-import { sendMessage, getMemory, checkAuth, clearToken, AuthError } from '@/lib/api';
+import {
+  sendMessage,
+  getMemory,
+  checkAuth,
+  clearToken,
+  getUsername,
+  AuthError,
+} from '@/lib/api';
+import { registerWebMcpTools } from '@/lib/webmcp';
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -21,8 +30,9 @@ export default function Home() {
     decisions: [],
     tasks: [],
   });
-  const [showMemory, setShowMemory] = useState(false);
-  const [showAdmin, setShowAdmin] = useState(false);
+  const [showSystem, setShowSystem] = useState(false);
+  const [showRun, setShowRun] = useState(false);
+  const [username, setUser] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [authReady, setAuthReady] = useState(false);
   const [authRequired, setAuthRequired] = useState(false);
@@ -94,6 +104,7 @@ export default function Home() {
       .then(({ auth_required, authenticated }) => {
         setAuthRequired(auth_required);
         setAuthed(auth_required ? authenticated : true);
+        setUser(getUsername());
       })
       .catch(() => {
         // API unreachable — proceed and let chat surface the error
@@ -108,15 +119,17 @@ export default function Home() {
     if (authRequired && !authed) return;
     // Load initial memory state
     getMemory().then(setMemory).catch(console.error);
+    // Expose the pipeline to in-browser AI agents via WebMCP
+    registerWebMcpTools();
   }, [authReady, authRequired, authed]);
 
   // Handle browser back button to close panels
   useEffect(() => {
-    if (!showAdmin && !showMemory) return;
+    if (!showSystem && !showRun) return;
 
     const handlePopState = () => {
-      if (showAdmin) setShowAdmin(false);
-      if (showMemory) setShowMemory(false);
+      if (showRun) setShowRun(false);
+      else if (showSystem) setShowSystem(false);
     };
 
     window.history.pushState({ panel: true }, '');
@@ -128,7 +141,7 @@ export default function Home() {
         window.history.back();
       }
     };
-  }, [showAdmin, showMemory]);
+  }, [showSystem, showRun]);
 
   const handleSend = async () => {
     if (!input.trim() && attachments.length === 0) return;
@@ -244,6 +257,7 @@ export default function Home() {
       if (error instanceof AuthError) {
         clearToken();
         setAuthed(false);
+        setUser(null);
         setIsStreaming(false);
         return;
       }
@@ -261,6 +275,7 @@ export default function Home() {
   const handleLogout = () => {
     clearToken();
     setAuthed(false);
+    setUser(null);
     setMessages([]);
     setSessionId(null);
   };
@@ -294,33 +309,26 @@ export default function Home() {
             <div className="flex items-center gap-3">
               <h1 className="text-xl font-semibold text-primary-700">Omni Self Improving v1</h1>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <button
-                onClick={() => setShowAdmin(!showAdmin)}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  showAdmin
-                    ? 'bg-accent-400 text-gray-900'
-                    : 'bg-surface-200 hover:bg-accent-100 text-gray-700'
-                }`}
+                onClick={() => setShowRun(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-primary-400 text-white hover:bg-primary-500"
               >
-                {showAdmin ? 'Hide Admin' : 'Admin'}
+                <Workflow className="w-4 h-4" />
+                Pipeline
               </button>
-              {!showMemory && (
-                <button
-                  onClick={() => setShowMemory(true)}
-                  className="px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
-                >
-                  Memory
-                </button>
-              )}
-              {authRequired && (
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-red-50 text-gray-700 hover:text-red-600"
-                >
-                  Log out
-                </button>
-              )}
+              <button
+                onClick={() => setShowSystem(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
+              >
+                <Settings2 className="w-4 h-4" />
+                System
+              </button>
+              <ProfileMenu
+                username={username}
+                authRequired={authRequired}
+                onLogout={handleLogout}
+              />
             </div>
           </div>
         </header>
@@ -423,35 +431,13 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Memory panel drawer */}
-      {showMemory && (
-        <div className="w-96 border-l border-surface-300 relative">
-          <button
-            onClick={() => setShowMemory(false)}
-            className="absolute top-4 right-4 p-1 hover:bg-surface-200 rounded transition-colors z-10"
-            title="Close memory"
-          >
-            <X className="w-4 h-4 text-gray-500" />
-          </button>
-          <MemoryPanel memory={memory} />
-        </div>
+      {/* System panel drawer (merged memory + admin) */}
+      {showSystem && (
+        <SystemPanel memory={memory} onClose={() => setShowSystem(false)} />
       )}
 
-      {/* Admin panel — full page overlay */}
-      {showAdmin && (
-        <div className="fixed inset-0 z-50 bg-white">
-          <div className="w-full h-full">
-            <AdminPanel apiBaseUrl={process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'} />
-          </div>
-          <button
-            onClick={() => setShowAdmin(false)}
-            className="absolute top-4 right-4 p-2 hover:bg-surface-200 rounded-lg transition-colors z-20"
-            title="Close admin"
-          >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
-        </div>
-      )}
+      {/* Pipeline / Run view */}
+      {showRun && <RunView tasks={memory.tasks} onClose={() => setShowRun(false)} />}
     </div>
   );
 }

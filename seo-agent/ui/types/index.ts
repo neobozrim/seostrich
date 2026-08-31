@@ -39,3 +39,38 @@ export interface Session {
   memory: MemoryState;
   createdAt: Date;
 }
+
+// --- Pipeline runs ---------------------------------------------------------
+
+export interface RunSummary {
+  id: string;
+  project?: string;
+  title?: string;
+  created?: string;
+  status?: string;
+  stages: number;
+  modified?: number;
+}
+
+export interface RunStage {
+  id: string;
+  label: string;
+  status: string;
+  artifact: Record<string, any>;
+}
+
+export interface RunFeedback {
+  text: string;
+  author?: string;
+  at?: string;
+}
+
+export interface Run {
+  id: string;
+  project?: string;
+  title?: string;
+  created?: string;
+  status?: string;
+  stages: RunStage[];
+  feedback?: RunFeedback[];
+}

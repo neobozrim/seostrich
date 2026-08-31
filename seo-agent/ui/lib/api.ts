@@ -1,6 +1,7 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 
 const TOKEN_KEY = 'omni_auth_token';
+const USER_KEY = 'omni_auth_user';
 
 export class AuthError extends Error {
   constructor() {
@@ -19,6 +20,16 @@ export function setToken(token: string): void {
 
 export function clearToken(): void {
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+}
+
+export function getUsername(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(USER_KEY);
+}
+
+export function setUsername(name: string): void {
+  localStorage.setItem(USER_KEY, name);
 }
 
 function authHeaders(): Record<string, string> {
@@ -31,14 +42,20 @@ async function ensureOk(response: Response): Promise<void> {
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 }
 
-export async function checkAuth(): Promise<{ auth_required: boolean; authenticated: boolean }> {
+export async function checkAuth(): Promise<{
+  auth_required: boolean;
+  authenticated: boolean;
+  username?: string | null;
+}> {
   const response = await fetch(`${API_BASE}/api/auth/check`, {
     headers: authHeaders(),
   });
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  return response.json();
+  const data = await response.json();
+  if (data.username) setUsername(data.username);
+  return data;
 }
 
 export async function login(username: string, password: string): Promise<void> {
@@ -60,6 +77,7 @@ export async function login(username: string, password: string): Promise<void> {
 
   const data = await response.json();
   setToken(data.token);
+  if (data.username) setUsername(data.username);
 }
 
 export async function sendMessage(
@@ -125,6 +143,73 @@ export async function getMemory(): Promise<any> {
 
 export async function getSessions(): Promise<any[]> {
   const response = await fetch(`${API_BASE}/api/sessions`, {
+    headers: authHeaders(),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+// --- Pipeline runs ---------------------------------------------------------
+
+export async function getRuns(): Promise<any[]> {
+  const response = await fetch(`${API_BASE}/api/runs`, {
+    headers: authHeaders(),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function getRun(runId: string): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}`, {
+    headers: authHeaders(),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function addRunFeedback(
+  runId: string,
+  text: string,
+  author?: string
+): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/feedback`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, author: author || 'judge' }),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function restoreDefaultRuns(): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/restore-defaults`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+// --- Memory files (for the consolidated System panel) ----------------------
+
+export async function getMemoryFile(filename: string): Promise<string> {
+  const response = await fetch(`${API_BASE}/api/memory/file/${filename}`, {
+    headers: authHeaders(),
+  });
+  await ensureOk(response);
+  return response.text();
+}
+
+export async function getImprovements(): Promise<any[]> {
+  const response = await fetch(`${API_BASE}/api/memory/improvements`, {
+    headers: authHeaders(),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function getArtifacts(): Promise<any[]> {
+  const response = await fetch(`${API_BASE}/api/artifacts`, {
     headers: authHeaders(),
   });
   await ensureOk(response);

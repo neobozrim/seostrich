@@ -15,6 +15,7 @@ from typing import List, Optional
 from fastapi import Depends, FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import StreamingResponse, PlainTextResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from pathlib import Path
 import tempfile
 import os
@@ -31,11 +32,17 @@ if _gsc_json:
     os.environ["GSC_CREDENTIALS_PATH"] = _gsc_path
 
 from src.orchestrator import run_orchestrator
-from src import memory
+from src import memory, runs
 from api.auth import router as auth_router, require_auth
 
 app = FastAPI(title="SEO Agent API")
 app.include_router(auth_router)
+
+
+@app.on_event("startup")
+def _seed_default_runs():
+    """Populate the example run(s) on first boot so judges see real data."""
+    runs.seed_defaults(force=False)
 
 # CORS middleware — origins come from CORS_ORIGINS (comma-separated)
 _cors_origins = [
@@ -80,6 +87,72 @@ async def get_sessions(_auth: None = Depends(require_auth)):
     from src import session as session_store
     sessions = session_store.list_sessions()
     return [{"id": sid, "createdAt": sid.split("-")[0]} for sid in sessions[:20]]
+
+
+@app.get("/api/artifacts")
+async def get_artifacts(_auth: None = Depends(require_auth)):
+    """List artifacts produced by agent runs."""
+    artifacts_dir = memory._get_memory_dir() / "artefacts"
+    if not artifacts_dir.exists():
+        return []
+    items = []
+    for path in sorted(artifacts_dir.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+        if path.is_file():
+            items.append({
+                "name": path.name,
+                "size": path.stat().st_size,
+                "modified": path.stat().st_mtime,
+            })
+    return items
+
+
+@app.get("/api/artifacts/{name}")
+async def get_artifact_content(name: str, _auth: None = Depends(require_auth)):
+    """Return the content of a single artifact (path-traversal safe)."""
+    if "/" in name or "\\" in name or name.startswith(".."):
+        raise HTTPException(status_code=404, detail="Not found")
+    path = memory._get_memory_dir() / "artefacts" / name
+    if not path.exists() or not path.is_file():
+        raise HTTPException(status_code=404, detail="Not found")
+    return PlainTextResponse(path.read_text(encoding="utf-8", errors="replace"))
+
+
+class FeedbackIn(BaseModel):
+    text: str
+    author: str = "judge"
+
+
+@app.get("/api/runs")
+async def list_runs(_auth: None = Depends(require_auth)):
+    """List stored pipeline runs (summaries)."""
+    return runs.list_runs()
+
+
+@app.get("/api/runs/{run_id}")
+async def get_run(run_id: str, _auth: None = Depends(require_auth)):
+    """Return one full run with all its stage artifacts."""
+    run = runs.get_run(run_id)
+    if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return run
+
+
+@app.post("/api/runs/{run_id}/feedback")
+async def add_run_feedback(
+    run_id: str, body: FeedbackIn, _auth: None = Depends(require_auth)
+):
+    """Attach a feedback note to a run (used by the Run view + WebMCP)."""
+    run = runs.add_feedback(run_id, body.text, body.author)
+    if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return {"ok": True, "feedback": run["feedback"]}
+
+
+@app.post("/api/runs/restore-defaults")
+async def restore_default_runs(_auth: None = Depends(require_auth)):
+    """Reset example runs back to the shipped seed data."""
+    restored = runs.restore_defaults()
+    return {"restored": restored}
 
 
 @app.get("/api/memory/file/{filename}")
