@@ -31,7 +31,12 @@ Rules:
 - Include rationale for each cluster"""
 
 
-def cluster_keywords(keywords: list[dict], max_clusters: int = 8) -> dict:
+def cluster_keywords(
+    keywords: list[dict],
+    max_clusters: int = 8,
+    location_code: int | None = None,
+    language_code: str | None = None,
+) -> dict:
     """Cluster keywords into thematic groups."""
     # Format keywords for LLM
     kw_text = "\n".join([
@@ -39,9 +44,13 @@ def cluster_keywords(keywords: list[dict], max_clusters: int = 8) -> dict:
         for k in keywords[:150]  # Limit to top 150
     ])
 
+    market_line = ""
+    if location_code:
+        market_line = f"\nTarget market: location_code {location_code}" + (f", language {language_code}" if language_code else "") + "."
+
     user_msg = f"""Keywords to cluster:
 {kw_text}
-
+{market_line}
 Create {max_clusters} thematic clusters."""
 
     try:

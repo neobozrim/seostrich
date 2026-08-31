@@ -12,8 +12,12 @@ import {
   MessageSquare,
   Loader2,
 } from 'lucide-react';
-import { Run, RunStage, RunFeedback } from '@/types';
+import { Run, RunStage, RunFeedback, RunSummary } from '@/types';
 import { getRuns, getRun, addRunFeedback, getUsername, AuthError } from '@/lib/api';
+
+function fmtVol(n: number): string {
+  return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+}
 
 interface RunViewProps {
   tasks: string[];
@@ -108,6 +112,7 @@ function IntakeArtifact({ artifact }: { artifact: Record<string, any> }) {
     ['Goal', artifact.goal],
     ['Optimization mix', artifact.optimization_mix],
     ['Locale', artifact.locale ? `#${artifact.locale.location_code} / ${artifact.locale.language_code}` : ''],
+    ['Market', artifact.market],
   ];
   return (
     <div className="space-y-3">
@@ -211,17 +216,35 @@ function ClustersArtifact({ artifact }: { artifact: Record<string, any> }) {
               <span className="text-sm font-medium text-gray-800 truncate">{c.name}</span>
             </span>
             <span className="flex items-center gap-1 flex-shrink-0">
-              <ScoreBadge value={c.combined_score} />
+              {c.combined_score != null ? (
+                <ScoreBadge value={c.combined_score} />
+              ) : c.total_volume != null ? (
+                <span className="text-xs text-gray-400">vol {fmtVol(c.total_volume)}</span>
+              ) : null}
             </span>
           </button>
           {openId === i && (
             <div className="px-3 pb-3">
-              <div className="flex gap-4 text-xs text-gray-500 mb-2">
-                <span>SEO <b>{c.seo_score}</b></span>
-                <span>GEO <b>{c.geo_score}</b></span>
-                <span>Combined <b>{c.combined_score}</b></span>
-              </div>
-              {c.rationale && <p className="text-xs text-gray-600 mb-2">{c.rationale}</p>}
+              {(c.market || c.intent || c.total_volume != null || c.avg_difficulty != null) && (
+                <div className="mb-2">
+                  {c.market && <Chip>{c.market}</Chip>}
+                  {c.intent && <Chip>{c.intent} intent</Chip>}
+                  {c.total_volume != null && <Chip>vol {fmtVol(c.total_volume)}</Chip>}
+                  {c.avg_difficulty != null && <Chip>difficulty {c.avg_difficulty}</Chip>}
+                </div>
+              )}
+              {(c.seo_score != null || c.geo_score != null || c.combined_score != null) && (
+                <div className="flex gap-4 text-xs text-gray-500 mb-2">
+                  <span>SEO <b>{c.seo_score}</b></span>
+                  <span>GEO <b>{c.geo_score}</b></span>
+                  <span>Combined <b>{c.combined_score}</b></span>
+                </div>
+              )}
+              {(c.rationale || c.seo_rationale || c.geo_rationale) && (
+                <p className="text-xs text-gray-600 mb-2">
+                  {c.rationale || [c.seo_rationale, c.geo_rationale].filter(Boolean).join(' · ')}
+                </p>
+              )}
               <div>
                 {(c.keywords || []).map((k: string, ki: number) => (
                   <Chip key={ki}>{k}</Chip>
@@ -385,22 +408,41 @@ function renderStage(
 
 export function RunView({ tasks, onClose }: RunViewProps) {
   const [run, setRun] = useState<Run | null>(null);
+  const [summaries, setSummaries] = useState<RunSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const loadRun = async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const full = await getRun(id);
+      setRun(full);
+    } catch (e: any) {
+      setError(
+        e instanceof AuthError
+          ? 'Not authenticated.'
+          : `Failed to load run: ${e?.message || e}`
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         setLoading(true);
-        const summaries = await getRuns();
-        if (!summaries.length) {
-          if (!cancelled) setError('No runs yet — ask the agent to run a pipeline.');
+        const sums = await getRuns();
+        if (cancelled) return;
+        setSummaries(sums);
+        if (!sums.length) {
+          setError('No runs yet — ask the agent to run a pipeline.');
           return;
         }
-        const full = await getRun(summaries[0].id);
-        if (!cancelled) setRun(full);
+        await loadRun(sums[0].id);
       } catch (e: any) {
         if (!cancelled) {
           setError(
@@ -446,13 +488,29 @@ export function RunView({ tasks, onClose }: RunViewProps) {
             )}
           </div>
         </div>
-        <button
-          onClick={onClose}
-          className="p-2 hover:bg-surface-200 rounded-lg transition-colors"
-          title="Close pipeline view"
-        >
-          <X className="w-5 h-5 text-gray-500" />
-        </button>
+        <div className="flex items-center gap-2">
+          {summaries.length > 1 && (
+            <select
+              value={run?.id || ''}
+              onChange={(e) => loadRun(e.target.value)}
+              className="max-w-[220px] px-3 py-2 text-sm border border-surface-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-400"
+              title="Switch pipeline run"
+            >
+              {summaries.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {(s.title || s.id).slice(0, 40)}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-surface-200 rounded-lg transition-colors"
+            title="Close pipeline view"
+          >
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-6 py-8">

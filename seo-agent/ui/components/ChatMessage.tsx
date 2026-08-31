@@ -7,9 +7,19 @@ import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 
 interface ChatMessageProps {
   message: Message;
+  onViewRun?: () => void;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+const STAGE_ICONS: Record<string, string> = {
+  intake: '📝',
+  seeds: '🌱',
+  keywords: '🔎',
+  clusters: '🧩',
+  pillars: '🏛️',
+  mix: '🗓️',
+};
+
+export function ChatMessage({ message, onViewRun }: ChatMessageProps) {
   const isUser = message.role === 'user';
   const isTyping = !isUser && !message.content && message.statusText;
 
@@ -52,6 +62,24 @@ export function ChatMessage({ message }: ChatMessageProps) {
         <div className={`text-xs text-gray-400 mt-1 ${isUser ? 'text-right' : 'text-left'}`}>
           {new Date(message.timestamp).toLocaleTimeString()}
         </div>
+
+        {/* Pipeline stages recorded during this reply */}
+        {message.stages && message.stages.length > 0 && (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="text-xs text-gray-500">Pipeline updated:</span>
+            {message.stages.map((s, i) => (
+              <button
+                key={i}
+                onClick={onViewRun}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-surface-300 rounded-full text-xs text-gray-700 hover:border-primary-400 hover:text-primary-700 transition-colors"
+                title={`Open ${s.label} in the pipeline view`}
+              >
+                <span>{STAGE_ICONS[s.stage_id] || '▸'}</span>
+                <span className="font-medium">{s.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Tool calls */}
         {message.toolCalls && message.toolCalls.length > 0 && (

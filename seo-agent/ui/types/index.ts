@@ -6,6 +6,13 @@ export interface Message {
   toolCalls?: ToolCall[];
   attachments?: FileAttachment[];
   statusText?: string;
+  stages?: StageCard[];
+}
+
+export interface StageCard {
+  run_id: string;
+  stage_id: string;
+  label: string;
 }
 
 export interface ToolCall {

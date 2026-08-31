@@ -6,6 +6,7 @@ from typing import Any
 
 from . import llm
 from . import memory
+from . import pipeline_recorder
 from . import session as session_store
 from .tools.extract_seeds import extract_seeds
 from .tools.pull_universe import pull_universe
@@ -178,6 +179,8 @@ TOOL_DEFINITIONS = [
                 "properties": {
                     "keywords": {"type": "array", "items": {"type": "object"}},
                     "max_clusters": {"type": "integer", "default": 8},
+                    "location_code": {"type": "integer", "description": "Optional Google Ads location code of the target market (e.g. 2840 US, 2826 UK)"},
+                    "language_code": {"type": "string", "description": "Optional language code of the target market (e.g. en)"},
                 },
                 "required": ["keywords"],
             },
@@ -1219,6 +1222,12 @@ def run_agent(
                     "success": res["success"],
                     "error": res["error"],
                 })
+                pipeline_recorder.record_tool(
+                    tc["name"],
+                    json.loads(tc["arguments"]) if isinstance(tc["arguments"], str) else tc["arguments"],
+                    res["result"],
+                    res["success"],
+                )
                 messages.append({
                     "role": "tool",
                     "tool_call_id": tc["id"],
@@ -1232,10 +1241,9 @@ def run_agent(
 
             print(f"\n[Tool call]: {tool_name}({tool_args[:100]}...)")
 
+            parsed_args = json.loads(tool_args) if isinstance(tool_args, str) else tool_args
             try:
-                result = TOOL_CALLABLES[tool_name](
-                    **(json.loads(tool_args) if isinstance(tool_args, str) else tool_args)
-                )
+                result = TOOL_CALLABLES[tool_name](**parsed_args)
                 result_str = llm.format_json(result)
                 session_data["tool_results"].append({
                     "round": round_num,
@@ -1245,6 +1253,7 @@ def run_agent(
                     "success": True,
                     "error": None,
                 })
+                pipeline_recorder.record_tool(tool_name, parsed_args, result, True)
             except Exception as e:
                 result_str = json.dumps({"error": str(e)})
                 print(f"[Tool error]: {e}")
@@ -1256,6 +1265,7 @@ def run_agent(
                     "success": False,
                     "error": str(e),
                 })
+                pipeline_recorder.record_tool(tool_name, parsed_args, None, False)
 
             messages.append({
                 "role": "assistant",

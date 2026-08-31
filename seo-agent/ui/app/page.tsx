@@ -230,6 +230,20 @@ export default function Home() {
                 : msg
             )
           );
+        } else if (chunk.type === 'stage') {
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantMessage.id
+                ? {
+                    ...msg,
+                    stages: [
+                      ...(msg.stages || []),
+                      { run_id: chunk.run_id, stage_id: chunk.stage_id, label: chunk.label },
+                    ],
+                  }
+                : msg
+            )
+          );
         } else if (chunk.type === 'memory_update') {
           setMemory(chunk.memory);
         } else if (chunk.type === 'done') {
@@ -358,7 +372,7 @@ export default function Home() {
           ) : (
             <div className="max-w-3xl mx-auto divide-y divide-gray-200">
               {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
+                <ChatMessage key={message.id} message={message} onViewRun={() => setShowRun(true)} />
               ))}
               <div ref={messagesEndRef} />
             </div>

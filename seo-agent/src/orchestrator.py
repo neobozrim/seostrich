@@ -17,6 +17,7 @@ from typing import Any, Optional
 
 from . import llm
 from . import memory
+from . import pipeline_recorder
 from . import session as session_store
 from .agent import run_agent
 from .brand_agent import run_brand_agent
@@ -405,7 +406,14 @@ Be concise. Each step should be <10 words.
                 yield {"type": "status", "content": f"Running SEO agent: {task}..."}
 
                 agent_message = f"{task}\n\n{context}".strip()
+                run_id = f"chat-{sid}"
+                pipeline_recorder.begin_run(run_id, initial_message or task)
+                before_stages = pipeline_recorder.stage_ids(run_id)
                 result = run_agent(agent_message)
+                pipeline_recorder.end_run(run_id)
+
+                for stage in pipeline_recorder.new_stages(run_id, before_stages):
+                    yield {"type": "stage", "run_id": run_id, **stage}
 
                 assistant_messages = [m for m in result["messages"] if m.get("role") == "assistant" and m.get("content")]
                 agent_response = assistant_messages[-1]["content"] if assistant_messages else "No response"
