@@ -47,8 +47,12 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
 - [x] `submit_deliverable(stage_id, title, artifact)` tool for LLM-synthesized artifacts
       (rejects unknown stages + outside-run; parses string artifacts; recorded via `record_deliverable`;
       wired into TOOL_DEFINITIONS/TOOL_CALLABLES + research/strategy categories; smoke test PASS)
-- [ ] Cluster governance: over-generate (~8-10) → mandatory `validate_clusters` gate → score → `select_clusters` picks top 3-4 with discard reasons; artifact keeps selected + discarded
-- [ ] Governance ops (chat + WebMCP): list-all, promote, discard, propose-new → scoped re-seed merged into run, others untouched
+- [x] Cluster governance: over-generate (~8-10) → mandatory `validate_clusters` gate → score → `select_clusters` picks top 3-4 with discard reasons; artifact keeps selected + discarded
+      (cluster_keywords default 10 + over-generate prompt; select_clusters LLM tool; recorder `_apply_selection` splits stage)
+- [x] Governance ops (chat + WebMCP): list-all, promote, discard, propose-new → scoped re-seed merged into run, others untouched
+      (`src/cluster_governance.py` core + `cluster_ops.py` chat tools on active run + REST `/api/runs/{id}/clusters[/promote|/discard|/propose]`
+      + `/api/runs/{id}/stages/{stage}`; propose = 1 scoped keyword_suggestions call budget-keyed to the run via `use_run`)
+      VERIFIED: governance test PASS (split, promote/discard round-trip, propose stats + budget keying, dup + error paths); all prior suites re-PASS
 - [ ] Inspector enrichment: per-keyword vol/difficulty/intent/CPC in RunView keywords + cluster members; discarded section
 - [ ] Optional steps: after core run, agent offers on-page + calendar; "yes" continues in same session (state in session_data); technical audit on-demand only (deterministic tools, artifact queryable)
 - [ ] AI-citability stage (headline): verify DataForSEO AI-optimization docs first; per-keyword search_mentions (AI demand/has-answers/open-share/current cited sources) on selected head terms → PAA free from SERP-advanced → answer-first brief artifact

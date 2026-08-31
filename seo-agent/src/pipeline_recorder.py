@@ -13,6 +13,7 @@ flow through the tool arguments (volume, difficulty, intent) plus the market
 from __future__ import annotations
 
 import contextvars
+from contextlib import contextmanager
 from datetime import datetime, timezone
 
 from . import runs
@@ -89,6 +90,16 @@ def begin_run(run_id: str, title: str, project: str = "Chat pipeline") -> None:
 def active_run_id() -> str | None:
     """The run currently open on this thread/context (None outside a run)."""
     return _active_run_id.get()
+
+
+@contextmanager
+def use_run(run_id: str):
+    """Temporarily bind this thread/context to a run (for REST-triggered ops)."""
+    token = _active_run_id.set(run_id)
+    try:
+        yield run_id
+    finally:
+        _active_run_id.reset(token)
 
 
 def end_run(run_id: str, status: str = "done") -> None:
@@ -208,6 +219,34 @@ def _record_clusters(run: dict, args: dict, result: dict) -> None:
     stage["artifact"] = {"count": len(enriched), "clusters": enriched}
 
 
+def _apply_selection(run: dict, result: dict) -> None:
+    """Split the clusters stage into selected + discarded (with reasons)."""
+    selection = result.get("selection") if isinstance(result.get("selection"), dict) else result
+    selected_names = {str(n).lower() for n in selection.get("selected", []) if isinstance(n, str)}
+    discard_reasons = {}
+    for d in selection.get("discarded", []) or []:
+        if isinstance(d, dict) and d.get("cluster_name"):
+            discard_reasons[str(d["cluster_name"]).lower()] = str(d.get("reason", ""))[:300]
+    stage = _upsert_stage(run, "clusters")
+    clusters = stage["artifact"].get("clusters", [])
+    if not clusters or not selected_names:
+        return  # nothing to split, or empty selection — keep as-is
+    keep, dropped = [], []
+    for c in clusters:
+        name = str(c.get("name", "")).lower()
+        head = str(c.get("head_term", "")).lower()
+        if name in selected_names or head in selected_names:
+            keep.append(c)
+        else:
+            entry = dict(c)
+            entry["discard_reason"] = discard_reasons.get(name, discard_reasons.get(head, "not selected"))
+            dropped.append(entry)
+    stage["artifact"]["clusters"] = keep
+    stage["artifact"]["count"] = len(keep)
+    stage["artifact"]["discarded"] = dropped
+    stage["artifact"]["selected"] = True
+
+
 def _market_of(run: dict) -> str:
     for stage in run["stages"]:
         if stage["id"] == "intake":
@@ -256,6 +295,8 @@ def record_tool(tool_name: str, args: dict, result, success: bool) -> None:
         _record_clusters(run, args or {}, result if isinstance(result, dict) else {})
     elif tool_name == "score_clusters":
         _record_scores(run, result if isinstance(result, dict) else {})
+    elif tool_name == "select_clusters":
+        _apply_selection(run, result if isinstance(result, dict) else {})
     elif tool_name == "recommend_pillars":
         stage = _upsert_stage(run, "pillars")
         stage["artifact"] = result if isinstance(result, dict) else {"pillars": result}

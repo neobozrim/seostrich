@@ -52,6 +52,10 @@ from .tools.content_freshness_scan import content_freshness_scan
 from .tools.pagination_audit import pagination_audit
 from .tools.validate_clusters import validate_clusters
 from .tools.submit_deliverable import submit_deliverable
+from .tools.select_clusters import select_clusters
+from .tools.cluster_ops import (
+    list_clusters_all, promote_cluster, discard_cluster, propose_cluster,
+)
 
 # --- Exposed DataForSEO functions (previously internal only) ---
 from .tools.dataforseo import (
@@ -99,11 +103,17 @@ When starting a new conversation, ask what the user wants to accomplish. Then pl
 - Don't stop after one tool call unless the task is truly complete. If you say "let me dig deeper", actually call the next tool.
 - Produce a **structured final report** that synthesizes findings from all tools called.
 
-**CRITICAL — Keyword Research Workflow (mandatory validation step):**
-1. extract_seeds → pull_universe → cluster_keywords
+**CRITICAL — Keyword Research Workflow (mandatory validation + governance steps):**
+1. extract_seeds → pull_universe → cluster_keywords with max_clusters=10 — OVER-GENERATE on purpose
 2. **MANDATORY: validate_clusters** — self-critique the clusters for coherence. If verdict is "needs_revision", revise and re-validate. If "rejected", re-cluster. NEVER proceed without "approved" verdict.
-3. score_clusters → recommend_pillars → plan_calendar
-4. generate_draft → preflight_draft
+3. score_clusters
+4. **select_clusters** — pick the top 3-4 clusters to pursue; every discarded cluster gets a concrete reason. Discarded clusters keep their stats and can be promoted back.
+5. recommend_pillars (from the SELECTED clusters only) → plan_calendar ONLY if the user confirms they want a calendar
+
+Cluster governance (user can adjust after the run — same session):
+- list_clusters_all: show selected + discarded with reasons
+- promote_cluster / discard_cluster: move clusters between the two sets (reversible)
+- propose_cluster: new cluster via scoped re-seed on one topic
 
 Bad clusters produce bad pillars produce bad content. validate_clusters is the gate.
 
@@ -175,12 +185,12 @@ TOOL_DEFINITIONS = [
         "type": "function",
         "function": {
             "name": "cluster_keywords",
-            "description": "Cluster keywords into thematic groups",
+            "description": "Cluster keywords into thematic groups. Over-generate (8-10) — a later select_clusters step cuts to the top 3-4.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "keywords": {"type": "array", "items": {"type": "object"}},
-                    "max_clusters": {"type": "integer", "default": 8},
+                    "max_clusters": {"type": "integer", "default": 10},
                     "location_code": {"type": "integer", "description": "Optional Google Ads location code of the target market (e.g. 2840 US, 2826 UK)"},
                     "language_code": {"type": "string", "description": "Optional language code of the target market (e.g. en)"},
                 },
@@ -199,6 +209,72 @@ TOOL_DEFINITIONS = [
                     "clusters": {"type": "object"},
                 },
                 "required": ["clusters"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "select_clusters",
+            "description": "Governance cut after scoring: pick the top 3-4 clusters to pursue as pillars and record a concrete discard reason for the rest. Run after score_clusters on the over-generated set, BEFORE recommend_pillars.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "scored_clusters": {"type": "object", "description": "the score_clusters result"},
+                    "max_select": {"type": "integer", "default": 4},
+                },
+                "required": ["scored_clusters"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_clusters_all",
+            "description": "List selected AND discarded clusters of the active run, with stats and discard reasons. Use before promote/discard/propose ops or when the user asks what was dropped.",
+            "parameters": {"type": "object", "properties": {}},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "promote_cluster",
+            "description": "Promote a discarded cluster back into the selection (reversible governance op).",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "cluster_name": {"type": "string"},
+                },
+                "required": ["cluster_name"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "discard_cluster",
+            "description": "Discard a selected cluster (moves it to the discarded set, stats preserved, reversible).",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "cluster_name": {"type": "string"},
+                    "reason": {"type": "string", "default": ""},
+                },
+                "required": ["cluster_name"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "propose_cluster",
+            "description": "Propose a NEW cluster the pipeline missed: scoped keyword re-seed on one topic (1 DataForSEO call), assembled deterministically with real volume/difficulty/intent stats.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "topic": {"type": "string"},
+                },
+                "required": ["topic"],
             },
         },
     },
@@ -1018,6 +1094,11 @@ TOOL_CALLABLES = {
     "pagination_audit": pagination_audit,
     "validate_clusters": validate_clusters,
     "submit_deliverable": submit_deliverable,
+    "select_clusters": select_clusters,
+    "list_clusters_all": list_clusters_all,
+    "promote_cluster": promote_cluster,
+    "discard_cluster": discard_cluster,
+    "propose_cluster": propose_cluster,
     # Exposed DataForSEO
     "serp_organic": serp_organic,
     "serp_ai_mode": serp_ai_mode,
@@ -1047,7 +1128,9 @@ TOOL_CATEGORIES = {
     ],
     "research": [
         "extract_seeds", "pull_universe", "cluster_keywords", "validate_clusters",
-        "score_clusters", "recommend_pillars", "serp_organic", "serp_ai_mode",
+        "score_clusters", "select_clusters", "list_clusters_all", "promote_cluster",
+        "discard_cluster", "propose_cluster",
+        "recommend_pillars", "serp_organic", "serp_ai_mode",
         "keyword_difficulty", "historical_search_volume", "competitors_domain",
         "domain_intersection", "keywords_for_site", "web_search",
         "submit_deliverable",

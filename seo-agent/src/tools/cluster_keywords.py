@@ -22,7 +22,8 @@ Output JSON format:
 }
 
 Rules:
-- Create 3-8 clusters
+- Create the requested number of clusters (typically 5-10)
+- When asked for 8+, OVER-GENERATE: capture more themes than will ultimately be pursued; a later selection step cuts the weak ones — do not pre-filter
 - Each cluster should have 3-15 keywords
 - Head term should be the highest-volume, most specific keyword
 - Group by user intent AND topic similarity
@@ -33,7 +34,7 @@ Rules:
 
 def cluster_keywords(
     keywords: list[dict],
-    max_clusters: int = 8,
+    max_clusters: int = 10,
     location_code: int | None = None,
     language_code: str | None = None,
 ) -> dict:
