@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="SEOstrich">
+  <defs>
+  <mask id="a" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">
+    <circle cx="100" cy="100" r="84" fill="#fff"/>
+    <path d="M107 110 C 114 140, 113 162, 120 206" fill="none" stroke="#000" stroke-width="24" stroke-linecap="round"/>
+    <path d="M86 56 L 79 43" fill="none" stroke="#000" stroke-width="7" stroke-linecap="round"/>
+    <path d="M100 52 L 100 38" fill="none" stroke="#000" stroke-width="7" stroke-linecap="round"/>
+    <path d="M114 56 L 121 44" fill="none" stroke="#000" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="102" cy="84" r="30" fill="#000"/>
+    <path d="M76 72 L 34 84 Q 26 87 34 90 L 76 100 Z" fill="#000"/>
+    <circle cx="94" cy="78" r="9" fill="#fff"/>
+  </mask>
+  </defs>
+  <title>SEOstrich</title>
+  <rect width="200" height="200" fill="#6B4226" mask="url(#a)"/>
+</svg>

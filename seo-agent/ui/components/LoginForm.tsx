@@ -32,11 +32,13 @@ export function LoginForm({ onLoggedIn }: LoginFormProps) {
   return (
     <div className="flex items-center justify-center h-screen bg-surface-50">
       <div className="w-full max-w-sm bg-white border border-surface-300 rounded-xl shadow-sm p-8">
-        <h1 className="text-xl font-semibold text-primary-700 mb-1">
-          Omni Self Improving v1
-        </h1>
-        <p className="text-sm text-gray-500 mb-6">
-          An agent that has memory, inspects its work and self-improves.
+        <img
+          src="/logo/seostrich-lockup-vertical.svg"
+          alt="SEOstrich"
+          className="h-32 w-auto mx-auto mb-3"
+        />
+        <p className="text-sm text-gray-500 mb-6 text-center">
+          An SEO agent that has memory, inspects its work and self-improves.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">

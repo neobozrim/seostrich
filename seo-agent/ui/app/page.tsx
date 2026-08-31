@@ -296,7 +296,14 @@ export default function Home() {
   }
 
   if (authRequired && !authed) {
-    return <LoginForm onLoggedIn={() => setAuthed(true)} />;
+    return (
+      <LoginForm
+        onLoggedIn={() => {
+          setAuthed(true);
+          setUser(getUsername());
+        }}
+      />
+    );
   }
 
   return (
@@ -307,7 +314,7 @@ export default function Home() {
         <header className="bg-surface-100 border-b border-surface-300 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h1 className="text-xl font-semibold text-primary-700">Omni Self Improving v1</h1>
+              <img src="/logo/seostrich-lockup-horizontal.svg" alt="SEOstrich" className="h-8 w-auto" />
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -338,11 +345,13 @@ export default function Home() {
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center max-w-lg">
-                <h2 className="text-2xl font-semibold mb-2 text-primary-700">
-                  Omni Self Improving v1
-                </h2>
+                <img
+                  src="/logo/seostrich-lockup-vertical.svg"
+                  alt="SEOstrich"
+                  className="h-40 w-auto mx-auto mb-4"
+                />
                 <p className="text-gray-500">
-                  An agent that has memory, inspects its work and self-improves.
+                  An SEO agent that has memory, inspects its work and self-improves.
                 </p>
               </div>
             </div>

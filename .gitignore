@@ -14,5 +14,8 @@ seo-agent/outputs/
 seo-agent/research/
 pp_*.json
 
+# Brand source kit (production assets live in seo-agent/ui/public)
+design-assets/
+
 # Blog content (personal articles, not for repo)
 blog/
