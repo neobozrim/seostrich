@@ -10,6 +10,7 @@ The orchestrator is the "front desk" that:
 It doesn't know domain details, just recognizes agent capabilities.
 """
 
+import contextvars
 import json
 import threading
 from datetime import datetime
@@ -463,53 +464,87 @@ Be concise. Each step should be <10 words.
                         }
                 pipeline_recorder.begin_run(run_id, initial_message or task)
                 before_stages = pipeline_recorder.stage_ids(run_id)
+
+                # Run the agent in a worker thread so this generator can
+                # stream stage events live instead of blocking until done.
+                # The copied context carries the active run id, so tool
+                # recording and DFS budgeting still key to this run.
+                ctx = contextvars.copy_context()
+                worker_outcome: dict = {}
+
+                def _worker():
+                    try:
+                        worker_outcome["result"] = ctx.run(
+                            run_agent, agent_message,
+                            stop_check=lambda: _check_stop(sid),
+                        )
+                    except BaseException as exc:
+                        worker_outcome["error"] = exc
+
+                worker = threading.Thread(target=_worker, daemon=True)
+                worker.start()
+
+                seen_stages = set(before_stages)
                 try:
-                    result = run_agent(agent_message, stop_check=lambda: _check_stop(sid))
-                    pipeline_recorder.end_run(run_id)
-                except StopRequested:
-                    pipeline_recorder.end_run(run_id, status="stopped")
-                    for stage in pipeline_recorder.new_stages(run_id, before_stages):
-                        yield {"type": "stage", "run_id": run_id, **stage}
+                    while True:
+                        worker.join(timeout=0.5)
+                        for stage in pipeline_recorder.new_stages(run_id, seen_stages):
+                            seen_stages.add(stage["stage_id"])
+                            yield {"type": "stage", "run_id": run_id, **stage}
+                        if not worker.is_alive():
+                            break
+                except GeneratorExit:
+                    # Client went away mid-run: ask the agent to stop and
+                    # close the run so it doesn't stay "running" forever.
+                    request_stop(sid)
+                    worker.join(timeout=5)
+                    if "result" in worker_outcome:
+                        pipeline_recorder.end_run(run_id)
+                    else:
+                        pipeline_recorder.fail_run(
+                            run_id, str(worker_outcome.get("error") or "stream closed")
+                        )
+                    raise
+
+                if "error" in worker_outcome:
+                    err = worker_outcome["error"]
+                    if isinstance(err, StopRequested):
+                        pipeline_recorder.end_run(run_id, status="stopped")
+                        session_data["agent_calls"].append({
+                            "task": task,
+                            "context": context,
+                            "agent_session_id": None,
+                            "tool_calls": 0,
+                            "response": "Stopped by user",
+                        })
+                        yield {
+                            "type": "tool_end",
+                            "tool": "seo_agent",
+                            "result": {"response": "Stopped by user", "tool_calls_made": 0},
+                            "success": False,
+                        }
+                        yield {"type": "status", "content": "Stopped"}
+                        break
+                    print(f"[Orchestrator] seo_agent worker failed: {err!r}")
+                    pipeline_recorder.fail_run(run_id, str(err))
                     session_data["agent_calls"].append({
                         "task": task,
                         "context": context,
                         "agent_session_id": None,
                         "tool_calls": 0,
-                        "response": "Stopped by user",
+                        "response": f"SEO agent failed: {err}",
                     })
                     yield {
                         "type": "tool_end",
                         "tool": "seo_agent",
-                        "result": {"response": "Stopped by user", "tool_calls_made": 0},
+                        "result": {"response": f"SEO agent failed: {err}", "tool_calls_made": 0},
                         "success": False,
                     }
-                    yield {"type": "status", "content": "Stopped"}
-                    break
-                except Exception as e:
-                    import traceback
-                    traceback.print_exc()
-                    pipeline_recorder.fail_run(run_id, str(e))
-                    # Surface stages recorded before the crash — they're real work
-                    for stage in pipeline_recorder.new_stages(run_id, before_stages):
-                        yield {"type": "stage", "run_id": run_id, **stage}
-                    session_data["agent_calls"].append({
-                        "task": task,
-                        "context": context,
-                        "agent_session_id": None,
-                        "tool_calls": 0,
-                        "response": f"SEO agent failed: {e}",
-                    })
-                    yield {
-                        "type": "tool_end",
-                        "tool": "seo_agent",
-                        "result": {"response": f"SEO agent failed: {e}", "tool_calls_made": 0},
-                        "success": False,
-                    }
-                    yield {"type": "error", "content": str(e)}
+                    yield {"type": "error", "content": str(err)}
                     continue
 
-                for stage in pipeline_recorder.new_stages(run_id, before_stages):
-                    yield {"type": "stage", "run_id": run_id, **stage}
+                pipeline_recorder.end_run(run_id)
+                result = worker_outcome["result"]
 
                 assistant_messages = [m for m in result["messages"] if m.get("role") == "assistant" and m.get("content")]
                 agent_response = assistant_messages[-1]["content"] if assistant_messages else "No response"

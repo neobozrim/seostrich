@@ -39,7 +39,9 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
       "Stopped" status + done event, flags cleaned up); `npx tsc --noEmit` clean
 
 ## Phase 4 — The demo
-- [~] Live stage streaming: `run_agent` in worker thread; orchestrator polls `new_stages` ~1s and yields stage events live
+- [x] Live stage streaming: `run_agent` in worker thread; orchestrator polls `new_stages` ~1s and yields stage events live
+      (contextvars copied into worker so recording + DFS budget keying keep working; GeneratorExit closes run)
+      VERIFIED: stream test PASS — stages arrive interleaved BEFORE tool_end; stop/crash/budget suites re-PASS
 - [x] Stage model: `STAGE_LABELS` + `record_tool` mappings for audit / competitors / onpage / ai_citability
       (audit checks merged per-tool with `_trim` bounding; competitor sources merged per-tool)
 - [x] `submit_deliverable(stage_id, title, artifact)` tool for LLM-synthesized artifacts
