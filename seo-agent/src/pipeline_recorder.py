@@ -28,6 +28,10 @@ STAGE_LABELS = {
     "clusters": "Clusters",
     "pillars": "Content pillars",
     "mix": "Content mix",
+    "audit": "Technical audit",
+    "competitors": "Competitor map",
+    "onpage": "On-page recommendations",
+    "ai_citability": "AI citability",
 }
 
 # Google Ads location codes used by DataForSEO -> human market labels
@@ -38,6 +42,26 @@ MARKET_LABELS = {
 }
 
 KEYWORD_TOOLS = {"keyword_suggestions", "related_keywords", "keywords_for_site", "keyword_overview"}
+
+AUDIT_TOOLS = {
+    "technical_seo_audit", "audit_crawlability", "audit_meta_tags",
+    "audit_structured_data", "audit_performance", "audit_mobile",
+    "audit_i18n", "audit_content",
+}
+
+COMPETITOR_TOOLS = {
+    "competitors_domain", "domain_intersection",
+    "serp_organic", "serp_ai_mode",
+}
+
+
+def _trim(value, max_items: int = 50):
+    """Keep stage artifacts bounded — audit/SERP payloads can be huge."""
+    if isinstance(value, list):
+        return value[:max_items]
+    if isinstance(value, dict):
+        return {k: _trim(v, max_items) for k, v in list(value.items())[:30]}
+    return value
 
 
 def market_label(location_code: int | None, language_code: str | None) -> str:
@@ -238,7 +262,35 @@ def record_tool(tool_name: str, args: dict, result, success: bool) -> None:
     elif tool_name == "plan_calendar":
         stage = _upsert_stage(run, "mix")
         stage["artifact"] = result if isinstance(result, dict) else {"calendar": result}
+    elif tool_name in AUDIT_TOOLS:
+        stage = _upsert_stage(run, "audit")
+        checks = stage["artifact"].setdefault("checks", {})
+        checks[tool_name] = _trim(result)
+        stage["artifact"]["checks_count"] = len(checks)
+    elif tool_name in COMPETITOR_TOOLS:
+        stage = _upsert_stage(run, "competitors")
+        sources = stage["artifact"].setdefault("sources", {})
+        sources[tool_name] = _trim(result)
     else:
         return
 
+    runs.save_run(run_id, run)
+
+
+def record_deliverable(stage_id: str, title: str, artifact: dict) -> None:
+    """Record an agent-produced deliverable as a stage (no-op outside a run).
+
+    Unlike record_tool (which mirrors tool outputs), this stores what the
+    agent itself synthesized — e.g. an on-page brief or an AI-citability brief.
+    """
+    run_id = _active_run_id.get()
+    if not run_id:
+        return
+    run = runs.get_run(run_id)
+    if run is None:
+        return
+    stage = _upsert_stage(run, stage_id)
+    stage["artifact"] = _trim(artifact) if isinstance(artifact, dict) else {"content": artifact}
+    stage["artifact"]["title"] = str(title)[:120]
+    stage["artifact"]["source"] = "agent"
     runs.save_run(run_id, run)

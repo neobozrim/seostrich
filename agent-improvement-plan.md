@@ -31,15 +31,20 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
       usage report, continue_dfs_budget 3→28, re-enforced at new cap, None for non-capped runs)
 
 ## Phase 3 — Stop + disconnect safety
-- [ ] Stop flag registry + `POST /api/chat/stop`; `StopRequested` checked between `run_agent` rounds and orchestrator yields
-- [ ] `api/main.py` watches `request.is_disconnected()` → sets flag
-- [ ] UI: Send↔Stop toggle + AbortController in `sendMessage`
-- [ ] UI: error/done events resolve running tool cards (kills forever-spinner)
+- [x] Stop flag registry + `POST /api/chat/stop`; `StopRequested` checked between `run_agent` rounds and orchestrator yields
+- [x] `api/main.py` watches `request.is_disconnected()` → sets flag
+- [x] UI: Send↔Stop toggle + AbortController in `sendMessage`
+- [x] UI: error/done events resolve running tool cards (kills forever-spinner)
+- [x] VERIFIED 2026-08-31: stop-path E2E PASS (StopRequested mid-run → run closed as "stopped", failed tool_end +
+      "Stopped" status + done event, flags cleaned up); `npx tsc --noEmit` clean
 
 ## Phase 4 — The demo
-- [ ] Live stage streaming: `run_agent` in worker thread; orchestrator polls `new_stages` ~1s and yields stage events live
-- [ ] Stage model: `STAGE_LABELS` + `record_tool` mappings for audit / competitors / onpage / ai_citability
-- [ ] `submit_deliverable(stage_id, title, artifact)` tool for LLM-synthesized artifacts
+- [~] Live stage streaming: `run_agent` in worker thread; orchestrator polls `new_stages` ~1s and yields stage events live
+- [x] Stage model: `STAGE_LABELS` + `record_tool` mappings for audit / competitors / onpage / ai_citability
+      (audit checks merged per-tool with `_trim` bounding; competitor sources merged per-tool)
+- [x] `submit_deliverable(stage_id, title, artifact)` tool for LLM-synthesized artifacts
+      (rejects unknown stages + outside-run; parses string artifacts; recorded via `record_deliverable`;
+      wired into TOOL_DEFINITIONS/TOOL_CALLABLES + research/strategy categories; smoke test PASS)
 - [ ] Cluster governance: over-generate (~8-10) → mandatory `validate_clusters` gate → score → `select_clusters` picks top 3-4 with discard reasons; artifact keeps selected + discarded
 - [ ] Governance ops (chat + WebMCP): list-all, promote, discard, propose-new → scoped re-seed merged into run, others untouched
 - [ ] Inspector enrichment: per-keyword vol/difficulty/intent/CPC in RunView keywords + cluster members; discarded section

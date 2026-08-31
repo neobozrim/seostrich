@@ -51,6 +51,7 @@ from .tools.content_quality_assessment import content_quality_assessment
 from .tools.content_freshness_scan import content_freshness_scan
 from .tools.pagination_audit import pagination_audit
 from .tools.validate_clusters import validate_clusters
+from .tools.submit_deliverable import submit_deliverable
 
 # --- Exposed DataForSEO functions (previously internal only) ---
 from .tools.dataforseo import (
@@ -228,6 +229,22 @@ TOOL_DEFINITIONS = [
                     "articles_per_week": {"type": "integer", "default": 1},
                 },
                 "required": ["pillars"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "submit_deliverable",
+            "description": "Submit a deliverable you synthesized (on-page brief, AI-citability brief, recommendations) so it is recorded as a pipeline stage in the Run view. Use for outputs that are not a direct tool result. Only works inside an active pipeline run.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stage_id": {"type": "string", "description": "Stage this belongs to: intake|seeds|keywords|clusters|pillars|mix|audit|competitors|onpage|ai_citability"},
+                    "title": {"type": "string"},
+                    "artifact": {"type": "object", "description": "The deliverable content as a JSON object"},
+                },
+                "required": ["stage_id", "title", "artifact"],
             },
         },
     },
@@ -1000,6 +1017,7 @@ TOOL_CALLABLES = {
     "content_freshness_scan": content_freshness_scan,
     "pagination_audit": pagination_audit,
     "validate_clusters": validate_clusters,
+    "submit_deliverable": submit_deliverable,
     # Exposed DataForSEO
     "serp_organic": serp_organic,
     "serp_ai_mode": serp_ai_mode,
@@ -1032,9 +1050,10 @@ TOOL_CATEGORIES = {
         "score_clusters", "recommend_pillars", "serp_organic", "serp_ai_mode",
         "keyword_difficulty", "historical_search_volume", "competitors_domain",
         "domain_intersection", "keywords_for_site", "web_search",
+        "submit_deliverable",
     ],
     "strategy": [
-        "plan_calendar", "run_discovery",
+        "plan_calendar", "run_discovery", "submit_deliverable",
     ],
     "gsc": [
         "gsc_performance", "gsc_inspect_url", "gsc_list_sitemaps",
