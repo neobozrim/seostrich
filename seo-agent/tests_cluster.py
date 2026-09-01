@@ -75,8 +75,38 @@ print(f"     index form: {len(idx_payload):>4} chars | text form: {len(text_payl
       f"({100 - len(idx_payload) * 100 // len(text_payload)}% smaller)")
 chk("index form is smaller", len(idx_payload) < len(text_payload))
 
+print("5. seed coverage: one loud seed must not swallow the slate")
+from src.tools.cluster_keywords import _diverse_top
+from src.tools.pull_universe import _collect_seeds
+
+loud = [{"keyword": f"ai product manager {i}", "volume": 3000 - i, "source_seed": "ai pm skills"}
+        for i in range(60)]
+quiet = ([{"keyword": f"knowledge graph {i}", "volume": 20, "source_seed": "knowledge graphs"} for i in range(5)]
+         + [{"keyword": f"agentic commerce {i}", "volume": 15, "source_seed": "agentic commerce"} for i in range(5)])
+pick = _diverse_top(loud + quiet, 20)
+srcs = {k["source_seed"] for k in pick}
+chk("all three seeds represented", srcs == {"ai pm skills", "knowledge graphs", "agentic commerce"}, str(srcs))
+chk("low-volume distinctive terms survive the cut",
+    any(k["source_seed"] == "agentic commerce" for k in pick))
+chk("still returns the limit", len(pick) == 20, str(len(pick)))
+chk("no duplicates", len({k["keyword"] for k in pick}) == 20)
+old_way = sorted(loud + quiet, key=lambda k: k["volume"], reverse=True)[:20]
+chk("old volume-only cut dropped them entirely",
+    {k["source_seed"] for k in old_way} == {"ai pm skills"})
+chk("untagged keywords still work", len(_diverse_top([{"keyword": "a", "volume": 5}], 10)) == 1)
+
+print("6. seed budget spans every category")
+seeds = {"business_seeds": ["b1", "b2", "b3", "b4"],
+         "site_seeds": ["s1", "s2", "s3", "s4"],
+         "competitor_seeds": ["c1", "c2", "c3", "c4"]}
+first5 = _collect_seeds(seeds)[:5]
+chk("first 5 span all categories", {x[0] for x in first5} == {"b", "s", "c"}, str(first5))
+chk("no duplicates", len(set(_collect_seeds(seeds))) == 12)
+chk("missing categories tolerated", _collect_seeds({"site_seeds": ["s1"]}) == ["s1"])
+chk("empty seeds tolerated", _collect_seeds({}) == [])
+
 if "--live" in sys.argv:
-    print("5. LIVE: real keywords from the run that timed out")
+    print("7. LIVE: real keywords from the run that timed out")
     kw_file = Path("cluster_input.json")
     if kw_file.exists():
         keywords = json.loads(kw_file.read_text(encoding="utf-8"))

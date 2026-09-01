@@ -66,24 +66,44 @@ def pull_universe(
 
 
 def _collect_seeds(seeds: dict) -> list[str]:
-    """Flatten seed categories into an ordered, de-duplicated seed list."""
+    """Interleave seed categories so a budget cut spans all three.
+
+    Flattening business -> site -> competitor and then taking the first
+    MAX_EXPAND_SEEDS meant the budget was spent almost entirely on business
+    seeds. Observed 2026-09-01 on productpirates.club: four generic
+    "AI product manager" seeds were expanded and the distinctive site seeds
+    ("agentic commerce building blocks", "open source LLM evaluation",
+    "remote home computer access") were never expanded at all. The universe
+    came back as an AI-PM job board and the strategy followed it there.
+
+    Round-robin instead: every category contributes before any repeats.
+    """
+    buckets = [
+        [str(x).strip() for x in (seeds.get("business_seeds") or []) if str(x).strip()],
+        [str(x).strip() for x in (seeds.get("site_seeds") or []) if str(x).strip()],
+        [str(x).strip() for x in (seeds.get("competitor_seeds") or []) if str(x).strip()],
+    ]
     ordered: list[str] = []
-    seen = set()
-    for seed_list in [
-        seeds.get("business_seeds", []),
-        seeds.get("site_seeds", []),
-        seeds.get("competitor_seeds", []),
-    ]:
-        for seed in seed_list or []:
-            key = (seed or "").strip().lower()
-            if key and key not in seen:
+    seen: set[str] = set()
+    for i in range(max((len(b) for b in buckets), default=0)):
+        for bucket in buckets:
+            if i >= len(bucket):
+                continue
+            seed = bucket[i]
+            key = seed.lower()
+            if key not in seen:
                 seen.add(key)
-                ordered.append(seed.strip())
+                ordered.append(seed)
     return ordered
 
 
 def _expand_seed(seed: str, location_code: int, language_code: str) -> list[dict]:
-    """Related keywords + suggestions for one seed, cache-backed."""
+    """Related keywords + suggestions for one seed, cache-backed.
+
+    Each keyword is tagged with the seed that produced it so later stages can
+    keep coverage across seeds instead of letting one high-volume seed's
+    expansion crowd everything else out.
+    """
     results: list[dict] = []
     params = {"seed": seed, "location_code": location_code, "language_code": language_code}
 
@@ -112,6 +132,10 @@ def _expand_seed(seed: str, location_code: int, language_code: str) -> list[dict
             suggestions = []
     if suggestions:
         results.extend(suggestions)
+
+    for kw in results:
+        if isinstance(kw, dict):
+            kw.setdefault("source_seed", seed)
 
     return results
 

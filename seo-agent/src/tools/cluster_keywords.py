@@ -92,6 +92,49 @@ def _expand(raw, ranked: list[dict]) -> list[dict]:
     return out
 
 
+def _diverse_top(keywords: list[dict], limit: int) -> list[dict]:
+    """Pick `limit` keywords keeping coverage across the seeds that found them.
+
+    Taking the top `limit` by volume alone let one seed's expansion swallow the
+    whole slate. Observed 2026-09-01: "AI product manager" expanded into jobs,
+    salary and certification terms at 700-3600 volume, while the topics the
+    business is actually about sat at 10-140 and fell outside the cut — so the
+    clusters described a job board. Round-robin across source seeds first
+    (each seed's own keywords still ordered by volume), then fill any
+    remaining slots by raw volume.
+    """
+    buckets: dict[str, list[dict]] = {}
+    for kw in keywords:
+        buckets.setdefault(kw.get("source_seed") or "", []).append(kw)
+    for rows in buckets.values():
+        rows.sort(key=lambda k: k.get("volume") or 0, reverse=True)
+
+    picked: list[dict] = []
+    seen: set[str] = set()
+    if len(buckets) > 1:
+        for i in range(max(len(r) for r in buckets.values())):
+            for rows in buckets.values():
+                if i >= len(rows) or len(picked) >= limit:
+                    continue
+                key = (rows[i].get("keyword") or "").lower()
+                if key and key not in seen:
+                    seen.add(key)
+                    picked.append(rows[i])
+            if len(picked) >= limit:
+                break
+
+    for kw in sorted(keywords, key=lambda k: k.get("volume") or 0, reverse=True):
+        if len(picked) >= limit:
+            break
+        key = (kw.get("keyword") or "").lower()
+        if key and key not in seen:
+            seen.add(key)
+            picked.append(kw)
+
+    picked.sort(key=lambda k: k.get("volume") or 0, reverse=True)
+    return picked
+
+
 def cluster_keywords(
     keywords: list[dict],
     max_clusters: int = 10,
@@ -99,7 +142,7 @@ def cluster_keywords(
     language_code: str | None = None,
 ) -> dict:
     """Cluster keywords into thematic groups."""
-    ranked = sorted(keywords, key=lambda k: k.get("volume") or 0, reverse=True)[:80]
+    ranked = _diverse_top(keywords, 80)
     if not ranked:
         return {"success": False, "error": "no keywords to cluster", "clusters": None}
 
