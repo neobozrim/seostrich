@@ -1,4 +1,6 @@
 .env
+.env.bak*
+.env.*.bak
 
 # Personal runtime memory data (keeps protocol/structure public, hides accumulated data)
 agent-memory/qwen/
