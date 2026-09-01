@@ -29,7 +29,7 @@ Rules:
 - Group by user intent AND topic similarity
 - Separate informational from commercial/transactional intent
 - Cluster names should be descriptive and actionable
-- Include rationale for each cluster"""
+- Keep rationale to ONE short sentence (max ~10 words)"""
 
 
 def cluster_keywords(
@@ -39,10 +39,13 @@ def cluster_keywords(
     language_code: str | None = None,
 ) -> dict:
     """Cluster keywords into thematic groups."""
-    # Format keywords for LLM
+    # Format keywords for LLM. Cap the payload: very large cluster prompts
+    # stall on queued/slow LLM endpoints (observed holding past the 120s
+    # timeout), and top-volume keywords carry nearly all the signal.
+    ranked = sorted(keywords, key=lambda k: k.get("volume") or 0, reverse=True)
     kw_text = "\n".join([
         f"- {k.get('keyword', '')} (volume: {k.get('volume', 0)}, difficulty: {k.get('difficulty', 0)}, intent: {k.get('intent', 'unknown')})"
-        for k in keywords[:150]  # Limit to top 150
+        for k in ranked[:80]
     ])
 
     market_line = ""
@@ -52,10 +55,10 @@ def cluster_keywords(
     user_msg = f"""Keywords to cluster:
 {kw_text}
 {market_line}
-Create {max_clusters} thematic clusters."""
+Create {max_clusters} thematic clusters. Keep rationales to one short sentence."""
 
     try:
-        resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3)
+        resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3, max_tokens=4500)
         result = llm.parse_json_response(resp)
         if result and (isinstance(result, dict) or isinstance(result, list)):
             return {"success": True, "clusters": result}

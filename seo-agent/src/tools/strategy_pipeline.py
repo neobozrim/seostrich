@@ -9,6 +9,8 @@ is inspectable in the chat, the Run view and via WebMCP as it happens.
 """
 from __future__ import annotations
 
+import time
+
 from .. import pipeline_recorder as rec
 from .ai_citability import ai_citability_brief
 from .cluster_keywords import cluster_keywords
@@ -60,6 +62,33 @@ def _head_term(cluster: dict) -> str:
     return cluster.get("name", "").strip()
 
 
+def _cluster_with_retry(
+    keywords: list[dict],
+    location_code: int | None,
+    language_code: str | None,
+    max_clusters: int = 10,
+) -> dict:
+    """cluster_keywords with one bounded retry.
+
+    Clustering is the largest LLM call in the graph; slow/queued endpoints
+    can hold it past the timeout. Retrying here (after a short pause) is far
+    cheaper than letting the outer agent re-run the whole graph, which would
+    re-bill DataForSEO for seeds + universe.
+    """
+    clustered = cluster_keywords(
+        keywords, max_clusters=max_clusters,
+        location_code=location_code, language_code=language_code,
+    )
+    if clustered.get("success"):
+        return clustered
+    rec.log_activity("step", detail="cluster node: LLM failed, retrying once")
+    time.sleep(10)
+    return cluster_keywords(
+        keywords, max_clusters=max_clusters,
+        location_code=location_code, language_code=language_code,
+    )
+
+
 def run_keyword_strategy(
     business_description: str,
     location_code: int = 2840,
@@ -107,10 +136,7 @@ def run_keyword_strategy(
     steps.append("keywords")
 
     rec.log_activity("step", detail=f"node: cluster {len(keywords)} keywords (over-generate 10)")
-    clustered = cluster_keywords(
-        keywords, max_clusters=10,
-        location_code=location_code, language_code=language_code,
-    )
+    clustered = _cluster_with_retry(keywords, location_code, language_code)
     clusters = _norm_clusters(clustered.get("clusters"))
     if not clustered.get("success") or not clusters:
         return {"success": False, "error": clustered.get("error") or "clustering failed", "steps": steps}
@@ -134,9 +160,9 @@ def run_keyword_strategy(
         if verdict in ("approved", "rejected"):
             break
         rec.log_activity("step", detail="gate: needs_revision -> re-clustering")
-        reclustered = cluster_keywords(
-            keywords, max_clusters=max(6, len(clusters) - 2),
-            location_code=location_code, language_code=language_code,
+        reclustered = _cluster_with_retry(
+            keywords, location_code, language_code,
+            max_clusters=max(6, len(clusters) - 2),
         )
         clusters = _norm_clusters(reclustered.get("clusters")) or clusters
         rec.record_tool(
