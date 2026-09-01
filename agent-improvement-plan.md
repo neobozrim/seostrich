@@ -69,6 +69,13 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
       (+ bonus seo_analyze_run: deterministic health/gap analysis — findings + next steps, zero LLM/DFS — so an
       external agent can inspect what needs fixing; api.ts gained governance/stage REST clients with AbortSignal)
       VERIFIED: `npx tsc --noEmit` clean; FastAPI TestClient integration test PASS (200/404/422 paths + promote/discard/propose)
+- [x] Thin-market resilience (4baba5d): `pull_universe` keeps the discovery seeds as a floor, and when direct expansion is
+      thin (<15 keywords) escalates to competitor discovery (`serp_organic` → top domains → `keywords_for_site`) so a
+      strategy can always be built; pipeline logs a thin-market note instead of aborting; agent prompt notes zero/low
+      volumes are not a failure. Fixed `keywords_for_site` parser (volume/difficulty/rank were read from wrong paths,
+      always 0) and dropped the trends call whose endpoint 404s; added `budget_remaining()` for budget-aware fallbacks.
+      VERIFIED 2026-09-01: BG thin-market E2E — seeds floor returns 58 keywords for "моноспектакъл"; forced-thin path
+      discovers competitors via SERP and adds 100 competitor keywords (57→157); keywords_for_site returns real volumes.
 
 ## Verification (I test end-to-end myself)
 - [x] Unit: parse helper vs malformed samples; budget cap with low test cap — PASS 2026-08-31, re-PASS since
@@ -109,6 +116,11 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
   and cap at 80, one-sentence rationales, cap completion at 4500 tokens, and one bounded node-level retry before failing
   fast. Reason: queued/slow endpoints held the large prompt+completion past the 120 s timeout, aborting the graph and
   forcing the outer agent to re-run seeds + universe (re-billing DataForSEO).
+- 2026-09-01: Thin markets get a fallback ladder, not an abort (4baba5d, user direction): some languages/niches have few or
+  no search terms (user's case — "изречена поезия" in Bulgarian returned nothing, so "моноспектакъл" from the discovery
+  input carried the strategy). pull_universe therefore (1) caps direct seed expansion to 5 seeds, (2) always keeps the seeds
+  themselves as a floor, and (3) escalates to competitor discovery (SERP → top domains → ranked keywords) when expansion is
+  thin. Low/zero volumes in a thin run are reported as "competitor/thematic evidence", never back-filled with invented data.
 
 ## Learnings (append as discovered)
 - Token-plan provider queues BURST traffic: isolated probes return in seconds, but 4+ rapid agent calls get held open with
@@ -123,3 +135,11 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
 - Two local backends sharing one runs dir + one LLM key is a trap: the browser E2E silently hit the OTHER backend (:8001),
   so its in-memory activity was invisible from :8000 and the run tested stale code. Always confirm `POST /api/chat/stream`
   landed in the backend under test before trusting an E2E.
+- DFS labs response shapes differ per endpoint and are easy to parse silently to zeros: `ranked_keywords` nests volume under
+  `keyword_data.keyword_info.search_volume` and rank/difficulty under `ranked_serp_element` (no top-level `search_volume`,
+  no `impressions_info`), and an invalid `order_by`/`filters` field returns 40501 Invalid Field rather than ignoring it.
+  Always dump one raw item before trusting a parser.
+- Don't assume a DataForSEO endpoint exists because its name sounds right: `/v3/keywords_data/trends/trending_keywords/live`
+  404s (there is no trending-keywords endpoint) yet the wrapper burned one budgeted call per run before being disabled.
+- Some markets/niches have little or no keyword data by nature, not by bug — build fallbacks (competitor ranked keywords +
+  the discovery seeds themselves) instead of treating an empty universe as a failure.
