@@ -112,7 +112,7 @@ def run_keyword_strategy(
     steps: list[str] = []
 
     rec.log_activity("step", detail="node: extract seeds")
-    seeds = extract_seeds(business_description, site_description, competitors)
+    seeds = extract_seeds(business_description, site_description, competitors, language_code=language_code)
     rec.record_tool("extract_seeds", {"business_description": business_description}, seeds, True)
     steps.append("seeds")
 
