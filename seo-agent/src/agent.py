@@ -60,6 +60,7 @@ from .tools.cluster_ops import (
     list_clusters_all, promote_cluster, discard_cluster, propose_cluster,
 )
 from .tools.strategy_pipeline import run_keyword_strategy
+from .tools.geo_demand import run_geo_demand
 from .market import confirm_market, catalog as market_catalog
 
 # --- Exposed DataForSEO functions (previously internal only) ---
@@ -168,6 +169,35 @@ Before making decisions, consult memory to understand past context. Use learning
 
 
 TOOL_DEFINITIONS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "run_geo_demand",
+            "description": (
+                "Run the enforced GEO graph for a set of topics: real search demand "
+                "(volume/difficulty/CPC) -> AI citability (do ChatGPT and Google AI "
+                "actually answer this, who do they cite, how much is unclaimed) -> "
+                "People-also-ask harvested ONLY for the topics that showed demand. "
+                "Requires a confirmed market. Use for any 'AI visibility', 'GEO', "
+                "'what do AI engines say' or 'what questions do people ask' request."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "topics": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Head terms to investigate (up to 10).",
+                    },
+                    "max_question_terms": {
+                        "type": "integer",
+                        "description": "How many top topics to harvest questions for (default 4; one SERP call each).",
+                    },
+                },
+                "required": ["topics"],
+            },
+        },
+    },
     {
         "type": "function",
         "function": {
@@ -1135,6 +1165,7 @@ TOOL_DEFINITIONS = [
 
 # Map tool names to actual callables
 TOOL_CALLABLES = {
+    "run_geo_demand": run_geo_demand,
     "confirm_market": confirm_market,
     "list_markets": lambda: {"markets": market_catalog()},
     "extract_seeds": extract_seeds,
@@ -1222,7 +1253,7 @@ TOOL_CATEGORIES = {
         "content_quality_assessment",
     ],
     "research": [
-        "confirm_market", "list_markets", "run_keyword_strategy", "extract_seeds", "pull_universe", "cluster_keywords",
+        "confirm_market", "list_markets", "run_keyword_strategy", "run_geo_demand", "extract_seeds", "pull_universe", "cluster_keywords",
         "validate_clusters", "score_clusters", "select_clusters", "list_clusters_all",
         "promote_cluster", "discard_cluster", "propose_cluster", "ai_citability_brief",
         "recommend_pillars", "serp_organic", "serp_ai_mode",
@@ -1271,7 +1302,7 @@ INTENT_KEYWORDS = {
 # agent improvised with plan_calendar instead.
 CORE_TOOLS = [
     "confirm_market", "list_markets",
-    "run_keyword_strategy",
+    "run_keyword_strategy", "run_geo_demand",
     "ai_citability_brief",
     "list_clusters_all", "promote_cluster", "discard_cluster", "propose_cluster",
     "submit_deliverable",

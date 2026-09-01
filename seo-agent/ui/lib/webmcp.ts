@@ -76,7 +76,7 @@ function buildTools() {
       name: 'seo_get_pipeline_overview',
       title: 'SEO pipeline overview',
       description:
-        'Get an overview of the current SEO pipeline run: project, status and the list of stages with their labels.',
+        'Start here. Returns the current run: its id, the business it is for, its status, and every stage it has produced (intake, seeds, keywords, clusters, pillars, ai_citability, mix). Use this first to see what exists before fetching any single part, and to get a run_id for the other tools. Read-only, no cost.',
       inputSchema: { type: 'object', properties: {} },
       annotations: READ_ONLY,
       execute: async (_input: any, _options?: any) => {
@@ -94,7 +94,7 @@ function buildTools() {
       name: 'seo_get_keyword_clusters',
       title: 'SEO keyword clusters (selected)',
       description:
-        'List the SELECTED keyword clusters for the current run with their measured metrics and member keywords. For the discarded ones and the reasoning behind every decision, use seo_list_clusters_all instead.',
+        'List the SELECTED keyword clusters for the current run with their measured metrics and member keywords. For the discarded ones and the reasoning behind every decision, use seo_list_clusters_all instead. Read-only, no cost.',
       inputSchema: { type: 'object', properties: {} },
       annotations: READ_ONLY,
       execute: async () => {
@@ -108,7 +108,7 @@ function buildTools() {
       name: 'seo_get_content_pillars',
       title: 'SEO content pillars',
       description:
-        'List the prioritized content pillars (title, type, priority, rationale) for the current run.',
+        'The finished output of a strategy run: the content pillars to actually write, each with a title, type (hub/guide/comparison), priority order, and the rationale naming the metric that justified it. Use this when you want the recommendation rather than the working. Empty until a run reaches the pillars stage. Read-only, no cost.',
       inputSchema: { type: 'object', properties: {} },
       annotations: READ_ONLY,
       execute: async () => {
@@ -122,7 +122,7 @@ function buildTools() {
       name: 'seo_get_content_calendar',
       title: 'SEO content calendar',
       description:
-        'Get the planned content calendar (week-by-week article plan) for the current run.',
+        'The week-by-week publishing plan built from the selected pillars, if one was generated. Use this to check sequencing and cadence, or to see whether a calendar exists at all — it is an optional step the user has to confirm, so it is often absent. Read-only, no cost.',
       inputSchema: { type: 'object', properties: {} },
       annotations: READ_ONLY,
       execute: async () => {
@@ -136,7 +136,7 @@ function buildTools() {
       name: 'seo_submit_feedback',
       title: 'Submit pipeline feedback',
       description:
-        'Attach a feedback note to the current pipeline run so the agent can revise the plan.',
+        'Record a note on the run for the human to act on — a concern, a correction, or context the pipeline did not have. Use this for judgements you cannot make yourself; it does NOT change the strategy on its own. To actually change the selection, use seo_promote_cluster or seo_discard_cluster instead. Writes to the run, no API cost.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -155,7 +155,8 @@ function buildTools() {
     {
       name: 'seo_restore_defaults',
       title: 'Restore example pipeline',
-      description: 'Reset the example pipeline run back to the shipped default data.',
+      description:
+        'Reset the bundled example run back to its shipped state. Use only to undo experimentation on the demo data — it discards edits made to the example run and does not touch real runs. Destructive to the example run, no API cost.',
       inputSchema: { type: 'object', properties: {} },
       annotations: READ_WRITE,
       execute: async () => {
@@ -167,7 +168,7 @@ function buildTools() {
       name: 'seo_get_stage_artifact',
       title: 'SEO stage artifact',
       description:
-        'Inspect the artifact of one pipeline stage (intake, seeds, keywords, clusters, pillars, mix, audit, competitors, onpage, ai_citability). Returns the raw artifact so the calling agent can analyze any step.',
+        'Fetch the raw artifact of ONE stage, unshaped, for when the purpose-built tools do not expose what you need. Stages: intake (the confirmed market), seeds (the phrases the research started from), keywords, clusters, pillars, mix (calendar), ai_citability, audit, competitors, onpage. Use seo_get_keywords or seo_list_clusters_all first — they return cleaner shapes; drop to this only to inspect something they omit. Read-only, no cost.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -195,7 +196,7 @@ function buildTools() {
       name: 'seo_list_clusters_all',
       title: 'SEO clusters with the reasoning behind each decision',
       description:
-        'List BOTH the selected keyword clusters and the discarded ones. Every cluster carries a `reasoning` block: decision_reason (why this cluster was kept, or why it was dropped), why_these_keywords_group, and a `metrics` block MEASURED from the DataForSEO rows (total_volume, max_volume, median_volume, avg/max difficulty, avg/max CPC, commercial_share, top_keywords) — no model estimated these, so you can rank by whichever metric matters rather than trusting a composite. Use this to audit the strategy: check whether a discard reason actually holds, whether a selected cluster earns its place, and what was traded away. Discarded clusters are parked, not deleted — promote any back with seo_promote_cluster.',
+        'List BOTH the selected keyword clusters and the discarded ones. Every cluster carries a `reasoning` block: decision_reason (why this cluster was kept, or why it was dropped), why_these_keywords_group, and a `metrics` block MEASURED from the DataForSEO rows (total_volume, max_volume, median_volume, avg/max difficulty, avg/max CPC, commercial_share, top_keywords) — no model estimated these, so you can rank by whichever metric matters rather than trusting a composite. Use this to audit the strategy: check whether a discard reason actually holds, whether a selected cluster earns its place, and what was traded away. Discarded clusters are parked, not deleted — promote any back with seo_promote_cluster. Read-only, no cost.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
       execute: async (input: { run_id?: string }, options?: any) => {
@@ -208,7 +209,7 @@ function buildTools() {
       name: 'seo_promote_cluster',
       title: 'Promote discarded cluster',
       description:
-        'Promote a previously discarded keyword cluster back into the active selection. Read its reasoning.decision_reason first (via seo_list_clusters_all) to see why it was dropped. Reversible.',
+        'Bring a discarded cluster back into the strategy. Use this when you judge that a cluster was dropped wrongly — read its reasoning.decision_reason first via seo_list_clusters_all, so you are arguing against a stated reason rather than overriding it blindly. Fully reversible with seo_discard_cluster. Writes to the run, no API cost.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -228,7 +229,7 @@ function buildTools() {
       name: 'seo_discard_cluster',
       title: 'Discard selected cluster',
       description:
-        'Discard a currently selected keyword cluster (moves it to the discarded set, stats preserved, reversible).',
+        'Drop a cluster from the strategy, with your reason. It is parked rather than deleted — keywords, metrics and history are preserved, and seo_promote_cluster brings it back. Use this when a cluster is off-topic for the business, overlaps one already selected, or targets the wrong intent. Give a real reason: it is shown to the user as part of the decision record. Writes to the run, no API cost.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -252,7 +253,7 @@ function buildTools() {
       name: 'seo_propose_cluster',
       title: 'Propose new cluster',
       description:
-        'Propose a NEW keyword cluster the pipeline missed: a scoped keyword re-seed on one topic (1 DataForSEO call), assembled with real volume/difficulty/intent stats and merged into the run.',
+        'Add a topic the pipeline never explored. Runs fresh keyword research on the topic you name and builds a new cluster from the results, with real volume, difficulty, intent and CPC — nothing invented. Use this when the strategy has a genuine gap; use seo_rerun_cluster_research instead if the topic is already a cluster that just looks thin. Costs one DataForSEO call charged to this run, so name a real head term rather than exploring. Writes to the run.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -272,7 +273,7 @@ function buildTools() {
       name: 'seo_get_ai_citability',
       title: 'AI citability brief',
       description:
-        'Get the AI-citability stage: how AI engines (ChatGPT/Google AI) answer questions around the selected head terms — AI demand, answer share, currently cited sources, top questions and People-also-ask.',
+        'What AI engines already do with these topics: how much AI search demand each head term has, which sources ChatGPT and Google AI currently cite, how much of the answer space is unclaimed, and the real questions people ask (People-also-ask). Use this to judge whether content could realistically be cited by an AI answer, and to write against questions users actually ask rather than guessed ones. Read-only, no cost — the data was already fetched during the run.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
       execute: async (input: { run_id?: string }, options?: any) => {
@@ -289,7 +290,7 @@ function buildTools() {
       name: 'seo_list_flows',
       title: 'SEO flows available',
       description:
-        'List the flows this agent can run end to end, each with the inputs it requires before it will start (country and language are always required and are never inferred). Use this to see what can be asked for, and what a flow will need from the user first.',
+        'List the flows this agent can run end to end, each with the inputs it requires before it will start (country and language are always required and are never inferred). Use this to see what can be asked for, and what a flow will need from the user first. Read-only, no cost.',
       inputSchema: { type: 'object', properties: {} },
       annotations: READ_ONLY,
       execute: async (_input: any, options?: any) => {
@@ -311,7 +312,7 @@ function buildTools() {
       name: 'seo_get_keywords',
       title: 'SEO keywords with metrics',
       description:
-        'Get the keywords for this run as a flat table: search volume, keyword difficulty, CPC, search intent, and which cluster each landed in. Use this to run your own analysis — filter by difficulty, rank by CPC, find intent mismatches, or check whether a cluster is carried by one term.',
+        'Get the keywords for this run as a flat table: search volume, keyword difficulty, CPC, search intent, and which cluster each landed in. Use this to run your own analysis — filter by difficulty, rank by CPC, find intent mismatches, or check whether a cluster is carried by one term. Read-only, no cost — these numbers were already fetched during the run.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -333,7 +334,7 @@ function buildTools() {
       name: 'seo_rerun_cluster_research',
       title: 'Re-run research for one cluster',
       description:
-        'Fetch fresh keyword data for ONE cluster and merge it in, without re-running the pipeline or re-billing the other clusters. Use when a cluster looks thin, stale or off-target. Costs one DataForSEO call, charged to this run.',
+        'Fetch fresh keyword data for ONE cluster and merge it in, without re-running the pipeline or re-billing the other clusters. Use when a cluster looks thin, stale or off-target. Costs one DataForSEO call charged to this run, and writes to the run.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -356,7 +357,7 @@ function buildTools() {
       name: 'seo_analyze_run',
       title: 'Analyze pipeline run',
       description:
-        'Deterministic health/gap analysis of a pipeline run (no LLM): which stages exist, which expected stages are missing, run status issues, and whether cluster validation/selection happened. Returns findings + suggested next steps so the orchestrator (or an external agent) knows what to fix.',
+        'Check a run for problems before trusting it: which stages are missing, whether it ended in an error or was stopped, whether clusters were ever curated, and whether too many clusters are still selected to be a focused strategy. Returns findings plus concrete next steps. Use this first when a run looks wrong or incomplete, before digging through individual stages. Read-only and fully deterministic — no model, no API calls, no cost.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
       execute: async (input: { run_id?: string }) => {

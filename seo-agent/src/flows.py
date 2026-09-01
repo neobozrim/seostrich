@@ -115,16 +115,17 @@ GEO_DEMAND = Flow(
     ],
     nodes=[
         "Confirm target market",
-        "AI-engine answers per term",
-        "Cited sources and open share",
-        "People-also-ask question harvest",
+        "Measure real search demand per topic",
+        "Check AI citability: who answers, who is cited, what is unclaimed",
+        "Rank topics on measured evidence",
+        "Harvest the actual questions people ask (top topics only)",
         "Answer-first content brief",
     ],
     tools=[
-        "confirm_market", "list_markets", "ai_citability_brief",
-        "ai_mentions", "serp_ai_mode", "submit_deliverable",
+        "confirm_market", "list_markets", "run_geo_demand",
+        "ai_citability_brief", "ai_mentions", "serp_ai_mode", "submit_deliverable",
     ],
-    entrypoint="ai_citability_brief",
+    entrypoint="run_geo_demand",
     stages=["intake", "ai_citability"],
     icon="sparkles",
 )
