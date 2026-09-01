@@ -452,19 +452,19 @@ export default function Home() {
               {(chatOpen || messages.length > 0) && (
                 <button
                   onClick={() => setShowRun(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-primary-400 text-white hover:bg-primary-500"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors bg-primary-400 text-white hover:bg-primary-500"
                 >
                   <Workflow className="w-4 h-4" />
-                  Reports
+                  <span className="hidden sm:inline">Reports</span>
                 </button>
               )}
               {memoryEnabled && (
               <button
                 onClick={() => setShowSystem(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
               >
                 <Settings2 className="w-4 h-4" />
-                System
+                <span className="hidden sm:inline">System</span>
               </button>
               )}
               <ProfileMenu

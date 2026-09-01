@@ -1,15 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Send, Workflow, Target, Sparkles, Lock, Pin, PinOff } from 'lucide-react';
+import { ArrowRight, Send, Lock, Pin, PinOff } from 'lucide-react';
+import { StageIcon } from '@/components/StageIcon';
 import { getRuns, getFlows, pinRun, FlowCard, FlowCatalog } from '@/lib/api';
 import { RunSummary } from '@/types';
-
-const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  target: Target,
-  sparkles: Sparkles,
-  workflow: Workflow,
-};
 
 const STARTERS: Record<string, string> = {
   keyword_strategy: 'I want a content strategy. My business is: ',
@@ -17,9 +12,10 @@ const STARTERS: Record<string, string> = {
     'I want to know how AI engines answer questions in my space. The topics are: ',
 };
 
-// Featured only: the homepage is a canvas of work worth returning to, not an
-// audit log. Completed runs first, and only a handful.
-const FEATURED_LIMIT = 6;
+// Two rows of two. The service cards sit directly beneath, so an unbounded
+// work list would shove the main calls to action off the first screen as soon
+// as a few runs are pinned.
+const FEATURED_LIMIT = 4;
 
 function featured(runs: RunSummary[]): RunSummary[] {
   // The API returns pinned-first, then newest. A pinned run is a deliberate
@@ -66,10 +62,14 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
   }, []);
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-6 py-10">
-      <div className="grid gap-8 lg:grid-cols-[1fr_20rem] items-start">
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      {/* items-stretch, not items-start: the chat panel is sized to match the
+          left column (two rows of work + the service row) rather than hugging
+          its own content. On small screens the columns stack and chat leads,
+          because on a phone the input is the point. */}
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1fr_20rem] items-stretch">
         {/* Projects — the canvas itself */}
-        <div>
+        <div className="order-2 lg:order-1">
           <h2 className="text-sm font-medium text-gray-700 mb-3">Your work</h2>
           {runs.length === 0 ? (
             <p className="text-sm text-gray-400">
@@ -77,7 +77,7 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
               come back to.
             </p>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
               {runs.map((run) => (
                 <button
                   key={run.id}
@@ -145,27 +145,30 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
           {catalog?.flows?.length ? (
             <>
               <h2 className="text-sm font-medium text-gray-700 mt-8 mb-3">Start something</h2>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
                 {catalog.flows.map((flow: FlowCard) => {
-                  const Icon = ICONS[flow.icon] || Workflow;
                   return (
                     <button
                       key={flow.id}
                       onClick={() =>
                         onStartChat(STARTERS[flow.id] ?? `Run the ${flow.label} flow. `)
                       }
-                      className="group text-left rounded-lg border border-surface-300 bg-white p-4
-                                 hover:border-gray-400 hover:shadow-sm transition"
+                      // Clay tint + display face: a service is a different kind
+                      // of thing from a saved run, and should not read as one.
+                      className="group text-left rounded-lg border border-accent-300 bg-accent-50 p-4
+                                 hover:border-accent-400 hover:shadow-sm transition"
                     >
                       <div className="flex items-start gap-3">
-                        <Icon className="w-5 h-5 mt-0.5 text-gray-500 group-hover:text-gray-900 shrink-0" />
+                        <StageIcon stage={`flow_${flow.id}`} className="w-9 h-9 shrink-0" />
                         <div className="min-w-0">
-                          <div className="font-medium text-gray-900">{flow.label}</div>
-                          <div className="text-sm text-gray-500">{flow.tagline}</div>
+                          <div className="font-display text-base text-primary-700">
+                            {flow.label}
+                          </div>
+                          <div className="text-sm text-gray-600">{flow.tagline}</div>
                         </div>
                       </div>
                       {flow.required_inputs.length > 0 && (
-                        <div className="mt-3 pt-2 border-t border-surface-200 text-xs text-gray-500">
+                        <div className="mt-3 pt-2 border-t border-accent-200 text-xs text-gray-600">
                           Asks first: {flow.required_inputs.map((i) => i.label).join(' · ')}
                         </div>
                       )}
@@ -193,14 +196,15 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
         </div>
 
         {/* Chat lives to the side until it is needed, then it takes over. */}
-        <aside className="lg:sticky lg:top-4">
-          <div className="rounded-xl border-2 border-primary-400 bg-white p-4 shadow-sm">
+        <aside className="order-1 lg:order-2 flex">
+          <div className="rounded-xl border-2 border-primary-400 bg-white p-4 shadow-sm
+                          flex flex-col w-full">
             <div className="text-sm font-medium text-gray-900 mb-1">Ask for anything</div>
             <p className="text-xs text-gray-500 mb-3">
               Describe what you need and the agent picks the flow — it will ask for
               your market before spending anything.
             </p>
-            <div className="relative">
+            <div className="relative flex-1 flex min-h-[7rem]">
               <textarea
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
@@ -210,11 +214,11 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
                     onStartChat(draft);
                   }
                 }}
-                onFocus={() => draft && undefined}
                 rows={3}
                 placeholder="Start here..."
-                className="w-full resize-none rounded-lg border border-surface-300 px-3 py-2 pr-10
-                           text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
+                className="w-full flex-1 resize-none rounded-lg border border-surface-300
+                           px-3 py-2 pr-10 text-sm focus:outline-none
+                           focus:ring-2 focus:ring-primary-300"
               />
               <button
                 onClick={() => onStartChat(draft)}

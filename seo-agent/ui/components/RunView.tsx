@@ -16,9 +16,12 @@ import {
 import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent } from '@/types';
 import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, AuthError } from '@/lib/api';
 import { activityLabel } from '@/lib/activity';
+import { StageIcon } from '@/components/StageIcon';
 
 function fmtVol(n: number): string {
-  return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+  // Grouped digits, not "3.6k" — an abbreviation costs a mental step every
+  // time and hides the difference between 1,100 and 1,900.
+  return (n || 0).toLocaleString('en-US');
 }
 
 interface RunViewProps {
@@ -29,18 +32,9 @@ interface RunViewProps {
   initialRunId?: string | null;
 }
 
-const STAGE_ICONS: Record<string, string> = {
-  intake: '📝',
-  seeds: '🌱',
-  keywords: '🔎',
-  clusters: '🧩',
-  pillars: '🏛️',
-  mix: '🗓️',
-  audit: '🔧',
-  competitors: '🎯',
-  onpage: '📄',
-  ai_citability: '🤖',
-};
+// Icons live in StageIcon.tsx, drawn in the brand mark's language (filled
+// disc, negative-space cut breaking the edge). Emoji rendered differently on
+// every platform and shared nothing with the logo.
 
 const STATUS_META: Record<string, { label: string; cls: string }> = {
   running: { label: 'Running', cls: 'bg-accent-100 text-accent-700' },
@@ -99,13 +93,11 @@ function StageCard({
       <div className="flex flex-col items-center">
         <div
           className={`w-9 h-9 rounded-full flex items-center justify-center text-base flex-shrink-0 ${
-            stage.status === 'done'
-              ? 'bg-primary-100 border border-primary-300'
-              : 'bg-surface-200 border border-surface-300'
+            stage.status === 'done' ? '' : 'opacity-40 grayscale'
           }`}
           title={stage.label}
         >
-          {STAGE_ICONS[stage.id] || index + 1}
+          <StageIcon stage={stage.id} className="w-8 h-8" />
         </div>
         {!isLast && <div className="w-px flex-1 bg-surface-300 my-1" />}
       </div>
@@ -205,19 +197,59 @@ function DiffBadge({ value }: { value: number | undefined }) {
   return <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${tone}`}>KD {value}</span>;
 }
 
-function KeywordRow({ k }: { k: string | Record<string, any> }) {
-  if (typeof k === 'string') return <Chip>{k}</Chip>;
-  const kw = k.keyword || k.query || '';
-  const hasStats = k.volume != null || k.difficulty != null || k.intent || k.cpc != null;
-  if (!hasStats) return <Chip>{kw}</Chip>;
+// Keywords are read by SCANNING a column — "which of these has volume?" — so
+// they are laid out as a table with fixed columns and right-aligned numbers,
+// not as inline chips where every row starts at a different x position.
+function KeywordTable({ rows }: { rows: Array<string | Record<string, any>> }) {
+  const objects = rows.filter((r) => typeof r === 'object') as Record<string, any>[];
+  const plain = rows.filter((r) => typeof r === 'string') as string[];
+
   return (
-    <span className="inline-flex items-center gap-1.5 px-2 py-1 m-0.5 text-xs bg-surface-100 border border-surface-300 rounded-lg text-gray-700">
-      <span className="font-medium">{kw}</span>
-      {k.volume != null && <span className="text-gray-500">vol {fmtVol(k.volume)}</span>}
-      <DiffBadge value={k.difficulty} />
-      {k.intent && <span className="px-1.5 py-0.5 rounded bg-surface-200 text-[10px] capitalize text-gray-600">{k.intent}</span>}
-      {k.cpc != null && k.cpc > 0 && <span className="text-gray-500">{fmtCpc(k.cpc)}</span>}
-    </span>
+    <div>
+      {objects.length > 0 && (
+        <div className="overflow-x-auto -mx-1">
+          <table className="w-full text-xs border-separate border-spacing-y-1 px-1">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-wide text-gray-400">
+                <th className="text-left font-medium pl-2 pb-1">Keyword</th>
+                <th className="text-right font-medium pb-1 w-20">Volume</th>
+                <th className="text-right font-medium pb-1 w-14">KD</th>
+                <th className="text-right font-medium pb-1 w-16">CPC</th>
+                <th className="text-left font-medium pb-1 pl-3 w-28">Intent</th>
+              </tr>
+            </thead>
+            <tbody>
+              {objects.map((k, i) => (
+                <tr key={i} className="bg-surface-100">
+                  <td className="pl-2 py-1.5 rounded-l-lg text-gray-800">
+                    {k.keyword || k.query || ''}
+                  </td>
+                  <td className="py-1.5 text-right tabular-nums text-gray-700">
+                    {k.volume != null ? fmtVol(k.volume) : '—'}
+                  </td>
+                  <td className="py-1.5 text-right">
+                    <DiffBadge value={k.difficulty} />
+                  </td>
+                  <td className="py-1.5 text-right tabular-nums text-gray-600">
+                    {k.cpc != null && k.cpc > 0 ? fmtCpc(k.cpc) : '—'}
+                  </td>
+                  <td className="py-1.5 pl-3 pr-2 rounded-r-lg capitalize text-gray-600">
+                    {k.intent || '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {plain.length > 0 && (
+        <div className="mt-1">
+          {plain.map((k, i) => (
+            <Chip key={i}>{k}</Chip>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -246,9 +278,7 @@ function KeywordsArtifact({ artifact }: { artifact: Record<string, any> }) {
         </button>
       </div>
       <div>
-        {shown.map((k, i) => (
-          <KeywordRow key={i} k={k} />
-        ))}
+        <KeywordTable rows={shown} />
         {!open && keywords.length > 24 && (
           <span className="text-xs text-gray-400"> +{keywords.length - 24} more…</span>
         )}
@@ -954,7 +984,9 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
       {/* Top bar */}
       <div className="sticky top-0 z-10 bg-surface-100 border-b border-surface-300 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Sparkles className="w-5 h-5 text-primary-500" />
+          {/* No decorative icon here: the SEOstrich logo sits top-left on every
+              internal view, and a second generic glyph beside the title just
+              competes with it. */}
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-semibold text-primary-700">
