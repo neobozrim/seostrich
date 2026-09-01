@@ -165,7 +165,7 @@ export async function getSessions(): Promise<any[]> {
 
 // Must match API_VERSION in api/main.py. A mismatch means the UI is talking
 // to a backend that predates the endpoints it depends on.
-export const EXPECTED_API_VERSION = '2026-09-01.flows';
+export const EXPECTED_API_VERSION = '2026-09-01.webmcp';
 
 export async function getApiHealth(): Promise<{
   status: string;
@@ -211,6 +211,35 @@ export interface FlowCatalog {
 export async function getFlows(signal?: AbortSignal): Promise<FlowCatalog> {
   const response = await fetch(`${API_BASE}/api/flows`, {
     headers: authHeaders(),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function getRunKeywords(
+  runId: string,
+  cluster?: string,
+  signal?: AbortSignal
+): Promise<any> {
+  const q = cluster ? `?cluster=${encodeURIComponent(cluster)}` : '';
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/keywords${q}`, {
+    headers: authHeaders(),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function rerunClusterResearch(
+  runId: string,
+  clusterName: string,
+  signal?: AbortSignal
+): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/clusters/rerun`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ cluster_name: clusterName }),
     signal,
   });
   await ensureOk(response);

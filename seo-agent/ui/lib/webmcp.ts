@@ -25,6 +25,9 @@ import {
   promoteRunCluster,
   discardRunCluster,
   proposeRunCluster,
+  getRunKeywords,
+  rerunClusterResearch,
+  getFlows,
 } from './api';
 
 interface ModelContextLike {
@@ -280,6 +283,73 @@ function buildTools() {
         } catch {
           return 'No AI-citability stage yet — run ai_citability_brief in the pipeline first.';
         }
+      },
+    },
+    {
+      name: 'seo_list_flows',
+      title: 'SEO flows available',
+      description:
+        'List the flows this agent can run end to end, each with the inputs it requires before it will start (country and language are always required and are never inferred). Use this to see what can be asked for, and what a flow will need from the user first.',
+      inputSchema: { type: 'object', properties: {} },
+      annotations: READ_ONLY,
+      execute: async (_input: any, options?: any) => {
+        const catalog = await getFlows(options?.signal);
+        return {
+          flows: catalog.flows.map((f) => ({
+            id: f.id,
+            label: f.label,
+            does: f.description,
+            steps: f.nodes,
+            requires: f.required_inputs.map((i) => i.label),
+          })),
+          not_yet_available: catalog.planned,
+          markets: catalog.markets.map((m) => `${m.market} (${m.country})`),
+        };
+      },
+    },
+    {
+      name: 'seo_get_keywords',
+      title: 'SEO keywords with metrics',
+      description:
+        'Get the keywords for this run as a flat table: search volume, keyword difficulty, CPC, search intent, and which cluster each landed in. Use this to run your own analysis — filter by difficulty, rank by CPC, find intent mismatches, or check whether a cluster is carried by one term.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...RUN_ID_PROP,
+          cluster: {
+            type: 'string',
+            description: 'Optional cluster name to restrict the table to.',
+          },
+        },
+      },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string; cluster?: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return getRunKeywords(run.id, input?.cluster, options?.signal);
+      },
+    },
+    {
+      name: 'seo_rerun_cluster_research',
+      title: 'Re-run research for one cluster',
+      description:
+        'Fetch fresh keyword data for ONE cluster and merge it in, without re-running the pipeline or re-billing the other clusters. Use when a cluster looks thin, stale or off-target. Costs one DataForSEO call, charged to this run.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...RUN_ID_PROP,
+          cluster_name: {
+            type: 'string',
+            description: 'The cluster to refresh (selected or discarded).',
+          },
+        },
+        required: ['cluster_name'],
+      },
+      annotations: READ_WRITE,
+      execute: async (input: { run_id?: string; cluster_name: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return rerunClusterResearch(run.id, input.cluster_name, options?.signal);
       },
     },
     {

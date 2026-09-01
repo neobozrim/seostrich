@@ -100,6 +100,94 @@ def discard_cluster(run_id: str, cluster_name: str, reason: str = "") -> dict:
     return {"ok": True, "discarded": entry.get("name"), "selected_count": len(clusters)}
 
 
+def rerun_cluster_research(run_id: str, cluster_name: str) -> dict:
+    """Re-run keyword research for ONE existing cluster, in place.
+
+    The judge-facing move: "this cluster looks thin/wrong — go get fresh data
+    for it" without re-running the whole pipeline or re-billing every other
+    cluster. Re-seeds on the cluster's head term (one DataForSEO call,
+    budget-accounted to the run) and merges any new keywords into that
+    cluster with their real stats.
+    """
+    run = runs.get_run(run_id)
+    if run is None:
+        return {"ok": False, "error": "run not found"}
+    stage = _clusters_stage(run)
+    if stage is None:
+        return {"ok": False, "error": "run has no clusters stage"}
+
+    pools = {
+        "selected": stage["artifact"].get("clusters") or [],
+        "discarded": stage["artifact"].get("discarded") or [],
+    }
+    target = where = None
+    for pool_name, entries in pools.items():
+        for entry in entries:
+            if _match(entry, cluster_name):
+                target, where = entry, pool_name
+                break
+        if target:
+            break
+    if target is None:
+        return {"ok": False, "error": f"cluster {cluster_name!r} not found in this run"}
+
+    seed = (
+        target.get("head_term")
+        or (target.get("keywords") or [None])[0]
+        or target.get("cluster_name")
+        or target.get("name")
+    )
+    if isinstance(seed, dict):
+        seed = seed.get("keyword")
+    if not seed:
+        return {"ok": False, "error": "cluster has no head term to re-seed from"}
+
+    fresh = propose_cluster(run_id, str(seed))
+    if not fresh.get("ok"):
+        return fresh
+
+    # propose_cluster appended a new cluster; fold it into the existing one
+    # instead of leaving a near-duplicate beside it.
+    run = runs.get_run(run_id)
+    stage = _clusters_stage(run)
+    entries = stage["artifact"].get(where) or []
+    proposed = next(
+        (e for e in (stage["artifact"].get("clusters") or []) if e.get("proposed")),
+        None,
+    )
+    added = 0
+    if proposed is not None:
+        existing = {
+            (k.get("keyword") if isinstance(k, dict) else k) for k in (target.get("keywords") or [])
+        }
+        merged = list(target.get("keywords") or [])
+        for kw in proposed.get("keywords") or []:
+            name = kw.get("keyword") if isinstance(kw, dict) else kw
+            if name and name not in existing:
+                existing.add(name)
+                merged.append(kw)
+                added += 1
+        target["keywords"] = merged
+        target["refreshed"] = True
+        stage["artifact"]["clusters"] = [
+            e for e in (stage["artifact"].get("clusters") or []) if e is not proposed
+        ]
+        for i, entry in enumerate(entries):
+            if _match(entry, cluster_name):
+                entries[i] = target
+        stage["artifact"][where] = entries
+        runs.save_run(run_id, run)
+
+    return {
+        "ok": True,
+        "cluster_name": cluster_name,
+        "pool": where,
+        "seeded_from": seed,
+        "keywords_added": added,
+        "total_keywords": len(target.get("keywords") or []),
+    }
+
+
 def propose_cluster(
     run_id: str,
     topic: str,

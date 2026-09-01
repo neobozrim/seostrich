@@ -76,7 +76,7 @@ app.add_middleware(
 # disabled, no /api/flows) silently served the UI for a whole session: every
 # browser test validated the wrong process, and the missing endpoints looked
 # like frontend bugs.
-API_VERSION = "2026-09-01.flows"
+API_VERSION = "2026-09-01.webmcp"
 
 
 @app.get("/api/health")
@@ -221,6 +221,79 @@ async def get_run_clusters(run_id: str, _auth: None = Depends(require_auth)):
     if data is None:
         raise HTTPException(status_code=404, detail="Run not found")
     return data
+
+
+@app.get("/api/runs/{run_id}/keywords")
+async def get_run_keywords(
+    run_id: str, cluster: str = "", _auth: None = Depends(require_auth)
+):
+    """Flat keyword table with volume, difficulty, intent and CPC.
+
+    Exposed so an external agent can do its own analysis (filter by
+    difficulty, sort by CPC, spot intent mismatches) instead of re-deriving
+    the numbers. All four metrics already arrive in the DataForSEO responses
+    the pipeline makes, so this costs nothing extra.
+    """
+    run = runs.get_run(run_id)
+    if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+
+    stages = {s["id"]: s for s in run.get("stages", [])}
+    rows = list((stages.get("keywords", {}).get("artifact", {}) or {}).get("keywords", []))
+
+    # Which cluster each keyword ended up in (selected or discarded).
+    member_of: dict[str, str] = {}
+    art = (stages.get("clusters", {}).get("artifact", {}) or {})
+    for pool in ("clusters", "discarded"):
+        for entry in art.get(pool) or []:
+            name = entry.get("cluster_name") or entry.get("name") or ""
+            for kw in entry.get("keywords") or []:
+                key = kw.get("keyword") if isinstance(kw, dict) else kw
+                if key:
+                    member_of.setdefault(str(key).lower(), name)
+
+    out = []
+    for row in rows:
+        if not isinstance(row, dict) or not row.get("keyword"):
+            continue
+        name = str(row["keyword"])
+        entry = {
+            "keyword": name,
+            "volume": row.get("volume"),
+            "difficulty": row.get("difficulty"),
+            "cpc": row.get("cpc"),
+            "intent": row.get("intent"),
+            "cluster": member_of.get(name.lower()),
+        }
+        if cluster and (entry["cluster"] or "").lower() != cluster.lower():
+            continue
+        out.append(entry)
+
+    return {
+        "run_id": run_id,
+        "market": (stages.get("intake", {}).get("artifact", {}) or {}).get("market"),
+        "count": len(out),
+        "keywords": out,
+    }
+
+
+class ClusterRerunIn(BaseModel):
+    cluster_name: str
+
+
+@app.post("/api/runs/{run_id}/clusters/rerun")
+async def rerun_run_cluster(
+    run_id: str, body: ClusterRerunIn, _auth: None = Depends(require_auth)
+):
+    """Re-run keyword research for ONE cluster (1 DataForSEO call), in place."""
+    from src import cluster_governance
+
+    result = await asyncio.to_thread(
+        cluster_governance.rerun_cluster_research, run_id, body.cluster_name
+    )
+    if not result.get("ok") and result.get("error") == "run not found":
+        raise HTTPException(status_code=404, detail="Run not found")
+    return result
 
 
 @app.get("/api/runs/{run_id}/activity")
