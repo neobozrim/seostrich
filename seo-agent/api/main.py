@@ -81,6 +81,23 @@ def _memory_lines(text: str) -> List[str]:
     return [line for line in text.split("\n") if line.strip()]
 
 
+@app.get("/api/flows")
+async def get_flows(_auth: None = Depends(require_auth)):
+    """The flow catalog: what the agent can do, and what each flow needs first.
+
+    Drives the homepage cards, the deterministic plan preview and the WebMCP
+    flow tools, so all three stay in sync with src/flows.py.
+    """
+    from src import flows
+    from src import market
+
+    return {
+        "flows": flows.list_flows(),
+        "planned": [{"id": k, "label": v} for k, v in flows.PLANNED.items()],
+        "markets": market.catalog(),
+    }
+
+
 @app.get("/api/memory")
 async def get_memory(_auth: None = Depends(require_auth)):
     """Get current memory state."""
@@ -369,23 +386,54 @@ async def chat_stream(
             gen = run_orchestrator_stream(full_message, session_id)
             chat_sid: Optional[str] = session_id
 
+            # Pull from the generator and poll for client disconnect
+            # CONCURRENTLY. Checking only after a chunk arrived meant a client
+            # that left during a long LLM call was never noticed: the abandoned
+            # run kept burning LLM and DataForSEO calls to completion. Observed
+            # 2026-09-01 - a killed client left a run sitting on round 1 for
+            # four minutes until it was stopped by hand.
+            DISCONNECT_POLL_SECONDS = 1.0
+            pending = None
+            disconnected = False
+
             while True:
-                try:
-                    chunk = await asyncio.to_thread(next, gen, None)
-                    if chunk is None:
-                        break
-                    if chunk.get("type") == "session_id":
-                        chat_sid = chunk.get("session_id")
-                    yield f"data: {json.dumps(chunk, ensure_ascii=False)}\n\n"
-                    # Small delay after text chunks to force separate SSE frames
-                    if chunk.get("type") == "text":
-                        await asyncio.sleep(0.02)
-                    # Client left (closed tab) → stop the stream so it doesn't
-                    # keep burning LLM/DataForSEO calls server-side
-                    if chat_sid and await request.is_disconnected():
+                if pending is None:
+                    pending = asyncio.create_task(asyncio.to_thread(next, gen, None))
+
+                done, _ = await asyncio.wait({pending}, timeout=DISCONNECT_POLL_SECONDS)
+
+                if pending not in done:
+                    # Generator still working - this is exactly the window in
+                    # which a disconnect used to go unseen.
+                    if not disconnected and chat_sid and await request.is_disconnected():
+                        disconnected = True
                         request_stop(chat_sid)
+                    continue
+
+                try:
+                    chunk = pending.result()
                 except StopIteration:
                     break
+                finally:
+                    pending = None
+
+                if chunk is None:
+                    break
+                if chunk.get("type") == "session_id":
+                    chat_sid = chunk.get("session_id")
+
+                if disconnected:
+                    # Client is gone; keep draining so the orchestrator's
+                    # finally-block closes the run, but stop writing.
+                    continue
+
+                yield f"data: {json.dumps(chunk, ensure_ascii=False)}\n\n"
+                # Small delay after text chunks to force separate SSE frames
+                if chunk.get("type") == "text":
+                    await asyncio.sleep(0.02)
+                if chat_sid and await request.is_disconnected():
+                    disconnected = True
+                    request_stop(chat_sid)
 
             # Get updated memory state
             memory_state = {

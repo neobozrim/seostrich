@@ -6,6 +6,7 @@ from typing import Any
 
 from . import llm
 from . import memory
+from . import flows
 from .config import reflection_enabled
 from . import pipeline_recorder
 from . import session as session_store
@@ -1326,12 +1327,20 @@ def run_agent(
     context: dict[str, Any] | None = None,
     max_rounds: int = 20,
     stop_check=None,
+    flow_id: str | None = None,
 ) -> dict[str, Any]:
     """Run the SEO agent with function calling loop.
 
     stop_check: optional callable that raises StopRequested when the user
     has asked to stop; checked before every LLM round and before the
     post-loop tail so a stopped run doesn't burn more calls.
+
+    flow_id: when set, the agent may ONLY use that flow's tools. Keyword
+    filtering decides which tools are *plausible*; a flow decides which are
+    *permitted*. Without this the agent wanders: on 2026-09-01 a strategy
+    request produced read_memory + two web_search calls and never touched the
+    graph, because web_search was reachable and looked like a reasonable
+    first move.
     """
     sid = session_id or session_store.new_session_id()
     session_data: dict[str, Any] = {
@@ -1353,9 +1362,24 @@ def run_agent(
 
     messages: list[dict[str, str]] = [{"role": "user", "content": user_message}]
     
-    # Select tools based on intent (reduces context window usage)
-    # If intent is ambiguous, falls back to full tool set
-    tools_for_session = select_tools_for_intent(user_message)
+    # A flow's allowlist wins over keyword intent matching.
+    allowed = flows.tools_for(flow_id) if flow_id else []
+    if allowed:
+        tools_for_session = [
+            td for td in TOOL_DEFINITIONS if td["function"]["name"] in set(allowed)
+        ]
+        flow = flows.get(flow_id)
+        if flow:
+            system += (
+                f"\n\n**Active flow: {flow.label}** - {flow.description}\n"
+                f"Steps, in order: {' -> '.join(flow.nodes)}.\n"
+                f"You have ONLY this flow's tools. If you are missing something "
+                f"you need from the user, ASK them in one short question - do not "
+                f"substitute a different tool, and do not research your way around it."
+            )
+    else:
+        # Select tools based on intent (reduces context window usage)
+        tools_for_session = select_tools_for_intent(user_message)
 
     for round_num in range(max_rounds):
         if stop_check is not None:

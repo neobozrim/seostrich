@@ -17,6 +17,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
+from . import flows
 from . import llm
 from . import memory
 from . import pipeline_recorder
@@ -61,75 +62,67 @@ def _check_stop(sid: str | None) -> None:
             raise StopRequested()
 
 
-ORCHESTRATOR_SYSTEM_PROMPT = """You are an intelligent orchestrator agent. Your job is to:
+ORCHESTRATOR_SYSTEM_PROMPT = """You are the front desk of an SEO agent. You do not do
+SEO work yourself — you work out which FLOW the user needs, make sure you have what that
+flow requires, and then hand off.
 
-1. Understand what the user wants to accomplish
-2. Identify which specialist agent(s) can help
-3. Route the task to the right agent with proper context
-4. Present results back to the user
-5. Continue the conversation as needed
+**Flows the SEO agent can run**
 
-**Available Agents:**
+1. `keyword_strategy` — Content strategy from scratch.
+   Needs: what the business does (in the user's words) AND the target country + language.
+   Runs: seeds -> keyword universe -> clusters -> validation gate -> selection ->
+   AI-citability -> content pillars.
 
-**SEO Agent** - Handles all SEO-related work:
-- Keyword research and clustering
-- Content strategy and planning
-- Technical SEO audits
-- Indexing and submission to search engines
-- Search performance analysis (Google Search Console)
-- Content creation and optimization
+2. `geo_demand` — AI visibility (GEO).
+   Needs: the topics to investigate AND the target country + language.
+   Runs: how AI engines answer these topics today, who they cite, what share is open,
+   and the real questions people ask.
 
-**Brand Agent** - Handles brand identity work:
-- Founder interview and brand discovery
-- Competitor convention mapping
-- Voice, typography, and color system design
-- Brand profile creation (brand_profile.json + brand-constraints.md)
-- Naming and trademark verification
-- Use when: creating brand identity for a new project, rebranding, defining voice/tone/visual identity
+3. `other` — anything else (technical audits, GSC analysis, indexing, drafting).
 
-**Builder Agent** - Handles implementation with 3-tier verification:
-- Autonomous code generation and building
-- Asset generation (wordmarks, icons, illustrations, photos via fal.ai)
-- 3-tier verification: mechanical → compliance (hard gate) → judgment
-- Never changes brand profile — adjusts implementation instead
-- Use when: building websites/apps, generating visual assets, implementing designs
+**The one rule you must not break: never guess the market.**
+Every research flow needs a target COUNTRY and a target LANGUAGE, and both must have been
+stated by the user. You may not infer either one:
+- Not from the domain or its TLD. A .bg site does not mean the business targets Bulgaria.
+- Not from the site's content, the business name, or the language the user is writing in.
+  Someone can describe their business to you in one language and sell in another.
+If you do not have both, ASK — one short, friendly question — and do NOT call seo_agent yet.
+Ask it as "which country do your customers search from, and in which language?", because
+where the business is based is not the same as the market it sells into.
 
-**Monitoring Agent** - Tracks SEO performance and diagnoses issues:
-- Performance monitoring with bubble chart analysis
-- Indexing health checks and coverage tracking
-- Traffic drop diagnosis (algorithmic vs technical vs seasonal)
-- Keyword ranking tracking across SERPs
-- Content freshness alerts
-- Comprehensive monitoring reports with health scores
-- Use when: checking site performance, diagnosing traffic drops, tracking rankings, monitoring indexing health
+Getting this wrong is expensive and obvious: it sends the whole pipeline into the wrong
+market and returns confident, well-formatted keywords from an unrelated industry.
 
-**Your Role:**
-- Have a natural conversation to understand the user's goals
-- Ask clarifying questions if needed
-- When you identify work for a specialist, call the appropriate agent tool with:
-  - Clear task description
-  - Relevant context (business info, goals, constraints)
-- Present the agent's results in a user-friendly way
-- Ask what else they need
+**How to work**
+- Understand the goal, name the flow, check the flow's requirements are met.
+- Missing something? Ask for it. One question at a time. Do not route a half-specified job.
+- Have everything? Call `seo_agent` with the flow id, a clear task, and a context string
+  that includes the country and language the user gave you.
+- When the agent returns, present its results plainly and ask what they want to adjust.
+- Don't call an agent for a greeting or a general question — just answer.
 
-**Examples:**
+**Other specialists** (route only when clearly asked):
+- `brand_agent` — brand identity, voice, naming, visual system.
+- `builder_agent` — code generation, asset creation, building sites/apps.
+- `monitoring_agent` — performance tracking, traffic-drop diagnosis, indexing health,
+  rank tracking, freshness alerts.
+
+**Examples**
 
 User: "I have a new blog and want to grow traffic"
-→ Ask about their business, target audience, goals
-→ Once you have context, call seo_agent with task="Create SEO strategy" and context=business details
+-> Ask what the business does, then ask which country + language to target.
+-> Only once you have both: seo_agent(flow="keyword_strategy", task="Build a content
+   strategy", context="<business> ... Target market: United States, English")
 
-User: "I need branding for my new project"
-→ Call brand_agent with task="Create brand identity" and context=project details
+User: "productpirates.club — an AI community for product people, I'm in Bulgaria"
+-> Do NOT assume Bulgaria/Bulgarian. Ask: "Which country do your members search from,
+   and in which language should the content be?"
+
+User: "What do AI engines say about agentic commerce?"
+-> Ask country + language, then seo_agent(flow="geo_demand", ...)
 
 User: "Audit my site"
-→ Ask for the URL
-→ Call seo_agent with task="Technical SEO audit" and context=URL
-
-**Important:**
-- Don't try to do specialist work yourself
-- Don't call agents unnecessarily (e.g., don't call for simple greetings)
-- Maintain conversation flow
-- Remember context across the conversation
+-> Ask for the URL, then seo_agent(flow="other", task="Technical SEO audit", context=URL)
 """
 
 AGENT_REGISTRY = {
@@ -262,14 +255,33 @@ def run_orchestrator_stream(
             "type": "function",
             "function": {
                 "name": "seo_agent",
-                "description": "Route a task to the SEO specialist agent.",
+                "description": (
+                    "Route a task to the SEO specialist agent. Pick the FLOW that "
+                    "matches what the user wants. Do not call this until every "
+                    "required input for that flow has been stated by the user."
+                ),
                 "parameters": {
                     "type": "object",
                     "properties": {
+                        "flow": {
+                            "type": "string",
+                            "enum": list(flows.REGISTRY) + ["other"],
+                            "description": (
+                                "keyword_strategy = build a content strategy from "
+                                "scratch; geo_demand = AI visibility / what AI "
+                                "engines answer and cite; other = anything else."
+                            ),
+                        },
                         "task": {"type": "string"},
-                        "context": {"type": "string"}
+                        "context": {
+                            "type": "string",
+                            "description": (
+                                "Everything the flow needs, including the target "
+                                "country and language the user stated."
+                            ),
+                        },
                     },
-                    "required": ["task"]
+                    "required": ["flow", "task"]
                 }
             }
         },
@@ -414,6 +426,16 @@ def run_orchestrator_stream(
             if tool_name == "seo_agent":
                 task = tool_args.get("task", "")
                 context = tool_args.get("context", "")
+                flow_id = tool_args.get("flow") or ""
+                if flow_id not in flows.REGISTRY:
+                    flow_id = ""
+
+                # Plan preview, straight from the flow's node list. This used
+                # to cost a dedicated LLM call on every message.
+                plan_steps = flows.plan_for(flow_id)
+                if plan_steps:
+                    yield {"type": "plan", "steps": plan_steps, "agent": "seo_agent",
+                           "flow": flow_id}
 
                 yield {
                     "type": "tool_start",
@@ -449,6 +471,7 @@ def run_orchestrator_stream(
                         worker_outcome["result"] = ctx.run(
                             run_agent, agent_message,
                             stop_check=lambda: _check_stop(sid),
+                            flow_id=flow_id or None,
                         )
                     except BaseException as exc:
                         worker_outcome["error"] = exc
@@ -555,6 +578,13 @@ def run_orchestrator_stream(
                     "success": True
                 }
 
+                # Keep the agent's answer in the conversation. Without this the
+                # orchestrator forgot every result the moment it streamed it, so
+                # a follow-up like "drop that cluster, I prefer the other one"
+                # had nothing to refer to and started a fresh run.
+                if agent_response:
+                    messages.append({"role": "assistant", "content": agent_response})
+
                 # Yield the agent's response directly in chunks for streaming
                 if agent_response:
                     yield {"type": "status", "content": "Writing response..."}
@@ -598,6 +628,8 @@ def run_orchestrator_stream(
                 }
 
                 if agent_response:
+                    messages.append({"role": "assistant", "content": agent_response})
+                if agent_response:
                     yield {"type": "status", "content": "Writing response..."}
                     chunk_size = 30
                     for i in range(0, len(agent_response), chunk_size):
@@ -639,6 +671,8 @@ def run_orchestrator_stream(
                 }
 
                 if agent_response:
+                    messages.append({"role": "assistant", "content": agent_response})
+                if agent_response:
                     yield {"type": "status", "content": "Writing response..."}
                     chunk_size = 30
                     for i in range(0, len(agent_response), chunk_size):
@@ -679,6 +713,8 @@ def run_orchestrator_stream(
                     "success": True
                 }
 
+                if agent_response:
+                    messages.append({"role": "assistant", "content": agent_response})
                 if agent_response:
                     yield {"type": "status", "content": "Writing response..."}
                     chunk_size = 30
