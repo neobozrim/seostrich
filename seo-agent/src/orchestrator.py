@@ -23,6 +23,7 @@ from . import llm
 from .config import memory_enabled
 from . import memory
 from . import pipeline_recorder
+from . import runs as runs_store
 from . import session as session_store
 from .agent import run_agent
 from .brand_agent import run_brand_agent
@@ -391,6 +392,14 @@ def run_orchestrator_stream(
     with _stop_lock:
         _stop_flags[sid] = False
 
+    # Runs opened by this stream. A generator whose consumer has gone away is
+    # closed at whatever yield it was parked on, so the code path that calls
+    # end_run() may never be reached — leaving the run "running" forever and the
+    # Run view spinning until the server restarts. Observed 2026-09-01: a client
+    # timed out, the agent finished its work three minutes later, and the run
+    # was still marked running twenty minutes after that.
+    opened_runs: set[str] = set()
+
     try:
         # Step 1: Send session_id to frontend
         yield {"type": "session_id", "session_id": sid}
@@ -473,6 +482,7 @@ def run_orchestrator_stream(
                             "content": f"DataForSEO budget extended to {new_cap} calls",
                         }
                 pipeline_recorder.begin_run(run_id, initial_message or task)
+                opened_runs.add(run_id)
                 before_stages = pipeline_recorder.stage_ids(run_id)
 
                 # Run the agent in a worker thread so this generator can
@@ -770,6 +780,20 @@ def run_orchestrator_stream(
     finally:
         with _stop_lock:
             _stop_flags.pop(sid, None)
+        # Close any run this stream opened and did not finish. The work itself
+        # is already stopped (or done); this is about the record not lying.
+        for opened in opened_runs:
+            try:
+                record = runs_store.get_run(opened)
+                if record and record.get("status") == "running":
+                    pipeline_recorder.end_run(
+                        opened,
+                        status="done" if record.get("stages") else "stopped",
+                    )
+            except Exception:
+                # Never let bookkeeping raise out of a finally and mask the
+                # original error.
+                pass
 
 
 def route_to_agent(
