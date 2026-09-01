@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from .. import llm
 
+# Budget sized to what this node emits (a handful of pillars with rationales); the deadline in
+# llm.timeout_for() is derived from it, so an unbounded budget means an
+# unmeetable deadline.
+
 
 SYSTEM_PROMPT = """You are an SEO strategist. Select the best clusters to become content pillars based on opportunity scores and strategic fit.
 
@@ -41,5 +45,5 @@ def recommend_pillars(scored_clusters: dict) -> dict:
 
 Recommend 3-5 pillars with priority ranking."""
 
-    resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3)
+    resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3, max_tokens=2500)
     return llm.parse_json_response(resp)

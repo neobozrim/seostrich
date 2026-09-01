@@ -9,6 +9,10 @@ from __future__ import annotations
 
 from .. import llm
 
+# Budget sized to what this node emits (selected names plus a reason per discard); the deadline in
+# llm.timeout_for() is derived from it, so an unbounded budget means an
+# unmeetable deadline.
+
 
 SYSTEM_PROMPT = """You are a head of SEO deciding which keyword clusters a lean team should actually pursue.
 
@@ -50,7 +54,7 @@ def select_clusters(scored_clusters: dict, max_select: int = 4, business_descrip
 Select at most {max_select} clusters to pursue as pillars. Relevance to the business is the hard gate. Discard the rest with reasons."""
 
     try:
-        resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.2)
+        resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.2, max_tokens=1500)
         result = llm.parse_json_response(resp)
         if not isinstance(result, dict) or not result.get("selected"):
             return {"success": False, "error": "LLM returned no usable selection", "selection": None}

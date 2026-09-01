@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     # Explicit override; when unset the provider's default URL is used.
     qwen_base_url_override: str = Field(default="", alias="QWEN_BASE_URL")
     qwen_model: str = Field(default="qwen3.6-plus", alias="QWEN_MODEL")
+    # Mechanical nodes (grouping, extraction) gain nothing from a reasoning
+    # model and pay for it in latency: clustering took 254s on qwen3.8-max
+    # (9,464 reasoning tokens) vs 44s on flash for the same ten clusters.
+    qwen_model_fast: str = Field(default="qwen3.8-flash", alias="QWEN_MODEL_FAST")
 
     @property
     def provider(self) -> str:

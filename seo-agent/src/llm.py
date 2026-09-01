@@ -30,6 +30,18 @@ def _pace() -> None:
         time.sleep(wait)
 
 
+# One generous deadline, for one reason: without it a hung request blocks a run
+# forever. It is NOT a latency control.
+#
+# The original 120s was simply too short. What actually drives latency here is
+# reasoning tokens, not answer length — measured 2026-09-01 on the clustering
+# call: qwen3.8-max spent 254s emitting 10,358 tokens of which 9,464 were
+# reasoning, for a ~900-token answer. Note that max_tokens=2500 did not cap
+# that, so tuning max_tokens controls nothing. Model choice does: the same call
+# on qwen3.8-flash took 44s and produced the same ten clusters.
+DEFAULT_TIMEOUT = 300.0
+
+
 def get_client() -> OpenAI:
     global _client
     if _client is None:
@@ -87,9 +99,7 @@ def chat(
         }
 
     _pace()
-    client = get_client()
-    if timeout is not None:
-        client = client.with_options(timeout=timeout)
+    client = get_client().with_options(timeout=timeout or DEFAULT_TIMEOUT)
     resp = client.chat.completions.create(**kwargs)
     choice = resp.choices[0]
     result: dict[str, Any] = {
@@ -158,9 +168,7 @@ def chat_stream(
     # Tool calls arrive as indexed deltas that must be concatenated.
     partial: dict[int, dict[str, Any]] = {}
 
-    client = get_client()
-    if timeout is not None:
-        client = client.with_options(timeout=timeout)
+    client = get_client().with_options(timeout=timeout or DEFAULT_TIMEOUT)
     for event in client.chat.completions.create(**kwargs):
         if not event.choices:
             continue

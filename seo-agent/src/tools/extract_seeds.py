@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from .. import llm
 
+# Budget sized to what this node emits (~12 seeds plus a one-line note); the deadline in
+# llm.timeout_for() is derived from it, so an unbounded budget means an
+# unmeetable deadline.
+
 
 SYSTEM_PROMPT = """You are an SEO strategist. Analyze the business description and extract keyword seeds for content research.
 
@@ -50,5 +54,5 @@ Competitor URLs:
 
 Extract keyword seeds for SEO research."""
 
-    resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3)
+    resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3, max_tokens=800)
     return llm.parse_json_response(resp)

@@ -31,25 +31,17 @@ Your job is to evaluate whether the clusters make strategic sense BEFORE they be
 - Clusters that target mixed intents (e.g., "buy X" + "what is X" in same cluster)
 - Clusters based on keyword volume alone without strategic coherence
 
-**Output format:**
+**Output format** — keep it TIGHT. Refer to clusters by their number.
+Never repeat keyword text back; it is already known.
 ```json
 {
   "overall_coherence_score": 0-100,
   "verdict": "approved|needs_revision|rejected",
   "clusters": [
-    {
-      "cluster_name": "...",
-      "keyword_count": N,
-      "coherence_score": 0-100,
-      "issues": ["list of specific problems"],
-      "recommendation": "keep|revise|merge_with_X|split|drop",
-      "merge_with": "cluster_name or null",
-      "revised_keywords": ["only if recommendation is revise"]
-    }
+    {"n": 1, "score": 0-100, "rec": "keep|merge|split|drop", "issue": "one short phrase, or \"\""}
   ],
-  "global_issues": ["cross-cluster problems like overlap or missing themes"],
-  "missing_themes": ["important keyword themes that should have their own cluster"],
-  "action_items": ["specific next steps"]
+  "global_issues": ["at most 3 short cross-cluster problems"],
+  "missing_themes": ["at most 3 themes that deserve their own cluster"]
 }
 ```
 
@@ -85,10 +77,11 @@ def validate_clusters(
         }
 
     cluster_summary = []
-    for name, keywords in clusters.items():
+    for idx, (name, keywords) in enumerate(clusters.items(), 1):
         cluster_summary.append({
+            "n": idx,
             "name": name,
-            "keywords": keywords[:20],  # Cap to avoid token bloat
+            "keywords": keywords[:12],  # Cap to avoid token bloat
             "keyword_count": len(keywords),
         })
 
@@ -111,10 +104,17 @@ Total keywords: {sum(len(kws) for kws in clusters.values())}
 
 Evaluate each cluster and provide your verdict."""
 
+    # Only `verdict` and `global_issues` are consumed by the strategy graph, so
+    # the schema above is deliberately compact. The old one asked for per-cluster
+    # issue lists plus `revised_keywords` (full keyword text echoed back) — all
+    # discarded, but all paid for in output tokens, which is what pushes a call
+    # past its deadline. 1500 tokens is ample for the tight form; 300s leaves
+    # headroom instead of sitting under the ~121s a 4000-token reply needs.
     raw = llm.chat(
         prompt,
         system=SYSTEM_PROMPT,
-        max_tokens=4000,
+        max_tokens=1500,
+        timeout=300.0,
     )
 
     result = llm.parse_json_response(raw)
