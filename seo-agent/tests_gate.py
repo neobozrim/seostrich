@@ -65,10 +65,20 @@ chk("it names the verdict", 'verdict: {verdict}' in src)
 chk("it says the strategy is still built on it", "still built on it" in src)
 chk("empty when approved", 'if verdict == "approved"' in src)
 
-print("3. the old bug is gone")
+print("3. one validation pass by default")
+import re as _re
+m = _re.search(r"MAX_ATTEMPTS = (\d+)", src)
+chk("defaults to a single pass", m and m.group(1) == "1", m.group(1) if m else "not found")
+chk("the reason is recorded next to it", "changed nothing but cost" in src)
+
+print("4. the critique reaches the user instead of being spent on a retry")
+chk("global issues quoted in the warning", "global_issues" in src)
+chk("per-cluster detail returned", "validation_issues_detail" in src)
+
+print("5. the old bug is gone")
 # The failing shape was: re-cluster unconditionally at the end of every
 # iteration, so the last clustering was never validated.
-tail = src[src.index("MAX_ATTEMPTS = 2"): src.index("node: compute cluster metrics")]
+tail = src[src.index("MAX_ATTEMPTS = "): src.index("node: compute cluster metrics")]
 recluster_calls = tail.count("_cluster_with_retry(")
 chk("exactly one re-cluster call site", recluster_calls == 1, f"{recluster_calls} sites")
 chk("guarded by the attempt check",

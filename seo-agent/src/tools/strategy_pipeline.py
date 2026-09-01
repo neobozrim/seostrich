@@ -176,7 +176,19 @@ def run_keyword_strategy(
     # exactly that. Observed 2026-09-01: two needs_revision verdicts, then a
     # third unchecked clustering carried the whole strategy, at 25s of extra
     # cost for negative value.
-    MAX_ATTEMPTS = 2
+    # ONE pass by default. Measured 2026-09-01:
+    #   - the live run validated twice, got needs_revision both times, and the
+    #     re-cluster between them changed nothing but cost ~130s;
+    #   - an A/B on the same clusters showed max and flash produce the SAME
+    #     critique (both scored the catch-all cluster 32, rec=split), so the
+    #     critique is the valuable part, not the retry;
+    #   - the verdict is knife-edge: "rejected" vs "needs_revision" turned on
+    #     one borderline cluster scoring 57 rather than 60, and only the
+    #     latter triggers the expensive retry.
+    # The critique now travels to the user via validation_warning instead of
+    # being spent on a re-cluster that does not act on it. Raise this if a
+    # future change makes the retry actually use the issues it was given.
+    MAX_ATTEMPTS = 1
     verdict = "rejected"
     validation: dict = {}
     for attempt in range(1, MAX_ATTEMPTS + 1):
@@ -272,6 +284,7 @@ def run_keyword_strategy(
         "cluster_count": len(clusters),
         "validation_verdict": verdict,
         "validation_issues": validation.get("global_issues", []),
+        "validation_issues_detail": (validation.get("clusters") or [])[:8],
         "validation_warning": (
             ""
             if verdict == "approved"
@@ -279,7 +292,8 @@ def run_keyword_strategy(
                 f"The clustering was never approved by the validation gate "
                 f"(verdict: {verdict}). The strategy below is still built on it, "
                 f"so treat the pillars as a starting point and check the cluster "
-                f"list before committing to it."
+                f"list before committing to it. What it flagged: "
+                f"{'; '.join(str(i) for i in (validation.get('global_issues') or [])[:3]) or 'see validation_issues'}."
             )
         ),
         "selected_clusters": [c["name"] for c in selected],
