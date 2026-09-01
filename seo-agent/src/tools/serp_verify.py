@@ -31,6 +31,10 @@ DEPTH = 10
 # A pair is only worth verifying if the head terms already share vocabulary —
 # unrelated clusters do not need a paid call to stay separate.
 CANDIDATE_WORD_OVERLAP = 0.3
+# Default SERP calls per run. The evaluation needed SERPs for 11 head terms
+# across 21 candidate pairs and ran out at 8, leaving one pair unverified (and
+# so defaulted to separate). Twelve covers a 13-cluster run with room to spare.
+MAX_SERP_CALLS = 12
 
 
 def _bare(url: str) -> str:
@@ -95,7 +99,7 @@ def verify_clusters(
     clusters: list[dict],
     location_code: int,
     language_code: str,
-    max_calls: int = 8,
+    max_calls: int = MAX_SERP_CALLS,
 ) -> dict:
     """Check which proposed clusters Google actually treats as the same thing.
 
