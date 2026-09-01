@@ -113,7 +113,32 @@ chk("promoted cluster is now selected", promoted["reasoning"]["decision"] == "se
 chk("and says why it is there", bool(promoted["reasoning"]["decision_reason"]),
     promoted["reasoning"]["decision_reason"])
 
-print("6. discarding records the user's reason")
+print("6. a proposed cluster arrives fully formed")
+# It joins the SELECTED set without passing score/select, so it must carry a
+# short name and say where it came from — otherwise the Run view shows a
+# nameless pillar with a blank reasoning block next to justified ones.
+import src.cluster_governance as _gov
+_gov.keyword_suggestions = lambda topic, limit=30, location_code=2840, language_code="en": [
+    {"keyword": f"{topic} guide", "volume": 40, "difficulty": 5, "cpc": 0.4, "intent": "informational"},
+    {"keyword": f"{topic} tools", "volume": 20, "difficulty": 3, "cpc": 0.2, "intent": "commercial"},
+]
+long_topic = "remotely operate home computer - remote access and remote development setups"
+res = gov.propose_cluster(RID, long_topic)
+chk("proposal succeeded", res.get("ok"), str(res)[:110])
+after = gov.list_clusters_all(RID)
+prop = next((c for c in after["selected"] if c.get("proposed")), None)
+chk("proposed cluster present", prop is not None, str([c["cluster_name"] for c in after["selected"]]))
+if prop:
+    chk("has a short display name", 0 < len(prop["cluster_name"]) <= 49, repr(prop["cluster_name"]))
+    chk("name is not blank", bool(prop["cluster_name"].strip()))
+    chk("reasoning is not blank", bool(prop["reasoning"]["decision_reason"].strip()),
+        repr(prop["reasoning"]["decision_reason"]))
+    chk("says it skipped the gates",
+        "did not go through" in prop["reasoning"]["decision_reason"],
+        prop["reasoning"]["decision_reason"][:70])
+    chk("flagged as proposed", prop["proposed"] is True)
+
+print("7. discarding records the user's reason")
 gov.discard_cluster(RID, "PM Tools", "Tried it, still not our audience.")
 after = gov.list_clusters_all(RID)
 dropped = next(c for c in after["discarded"] if c["cluster_name"] == "PM Tools")

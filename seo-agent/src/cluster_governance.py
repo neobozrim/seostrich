@@ -303,8 +303,22 @@ def propose_cluster(
     diffs = [k["difficulty"] for k in kws[:12] if k.get("difficulty")]
     intents = [k["intent"] for k in kws[:12] if k.get("intent")]
 
+    # A proposed cluster joins the SELECTED set, so it has to arrive with the
+    # same fields as one the pipeline produced. Observed 2026-09-01: a proposal
+    # landed with no `cluster_name` and no reason, so the Run view showed a
+    # nameless fourth pillar with an empty reasoning block sitting beside three
+    # fully-justified ones. Whoever reads the strategy cannot tell where it
+    # came from.
+    #
+    # `name` is kept as the model wrote it (often a long descriptive phrase);
+    # `cluster_name` is a short label for display.
+    label = topic.split("—")[0].split(" - ")[0].strip() or topic
+    if len(label) > 48:
+        label = label[:45].rstrip(" ,;:") + "…"
+
     entry = {
         "name": topic,
+        "cluster_name": label,
         "head_term": topic,
         "keywords": members,
         "intent": max(set(intents), key=intents.count) if intents else "",
@@ -313,6 +327,14 @@ def propose_cluster(
         "market": market_label(loc, lang),
         "proposed": True,
         "proposed_at": datetime.now(timezone.utc).isoformat(),
+        # Its own audit trail: this was added after the pipeline had chosen,
+        # so it never went through score/select and must not look as if it did.
+        "selection_reason": (
+            f"Proposed after the pipeline ran, as a scoped keyword re-seed on "
+            f"\"{topic}\". It did not go through the validation or selection "
+            f"gates, so judge it on the {len(members)} keyword(s) below rather "
+            f"than on a pipeline verdict."
+        ),
         "seed_stats": kws[:12],
     }
 

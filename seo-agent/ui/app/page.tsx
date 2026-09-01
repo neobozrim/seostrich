@@ -442,13 +442,18 @@ export default function Home() {
               <img src="/logo/seostrich-lockup-horizontal.svg" alt="SEOstrich" className="h-8 w-auto" />
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowRun(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-primary-400 text-white hover:bg-primary-500"
-              >
-                <Workflow className="w-4 h-4" />
-                Pipeline
-              </button>
+              {/* On the canvas the run cards ARE the way in, so a second door
+                  labelled "Pipeline" was redundant. Keep it only once chat has
+                  taken over the screen, and call it what it opens. */}
+              {(chatOpen || messages.length > 0) && (
+                <button
+                  onClick={() => setShowRun(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-primary-400 text-white hover:bg-primary-500"
+                >
+                  <Workflow className="w-4 h-4" />
+                  Reports
+                </button>
+              )}
               <button
                 onClick={() => setShowSystem(true)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
@@ -598,7 +603,7 @@ export default function Home() {
         <SystemPanel memory={memory} onClose={() => setShowSystem(false)} />
       )}
 
-      {/* Pipeline / Run view */}
+      {/* Reports (run detail) */}
       {showRun && (
         <RunView
           tasks={memory.tasks}

@@ -165,7 +165,7 @@ export async function getSessions(): Promise<any[]> {
 
 // Must match API_VERSION in api/main.py. A mismatch means the UI is talking
 // to a backend that predates the endpoints it depends on.
-export const EXPECTED_API_VERSION = '2026-09-01.citations';
+export const EXPECTED_API_VERSION = '2026-09-01.pins';
 
 export async function getApiHealth(): Promise<{
   status: string;
@@ -254,6 +254,22 @@ export async function checkAiCitations(
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify({ domain }),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function pinRun(
+  runId: string,
+  pinned: boolean,
+  note?: string,
+  signal?: AbortSignal
+): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/pin`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ pinned, note: note || '' }),
     signal,
   });
   await ensureOk(response);

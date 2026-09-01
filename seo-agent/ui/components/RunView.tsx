@@ -958,7 +958,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-semibold text-primary-700">
-                {run ? run.title || run.project || 'Pipeline run' : 'Pipeline run'}
+                {run ? run.title || run.project || 'Report' : 'Report'}
               </h2>
               {run?.status && <StatusBadge status={run.status} />}
             </div>

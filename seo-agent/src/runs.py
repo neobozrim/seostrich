@@ -53,10 +53,17 @@ def list_runs() -> list[dict]:
                     "status": run.get("status"),
                     "stages": len(run.get("stages", [])),
                     "modified": path.stat().st_mtime,
+                    # Pinned runs lead the home canvas regardless of recency,
+                    # so a curated run stays the first thing anyone sees.
+                    "pinned": bool(run.get("pinned")),
+                    "pin_note": run.get("pin_note") or "",
                 }
             )
         except Exception:
             continue
+    # Pinned first, then newest. Sorting here rather than in the UI keeps every
+    # consumer (canvas, RunView, WebMCP) in the same order.
+    summaries.sort(key=lambda r: (not r["pinned"], -(r["modified"] or 0)))
     return summaries
 
 
@@ -125,3 +132,17 @@ def seed_defaults(force: bool = False) -> list[str]:
 def restore_defaults() -> list[str]:
     """Force-reseed all default runs from the repo seed dir."""
     return seed_defaults(force=True)
+
+
+def set_pinned(run_id: str, pinned: bool, note: str = "") -> dict | None:
+    """Pin or unpin a run. Pinned runs lead the home canvas."""
+    run = get_run(run_id)
+    if run is None:
+        return None
+    run["pinned"] = bool(pinned)
+    if pinned:
+        run["pin_note"] = note or run.get("pin_note") or ""
+    else:
+        run.pop("pin_note", None)
+    save_run(run_id, run)
+    return {"id": run_id, "pinned": run["pinned"], "pin_note": run.get("pin_note", "")}

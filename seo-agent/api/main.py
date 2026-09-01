@@ -76,7 +76,7 @@ app.add_middleware(
 # disabled, no /api/flows) silently served the UI for a whole session: every
 # browser test validated the wrong process, and the missing endpoints looked
 # like frontend bugs.
-API_VERSION = "2026-09-01.citations"
+API_VERSION = "2026-09-01.pins"
 
 
 @app.get("/api/health")
@@ -190,6 +190,20 @@ async def add_run_feedback(
     if run is None:
         raise HTTPException(status_code=404, detail="Run not found")
     return {"ok": True, "feedback": run["feedback"]}
+
+
+class PinIn(BaseModel):
+    pinned: bool = True
+    note: str = ""
+
+
+@app.post("/api/runs/{run_id}/pin")
+async def pin_run(run_id: str, body: PinIn, _auth: None = Depends(require_auth)):
+    """Pin a run so it leads the home canvas regardless of recency."""
+    result = runs.set_pinned(run_id, body.pinned, body.note)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return result
 
 
 @app.post("/api/runs/restore-defaults")

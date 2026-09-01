@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Send, Workflow, Target, Sparkles, Lock } from 'lucide-react';
-import { getRuns, getFlows, FlowCard, FlowCatalog } from '@/lib/api';
+import { ArrowRight, Send, Workflow, Target, Sparkles, Lock, Pin, PinOff } from 'lucide-react';
+import { getRuns, getFlows, pinRun, FlowCard, FlowCatalog } from '@/lib/api';
 import { RunSummary } from '@/types';
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -22,11 +22,15 @@ const STARTERS: Record<string, string> = {
 const FEATURED_LIMIT = 6;
 
 function featured(runs: RunSummary[]): RunSummary[] {
+  // The API returns pinned-first, then newest. A pinned run is a deliberate
+  // choice about what someone should see, so it always survives the cut —
+  // only the unpinned tail competes for the remaining slots.
+  const pinned = runs.filter((r) => r.pinned);
+  const rest = runs.filter((r) => !r.pinned);
   const rank = (r: RunSummary) =>
     r.status === 'complete' || r.status === 'done' ? 0 : r.status === 'running' ? 1 : 2;
-  return [...runs]
-    .sort((a, b) => rank(a) - rank(b) || (b.modified || 0) - (a.modified || 0))
-    .slice(0, FEATURED_LIMIT);
+  rest.sort((a, b) => rank(a) - rank(b) || (b.modified || 0) - (a.modified || 0));
+  return [...pinned, ...rest].slice(0, Math.max(FEATURED_LIMIT, pinned.length));
 }
 
 interface Props {
@@ -38,6 +42,21 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
   const [runs, setRuns] = useState<RunSummary[]>([]);
   const [catalog, setCatalog] = useState<FlowCatalog | null>(null);
   const [draft, setDraft] = useState('');
+
+  // Optimistic: the canvas re-sorts immediately, and reverts if the call fails.
+  const togglePin = async (run: RunSummary) => {
+    const next = !run.pinned;
+    setRuns((prev) =>
+      featured(prev.map((r) => (r.id === run.id ? { ...r, pinned: next } : r)))
+    );
+    try {
+      await pinRun(run.id, next);
+    } catch {
+      setRuns((prev) =>
+        featured(prev.map((r) => (r.id === run.id ? { ...r, pinned: !next } : r)))
+      );
+    }
+  };
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -69,6 +88,32 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
                   <div className="flex items-start justify-between gap-2">
                     <span className="font-medium text-gray-900 truncate">
                       {run.project || run.id}
+                    </span>
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      aria-label={run.pinned ? 'Unpin this run' : 'Pin this run'}
+                      title={
+                        run.pinned
+                          ? 'Pinned — always shown first'
+                          : 'Pin so this is always shown first'
+                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        togglePin(run);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          togglePin(run);
+                        }
+                      }}
+                      className={`p-1 rounded flex-shrink-0 hover:bg-surface-100 ${
+                        run.pinned ? 'text-primary-400' : 'text-gray-300 hover:text-gray-600'
+                      }`}
+                    >
+                      {run.pinned ? <Pin className="w-3.5 h-3.5" /> : <PinOff className="w-3.5 h-3.5" />}
                     </span>
                     <span
                       className={`text-[10px] px-1.5 py-0.5 rounded-full border flex-shrink-0 ${

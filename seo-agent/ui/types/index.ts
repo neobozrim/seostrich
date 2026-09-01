@@ -66,6 +66,8 @@ export interface RunSummary {
   status?: string;
   stages: number;
   modified?: number;
+  pinned?: boolean;
+  pin_note?: string;
 }
 
 export interface RunStage {
