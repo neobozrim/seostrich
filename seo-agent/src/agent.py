@@ -59,6 +59,7 @@ from .tools.cluster_ops import (
     list_clusters_all, promote_cluster, discard_cluster, propose_cluster,
 )
 from .tools.strategy_pipeline import run_keyword_strategy
+from .market import confirm_market, catalog as market_catalog
 
 # --- Exposed DataForSEO functions (previously internal only) ---
 from .tools.dataforseo import (
@@ -105,6 +106,18 @@ When starting a new conversation, ask what the user wants to accomplish. Then pl
 - After an initial audit, if issues are found, call additional specialized tools to investigate further.
 - Don't stop after one tool call unless the task is truly complete. If you say "let me dig deeper", actually call the next tool.
 - Produce a **structured final report** that synthesizes findings from all tools called.
+
+**CRITICAL — Market first, and you must ASK for it:**
+Before ANY keyword research you must know two things the user has told you explicitly:
+the target COUNTRY and the target SEARCH LANGUAGE. Then call `confirm_market(country, language)`.
+- NEVER infer the country from the domain or its TLD. A .bg domain does not mean the business
+  targets Bulgaria; plenty of businesses on a local TLD sell to another market entirely.
+- NEVER infer the language from the site's content, the business name, or the language the user
+  happens to be typing in. A Bulgarian founder may well be targeting English-speaking buyers.
+- If either is missing, ASK — one short question, offering `list_markets` options if helpful.
+  Do not proceed, do not assume a "safe" default, and do not start research to "find out".
+Getting this wrong is not a small error: it sends the whole pipeline into the wrong market and
+returns confidently-formatted keywords from an unrelated business domain.
 
 **CRITICAL — Keyword/strategy requests run the ENFORCED pipeline:**
 For ANY request for keyword strategy, clusters, pillars or a content plan you MUST call `run_keyword_strategy` FIRST. It executes the fixed graph in code — seeds → DataForSEO keyword universe → over-cluster (10) → validate gate (re-clusters once on "needs_revision") → score → select top 3-4 → AI-citability brief on the selected head terms → pillars from the selection only. Every node records its output as an inspectable stage.
@@ -154,6 +167,42 @@ Before making decisions, consult memory to understand past context. Use learning
 
 
 TOOL_DEFINITIONS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "confirm_market",
+            "description": (
+                "Pin the target market (country + language) for this run. MUST be called "
+                "before any keyword research. Call it ONLY after the user has stated both "
+                "explicitly. NEVER infer the country from a domain or TLD, and NEVER infer "
+                "the language from the site's content or the language the user is typing in "
+                "— a .bg domain does not mean the business targets Bulgaria in Bulgarian. "
+                "If you do not know both, ask the user first."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "country": {
+                        "type": "string",
+                        "description": "ISO code or name, e.g. 'US', 'BG', 'Germany'.",
+                    },
+                    "language": {
+                        "type": "string",
+                        "description": "ISO 639-1 search language, e.g. 'en', 'bg', 'de'.",
+                    },
+                },
+                "required": ["country", "language"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_markets",
+            "description": "List the supported markets (country + location code + likely search languages) so you can offer the user a choice.",
+            "parameters": {"type": "object", "properties": {}},
+        },
+    },
     {
         "type": "function",
         "function": {
@@ -1085,6 +1134,8 @@ TOOL_DEFINITIONS = [
 
 # Map tool names to actual callables
 TOOL_CALLABLES = {
+    "confirm_market": confirm_market,
+    "list_markets": lambda: {"markets": market_catalog()},
     "extract_seeds": extract_seeds,
     "pull_universe": pull_universe,
     "cluster_keywords": cluster_keywords,
@@ -1170,7 +1221,7 @@ TOOL_CATEGORIES = {
         "content_quality_assessment",
     ],
     "research": [
-        "run_keyword_strategy", "extract_seeds", "pull_universe", "cluster_keywords",
+        "confirm_market", "list_markets", "run_keyword_strategy", "extract_seeds", "pull_universe", "cluster_keywords",
         "validate_clusters", "score_clusters", "select_clusters", "list_clusters_all",
         "promote_cluster", "discard_cluster", "propose_cluster", "ai_citability_brief",
         "recommend_pillars", "serp_organic", "serp_ai_mode",
@@ -1218,6 +1269,7 @@ INTENT_KEYWORDS = {
 # run_keyword_strategy out, so the enforced graph was unreachable and the
 # agent improvised with plan_calendar instead.
 CORE_TOOLS = [
+    "confirm_market", "list_markets",
     "run_keyword_strategy",
     "ai_citability_brief",
     "list_clusters_all", "promote_cluster", "discard_cluster", "propose_cluster",

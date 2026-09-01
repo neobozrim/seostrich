@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import time
 
+from .. import market as market_mod
 from .. import pipeline_recorder as rec
 from .ai_citability import ai_citability_brief
 from .cluster_keywords import cluster_keywords
@@ -91,8 +92,8 @@ def _cluster_with_retry(
 
 def run_keyword_strategy(
     business_description: str,
-    location_code: int = 2840,
-    language_code: str = "en",
+    location_code: int | None = None,
+    language_code: str | None = None,
     site_description: str = "",
     competitor_urls: list[str] | None = None,
     max_select: int = 4,
@@ -107,6 +108,17 @@ def run_keyword_strategy(
         return {"success": False, "error": "run_keyword_strategy must run inside a pipeline run"}
     if not (business_description or "").strip():
         return {"success": False, "error": "business_description is required"}
+
+    # Market gate. There are deliberately no location/language defaults: a
+    # guessed market is what produced Bulgarian theatre keywords for a poetry
+    # site. The user must confirm country + language first.
+    try:
+        market = market_mod.require_market(location_code, language_code)
+    except market_mod.MarketNotConfirmed as exc:
+        return {"success": False, "error": str(exc), "needs": "confirm_market"}
+    location_code = market["location_code"]
+    language_code = market["language_code"]
+    rec.log_activity("step", detail=f"market: {market['label']}")
 
     competitors = competitor_urls or []
     steps: list[str] = []
