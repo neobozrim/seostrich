@@ -27,6 +27,7 @@ def fake_chat(messages, system=None, tools=None, temperature=0.3,
               max_tokens=8000, model=None, timeout=None):
     captured["max_tokens"] = max_tokens
     captured["timeout"] = timeout
+    captured["model"] = model
     captured["msg"] = messages
     return {"content": '{"clusters": []}', "usage": {}}
 ck.llm.chat = fake_chat
@@ -36,10 +37,15 @@ lines = [l for l in captured["msg"].splitlines() if l and l[0].isdigit() and ". 
 assert len(lines) == 80, f"expected 80 keyword lines, got {len(lines)}"
 assert lines[0].startswith("1. kw119"), "expected highest volume first, got " + lines[0]
 assert captured["max_tokens"] == 2500, f"expected max_tokens 2500, got {captured['max_tokens']}"
-assert captured["timeout"] and captured["timeout"] >= 2500 / 11.7, (
-    f"deadline {captured['timeout']} cannot cover a full-budget reply")
+# No explicit timeout: llm.DEFAULT_TIMEOUT (300s) covers the observed 254s
+# worst case. What this node must do is ask for the FAST model — grouping is
+# mechanical, and the reasoning model spends ~9.5k thinking tokens on it.
+from src.config import settings as _settings
+assert captured["timeout"] is None, "node should rely on the default deadline"
+assert captured["model"] == _settings.qwen_model_fast, (
+    f"expected fast model {_settings.qwen_model_fast}, got {captured['model']}")
 ck.llm.chat = orig_chat
-print("PASS payload: 80 numbered lines, volume desc, max_tokens=2500, deadline covers the budget")
+print("PASS payload: 80 numbered lines, volume desc, max_tokens=2500, fast model requested")
 
 # 2) _cluster_with_retry: success on first try -> 1 call
 sp.cluster_keywords = fake_cluster_keywords
