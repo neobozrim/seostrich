@@ -7,7 +7,7 @@ from typing import Any
 from . import llm
 from . import memory
 from . import flows
-from .config import reflection_enabled
+from .config import memory_enabled, reflection_enabled
 from . import pipeline_recorder
 from . import session as session_store
 from .tools.extract_seeds import extract_seeds
@@ -1275,9 +1275,16 @@ CORE_TOOLS = [
     "ai_citability_brief",
     "list_clusters_all", "promote_cluster", "discard_cluster", "propose_cluster",
     "submit_deliverable",
-    "read_memory",
     "web_search",
 ]
+
+
+def _core_tools() -> list[str]:
+    """CORE_TOOLS, plus the memory tools only when memory is switched on."""
+    if memory_enabled():
+        return CORE_TOOLS + ["read_memory", "record_fact", "record_learning",
+                             "record_decision"]
+    return CORE_TOOLS
 
 
 def select_tools_for_intent(user_message: str, always_include: list[str] | None = None) -> list[dict]:
@@ -1306,8 +1313,10 @@ def select_tools_for_intent(user_message: str, always_include: list[str] | None 
     # Collect tool names from the matched categories. An unmatched message
     # falls back to CORE_TOOLS only — sending all 63 schemas (~9.4k tokens)
     # on every round of a 20-round loop was a large share of the token bill.
-    selected_tool_names = set(CORE_TOOLS)
+    selected_tool_names = set(_core_tools())
     for category in selected_categories:
+        if category == "memory" and not memory_enabled():
+            continue
         selected_tool_names.update(TOOL_CATEGORIES.get(category, []))
 
     # Add always_include tools
@@ -1351,7 +1360,7 @@ def run_agent(
     }
 
     # Load skills applicable to this agent
-    skills_content = memory.load_skills(AGENT_NAME)
+    skills_content = memory.load_skills(AGENT_NAME) if memory_enabled() else ""
     skills_context = ""
     if skills_content:
         skills_context = f"\n\nSkills:\n\n{skills_content}"

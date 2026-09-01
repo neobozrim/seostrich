@@ -77,11 +77,20 @@ class Settings(BaseSettings):
     # its run id, so the cap spans follow-up messages in the same session).
     dfs_max_calls_per_run: int = Field(default=25, alias="DFS_MAX_CALLS_PER_RUN")
 
-    # Post-run reflection tail (outcome summary + memory synthesis + Braintrust
-    # + self-learning). ~10 extra LLM calls per run, each carrying the full
-    # session JSON. Off by default: it costs more than the whole pipeline and
-    # produces nothing the user sees. Set AGENT_REFLECTION=on to re-enable.
-    agent_reflection: str = Field(default="off", alias="AGENT_REFLECTION")
+    # The shared blackboard memory: cross-project facts/learnings/decisions
+    # read into every prompt, plus the post-run reflection tail that writes
+    # them (outcome summary + synthesis + self-learning, ~10 LLM calls each
+    # carrying the full session JSON).
+    #
+    # Off by default, and not only for cost. The blackboard is shared across
+    # every project in this repo, so a Product Pirates conversation was being
+    # given 3,457 tokens of Bulgarian coffee-roastery facts and Neobozrim
+    # theatre brand decisions. Cross-project contamination that reads as the
+    # model hallucinating an unrelated industry.
+    agent_memory: str = Field(
+        default="off",
+        validation_alias=AliasChoices("AGENT_MEMORY", "AGENT_REFLECTION"),
+    )
 
     mock_llm: bool = Field(default=False, alias="MOCK_LLM")
     mock_dfs: bool = Field(default=False, alias="MOCK_DFS")
@@ -98,6 +107,12 @@ class Settings(BaseSettings):
 settings = Settings()
 
 
+def memory_enabled() -> bool:
+    """True when blackboard memory is read into prompts and written after runs."""
+    return settings.agent_memory.strip().lower() in ("1", "on", "true", "yes")
+
+
+# Back-compat alias: the reflection tail is part of the same switch.
 def reflection_enabled() -> bool:
     """True when the post-run reflection tail should run (default: off)."""
-    return settings.agent_reflection.strip().lower() in ("1", "on", "true", "yes")
+    return memory_enabled()

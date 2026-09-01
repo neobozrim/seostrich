@@ -19,6 +19,7 @@ from typing import Any, Optional
 
 from . import flows
 from . import llm
+from .config import memory_enabled
 from . import memory
 from . import pipeline_recorder
 from . import session as session_store
@@ -359,12 +360,18 @@ def run_orchestrator_stream(
         }
 
     # Load memory context so the orchestrator knows what the agents know
+    # Blackboard memory is shared across every project in this repo, so reading
+    # it into an unrelated conversation injects another business entirely.
+    # Off by default; AGENT_MEMORY=on restores it.
     mem_context = ""
-    facts = memory.read_facts()
-    learnings = memory.read_learnings()
-    decisions = memory.read_decisions()
-    tasks = memory.read_tasks()
-    brand_constraints = memory.read_brand_constraints()
+    if not memory_enabled():
+        facts = learnings = decisions = tasks = brand_constraints = ""
+    else:
+        facts = memory.read_facts()
+        learnings = memory.read_learnings()
+        decisions = memory.read_decisions()
+        tasks = memory.read_tasks()
+        brand_constraints = memory.read_brand_constraints()
     if facts or learnings or decisions:
         def _recent(text: str, n: int = 15) -> str:
             lines = [l for l in text.split("\n") if l.strip() and not l.startswith("#")]
@@ -731,8 +738,9 @@ def run_orchestrator_stream(
 
         # Record the orchestrator task in memory
         task_desc = initial_message[:80]
-        memory.post_task(task_desc)
-        memory.complete_task(task_desc)
+        if memory_enabled():
+            memory.post_task(task_desc)
+            memory.complete_task(task_desc)
 
         # Save session
         session_store.save_session(sid, session_data)
