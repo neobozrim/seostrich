@@ -90,6 +90,51 @@ def _cluster_with_retry(
     )
 
 
+def _compact_result(result: dict) -> dict:
+    """What the MODEL receives. The full detail is already on the stages.
+
+    Tool results are truncated to 4,000 characters before the model sees them,
+    and this return runs to ~17,600 — with `discarded` (11,700 of it, full
+    cluster entries and per-keyword stats) sitting BEFORE `pillars`. So the
+    pillars, which are the actual deliverable, were the part that got cut, and
+    the agent then made repeated list_clusters_all calls trying to see the
+    result of the graph it had just run.
+
+    This is a deterministic projection, not a summary: fields are selected, not
+    rewritten, so nothing can be invented here. Everything omitted is readable
+    from the run's stages (and via WebMCP).
+    """
+    discarded = result.get("discarded") or []
+    return {
+        "success": result.get("success"),
+        "market": result.get("market"),
+        "keyword_count": result.get("keyword_count"),
+        "cluster_count": result.get("cluster_count"),
+        "steps": result.get("steps"),
+        "validation_verdict": result.get("validation_verdict"),
+        "validation_issues": (result.get("validation_issues") or [])[:4],
+        "validation_warning": result.get("validation_warning"),
+        "relevance_gate_ran": result.get("relevance_gate_ran"),
+        "selection_warning": result.get("selection_warning"),
+        "selected_clusters": result.get("selected_clusters"),
+        "head_terms": result.get("head_terms"),
+        # names + reasons only; the full entries stay on the clusters stage
+        "discarded": [
+            {
+                "cluster_name": d.get("cluster_name") or d.get("name"),
+                "reason": str(d.get("reason") or d.get("discard_reason") or "")[:160],
+            }
+            for d in discarded
+        ][:10],
+        "pillars": result.get("pillars"),
+        "full_detail": (
+            "Cluster members, per-keyword stats and the AI-citability brief are "
+            "recorded as stages of this run — read them there or tell the user "
+            "they are in the Report view. Do NOT re-run the graph to see them."
+        ),
+    }
+
+
 def run_keyword_strategy(
     business_description: str,
     location_code: int | None = None,
@@ -234,15 +279,74 @@ def run_keyword_strategy(
         max_select=max_select,
         business_description=business_description,
     )
+    # Selection is the RELEVANCE GATE — the only node that asks "does this
+    # cluster serve THIS business". One transient LLM failure should not
+    # silently skip it, so retry once before falling back.
     if not selection_res.get("success") or not selection_res.get("selection", {}).get("selected"):
-        names = [c["name"] for c in clusters]
+        rec.log_activity(
+            "step",
+            detail=f"relevance gate failed ({str(selection_res.get('error'))[:80]}) — retrying once",
+        )
+        selection_res = select_clusters(
+            scored or {"clusters": clusters},
+            max_select=max_select,
+            business_description=business_description,
+        )
+
+    selection_error = ""
+    selection_failed = (
+        not selection_res.get("success")
+        or not selection_res.get("selection", {}).get("selected")
+    )
+    if selection_failed:
+        # The old fallback took names[:max_select] — the first N in whatever
+        # order clustering happened to emit — and labelled the rest "not
+        # selected (deterministic fallback)". That reads like a decision and is
+        # not one. Observed 2026-09-01: it kept three near-duplicate
+        # course-buying clusters and discarded "Building AI Products",
+        # "Agentic AI Development" and "AI Product Evaluation" — the subject
+        # the business is actually about — with no relevance judgement made at
+        # any point, and nothing in the output saying so.
+        #
+        # Rank by MEASURED opportunity instead of emission order, and say
+        # plainly on every entry that relevance was never assessed.
+        selection_error = str(selection_res.get("error") or "no usable selection returned")[:200]
+        ranked = sorted(
+            clusters,
+            key=lambda c: (c.get("metrics") or {}).get("total_volume", 0),
+            reverse=True,
+        )
+        keep = [c["name"] for c in ranked[:max_select]]
+        rec.log_activity(
+            "step",
+            detail="relevance gate UNAVAILABLE — ranked by search volume only; "
+                   "the selection is not a relevance judgement",
+        )
         selection_res = {
             "success": True,
             "selection": {
-                "selected": names[:max_select],
+                "selected": keep,
+                "selected_reasons": [
+                    {
+                        "cluster_name": n,
+                        "reason": (
+                            "Kept by SEARCH VOLUME only — the relevance step "
+                            "failed, so no one checked whether this serves your "
+                            "business. Review before building on it."
+                        ),
+                    }
+                    for n in keep
+                ],
                 "discarded": [
-                    {"cluster_name": n, "reason": "not selected (deterministic fallback)"}
-                    for n in names[max_select:]
+                    {
+                        "cluster_name": c["name"],
+                        "reason": (
+                            "Dropped by search volume only — the relevance step "
+                            "failed, so this was NOT judged off-topic. It may "
+                            "well be the right cluster; promote it if so."
+                        ),
+                    }
+                    for c in ranked[max_select:]
                 ],
             },
         }
@@ -277,7 +381,7 @@ def run_keyword_strategy(
     steps.append("pillars")
 
     rec.log_activity("step", detail="graph complete")
-    return {
+    return _compact_result({
         "success": True,
         "market": rec.market_label(location_code, language_code),
         "keyword_count": len(keywords),
@@ -285,6 +389,17 @@ def run_keyword_strategy(
         "validation_verdict": verdict,
         "validation_issues": validation.get("global_issues", []),
         "validation_issues_detail": (validation.get("clusters") or [])[:8],
+        "relevance_gate_ran": not selection_failed,
+        "selection_warning": (
+            ""
+            if not selection_failed
+            else (
+                "The relevance step failed twice, so clusters were chosen by "
+                "SEARCH VOLUME ALONE and nobody checked whether they serve this "
+                "business. Say this plainly and offer to re-run the selection. "
+                f"({selection_error})"
+            )
+        ),
         "validation_warning": (
             ""
             if verdict == "approved"
@@ -301,4 +416,4 @@ def run_keyword_strategy(
         "head_terms": head_terms,
         "pillars": pillars,
         "steps": steps,
-    }
+    })
