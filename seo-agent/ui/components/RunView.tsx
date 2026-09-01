@@ -24,6 +24,9 @@ function fmtVol(n: number): string {
 interface RunViewProps {
   tasks: string[];
   onClose: () => void;
+  // Which run to open. Set when the user clicks a card on the home canvas;
+  // without it the view falls back to the most recent run.
+  initialRunId?: string | null;
 }
 
 const STAGE_ICONS: Record<string, string> = {
@@ -819,7 +822,7 @@ function renderStage(
   }
 }
 
-export function RunView({ tasks, onClose }: RunViewProps) {
+export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
   const [run, setRun] = useState<Run | null>(null);
   const [summaries, setSummaries] = useState<RunSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -911,7 +914,11 @@ export function RunView({ tasks, onClose }: RunViewProps) {
           setError('No runs yet — ask the agent to run a pipeline.');
           return;
         }
-        await loadRun(sums[0].id);
+        const wanted =
+          initialRunId && sums.some((x: RunSummary) => x.id === initialRunId)
+            ? initialRunId
+            : sums[0].id;
+        await loadRun(wanted);
       } catch (e: any) {
         if (!cancelled) {
           setError(

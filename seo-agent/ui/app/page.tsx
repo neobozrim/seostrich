@@ -8,6 +8,7 @@ import { ChatMessage } from '@/components/ChatMessage';
 import { SystemPanel } from '@/components/SystemPanel';
 import { RunView } from '@/components/RunView';
 import { FlowCards } from '@/components/FlowCards';
+import { HomeCanvas } from '@/components/HomeCanvas';
 import { ProfileMenu } from '@/components/ProfileMenu';
 import { LoginForm } from '@/components/LoginForm';
 import {
@@ -44,6 +45,9 @@ export default function Home() {
   const [authRequired, setAuthRequired] = useState(false);
   const [authed, setAuthed] = useState(false);
   const [backendWarning, setBackendWarning] = useState<string | null>(null);
+  // The homepage is a canvas of work; chat only takes over once asked for.
+  const [chatOpen, setChatOpen] = useState(false);
+  const [openRunId, setOpenRunId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -469,19 +473,29 @@ export default function Home() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto">
-          {messages.length === 0 ? (
+          {messages.length === 0 && !chatOpen ? (
+            <HomeCanvas
+              onOpenRun={(runId) => {
+                setOpenRunId(runId);
+                setShowRun(true);
+              }}
+              onStartChat={(prompt) => {
+                setChatOpen(true);
+                if (prompt) setInput(prompt);
+                setTimeout(() => textareaRef.current?.focus(), 0);
+              }}
+            />
+          ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-8 py-8">
               <div className="text-center max-w-lg">
-                <img
-                  src="/logo/seostrich-lockup-vertical.svg"
-                  alt="SEOstrich"
-                  className="h-40 w-auto mx-auto mb-4"
-                />
-                <p className="text-gray-500">
-                  Get discovered.
-                </p>
+                <p className="text-gray-500">Get discovered.</p>
               </div>
-              <FlowCards onPick={(prompt) => { setInput(prompt); textareaRef.current?.focus(); }} />
+              <FlowCards
+                onPick={(prompt) => {
+                  setInput(prompt);
+                  textareaRef.current?.focus();
+                }}
+              />
             </div>
           ) : (
             <div className="max-w-3xl mx-auto divide-y divide-gray-200">
@@ -585,7 +599,16 @@ export default function Home() {
       )}
 
       {/* Pipeline / Run view */}
-      {showRun && <RunView tasks={memory.tasks} onClose={() => setShowRun(false)} />}
+      {showRun && (
+        <RunView
+          tasks={memory.tasks}
+          initialRunId={openRunId}
+          onClose={() => {
+            setShowRun(false);
+            setOpenRunId(null);
+          }}
+        />
+      )}
     </div>
   );
 }

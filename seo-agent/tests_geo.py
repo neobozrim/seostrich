@@ -221,7 +221,21 @@ run = runs.get_run(RID)
 stage_ids = [s["id"] for s in run.get("stages", [])]
 chk("ai_citability stage exists", "ai_citability" in stage_ids, str(stage_ids))
 
-print("8. degrades safely")
+print("8. a repeat call does not re-bill the paid endpoint")
+calls_before = len(mention_calls)
+with rec.use_run(RID):
+    again = gd.run_geo_demand(TOPICS[:2], max_question_terms=2)
+chk("returned the existing brief", again.get("reused") is True, str(again)[:90])
+chk("no further paid calls", len(mention_calls) == calls_before,
+    f"{len(mention_calls) - calls_before} extra")
+chk("explains why", "re-billing" in again.get("note", ""), again.get("note", "")[:80])
+
+with rec.use_run(RID):
+    novel = gd.run_geo_demand(["a brand new topic"], max_question_terms=1)
+chk("a genuinely new topic still runs", not novel.get("reused"), str(novel)[:80])
+chk("and it did pay for that one", len(mention_calls) > calls_before)
+
+print("9. degrades safely")
 with rec.use_run(RID):
     chk("no topics rejected", gd.run_geo_demand([]).get("success") is False)
 chk("outside a run rejected", gd.run_geo_demand(TOPICS).get("success") is False)

@@ -422,6 +422,23 @@ def _content_plan(row: dict, paa: list[dict], ai_questions: list[dict]) -> list[
     return sections[:12]
 
 
+def _previous_result() -> dict | None:
+    """The GEO brief already recorded on this run, if any."""
+    from .. import runs as runs_store
+
+    run_id = rec.active_run_id()
+    if not run_id:
+        return None
+    run = runs_store.get_run(run_id)
+    for stage in (run or {}).get("stages", []):
+        if stage.get("id") == "ai_citability":
+            artifact = stage.get("artifact") or {}
+            inner = artifact.get("artifact") if isinstance(artifact.get("artifact"), dict) else artifact
+            if inner.get("brief"):
+                return inner
+    return None
+
+
 def run_geo_demand(
     topics: list[str],
     location_code: int | None = None,
@@ -444,6 +461,32 @@ def run_geo_demand(
         return {"success": False, "error": str(exc), "needs": "confirm_market"}
     loc, lang = market["location_code"], market["language_code"]
     rec.log_activity("step", detail=f"market: {market['label']}")
+
+    # Re-entry guard. Observed 2026-09-01: after the graph completed for three
+    # topics the agent called it again for a subset of two, which re-billed the
+    # per-keyword paid call for topics already measured. Nothing about the flow
+    # invites a second pass, so refuse it and hand back what exists — but only
+    # when the new request adds nothing, so a genuinely new topic still runs.
+    previous = _previous_result()
+    if previous:
+        already = {str(t).lower() for t in previous.get("topics_examined") or []}
+        fresh = [t for t in clean if t.lower() not in already]
+        if not fresh:
+            rec.log_activity(
+                "step",
+                detail="GEO already ran for these topics — returning the existing "
+                       "brief instead of paying for it twice",
+            )
+            return {
+                **previous,
+                "reused": True,
+                "note": (
+                    "These topics were already measured in this run, so the "
+                    "existing brief is returned rather than re-billing the paid "
+                    "per-keyword call. Pass new topics to research something else."
+                ),
+            }
+        clean = fresh
 
     steps: list[str] = []
 
