@@ -21,6 +21,7 @@ from .pull_universe import pull_universe
 from .recommend_pillars import recommend_pillars
 from .score_clusters import score_clusters
 from .select_clusters import select_clusters
+from .serp_verify import apply_merges, verify_clusters
 from .validate_clusters import validate_clusters
 
 
@@ -206,6 +207,44 @@ def run_keyword_strategy(
     )
     steps.append("clusters")
 
+    # SERP verification. Thematic clustering asks whether keywords sound alike;
+    # this asks whether Google returns the same results for them, which is the
+    # question that decides how many pages to write.
+    #
+    # Measured on a real run: "ai product manager course" and "ai product
+    # manager certification" share 89% of their top-10 results — the model had
+    # them as separate clusters, and four course clusters collapsed into one.
+    # In the other direction "knowledge graphs for AI products" and "knowledge
+    # graph RAG" share NOTHING, so merging them on the words alone would have
+    # produced a page ranking for neither.
+    #
+    # Only pairs whose head terms already share vocabulary are checked, so
+    # unrelated clusters cost nothing, and an unverified pair stays separate —
+    # splitting effort is recoverable, a wrongly merged page is not.
+    rec.log_activity("step", detail="node: verify clusters against live SERPs")
+    verification = verify_clusters(clusters, location_code, language_code)
+    if verification.get("merges"):
+        before = len(clusters)
+        clusters = apply_merges(clusters, verification)
+        rec.log_activity(
+            "step",
+            detail=f"SERP evidence merged {before} clusters into {len(clusters)} "
+                   f"({verification['checked']} SERP calls)",
+        )
+        rec.record_tool(
+            "cluster_keywords",
+            {"keywords": keywords, "location_code": location_code,
+             "language_code": language_code},
+            {"clusters": clusters}, True,
+        )
+    else:
+        rec.log_activity(
+            "step",
+            detail=f"SERP check: no merges ({verification['checked']} calls, "
+                   f"{verification.get('pairs_considered', 0)} pairs considered)",
+        )
+    steps.append("serp_verified")
+
     # Validation gate: approve, or re-cluster once on needs_revision (bounded).
     #
     # The re-cluster only happens if another validation will follow. Previously
@@ -380,6 +419,12 @@ def run_keyword_strategy(
         "market": rec.market_label(location_code, language_code),
         "keyword_count": len(keywords),
         "cluster_count": len(clusters),
+        "serp_verification": {
+            "checked": verification.get("checked"),
+            "merges": verification.get("merges"),
+            "kept_separate": verification.get("kept_separate"),
+            "method": verification.get("method"),
+        },
         "validation_verdict": verdict,
         "validation_issues": validation.get("global_issues", []),
         "validation_issues_detail": (validation.get("clusters") or [])[:8],
