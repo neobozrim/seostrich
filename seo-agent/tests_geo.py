@@ -19,6 +19,16 @@ from src.tools import geo_demand as gd
 ok = fail = 0
 
 
+def _stage_artifact(run_id: str) -> dict:
+    """The FULL brief now lives on the recorded stage, not in the tool result."""
+    run = runs.get_run(run_id)
+    for st in run.get("stages", []):
+        if st["id"] == "ai_citability":
+            art = st.get("artifact") or {}
+            return art.get("artifact") if isinstance(art.get("artifact"), dict) else art
+    return {}
+
+
 def chk(label, cond, extra=""):
     global ok, fail
     if cond:
@@ -103,6 +113,7 @@ print("2. the graph runs in order and records its steps")
 with rec.use_run(RID):
     res = gd.run_geo_demand(TOPICS, max_question_terms=2)
 chk("succeeded", res.get("success") is True, str(res)[:120])
+res_full_topics = res.get("topics") or []
 chk("steps in order",
     res["steps"] == ["demand", "shortlist", "citability", "displaceability",
                      "ranked", "questions"],
@@ -132,7 +143,7 @@ chk("2 SERP calls, not 4", len(paa_calls) == 2, str(paa_calls))
 chk("no PAA for the dead topic", "dead topic" not in paa_calls, str(paa_calls))
 
 print("4. ranking prefers AI presence, then volume")
-ranked = res["ranked"]
+ranked = _stage_artifact(RID)["ranked"]
 chk("agentic commerce ranks first",
     ranked[0]["topic"] == "agentic commerce", ranked[0]["topic"])
 chk("only measured topics are ranked", len(ranked) == 2, str([r["topic"] for r in ranked]))
@@ -143,7 +154,8 @@ chk("evidence names both channels",
     "AI engines answer this" in ranked[0]["evidence"], ranked[0]["evidence"])
 
 print("5. the brief carries both question sources and the citation picture")
-top = res["brief"][0]
+full_art = _stage_artifact(RID)
+top = full_art["brief"][0]
 chk("topic named", top["topic"] == "agentic commerce")
 chk("says why it was chosen", bool(top["why_this_topic"]))
 chk("real PAA questions", top["questions_people_ask"] == ["real question about agentic commerce"])
@@ -153,10 +165,11 @@ chk("who is cited today", top["currently_cited"][0]["domain"] == "stripe.com",
 chk("open share computed", top["metrics"]["open_share"] == 0.5, str(top["metrics"]["open_share"]))
 chk("answered share computed", top["metrics"]["answered_share"] == 0.5)
 chk("search volume carried", top["metrics"]["search_volume"] == 320)
-chk("method states what was measured", "measured" in res["method"])
+chk("method states what was measured", "measured" in full_art["method"])
 
 print("6. displaceability: can a small site win this topic?")
-top = res["brief"][0]
+full_art = _stage_artifact(RID)
+top = full_art["brief"][0]
 chk("verdict present", bool(top["can_you_displace_them"]), str(top)[:80])
 chk("a niche citation makes it winnable",
     "winnable" in top["can_you_displace_them"], top["can_you_displace_them"])
@@ -171,12 +184,12 @@ chk("authority range reported",
     str(top["metrics"]))
 chk("an unranked domain does not become the floor",
     top["metrics"]["weakest_cited_authority"] > 0, str(top["metrics"]))
-kg = next(b for b in res["brief"] if b["topic"] == "knowledge graphs")
+kg = next(b for b in full_art["brief"] if b["topic"] == "knowledge graphs")
 chk("giants-only topic marked hard, not winnable",
     "winnable" not in kg["can_you_displace_them"], kg["can_you_displace_them"])
 
 print("6b. the wide answer-scope pass widens the competitive set only")
-ac = next(b for b in res["brief"] if b["topic"] == "agentic commerce")
+ac = next(b for b in full_art["brief"] if b["topic"] == "agentic commerce")
 cited = [d["domain"] for d in ac["currently_cited"]]
 chk("competitor seen only in answer scope is graded",
     "smallcommerceblog.io" in cited, str(cited))
@@ -235,7 +248,22 @@ with rec.use_run(RID):
 chk("a genuinely new topic still runs", not novel.get("reused"), str(novel)[:80])
 chk("and it did pay for that one", len(mention_calls) > calls_before)
 
-print("9. degrades safely")
+print("9. the model gets a summary that fits in a tool result")
+import json as _json
+size = len(_json.dumps(res, ensure_ascii=False))
+chk(f"compact result is {size} chars, under the 4000 cap", size < 4000, str(size))
+chk("topics summarised", len(res["topics"]) == len(res_full_topics), str(res["topics"]))
+first = res["topics"][0]
+chk("carries the verdict", bool(first["verdict"]))
+chk("carries the headings to write", len(first["write_these_sections"]) > 0)
+chk("says how many sections exist in full", first["sections_total"] >= len(first["write_these_sections"]))
+chk("names who to out-answer", "out_answer_these" in first)
+chk("tells the model NOT to re-call for the rest",
+    "Do NOT call this tool again" in res["full_detail"], res["full_detail"][:60])
+chk("flagged domains excluded from out_answer_these",
+    "smallcommerceblog.io" not in first["out_answer_these"], str(first["out_answer_these"]))
+
+print("10. degrades safely")
 with rec.use_run(RID):
     chk("no topics rejected", gd.run_geo_demand([]).get("success") is False)
 chk("outside a run rejected", gd.run_geo_demand(TOPICS).get("success") is False)

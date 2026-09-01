@@ -439,6 +439,67 @@ def _previous_result() -> dict | None:
     return None
 
 
+def _compact(result: dict) -> dict:
+    """What the MODEL gets back. The full artifact is recorded on the stage.
+
+    Tool results are capped at 4,000 characters before they reach the model.
+    The full GEO return is several times that, and content_plan sits at the END
+    of each brief entry — so the questions, the whole point of the flow, were
+    exactly what got cut. Observed 2026-09-01: the agent could see that
+    questions had been found, could not read them, and re-called the paid
+    graph eight times trying to get at them.
+
+    So the model receives a deliberately small summary that fits, with a
+    pointer to the recorded stage for everything else. Nothing is lost: the UI
+    and WebMCP read the full artifact.
+    """
+    topics = []
+    for entry in result.get("brief", []):
+        metrics = entry.get("metrics", {})
+        plan = entry.get("content_plan", [])
+        topics.append({
+            "topic": entry.get("topic"),
+            "search_volume": metrics.get("search_volume"),
+            "difficulty": metrics.get("difficulty"),
+            "cpc": metrics.get("cpc"),
+            "ai_questions_found": metrics.get("ai_questions_found"),
+            "cited_authority_range": [
+                metrics.get("weakest_cited_authority"),
+                metrics.get("strongest_cited_authority"),
+            ],
+            "verdict": entry.get("can_you_displace_them"),
+            "niche_sites_already_cited": [
+                f"{d['domain']} ({d['authority_rank']})"
+                for d in entry.get("niche_sites_already_cited", [])[:4]
+            ],
+            "out_answer_these": [
+                d.get("domain") for d in entry.get("currently_cited", [])[:5]
+                if d.get("confidence") != "needs_review"
+            ],
+            # The headings, in full — this is what the user is here for.
+            "write_these_sections": [sec.get("heading") for sec in plan][:8],
+            "sections_total": len(plan),
+        })
+
+    return {
+        "success": result.get("success"),
+        "market": result.get("market"),
+        "steps": result.get("steps"),
+        "topics": topics,
+        "skipped_no_demand": result.get("skipped_no_demand"),
+        "not_sent_to_paid_call": result.get("not_sent_to_paid_call"),
+        "cost_note": result.get("cost_note"),
+        "reading_the_numbers": result.get("reading_the_numbers"),
+        "full_detail": (
+            "This is a summary. The complete brief — every question, the "
+            "answer-first instruction per section, and all cited domains with "
+            "their authority and confidence — is recorded as the `ai_citability` "
+            "stage of this run. Do NOT call this tool again to get it; read the "
+            "stage, or tell the user it is in the Run view."
+        ),
+    }
+
+
 def run_geo_demand(
     topics: list[str],
     location_code: int | None = None,
@@ -478,7 +539,7 @@ def run_geo_demand(
                        "brief instead of paying for it twice",
             )
             return {
-                **previous,
+                **_compact(previous),
                 "reused": True,
                 "note": (
                     "These topics were already measured in this run, so the "
@@ -650,6 +711,7 @@ def run_geo_demand(
             for q in geo.get("questions", []) if q.get("platform")
         }),
     }
+    # Full artifact to the stage (UI + WebMCP read this), summary to the model.
     rec.record_deliverable("ai_citability", "GEO demand brief", result)
     rec.log_activity("step", detail="graph complete")
-    return result
+    return _compact(result)

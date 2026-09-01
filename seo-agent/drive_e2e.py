@@ -14,6 +14,11 @@ from pathlib import Path
 
 import requests
 
+# Windows consoles default to cp1252, which cannot encode the emoji agents
+# routinely emit — printing the answer crashed the driver after a 388s run.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 BASE = os.getenv("API_BASE", "http://127.0.0.1:8001")
 ENV = Path(__file__).resolve().parent.parent / ".env"
 
