@@ -189,8 +189,32 @@ print("6c. a one-off citation is not treated as proof")
 chk("repeat-cited niche site counts",
     any(d["domain"] == "tinyblog.dev" for d in ac["niche_sites_already_cited"]),
     str(ac["niche_sites_already_cited"]))
-chk("verdict says 'more than once'", "more than" in ac["can_you_displace_them"],
+chk("verdict distinguishes on-topic evidence",
+    "questions that name this topic" in ac["can_you_displace_them"],
     ac["can_you_displace_them"])
+
+print("6d. adjacent-only matches are flagged, not hidden")
+flagged = [d for d in ac["currently_cited"] if d.get("confidence") == "needs_review"]
+chk("answer-scope-only domain is flagged for review",
+    any(d["domain"] == "smallcommerceblog.io" for d in flagged), str(flagged))
+chk("on-topic domain is not flagged",
+    all(d["domain"] != "stripe.com" for d in flagged), str(flagged))
+chk("each domain says how it was found",
+    all(d.get("found_by") for d in ac["currently_cited"]), str(ac["currently_cited"][:2]))
+
+print("6e. the brief is writable, not just data")
+plan = ac["content_plan"]
+chk("content plan produced", len(plan) > 0, str(plan)[:80])
+chk("headings are the real questions",
+    any(p["heading"] == "real question about agentic commerce" for p in plan), str(plan)[:120])
+chk("every section says how to open it",
+    all("first two sentences" in p["answer_first_brief"] or "one or two" in p["answer_first_brief"]
+        for p in plan), str(plan)[:120])
+chk("sections name where the question came from",
+    {p["source"] for p in plan} <= {"people_also_ask", "ai_engine_answered_this"},
+    str({p["source"] for p in plan}))
+chk("no duplicate headings", len({p["heading"] for p in plan}) == len(plan))
+chk("usage note included", "lift and cite" in ac["how_to_use_this"])
 
 print("7. recorded as an inspectable stage")
 run = runs.get_run(RID)

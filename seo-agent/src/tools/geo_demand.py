@@ -179,8 +179,23 @@ def _citability(
             ],
             # Union of both passes: the widest honest view of who holds this
             # subject, used for the displaceability verdict.
+            # Each domain carries WHICH pass found it. A domain cited on a
+            # question that names the topic is on-topic by construction; one
+            # found only by matching the answer text is adjacent and may be
+            # drift (the answer-scope pass repeatedly surfaces
+            # thehungergames.fandom.com for "forward deployed engineer"). The
+            # noise cannot be filtered away reliably, so it is LABELLED and the
+            # reader — or a WebMCP agent — decides.
             "competitive_domains": [
-                {"domain": d, "citations": n}
+                {
+                    "domain": d,
+                    "citations": n,
+                    "found_by": (
+                        "asked_about_this_topic" if bucket["sources"].get(d)
+                        else "mentioned_in_adjacent_answers"
+                    ),
+                    "confidence": "high" if bucket["sources"].get(d) else "needs_review",
+                }
                 for d, n in (bucket["sources"] + wide_sources[topic]).most_common(15)
             ],
             "wide_answers_scanned": wide_seen[topic],
@@ -234,6 +249,10 @@ def _displaceability(citability: dict[str, dict]) -> dict[str, dict]:
             if 0 < d["authority_rank"] <= NICHE_AUTHORITY_MAX
             and (d.get("citations") or 0) > 1
         ]
+        # Niche sites found on questions that actually name the topic are the
+        # trustworthy evidence; the rest are worth reading but not betting on.
+        niche_confirmed = [d for d in niche if d.get("confidence") == "high"]
+        niche_review = [d for d in niche if d.get("confidence") != "high"]
         niche_single_hit = [
             d for d in graded
             if 0 < d["authority_rank"] <= NICHE_AUTHORITY_MAX
@@ -243,11 +262,19 @@ def _displaceability(citability: dict[str, dict]) -> dict[str, dict]:
 
         if not graded:
             verdict = "no citation data — cannot judge the competition yet"
+        elif niche_confirmed:
+            verdict = (
+                f"winnable: {len(niche_confirmed)} niche site(s) are cited on "
+                f"questions that name this topic (weakest "
+                f"{min(d['authority_rank'] for d in niche_confirmed)}), so it does "
+                f"not require a global brand to be quoted"
+            )
         elif niche:
             verdict = (
-                f"winnable: {len(niche)} niche site(s) are cited here more than "
-                f"once (weakest {min(d['authority_rank'] for d in niche)}), so "
-                f"this topic does not require a global brand to be quoted"
+                f"probably winnable, but verify: {len(niche)} niche site(s) appear, "
+                f"only in answers to ADJACENT questions rather than to this topic "
+                f"by name — check they are really about your subject before "
+                f"betting on it"
             )
         elif niche_single_hit:
             verdict = (
@@ -267,6 +294,9 @@ def _displaceability(citability: dict[str, dict]) -> dict[str, dict]:
         out[topic] = {
             "cited_sources": graded,
             "niche_sites_cited": niche,
+            "niche_sites_confirmed_on_topic": niche_confirmed,
+            "niche_sites_needing_review": niche_review,
+            "confidence": "high" if niche_confirmed else ("low" if niche else "n/a"),
             # Surfaced separately so the reader can judge rather than being
             # silently excluded — a single citation may still be a real signal.
             "niche_sites_cited_once": niche_single_hit,
@@ -338,6 +368,58 @@ def _rank(demand: list[dict], citability: dict[str, dict],
         reverse=True,
     )
     return ranked
+
+
+def _content_plan(row: dict, paa: list[dict], ai_questions: list[dict]) -> list[dict]:
+    """Turn the measured questions into sections someone can actually write.
+
+    The technique GEO rewards is answer-first: the question becomes the
+    heading, and the first two sentences under it ARE the answer, so a
+    generative engine can lift that passage and cite it. A post that opens with
+    "here is my journey with evals" gives an engine nothing quotable.
+
+    Each section therefore carries the exact question, where it came from, and
+    who currently gets cited for it — the page you would have to out-answer.
+    """
+    sections = []
+    seen: set[str] = set()
+
+    # People-also-ask first: these are full sentences real users type, which
+    # makes them better headings than the fragments the AI-mention rows carry.
+    for entry in paa:
+        question = (entry.get("question") or "").strip()
+        key = question.lower()
+        if not question or key in seen:
+            continue
+        seen.add(key)
+        sections.append({
+            "heading": question,
+            "source": "people_also_ask",
+            "answer_first_brief": (
+                f"Open the section by answering \"{question}\" in one or two "
+                f"plain sentences, then add the depth underneath."
+            ),
+            "currently_answered_by": entry.get("domain") or "",
+        })
+
+    for entry in ai_questions:
+        question = (entry.get("question") or "").strip()
+        key = question.lower()
+        if not question or key in seen:
+            continue
+        seen.add(key)
+        cited = [src.get("domain") for src in (entry.get("sources") or []) if src.get("domain")]
+        sections.append({
+            "heading": question,
+            "source": "ai_engine_answered_this",
+            "answer_first_brief": (
+                f"An AI engine already answers \"{question}\". Give a better, "
+                f"more specific answer in the first two sentences."
+            ),
+            "currently_cited": cited[:3],
+        })
+
+    return sections[:12]
 
 
 def run_geo_demand(
@@ -475,6 +557,15 @@ def run_geo_demand(
             ],
             "questions_people_ask": [q.get("question") for q in paa][:10],
             "questions_ai_answers": [q.get("question") for q in ai_questions][:10],
+            # Ready-to-write sections, so the output is a content plan rather
+            # than a data dump the reader has to interpret.
+            "content_plan": _content_plan(row, paa, ai_questions),
+            "how_to_use_this": (
+                "Each content_plan entry is one page section: the question is "
+                "the heading, and the first two sentences under it must BE the "
+                "answer. That is what a generative engine can lift and cite. "
+                "Depth, opinion and story go after it, not before."
+            ),
         })
 
     result = {

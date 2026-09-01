@@ -538,6 +538,154 @@ function CompetitorsArtifact({ artifact }: { artifact: Record<string, any> }) {
   );
 }
 
+// The GEO graph's output. Distinct from AiCitabilityArtifact, which renders the
+// older ai_citability_brief shape — both can land on the same stage id.
+function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
+  const brief: any[] = artifact.brief || [];
+  const [open, setOpen] = useState<string | null>(brief[0]?.topic ?? null);
+
+  return (
+    <div className="space-y-2">
+      <div className="text-xs text-gray-500">
+        {artifact.market ? `Market ${artifact.market}. ` : ''}
+        Ranked on measured demand and on whether the sites AI engines cite can
+        realistically be displaced.
+      </div>
+
+      {brief.map((t: any) => {
+        const m = t.metrics || {};
+        const verdict = String(t.can_you_displace_them || '');
+        const winnable = verdict.startsWith('winnable');
+        const verify = verdict.includes('verify') || verdict.startsWith('uncertain');
+        const isOpen = open === t.topic;
+        return (
+          <div key={t.topic} className="border border-surface-300 rounded-lg">
+            <button
+              onClick={() => setOpen(isOpen ? null : t.topic)}
+              className="w-full flex items-center justify-between px-3 py-2 hover:bg-surface-50 rounded-lg text-left"
+            >
+              <span className="flex items-center gap-2 min-w-0">
+                {isOpen ? (
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                )}
+                <span className="text-sm font-medium text-gray-800 truncate">{t.topic}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.5 rounded-full border flex-shrink-0 ${
+                    winnable
+                      ? 'bg-green-50 border-green-300 text-green-800'
+                      : verify
+                      ? 'bg-amber-50 border-amber-300 text-amber-800'
+                      : 'bg-surface-100 border-surface-300 text-gray-600'
+                  }`}
+                >
+                  {winnable ? 'winnable' : verify ? 'verify' : 'hard'}
+                </span>
+              </span>
+              <span className="text-xs text-gray-400 flex-shrink-0">
+                {fmtVol(m.search_volume || 0)}/mo · authority{' '}
+                {m.weakest_cited_authority || '?'}–{m.strongest_cited_authority || '?'}
+              </span>
+            </button>
+
+            {isOpen && (
+              <div className="px-3 pb-3 space-y-3">
+                <p className="text-sm text-gray-700">{verdict}</p>
+
+                {/* The questions are the point of the whole flow, so they lead. */}
+                {t.content_plan?.length > 0 && (
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">
+                      Questions people ask — use as headings, answer in the first two
+                      sentences
+                    </div>
+                    <ol className="space-y-1.5">
+                      {t.content_plan.map((sec: any, i: number) => (
+                        <li key={i} className="text-sm">
+                          <div className="flex items-start gap-2">
+                            <span className="text-gray-400 tabular-nums text-xs mt-0.5">
+                              {i + 1}.
+                            </span>
+                            <div className="min-w-0">
+                              <div className="text-gray-800">{sec.heading}</div>
+                              <div className="text-xs text-gray-500">
+                                {sec.source === 'people_also_ask'
+                                  ? 'People also ask'
+                                  : 'An AI engine already answers this'}
+                                {sec.currently_cited?.length > 0 && (
+                                  <> · cited today: {sec.currently_cited.join(', ')}</>
+                                )}
+                                {sec.currently_answered_by && (
+                                  <> · answered today by {sec.currently_answered_by}</>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {t.niche_sites_already_cited?.length > 0 && (
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">
+                      Small sites already cited here — your proof it is winnable
+                    </div>
+                    <div>
+                      {t.niche_sites_already_cited.map((d: any) => (
+                        <Chip key={d.domain}>
+                          {d.domain} · authority {d.authority_rank}
+                        </Chip>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {t.currently_cited?.length > 0 && (
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">Who AI cites today</div>
+                    <div>
+                      {t.currently_cited.slice(0, 10).map((d: any) => (
+                        <span
+                          key={d.domain}
+                          title={
+                            d.confidence === 'needs_review'
+                              ? 'Found by matching answer text, not the question itself — may be off-subject. Verify before treating it as a competitor.'
+                              : 'Cited on a question that names this topic'
+                          }
+                          className={`inline-block px-2 py-0.5 m-0.5 text-xs rounded-full border ${
+                            d.confidence === 'needs_review'
+                              ? 'bg-amber-50 border-amber-300 text-amber-900'
+                              : 'bg-surface-100 border-surface-300 text-gray-700'
+                          }`}
+                        >
+                          {d.domain}
+                          {d.authority_rank ? ` · ${d.authority_rank}` : ''}
+                          {d.confidence === 'needs_review' ? ' · verify' : ''}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="text-[11px] text-gray-400 mt-1">
+                      Amber = found by matching the answer text rather than the
+                      question, so it may be off-subject. Worth reading, not trusting.
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {artifact.cost_note && (
+        <div className="text-[11px] text-gray-400 pt-1">{artifact.cost_note}</div>
+      )}
+    </div>
+  );
+}
+
 function AiCitabilityArtifact({ artifact }: { artifact: Record<string, any> }) {
   const terms = artifact.head_terms || [];
   const [openTerm, setOpenTerm] = useState<string | null>(null);
@@ -651,7 +799,12 @@ function renderStage(
     case 'competitors':
       return <CompetitorsArtifact artifact={stage.artifact} />;
     case 'ai_citability':
-      return <AiCitabilityArtifact artifact={stage.artifact} />;
+      // The GEO graph and the older brief both land on this stage id.
+      return stage.artifact?.brief ? (
+        <GeoDemandArtifact artifact={stage.artifact} />
+      ) : (
+        <AiCitabilityArtifact artifact={stage.artifact} />
+      );
     case 'mix':
       return (
         <MixArtifact
