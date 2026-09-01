@@ -93,6 +93,19 @@ def _run(coro):
         return pool.submit(asyncio.run, coro).result()
 
 
+# Google market -> language DFS accepts for that location (40501 otherwise).
+_LOCATION_LANG = {2100: "bg", 2276: "de", 2250: "fr", 2724: "es", 2380: "it", 2643: "ru"}
+
+
+def _default_lang(location_code: int) -> str:
+    return _LOCATION_LANG.get(location_code, "en")
+
+
+def _task_status(data: dict):
+    tasks = data.get("tasks") or []
+    return (tasks[0] or {}).get("status_code") if tasks else data.get("status_code")
+
+
 def _task_items(data: dict, label: str = "") -> list:
     """Safely extract tasks[0].result[0].items — DFS returns result:null on failed tasks."""
     tasks = data.get("tasks") or []
@@ -175,16 +188,26 @@ def keyword_overview(keywords: list[str], location_code: int = 2840, language_co
     return _run(_inner())
 
 
+async def _labs_keywords(endpoint: str, seed: str, limit: int, location_code: int, language_code: str) -> dict:
+    """Post a labs keyword call; DFS rejects languages unavailable in a location
+    (40501) — retry once with the location's default language."""
+    payload = {
+        "keyword": seed,
+        "location_code": location_code,
+        "language_code": language_code,
+        "limit": limit,
+    }
+    data = await _post(endpoint, [payload])
+    if _task_status(data) == 40501 and language_code != _default_lang(location_code):
+        payload["language_code"] = _default_lang(location_code)
+        print(f"  [dfs] {endpoint.split('/')[-2]}: language '{language_code}' invalid for location {location_code}; retried with '{payload['language_code']}'")
+        data = await _post(endpoint, [payload])
+    return data
+
+
 def related_keywords(seed: str, limit: int = 50, location_code: int = 2840, language_code: str = "en") -> list[dict]:
     async def _inner():
-        data = await _post("/v3/dataforseo_labs/google/related_keywords/live", [
-            {
-                "keyword": seed,
-                "location_code": location_code,
-                "language_code": language_code,
-                "limit": limit,
-            }
-        ])
+        data = await _labs_keywords("/v3/dataforseo_labs/google/related_keywords/live", seed, limit, location_code, language_code)
         items = _task_items(data)
         return [_kw_item_related(i) for i in items]
     return _run(_inner())
@@ -192,14 +215,7 @@ def related_keywords(seed: str, limit: int = 50, location_code: int = 2840, lang
 
 def keyword_suggestions(seed: str, limit: int = 50, location_code: int = 2840, language_code: str = "en") -> list[dict]:
     async def _inner():
-        data = await _post("/v3/dataforseo_labs/google/keyword_suggestions/live", [
-            {
-                "keyword": seed,
-                "location_code": location_code,
-                "language_code": language_code,
-                "limit": limit,
-            }
-        ])
+        data = await _labs_keywords("/v3/dataforseo_labs/google/keyword_suggestions/live", seed, limit, location_code, language_code)
         items = _task_items(data)
         return [_kw_item(i) for i in items]
     return _run(_inner())
@@ -254,19 +270,23 @@ def serp_ai_mode(keyword: str, location_code: int = 2840, language_code: str = "
 
 
 def keyword_difficulty(keywords: list[str], location_code: int = 2840, language_code: str = "en") -> list[dict]:
+    # DFS has no standalone difficulty endpoint — difficulty lives in
+    # keyword_suggestions' keyword_properties. One call per keyword, capped.
     async def _inner():
-        data = await _post("/v3/dataforseo_labs/keyword_difficulty/live", [
-            {
-                "keywords": keywords,
-                "location_code": location_code,
-                "language_code": language_code,
-            }
-        ])
-        items = _task_items(data)
-        return [
-            {"keyword": i.get("keyword", ""), "difficulty": i.get("keyword_difficulty", 0)}
-            for i in items
-        ]
+        results = []
+        for kw in list(keywords)[:10]:
+            data = await _labs_keywords(
+                "/v3/dataforseo_labs/google/keyword_suggestions/live",
+                kw, 1, location_code, language_code,
+            )
+            items = _task_items(data)
+            if items:
+                props = items[0].get("keyword_properties", {})
+                results.append({
+                    "keyword": items[0].get("keyword", kw),
+                    "difficulty": props.get("keyword_difficulty", 0),
+                })
+        return results
     return _run(_inner())
 
 
