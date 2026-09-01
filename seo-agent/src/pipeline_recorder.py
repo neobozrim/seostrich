@@ -208,6 +208,13 @@ def _record_keywords(run: dict, result) -> None:
     stage["artifact"] = {"count": len(merged), "keywords": merged}
 
 
+# Keyword stats live ONCE, in the keywords stage. Clusters reference keywords by
+# name and anything needing volume/difficulty/CPC joins against that stage.
+#
+# They used to be re-embedded per cluster: on a real run that was 3,912
+# characters of data already stored a few lines away, it inflated every payload
+# built from clusters (the selection prompt reached 6,451 tokens), and a second
+# copy is a second thing that can go stale.
 def _kw_stats(args: dict) -> dict[str, dict]:
     stats = {}
     for kw in args.get("keywords", []) or []:

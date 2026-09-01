@@ -72,8 +72,8 @@ print("5. the deliverable is reachable, not summarised away")
 # at the step where the agent is doing the judging — so the full result is
 # persisted and the agent reads what it needs.
 chk("no opinionated projection", "_compact_result" not in SRC)
-chk("the full result is persisted", "write_full_result(" in SRC)
-chk("a manifest is returned", '"full_result": manifest' in SRC)
+chk("the manifest comes from the stages", "stage_manifest(" in SRC)
+chk("a manifest is returned", '"recorded_stages": manifest' in SRC)
 chk("the agent is told how to read it", "read_run_section" in SRC)
 chk("warnings still ride inline, not buried in a file",
     '"selection_warning": result.get("selection_warning")' in SRC)

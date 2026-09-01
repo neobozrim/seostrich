@@ -13,7 +13,7 @@ import time
 
 from .. import market as market_mod
 from .. import pipeline_recorder as rec
-from .run_sections import write_full_result
+from .run_sections import stage_manifest
 from .ai_citability import ai_citability_brief
 from .cluster_keywords import cluster_keywords
 from .extract_seeds import extract_seeds
@@ -103,8 +103,7 @@ def _handoff(result: dict) -> dict:
     and how to read it. It decides what it needs; long sections come back in
     pages rather than truncated.
     """
-    run_id = rec.active_run_id() or ""
-    manifest = write_full_result(run_id, "keyword_strategy", result)
+    manifest = stage_manifest(rec.active_run_id() or "")
     return {
         # Numbers small enough to carry inline, so the common case needs no
         # follow-up read.
@@ -119,7 +118,7 @@ def _handoff(result: dict) -> dict:
         "selection_warning": result.get("selection_warning"),
         "selected_clusters": result.get("selected_clusters"),
         # Everything else, addressable.
-        "full_result": manifest,
+        "recorded_stages": manifest.get("stages"),
         "how_to_read": (
             "The complete result is saved. Read any part with "
             "read_run_section(name='keyword_strategy', section='<section>'), "

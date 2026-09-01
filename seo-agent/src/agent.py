@@ -212,27 +212,26 @@ TOOL_DEFINITIONS = [
         "function": {
             "name": "read_run_section",
             "description": (
-                "Read any part of a graph's FULL result. run_keyword_strategy and "
-                "run_geo_demand save everything they produce and return a manifest "
-                "listing the sections and their sizes; this reads whichever you "
-                "need, in pages. Use it instead of re-running a graph — the data is "
-                "already here and re-running costs money. Call with no section to "
-                "list what exists."
+                "Read any part of this run's recorded stages. Every node writes its "
+                "output as a stage, and the graphs return a manifest of what exists "
+                "with sizes; this reads whichever part you need, in pages, so "
+                "nothing is truncated. Use it instead of re-running a graph — the "
+                "data is already here and re-running costs money. Call with no "
+                "arguments to see what the run holds."
             ),
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "name": {
+                    "stage": {
                         "type": "string",
-                        "description": "Artifact name from the manifest: 'keyword_strategy' or 'geo_demand'.",
+                        "description": "Stage to read: intake|seeds|keywords|clusters|pillars|mix|ai_citability|audit. Omit to list the stages this run holds.",
                     },
                     "section": {
                         "type": "string",
-                        "description": "Top-level section, e.g. 'brief', 'ranked', 'pillars', 'discarded'. Omit to list sections.",
+                        "description": "A key inside that stage, e.g. 'brief', 'clusters', 'discarded', 'pillars'. Omit to list sections and sizes.",
                     },
                     "page": {"type": "integer", "description": "1-based page; `more` says if another follows."},
                 },
-                "required": ["name"],
             },
         },
     },

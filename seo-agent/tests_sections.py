@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from src import pipeline_recorder as rec
 from src import runs as runs_store
-from src.tools.run_sections import PAGE, read_run_section, write_full_result
+from src.tools.run_sections import PAGE, read_run_section, stage_manifest
 
 ok = fail = 0
 
@@ -35,29 +35,35 @@ RID = "test-sections-run"
 runs_store.save_run(RID, {"id": RID, "project": "t", "title": "t", "status": "done", "stages": []})
 
 BIG = {
-    "brief": [{"topic": f"topic {i}", "questions": [f"q{i}-{j}" for j in range(40)]} for i in range(6)],
+    "brief": [{"topic": f"topic {i}", "questions": [f"q{i}-{j} what do AI engines answer here" for j in range(40)]} for i in range(6)],
     "ranked": [{"topic": f"topic {i}", "volume": i * 100} for i in range(6)],
     "cost_note": "one cheap call, six paid calls",
 }
 
-print("1. the whole result is persisted, not trimmed")
-manifest = write_full_result(RID, "geo_demand", BIG)
-full = len(json.dumps(BIG, ensure_ascii=False, indent=2, default=str))
-chk("manifest reports the true size", manifest["total_chars"] == full, f"{manifest['total_chars']} vs {full}")
+# The stages ARE the store — no second copy. Record BIG as a stage.
+runs_store.save_run(RID, {"id": RID, "project": "t", "title": "t", "status": "done",
+    "stages": [{"id": "ai_citability", "label": "AI citability", "status": "done",
+                "artifact": BIG}]})
+
+print("1. the whole result is readable from the stage, not trimmed")
+manifest = stage_manifest(RID)
+full = len(json.dumps(BIG, ensure_ascii=False, default=str))
+chk("manifest reports the true size", manifest["stages"][0]["chars"] == full,
+    f"{manifest['stages'][0]['chars']} vs {full}")
 chk("it is larger than a tool result could carry", full > 4000, str(full))
-chk("every section is listed", {s["section"] for s in manifest["sections"]} == set(BIG))
-chk("sizes are given", all(s["chars"] > 0 for s in manifest["sections"]))
-chk("page counts are given", all(s["pages"] >= 1 for s in manifest["sections"]))
+chk("every section is listed", set(manifest["stages"][0]["sections"]) == set(BIG))
+chk("size is given", manifest["stages"][0]["chars"] > 0)
+chk("page count is given", manifest["stages"][0]["pages"] >= 1)
 
 print("2. the agent can list what exists without guessing")
 with rec.use_run(RID):
-    listing = read_run_section("geo_demand")
+    listing = read_run_section("ai_citability")
 chk("sections listed", {s["section"] for s in listing["sections"]} == set(BIG))
 chk("told how to continue", "section=" in listing["hint"])
 
 print("3. long sections page instead of truncating")
 with rec.use_run(RID):
-    p1 = read_run_section("geo_demand", "brief", page=1)
+    p1 = read_run_section("ai_citability", "brief", page=1)
 chk("page 1 returned", p1["page"] == 1)
 chk("more pages flagged", p1["more"] is True, str(p1.get("of_pages")))
 chk("chunk fits a tool result", len(p1["content"]) <= PAGE, str(len(p1["content"])))
@@ -67,7 +73,7 @@ with rec.use_run(RID):
     pages = []
     page = 1
     while True:
-        r = read_run_section("geo_demand", "brief", page=page)
+        r = read_run_section("ai_citability", "brief", page=page)
         pages.append(r["content"])
         if not r["more"]:
             break
@@ -76,25 +82,25 @@ rebuilt = "".join(pages)
 original = json.dumps(BIG["brief"], ensure_ascii=False, indent=2, default=str)
 chk("paging reconstructs the section EXACTLY", rebuilt == original,
     f"{len(rebuilt)} vs {len(original)}")
-chk("no question was lost", rebuilt.count('"q5-39"') == 1)
+chk("no question was lost", rebuilt.count("q5-39 what do AI engines answer here") == 1)
 
 print("4. mistakes are answerable, not dead ends")
 with rec.use_run(RID):
-    bad = read_run_section("geo_demand", "nope")
+    bad = read_run_section("ai_citability", "nope")
 chk("unknown section lists the real ones", set(bad["available"]) == set(BIG), str(bad))
 with rec.use_run(RID):
-    missing = read_run_section("does_not_exist")
-chk("unknown artifact says what exists", "available" in missing, str(missing))
+    missing = read_run_section("does_not_exist_stage")
+chk("unknown stage says what exists", "available" in missing, str(missing))
 with rec.use_run(RID):
-    over = read_run_section("geo_demand", "brief", page=999)
+    over = read_run_section("ai_citability", "brief", page=999)
 chk("page past the end clamps", over["page"] == over["of_pages"], str(over["page"]))
-chk("outside a run it explains itself", "error" in read_run_section("geo_demand"))
+chk("outside a run it explains itself", "error" in read_run_section("ai_citability"))
 
 print("5. the graphs hand back a manifest, not a chosen subset")
 strat = Path("src/tools/strategy_pipeline.py").read_text(encoding="utf-8")
 geo = Path("src/tools/geo_demand.py").read_text(encoding="utf-8")
-chk("strategy persists everything", "write_full_result(run_id, \"keyword_strategy\"" in strat)
-chk("geo persists everything", "write_full_result(run_id, \"geo_demand\"" in geo)
+chk("strategy reports the stage manifest", "stage_manifest(" in strat)
+chk("geo reports the stage manifest", "stage_manifest(" in geo)
 chk("no opinionated projection left in strategy", "_compact_result" not in strat)
 chk("no opinionated projection left in geo", "def _compact(" not in geo)
 chk("strategy tells the agent how to read", "read_run_section" in strat)

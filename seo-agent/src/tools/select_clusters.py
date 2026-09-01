@@ -45,6 +45,47 @@ Output JSON format:
 }"""
 
 
+def _for_selection(scored: dict) -> list[dict]:
+    """What this node needs to judge relevance — and nothing else.
+
+    score_clusters copies each cluster forward wholesale, so the payload also
+    carried per-keyword stats, the full metrics block, and stale governance
+    fields (discard_reason, discarded_at) left by earlier edits. Measured on a
+    real run: 13 clusters produced a 25,804-character prompt, ~6,451 tokens, to
+    answer "which of these serve this business".
+
+    Trimming an INPUT to fit a node's prompt is a different thing from trimming
+    the RESULT the agent reads. The judgement needs the topic, a sample of its
+    keywords and the headline numbers; the complete data stays on the run for
+    anyone who wants it.
+    """
+    entries = scored.get("scored_clusters") or scored.get("clusters") or []
+    lean = []
+    for i, c in enumerate(entries, 1):
+        if not isinstance(c, dict):
+            continue
+        metrics = c.get("metrics") or {}
+        keywords = [
+            k.get("keyword") if isinstance(k, dict) else k
+            for k in (c.get("keywords") or [])
+        ]
+        lean.append({
+            "cluster_name": c.get("cluster_name") or c.get("name") or f"Cluster {i}",
+            "head_term": c.get("head_term") or "",
+            "intent": c.get("intent") or "",
+            # enough to see what the cluster is actually ABOUT
+            "example_keywords": [k for k in keywords if k][:8],
+            "keyword_count": metrics.get("keyword_count", len(keywords)),
+            "total_volume": metrics.get("total_volume", c.get("total_volume")),
+            "avg_difficulty": metrics.get("avg_difficulty", c.get("avg_difficulty")),
+            "avg_cpc": metrics.get("avg_cpc"),
+            "commercial_share": metrics.get("commercial_share"),
+            "opportunity": c.get("opportunity"),
+            "why_these_group": c.get("rationale") or "",
+        })
+    return lean
+
+
 def select_clusters(scored_clusters: dict, max_select: int = 4, business_description: str = "") -> dict:
     """Pick the top clusters from a scored, over-generated set.
 
@@ -59,7 +100,7 @@ def select_clusters(scored_clusters: dict, max_select: int = 4, business_descrip
     biz = (business_description or "").strip()
     biz_block = f"The business this strategy is for:\n{biz}\n\n" if biz else ""
     user_msg = f"""{biz_block}Scored clusters to select from:
-{llm.format_json(scored_clusters)}
+{llm.format_json(_for_selection(scored_clusters))}
 
 Select at most {max_select} clusters to pursue as pillars. Relevance to the business is the hard gate. Discard the rest with reasons. Give a reason for the selected ones too."""
 

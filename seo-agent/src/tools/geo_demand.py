@@ -33,7 +33,7 @@ from collections import Counter
 
 from .. import market as market_mod
 from .. import pipeline_recorder as rec
-from .run_sections import write_full_result
+from .run_sections import stage_manifest
 from .dataforseo import (
     ai_mentions_keywords, budget_remaining, bulk_domain_ranks,
     keyword_overview, serp_paa,
@@ -447,8 +447,7 @@ def _handoff(result: dict) -> dict:
     that pre-selects fields hides whatever the chooser did not think of, which
     is the opposite of useful when the agent is the one doing the judging.
     """
-    run_id = rec.active_run_id() or ""
-    manifest = write_full_result(run_id, "geo_demand", result)
+    manifest = stage_manifest(rec.active_run_id() or "")
     topics = [
         {
             "topic": e.get("topic"),
@@ -472,7 +471,7 @@ def _handoff(result: dict) -> dict:
         "not_sent_to_paid_call": result.get("not_sent_to_paid_call"),
         "cost_note": result.get("cost_note"),
         "reading_the_numbers": result.get("reading_the_numbers"),
-        "full_result": manifest,
+        "recorded_stages": manifest.get("stages"),
         "how_to_read": (
             "The complete brief is saved. Read any part with "
             "read_run_section(name='geo_demand', section='brief') — that is "
