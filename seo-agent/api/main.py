@@ -70,10 +70,26 @@ app.add_middleware(
 )
 
 
+# Bumped whenever the API contract the UI depends on changes. The UI warns
+# when it does not recognise the value. This exists because a stale backend
+# left running on another port (:8000, shipped-code from hours earlier, auth
+# disabled, no /api/flows) silently served the UI for a whole session: every
+# browser test validated the wrong process, and the missing endpoints looked
+# like frontend bugs.
+API_VERSION = "2026-09-01.flows"
+
+
 @app.get("/api/health")
 async def health():
-    """Health check endpoint."""
-    return {"status": "ok"}
+    """Health check endpoint. `version` lets the UI detect a stale backend."""
+    from src import flows
+
+    return {
+        "status": "ok",
+        "version": API_VERSION,
+        "flows": list(flows.REGISTRY),
+        "port": int(os.getenv("PORT", "8001")),
+    }
 
 
 def _memory_lines(text: str) -> List[str]:

@@ -3,33 +3,93 @@ from __future__ import annotations
 from .. import llm
 
 
-SYSTEM_PROMPT = """You are an SEO content strategist. Group keywords into thematic clusters based on search intent and topic similarity.
+# The model assigns keywords by INDEX rather than repeating their text.
+#
+# This is the fix for the node that has failed every full run of this project.
+# Echoing ~72 keyword phrases back across 10 clusters is almost all of the
+# output, and output tokens are what cost time: measured generation speed is
+# ~37 tok/s, so a 4500-token budget needs ~121s against a 120s client timeout.
+# The call was arithmetically guaranteed to time out whenever the model used
+# its budget. Indices cut the output several-fold, and the node also gets a
+# timeout with real headroom.
+SYSTEM_PROMPT = """You are an SEO content strategist. Group the numbered keywords into
+thematic clusters by search intent and topic similarity.
 
-Output JSON format:
+You are given keywords as a numbered list. Refer to each keyword by its NUMBER.
+Never write keyword text in your output — only numbers. This keeps your reply short.
+
+Output JSON, and nothing else:
 {
   "clusters": [
     {
-      "cluster_id": 1,
-      "cluster_name": "name",
-      "head_term": "primary keyword",
-      "keywords": ["kw1", "kw2"],
+      "id": 1,
+      "name": "short descriptive cluster name",
+      "head": 12,
+      "kw": [12, 4, 19, 27],
       "intent": "informational|commercial|transactional",
-      "avg_volume": 1000,
-      "avg_difficulty": 45,
-      "rationale": "why these keywords belong together"
+      "why": "one short sentence, max 10 words"
     }
   ]
 }
 
 Rules:
-- Create the requested number of clusters (typically 5-10)
-- When asked for 8+, OVER-GENERATE: capture more themes than will ultimately be pursued; a later selection step cuts the weak ones — do not pre-filter
-- Each cluster should have 3-15 keywords
-- Head term should be the highest-volume, most specific keyword
-- Group by user intent AND topic similarity
-- Separate informational from commercial/transactional intent
-- Cluster names should be descriptive and actionable
-- Keep rationale to ONE short sentence (max ~10 words)"""
+- Produce exactly the number of clusters requested.
+- When asked for 8 or more, OVER-GENERATE: capture more themes than will be
+  pursued. A later step selects the strong ones — do not pre-filter here.
+- 3-15 keywords per cluster. Every keyword belongs to at most one cluster.
+- "head" is the cluster's primary keyword number (highest volume, most specific).
+- Separate informational from commercial/transactional intent.
+- "why" must be ONE short sentence. Never longer."""
+
+
+def _resolve(ref, ranked: list[dict]) -> str | None:
+    """Map a model reference (index or literal string) back to a keyword."""
+    if isinstance(ref, bool):
+        return None
+    if isinstance(ref, int):
+        return ranked[ref - 1].get("keyword") if 1 <= ref <= len(ranked) else None
+    if isinstance(ref, str):
+        text = ref.strip()
+        if text.isdigit():
+            i = int(text)
+            return ranked[i - 1].get("keyword") if 1 <= i <= len(ranked) else None
+        # Model ignored the instruction and wrote the phrase — accept it if real.
+        lookup = {k.get("keyword", "").lower(): k.get("keyword") for k in ranked}
+        return lookup.get(text.lower(), text) if text else None
+    return None
+
+
+def _expand(raw, ranked: list[dict]) -> list[dict]:
+    """Turn index-based clusters into the full shape the pipeline expects."""
+    clusters = raw.get("clusters") if isinstance(raw, dict) else raw
+    if not isinstance(clusters, list):
+        return []
+
+    stats = {k.get("keyword", "").lower(): k for k in ranked}
+    out: list[dict] = []
+    for i, c in enumerate(clusters, 1):
+        if not isinstance(c, dict):
+            continue
+        members = [
+            kw for kw in (_resolve(r, ranked) for r in (c.get("kw") or c.get("keywords") or []))
+            if kw
+        ]
+        if not members:
+            continue
+        head = _resolve(c.get("head") or c.get("head_term"), ranked) or members[0]
+        vols = [stats.get(m.lower(), {}).get("volume") or 0 for m in members]
+        diffs = [stats.get(m.lower(), {}).get("difficulty") or 0 for m in members]
+        out.append({
+            "cluster_id": c.get("id", i),
+            "cluster_name": c.get("name") or c.get("cluster_name") or f"Cluster {i}",
+            "head_term": head,
+            "keywords": members,
+            "intent": c.get("intent", "informational"),
+            "avg_volume": round(sum(vols) / len(vols)) if vols else 0,
+            "avg_difficulty": round(sum(diffs) / len(diffs)) if diffs else 0,
+            "rationale": c.get("why") or c.get("rationale") or "",
+        })
+    return out
 
 
 def cluster_keywords(
@@ -39,29 +99,41 @@ def cluster_keywords(
     language_code: str | None = None,
 ) -> dict:
     """Cluster keywords into thematic groups."""
-    # Format keywords for LLM. Cap the payload: very large cluster prompts
-    # stall on queued/slow LLM endpoints (observed holding past the 120s
-    # timeout), and top-volume keywords carry nearly all the signal.
-    ranked = sorted(keywords, key=lambda k: k.get("volume") or 0, reverse=True)
-    kw_text = "\n".join([
-        f"- {k.get('keyword', '')} (volume: {k.get('volume', 0)}, difficulty: {k.get('difficulty', 0)}, intent: {k.get('intent', 'unknown')})"
-        for k in ranked[:80]
-    ])
+    ranked = sorted(keywords, key=lambda k: k.get("volume") or 0, reverse=True)[:80]
+    if not ranked:
+        return {"success": False, "error": "no keywords to cluster", "clusters": None}
+
+    kw_text = "\n".join(
+        f"{i}. {k.get('keyword', '')} (vol {k.get('volume', 0)}, "
+        f"kd {k.get('difficulty', 0)}, {k.get('intent', 'unknown')})"
+        for i, k in enumerate(ranked, 1)
+    )
 
     market_line = ""
     if location_code:
-        market_line = f"\nTarget market: location_code {location_code}" + (f", language {language_code}" if language_code else "") + "."
+        market_line = f"\nTarget market: location_code {location_code}"
+        if language_code:
+            market_line += f", language {language_code}"
+        market_line += "."
 
-    user_msg = f"""Keywords to cluster:
-{kw_text}
-{market_line}
-Create {max_clusters} thematic clusters. Keep rationales to one short sentence."""
+    user_msg = (
+        f"Keywords (refer to these by number):\n{kw_text}\n{market_line}\n"
+        f"Create {max_clusters} thematic clusters. Use keyword NUMBERS only in "
+        f"\"kw\" and \"head\". Keep every \"why\" to one short sentence."
+    )
 
     try:
-        resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3, max_tokens=4500)
-        result = llm.parse_json_response(resp)
-        if result and (isinstance(result, dict) or isinstance(result, list)):
-            return {"success": True, "clusters": result}
+        # 2500 tokens of indices is far more than this needs, and 300s leaves
+        # real headroom over the ~37 tok/s worst case rather than sitting a
+        # second under it.
+        resp = llm.chat(
+            user_msg, system=SYSTEM_PROMPT, temperature=0.3,
+            max_tokens=2500, timeout=300.0,
+        )
+        parsed = llm.parse_json_response(resp)
+        clusters = _expand(parsed, ranked)
+        if clusters:
+            return {"success": True, "clusters": clusters}
         return {"success": False, "error": "LLM returned invalid cluster format", "clusters": None}
     except Exception as e:
         return {"success": False, "error": f"LLM clustering failed: {str(e)}", "clusters": None}

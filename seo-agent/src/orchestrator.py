@@ -395,22 +395,30 @@ def run_orchestrator_stream(
         # Step 2: First LLM call — decide routing
         yield {"type": "status", "content": "Thinking..."}
 
-        resp = llm.chat(
+        # Stream the orchestrator's own reply. This is the message the user
+        # waits on with nothing on screen — asking for the market, or
+        # presenting results. Measured 2026-09-01: the full completion takes
+        # 15-70s depending on how much prose the model writes, but the first
+        # token arrives at ~2s. Chunking a finished string (what this used to
+        # do) threw that away and made every reply feel like a stall.
+        content_parts: list[str] = []
+        tool_calls: list[dict] = []
+        for event in llm.chat_stream(
             messages,
             system=orchestrator_system,
             tools=orchestrator_tools,
             temperature=0.3,
-        )
+        ):
+            if event["type"] == "delta":
+                content_parts.append(event["content"])
+                yield {"type": "text", "content": event["content"]}
+            else:
+                tool_calls = event.get("tool_calls") or []
+            _check_stop(sid)
 
-        content = resp.get("content", "")
-        tool_calls = resp.get("tool_calls", [])
-
-        # Yield any direct text from orchestrator in chunks
+        content = "".join(content_parts)
         if content:
             messages.append({"role": "assistant", "content": content})
-            chunk_size = 30
-            for i in range(0, len(content), chunk_size):
-                yield {"type": "text", "content": content[i:i+chunk_size]}
 
         # Step 2: Process tool calls (route to agents)
         agent_responses = []

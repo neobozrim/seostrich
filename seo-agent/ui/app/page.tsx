@@ -7,6 +7,7 @@ import { activityLine } from '@/lib/activity';
 import { ChatMessage } from '@/components/ChatMessage';
 import { SystemPanel } from '@/components/SystemPanel';
 import { RunView } from '@/components/RunView';
+import { FlowCards } from '@/components/FlowCards';
 import { ProfileMenu } from '@/components/ProfileMenu';
 import { LoginForm } from '@/components/LoginForm';
 import {
@@ -16,6 +17,9 @@ import {
   clearToken,
   getUsername,
   stopSession,
+  getApiHealth,
+  getApiBase,
+  EXPECTED_API_VERSION,
   AuthError,
 } from '@/lib/api';
 import { registerWebMcpTools } from '@/lib/webmcp';
@@ -39,6 +43,7 @@ export default function Home() {
   const [authReady, setAuthReady] = useState(false);
   const [authRequired, setAuthRequired] = useState(false);
   const [authed, setAuthed] = useState(false);
+  const [backendWarning, setBackendWarning] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -103,18 +108,55 @@ export default function Home() {
   }, [messages]);
 
   useEffect(() => {
-    checkAuth()
-      .then(({ auth_required, authenticated }) => {
-        setAuthRequired(auth_required);
-        setAuthed(auth_required ? authenticated : true);
-        setUser(getUsername());
+    let cancelled = false;
+
+    // Retry briefly: the backend is commonly still booting when the page
+    // loads, and a single failed probe used to be treated as "no auth needed".
+    const probe = async (attempts = 3): Promise<void> => {
+      for (let i = 0; i < attempts; i++) {
+        try {
+          const { auth_required, authenticated } = await checkAuth();
+          if (cancelled) return;
+          setAuthRequired(auth_required);
+          setAuthed(auth_required ? authenticated : true);
+          setUser(getUsername());
+          setAuthReady(true);
+          return;
+        } catch {
+          if (i < attempts - 1) await new Promise((r) => setTimeout(r, 800));
+        }
+      }
+      if (cancelled) return;
+      // Still no answer. FAIL CLOSED — show the login screen rather than the
+      // app. Assuming "auth is off" on a failed probe meant one flaky request
+      // (or a backend mid-restart) silently removed the login gate and left
+      // every later call 401ing against a UI that looked signed in.
+      setAuthRequired(true);
+      setAuthed(false);
+      setAuthReady(true);
+    };
+
+    // Confirm we're talking to a backend that actually has these endpoints.
+    getApiHealth()
+      .then((h) => {
+        if (cancelled) return;
+        if (h.version !== EXPECTED_API_VERSION) {
+          setBackendWarning(
+            `Connected to ${getApiBase()}, which reports API version ` +
+              `"${h.version ?? 'unknown'}" but this UI expects ` +
+              `"${EXPECTED_API_VERSION}". That backend is probably stale — ` +
+              `check for another server on a different port.`
+          );
+        }
       })
       .catch(() => {
-        // API unreachable — proceed and let chat surface the error
-        setAuthRequired(false);
-        setAuthed(true);
-      })
-      .finally(() => setAuthReady(true));
+        if (!cancelled) setBackendWarning(`No API reachable at ${getApiBase()}.`);
+      });
+
+    probe();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -410,10 +452,16 @@ export default function Home() {
           </div>
         </header>
 
+        {backendWarning && (
+          <div className="bg-amber-50 border-b border-amber-300 px-4 py-2 text-sm text-amber-900">
+            {backendWarning}
+          </div>
+        )}
+
         {/* Messages */}
         <div className="flex-1 overflow-y-auto">
           {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex flex-col items-center justify-center h-full gap-8 py-8">
               <div className="text-center max-w-lg">
                 <img
                   src="/logo/seostrich-lockup-vertical.svg"
@@ -421,9 +469,10 @@ export default function Home() {
                   className="h-40 w-auto mx-auto mb-4"
                 />
                 <p className="text-gray-500">
-                  An SEO agent that has memory, inspects its work and self-improves.
+                  An SEO agent that shows its work — and lets your own agent steer it.
                 </p>
               </div>
+              <FlowCards onPick={(prompt) => { setInput(prompt); textareaRef.current?.focus(); }} />
             </div>
           ) : (
             <div className="max-w-3xl mx-auto divide-y divide-gray-200">

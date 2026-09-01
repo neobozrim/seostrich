@@ -53,8 +53,15 @@ def chat(
     temperature: float = 0.3,
     max_tokens: int = 8000,
     model: str | None = None,
+    timeout: float | None = None,
 ) -> dict[str, Any]:
-    """Call Qwen via OpenAI-compatible API. Accepts a string or list of message dicts."""
+    """Call Qwen via OpenAI-compatible API. Accepts a string or list of message dicts.
+
+    ``timeout`` overrides the client default for this call. Needed because the
+    default (120s) is shorter than a large generation takes: measured output
+    speed is ~37 tok/s, so any call allowed 4500 tokens needs ~121s and times
+    out exactly when the model uses its budget.
+    """
     if isinstance(messages, str):
         msgs: list[dict[str, str]] = [{"role": "user", "content": messages}]
     else:
@@ -80,7 +87,10 @@ def chat(
         }
 
     _pace()
-    resp = get_client().chat.completions.create(**kwargs)
+    client = get_client()
+    if timeout is not None:
+        client = client.with_options(timeout=timeout)
+    resp = client.chat.completions.create(**kwargs)
     choice = resp.choices[0]
     result: dict[str, Any] = {
         "content": choice.message.content or "",
@@ -99,6 +109,84 @@ def chat(
             for tc in choice.message.tool_calls
         ]
     return result
+
+
+def chat_stream(
+    messages: str | list[dict[str, str]],
+    *,
+    system: str | None = None,
+    tools: list[dict] | None = None,
+    temperature: float = 0.3,
+    max_tokens: int = 8000,
+    model: str | None = None,
+    timeout: float | None = None,
+):
+    """Same as chat(), but yields text as the model produces it.
+
+    Yields {"type": "delta", "content": str} for each text fragment, then a
+    final {"type": "final", "content": str, "tool_calls": [...]} carrying the
+    assembled result in chat()'s shape.
+
+    Worth the extra code path: latency here tracks OUTPUT tokens, so a long
+    answer blocks for a minute before anything appears. Measured 2026-09-01 on
+    the same prompt — 17.6s to complete, but the first chunk at 2.1s.
+    """
+    if isinstance(messages, str):
+        msgs: list[dict[str, str]] = [{"role": "user", "content": messages}]
+    else:
+        msgs = list(messages)
+    if system:
+        msgs.insert(0, {"role": "system", "content": system})
+
+    kwargs: dict[str, Any] = {
+        "model": model or settings.qwen_model,
+        "messages": msgs,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "stream": True,
+    }
+    if tools:
+        kwargs["tools"] = tools
+        kwargs["tool_choice"] = "auto"
+
+    if settings.mock_llm:
+        yield {"type": "final", "content": "[]", "tool_calls": []}
+        return
+
+    _pace()
+    content_parts: list[str] = []
+    # Tool calls arrive as indexed deltas that must be concatenated.
+    partial: dict[int, dict[str, Any]] = {}
+
+    client = get_client()
+    if timeout is not None:
+        client = client.with_options(timeout=timeout)
+    for event in client.chat.completions.create(**kwargs):
+        if not event.choices:
+            continue
+        delta = event.choices[0].delta
+        if delta is None:
+            continue
+        if delta.content:
+            content_parts.append(delta.content)
+            yield {"type": "delta", "content": delta.content}
+        for tc in (delta.tool_calls or []):
+            slot = partial.setdefault(
+                tc.index, {"id": "", "name": "", "arguments": ""}
+            )
+            if tc.id:
+                slot["id"] = tc.id
+            if tc.function and tc.function.name:
+                slot["name"] += tc.function.name
+            if tc.function and tc.function.arguments:
+                slot["arguments"] += tc.function.arguments
+
+    result: dict[str, Any] = {
+        "type": "final",
+        "content": "".join(content_parts),
+        "tool_calls": [partial[i] for i in sorted(partial) if partial[i]["name"]],
+    }
+    yield result
 
 
 def parse_json_response(resp: dict[str, Any]) -> dict | list:

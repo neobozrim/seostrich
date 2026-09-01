@@ -9,3 +9,9 @@ dist/
 *.egg-info/
 .DS_Store
 gsc-console-creds.json
+ui/tsconfig.tsbuildinfo
+ui/.env.local
+backend.log
+frontend.log
+e2e_*.log
+cluster_input.json

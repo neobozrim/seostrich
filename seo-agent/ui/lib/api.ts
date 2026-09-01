@@ -163,6 +163,60 @@ export async function getSessions(): Promise<any[]> {
 
 // --- Pipeline runs ---------------------------------------------------------
 
+// Must match API_VERSION in api/main.py. A mismatch means the UI is talking
+// to a backend that predates the endpoints it depends on.
+export const EXPECTED_API_VERSION = '2026-09-01.flows';
+
+export async function getApiHealth(): Promise<{
+  status: string;
+  version?: string;
+  flows?: string[];
+  port?: number;
+}> {
+  const response = await fetch(`${API_BASE}/api/health`);
+  if (!response.ok) throw new Error(`health ${response.status}`);
+  return response.json();
+}
+
+export function getApiBase(): string {
+  return API_BASE;
+}
+
+export interface FlowInput {
+  name: string;
+  label: string;
+  description: string;
+  kind: 'text' | 'market' | 'url' | 'list';
+}
+
+export interface FlowCard {
+  id: string;
+  label: string;
+  tagline: string;
+  description: string;
+  icon: string;
+  nodes: string[];
+  required_inputs: FlowInput[];
+  optional_inputs: FlowInput[];
+}
+
+export interface FlowCatalog {
+  flows: FlowCard[];
+  planned: { id: string; label: string }[];
+  markets: { market: string; country: string; location_code: number; languages: string[] }[];
+}
+
+// The flow catalog comes from src/flows.py, so the homepage cards, the plan
+// preview and the agent's tool allowlist cannot drift apart.
+export async function getFlows(signal?: AbortSignal): Promise<FlowCatalog> {
+  const response = await fetch(`${API_BASE}/api/flows`, {
+    headers: authHeaders(),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
 export async function getRuns(): Promise<any[]> {
   const response = await fetch(`${API_BASE}/api/runs`, {
     headers: authHeaders(),
