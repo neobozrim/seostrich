@@ -489,7 +489,7 @@ def ai_mentions(domain: str, limit: int = 20) -> list[dict]:
             print(f"[ai_mentions] No results in response for {domain}")
             return []
         
-        items = tasks[0]["result"][0].get("items", [])
+        items = tasks[0]["result"][0].get("items") or []
         results = []
         for item in items:
             results.append({
@@ -511,27 +511,37 @@ def ai_mentions_keywords(
     language_code: str = "en",
     limit: int = 100,
 ) -> list[dict]:
-    """AI-engine answers that mention the given KEYWORDS (ChatGPT + Google AI).
+    """AI-engine answers about the given KEYWORDS (ChatGPT + Google AI).
 
-    One call covers up to 10 head terms. Each returned item is one
-    question an AI engine answered, with its answer, cited sources and
-    AI search volume — the raw material for the AI-citability stage.
+    ONE CALL PER KEYWORD, deliberately. The endpoint accepts a list of targets
+    but INTERSECTS them rather than unioning, which is not documented and is
+    silent: measured 2026-09-01, each of four topics returned 100 answers
+    alone, two together returned 5, and three or more returned 0. Batching to
+    "save calls" therefore returned an empty AI-citability stage that looked
+    like the topics simply had no AI presence.
+
+    search_scope is ["question"], not ["any"]. With "any" the same topic
+    returned 2,227 loosely-matched rows ("ecommerce", "aviation in ww1" for
+    "forward deployed engineer"); scoped to questions it returns 42 that are
+    actually about the topic. match_type only accepts word_match.
+
+    Each returned item is one question an AI engine answered, with its answer,
+    cited sources and AI search volume.
     """
     clean = [k.strip() for k in (keywords or []) if isinstance(k, str) and k.strip()][:10]
     if not clean:
         return []
 
-    async def _inner():
+    async def _one(keyword: str) -> list[dict]:
         data = await _post("/v3/ai_optimization/llm_mentions/search_mentions/live", [
             {
                 "target": [
                     {
-                        "keyword": kw,
+                        "keyword": keyword,
                         "search_filter": "include",
-                        "search_scope": ["any"],
+                        "search_scope": ["question"],
                         "match_type": "word_match",
                     }
-                    for kw in clean
                 ],
                 "location_code": location_code,
                 "language_code": language_code,
@@ -541,17 +551,18 @@ def ai_mentions_keywords(
         tasks = data.get("tasks", [])
         if not tasks or not tasks[0].get("result"):
             return []
-        items = tasks[0]["result"][0].get("items", [])
+        items = tasks[0]["result"][0].get("items") or []
         results = []
         for item in items:
             sources = []
-            for s in (item.get("sources") or [])[:5]:
+            for src in (item.get("sources") or [])[:5]:
                 sources.append({
-                    "domain": s.get("domain", ""),
-                    "url": s.get("url", ""),
-                    "title": s.get("title", ""),
+                    "domain": src.get("domain", ""),
+                    "url": src.get("url", ""),
+                    "title": src.get("title", ""),
                 })
             results.append({
+                "matched_keyword": keyword,
                 "platform": item.get("platform", ""),
                 "model_name": item.get("model_name", ""),
                 "question": item.get("question", ""),
@@ -561,6 +572,16 @@ def ai_mentions_keywords(
                 "ai_search_volume": item.get("ai_search_volume") or 0,
             })
         return results
+
+    async def _inner():
+        out: list[dict] = []
+        for keyword in clean:
+            try:
+                out.extend(await _one(keyword))
+            except Exception as exc:
+                print(f"  [dfs] search_mentions failed for {keyword!r}: {exc}")
+        return out
+
     return _run(_inner())
 
 
@@ -580,7 +601,7 @@ def serp_paa(keyword: str, location_code: int = 2840, language_code: str = "en")
         for item in items:
             if item.get("type") != "people_also_ask":
                 continue
-            for sub in item.get("items", []) or []:
+            for sub in item.get("items") or []:
                 title = sub.get("title") or ""
                 if title:
                     questions.append({

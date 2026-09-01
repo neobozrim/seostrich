@@ -28,7 +28,8 @@ from .dataforseo import ai_mentions_keywords, budget_remaining, keyword_overview
 
 # One SERP call per term, so the harvest is capped.
 MAX_QUESTION_TERMS = 4
-# search_mentions takes at most 10 terms per call.
+# Cap on topics per run: search_mentions is one call PER topic (the endpoint
+# intersects batched targets rather than unioning them), so this bounds cost.
 MAX_TERMS = 10
 
 
@@ -61,14 +62,17 @@ def _citability(topics: list[str], location_code: int, language_code: str) -> di
         for t in topics
     }
     for item in mentions:
-        question = (item.get("question") or "").lower()
-        # Attribute to the topic sharing the most significant words.
-        best, best_hits = None, 0
-        for topic in topics:
-            words = [w for w in topic.lower().split() if len(w) > 2]
-            hits = sum(1 for w in words if w in question)
-            if hits > best_hits:
-                best, best_hits = topic, hits
+        # The API is queried one topic at a time, so each row knows which topic
+        # it answered. Fall back to word overlap only for older payloads.
+        best = item.get("matched_keyword")
+        if best not in per_topic:
+            question = (item.get("question") or "").lower()
+            best, best_hits = None, 0
+            for topic in topics:
+                words = [w for w in topic.lower().split() if len(w) > 2]
+                hits = sum(1 for w in words if w in question)
+                if hits > best_hits:
+                    best, best_hits = topic, hits
         if best is None:
             continue
         bucket = per_topic[best]
