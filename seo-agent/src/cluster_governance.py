@@ -15,6 +15,7 @@ it is budget-accounted to the run being edited.
 """
 from __future__ import annotations
 
+import copy
 import threading
 from datetime import datetime, timezone
 
@@ -77,6 +78,35 @@ def _log_change(run: dict, op: str, cluster: str, reason: str = "",
         entry["reason"] = reason[:300]
     entry.update({k: v for k, v in extra.items() if v not in (None, "", [])})
     run.setdefault("governance", []).append(entry)
+
+
+def _ensure_baseline(run: dict) -> None:
+    """Freeze the clusters artifact the pipeline produced, once, before the
+    first edit lands.
+
+    This exists for a specific failure: the deployed app is shared. One person
+    discards a cluster to try the tools out, the next opens the same report and
+    reads that edited selection as what the pipeline decided. Without a
+    baseline there is no way to tell the two apart, or to get back.
+
+    Snapshotting the artifact beats replaying the governance log backwards:
+    the log records what happened, not the exact shape before it, and an
+    inverted replay would have to be right about every op forever. A copy is
+    right by construction.
+
+    Taken BEFORE the mutation and only when absent, so it always holds the
+    as-produced state no matter how many edits follow. Every caller is already
+    inside the run lock.
+    """
+    if run.get("clusters_baseline") is not None:
+        return
+    stage = _clusters_stage(run)
+    if stage is None:
+        return
+    run["clusters_baseline"] = {
+        "captured_at": datetime.now(timezone.utc).isoformat(),
+        "artifact": copy.deepcopy(stage.get("artifact") or {}),
+    }
 
 
 def _clusters_stage(run: dict) -> dict | None:
@@ -195,6 +225,7 @@ def _promote_cluster_locked(run_id: str, cluster_name: str, by: str = "agent") -
     stage = _clusters_stage(run)
     if stage is None:
         return {"ok": False, "error": "no clusters stage in this run"}
+    _ensure_baseline(run)
     artifact = stage["artifact"]
     discarded = artifact.get("discarded", [])
     hit = next((c for c in discarded if _match(c, cluster_name)), None)
@@ -231,6 +262,7 @@ def _discard_cluster_locked(run_id: str, cluster_name: str, reason: str = "",
     stage = _clusters_stage(run)
     if stage is None:
         return {"ok": False, "error": "no clusters stage in this run"}
+    _ensure_baseline(run)
     artifact = stage["artifact"]
     clusters = artifact.get("clusters", [])
     hit = next((c for c in clusters if _match(c, cluster_name)), None)
@@ -429,6 +461,7 @@ def propose_cluster(
         if stage is None:
             stage = {"id": "clusters", "label": "Clusters", "status": "done", "artifact": {}}
             run.setdefault("stages", []).append(stage)
+        _ensure_baseline(run)
         artifact = stage["artifact"]
         existing = artifact.setdefault("clusters", [])
         if any(_match(c, topic) for c in existing):
@@ -460,3 +493,71 @@ def governance_history(run_id: str) -> dict:
             "was never adjusted."
         ),
     }
+
+
+def _changes_since_reset(run: dict) -> list[dict]:
+    """Edits that are still standing.
+
+    "Edited" has to mean "differs from what the pipeline produced", not "was
+    ever touched" — otherwise a report stays flagged as modified forever after
+    it has been put back, and the badge stops meaning anything. So the count
+    runs from the last reset, and the earlier edits stay in the history where
+    they belong.
+    """
+    history = run.get("governance") or []
+    last_reset = max((i for i, e in enumerate(history) if e.get("op") == "reset"),
+                     default=-1)
+    return [e for e in history[last_reset + 1:] if e.get("op") != "reset"]
+
+
+def change_state(run_id: str) -> dict:
+    """Has this report been edited since the pipeline produced it?"""
+    run = runs.get_run(run_id)
+    if run is None:
+        return {"ok": False, "error": "run not found"}
+    entries = _changes_since_reset(run)
+    return {
+        "ok": True,
+        "run_id": run_id,
+        "edited": bool(entries),
+        "change_count": len(entries),
+        "can_reset": run.get("clusters_baseline") is not None,
+        "last_change": entries[-1] if entries else None,
+    }
+
+
+def reset_run(run_id: str, by: str = "agent") -> dict:
+    """Put the cluster selection back to what the pipeline produced.
+
+    The reset is itself recorded rather than wiping the history: erasing the
+    record of what someone tried is the opposite of what a governance log is
+    for, and the next reader still deserves to know an edit happened and was
+    undone. Idempotent — resetting an unedited run is a no-op.
+    """
+    with _run_lock(run_id):
+        run = runs.get_run(run_id)
+        if run is None:
+            return {"ok": False, "error": "run not found"}
+        baseline = run.get("clusters_baseline")
+        if not baseline:
+            return {"ok": False, "error": "this run has never been edited, so there is nothing to undo"}
+        stage = _clusters_stage(run)
+        if stage is None:
+            return {"ok": False, "error": "no clusters stage in this run"}
+
+        undone = len(_changes_since_reset(run))
+        stage["artifact"] = copy.deepcopy(baseline["artifact"])
+        _log_change(run, "reset", "(whole selection)",
+                    reason=f"restored the {undone} change(s) back to as-produced", by=by,
+                    changes_undone=undone)
+        runs.save_run(run_id, run)
+        artifact = stage["artifact"]
+        return {
+            "ok": True,
+            "run_id": run_id,
+            "changes_undone": undone,
+            "selected_count": len(artifact.get("clusters") or []),
+            "discarded_count": len(artifact.get("discarded") or []),
+            "note": ("The selection is back to what the pipeline produced. The "
+                     "history of what was changed is kept, including this reset."),
+        }

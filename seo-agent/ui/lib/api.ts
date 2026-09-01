@@ -165,7 +165,7 @@ export async function getSessions(): Promise<any[]> {
 
 // Must match API_VERSION in api/main.py. A mismatch means the UI is talking
 // to a backend that predates the endpoints it depends on.
-export const EXPECTED_API_VERSION = '2026-09-01.governance';
+export const EXPECTED_API_VERSION = '2026-09-01.reset';
 
 export async function getApiHealth(): Promise<{
   status: string;
@@ -274,6 +274,30 @@ export async function pinRun(
     signal,
   });
   await ensureOk(response);
+  return response.json();
+}
+
+export async function getRunChanges(runId: string, signal?: AbortSignal) {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/changes`, {
+    headers: authHeaders(),
+    signal,
+  });
+  if (response.status === 401) throw new AuthError();
+  if (!response.ok) throw new Error('Failed to read change state');
+  return response.json();
+}
+
+export async function resetRun(runId: string, signal?: AbortSignal) {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/reset`, {
+    method: 'POST',
+    headers: authHeaders(),
+    signal,
+  });
+  if (response.status === 401) throw new AuthError();
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.detail || 'Failed to reset the report');
+  }
   return response.json();
 }
 

@@ -30,6 +30,8 @@ import {
   getFlows,
   checkAiCitations,
   getRunGovernance,
+  getRunChanges,
+  resetRun,
 } from './api';
 
 interface ModelContextLike {
@@ -387,6 +389,32 @@ export function buildTools() {
         const run = await resolveRun(input?.run_id);
         if (!run) return 'No pipeline run found.';
         return getRunGovernance(run.id, options?.signal);
+      },
+    },
+    {
+      name: 'seo_check_if_edited',
+      title: 'Has this report been changed?',
+      description:
+        'Say whether the cluster selection still matches what the pipeline produced, or whether someone has edited it since — how many changes are standing, and who made the most recent one. Call this BEFORE you judge a strategy or suggest changes of your own: on a shared deployment the report you are reading may already carry another person\'s decisions, and reading those as the pipeline\'s own verdict is the easiest mistake to make here. Read-only, no cost.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return getRunChanges(run.id, options?.signal);
+      },
+    },
+    {
+      name: 'seo_reset_run',
+      title: 'Undo every change to this report',
+      description:
+        'Put the cluster selection back to exactly what the pipeline produced, undoing every promotion, discard and proposal made since. Use it to hand a report back in its original state after experimenting, or when the edits on it were somebody else\'s and you want to judge the pipeline rather than their edits. The history of what was changed is KEPT, including this reset — nothing is erased, only the selection moves back. Writes to the run, no API cost.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
+      annotations: READ_WRITE,
+      execute: async (input: { run_id?: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return resetRun(run.id, options?.signal);
       },
     },
     {

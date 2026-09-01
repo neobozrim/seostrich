@@ -76,7 +76,7 @@ app.add_middleware(
 # disabled, no /api/flows) silently served the UI for a whole session: every
 # browser test validated the wrong process, and the missing endpoints looked
 # like frontend bugs.
-API_VERSION = "2026-09-01.governance"
+API_VERSION = "2026-09-01.reset"
 
 
 @app.get("/api/health")
@@ -344,6 +344,30 @@ async def get_run_governance(run_id: str, _auth: None = Depends(require_auth)):
     result = cluster_governance.governance_history(run_id)
     if not result.get("ok"):
         raise HTTPException(status_code=404, detail="Run not found")
+    return result
+
+
+@app.get("/api/runs/{run_id}/changes")
+async def get_run_changes(run_id: str, _auth: None = Depends(require_auth)):
+    """Whether this report still differs from what the pipeline produced."""
+    from src import cluster_governance
+
+    result = cluster_governance.change_state(run_id)
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail="Run not found")
+    return result
+
+
+@app.post("/api/runs/{run_id}/reset")
+async def reset_run_selection(run_id: str, _auth: None = Depends(require_auth)):
+    """Put the cluster selection back to what the pipeline produced."""
+    from src import cluster_governance
+
+    result = await asyncio.to_thread(
+        cluster_governance.reset_run, run_id, "user"
+    )
+    if not result.get("ok"):
+        raise HTTPException(status_code=400, detail=result.get("error", "reset failed"))
     return result
 
 

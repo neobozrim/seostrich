@@ -14,9 +14,12 @@ import {
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
+  PencilLine,
+  Undo2,
 } from 'lucide-react';
 import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent } from '@/types';
-import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, AuthError } from '@/lib/api';
+import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, getRunChanges,
+  resetRun, getRunGovernance, AuthError } from '@/lib/api';
 import { activityLabel } from '@/lib/activity';
 import { StageIcon } from '@/components/StageIcon';
 
@@ -996,13 +999,26 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // Whether this report still matches what the pipeline produced. On a shared
+  // deployment somebody else's edits are indistinguishable from the pipeline's
+  // own verdict unless the report says so.
+  const [changes, setChanges] = useState<any | null>(null);
+  const [resetting, setResetting] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [history, setHistory] = useState<any[] | null>(null);
 
   const loadRun = async (id: string) => {
     setLoading(true);
     setError(null);
+    setChanges(null);
+    setHistory(null);
+    setShowHistory(false);
     try {
       const full = await getRun(id);
       setRun(full);
+      // Non-blocking: a report that cannot report its edit state is still a
+      // readable report.
+      getRunChanges(id).then(setChanges).catch(() => setChanges(null));
     } catch (e: any) {
       setError(
         e instanceof AuthError
@@ -1014,6 +1030,38 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
     }
   };
 
+  const handleReset = async () => {
+    if (!run) return;
+    const n = changes?.change_count ?? 0;
+    if (!window.confirm(
+      `Undo ${n} change${n === 1 ? '' : 's'} and put this report back to what ` +
+      `the pipeline produced?\n\nThe record of what was changed is kept.`
+    )) return;
+    setResetting(true);
+    try {
+      await resetRun(run.id);
+      await refresh(run.id);
+      setHistory(null);
+    } catch (e: any) {
+      setError(e?.message || 'Could not reset the report');
+    } finally {
+      setResetting(false);
+    }
+  };
+
+  const toggleHistory = async () => {
+    const next = !showHistory;
+    setShowHistory(next);
+    if (next && history === null && run) {
+      try {
+        const res = await getRunGovernance(run.id);
+        setHistory(res.changes || []);
+      } catch {
+        setHistory([]);
+      }
+    }
+  };
+
   // Silent refetch (no spinner) — used by manual refresh + live polling
   const refresh = async (id?: string) => {
     const target = id || run?.id;
@@ -1021,6 +1069,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
     try {
       const full = await getRun(target);
       setRun(full);
+      getRunChanges(target).then(setChanges).catch(() => {});
     } catch {
       /* keep the last good copy on transient errors */
     }
@@ -1172,6 +1221,55 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
           </h1>
           {run.project && run.project !== run.title && (
             <p className="text-sm text-gray-500 mt-1">{run.project}</p>
+          )}
+
+          {/* Only ever shown when it is true. An "unedited" badge on every
+              report would be noise; "someone changed this" is news. */}
+          {changes?.edited && (
+            <div className="mt-4 flex flex-wrap items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+              <PencilLine className="w-4 h-4 text-amber-700 shrink-0" />
+              <span className="text-sm text-amber-900">
+                <strong>{changes.change_count}</strong>{' '}
+                {changes.change_count === 1 ? 'change' : 'changes'} since the
+                pipeline produced this
+                {changes.last_change?.by && (
+                  <span className="text-amber-700"> · last by {changes.last_change.by}</span>
+                )}
+              </span>
+              <button
+                onClick={toggleHistory}
+                className="text-sm font-medium text-amber-800 hover:text-amber-900 underline underline-offset-2"
+              >
+                {showHistory ? 'Hide' : 'What changed?'}
+              </button>
+              <button
+                onClick={handleReset}
+                disabled={resetting || !changes.can_reset}
+                className="ml-auto flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg bg-white border border-amber-300 text-amber-900 hover:bg-amber-100 disabled:opacity-50 transition-colors"
+              >
+                <Undo2 className="w-3.5 h-3.5" />
+                {resetting ? 'Restoring…' : 'Reset to as-produced'}
+              </button>
+            </div>
+          )}
+
+          {showHistory && (
+            <ul className="mt-2 border border-surface-300 rounded-lg divide-y divide-surface-200 bg-white">
+              {history === null && (
+                <li className="px-3 py-2 text-sm text-gray-400">Loading history…</li>
+              )}
+              {history?.length === 0 && (
+                <li className="px-3 py-2 text-sm text-gray-400">No changes recorded.</li>
+              )}
+              {history?.map((h, i) => (
+                <li key={i} className="px-3 py-2 text-sm flex flex-wrap gap-x-2 gap-y-0.5">
+                  <span className="font-mono text-xs uppercase text-primary-500 pt-0.5">{h.op}</span>
+                  <span className="font-medium text-gray-800">{h.cluster}</span>
+                  {h.reason && <span className="text-gray-500">— {h.reason}</span>}
+                  <span className="text-gray-400 ml-auto">{h.by}</span>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       )}
