@@ -248,20 +248,31 @@ with rec.use_run(RID):
 chk("a genuinely new topic still runs", not novel.get("reused"), str(novel)[:80])
 chk("and it did pay for that one", len(mention_calls) > calls_before)
 
-print("9. the model gets a summary that fits in a tool result")
+print("9. the model gets a manifest it can drill into, not a chosen subset")
 import json as _json
 size = len(_json.dumps(res, ensure_ascii=False))
-chk(f"compact result is {size} chars, under the 4000 cap", size < 4000, str(size))
-chk("topics summarised", len(res["topics"]) == len(res_full_topics), str(res["topics"]))
+chk(f"handoff is {size} chars, under the 4000 cap", size < 4000, str(size))
+chk("headline topics carried inline", len(res["topics"]) == len(res_full_topics), str(res["topics"]))
 first = res["topics"][0]
 chk("carries the verdict", bool(first["verdict"]))
-chk("carries the headings to write", len(first["write_these_sections"]) > 0)
-chk("says how many sections exist in full", first["sections_total"] >= len(first["write_these_sections"]))
-chk("names who to out-answer", "out_answer_these" in first)
-chk("tells the model NOT to re-call for the rest",
-    "Do NOT call this tool again" in res["full_detail"], res["full_detail"][:60])
-chk("flagged domains excluded from out_answer_these",
-    "smallcommerceblog.io" not in first["out_answer_these"], str(first["out_answer_these"]))
+chk("says how many sections exist", first["sections_to_write"] > 0)
+chk("manifest lists what was saved", "sections" in res["full_result"])
+chk("manifest reports the true full size",
+    res["full_result"]["total_chars"] > size, str(res["full_result"]["total_chars"]))
+chk("brief is addressable",
+    any(x["section"] == "brief" for x in res["full_result"]["sections"]),
+    str([x["section"] for x in res["full_result"]["sections"]]))
+chk("tells the agent how to read the rest", "read_run_section" in res["how_to_read"])
+chk("and not to re-run for it", "Do not re-run" in res["how_to_read"])
+
+# The point of the redesign: anything omitted inline is still reachable.
+from src.tools.run_sections import read_run_section as _read
+with rec.use_run(RID):
+    got = _read("geo_demand", "brief")
+chk("the full brief is readable after the fact", "content" in got, str(got)[:90])
+chk("and it contains the questions the handoff omitted",
+    "questions_people_ask" in got["content"] or got.get("more") is True,
+    got.get("content", "")[:80])
 
 print("10. degrades safely")
 with rec.use_run(RID):

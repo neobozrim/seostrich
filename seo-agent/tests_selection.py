@@ -66,11 +66,17 @@ chk("prompt says lead with it", "Lead with it" in AGENT)
 chk("prompt forbids passing it off as a strategy",
     "Do not present a volume-only selection as a strategy" in AGENT)
 
-print("5. the deliverable is no longer truncated away")
-chk("a compact projection exists", "_compact_result" in SRC)
-chk("pillars are carried", '"pillars": result.get("pillars")' in SRC)
-chk("discarded is reduced to names + reasons", '"reason": str(d.get("reason")' in SRC)
-chk("it tells the model not to re-run for detail", "Do NOT re-run the graph" in SRC)
+print("5. the deliverable is reachable, not summarised away")
+# The first attempt at the truncation problem was a projection that picked
+# "the important fields". That hides whatever the chooser did not think of,
+# at the step where the agent is doing the judging — so the full result is
+# persisted and the agent reads what it needs.
+chk("no opinionated projection", "_compact_result" not in SRC)
+chk("the full result is persisted", "write_full_result(" in SRC)
+chk("a manifest is returned", '"full_result": manifest' in SRC)
+chk("the agent is told how to read it", "read_run_section" in SRC)
+chk("warnings still ride inline, not buried in a file",
+    '"selection_warning": result.get("selection_warning")' in SRC)
 
 print(f"\n{ok} passed, {fail} failed")
 sys.exit(1 if fail else 0)

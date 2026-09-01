@@ -90,6 +90,7 @@ KEYWORD_STRATEGY = Flow(
     ],
     tools=[
         "confirm_market", "list_markets", "run_keyword_strategy",
+        "read_run_section",
         "list_clusters_all", "promote_cluster", "discard_cluster",
         "propose_cluster", "submit_deliverable", "plan_calendar",
     ],
@@ -124,7 +125,7 @@ GEO_DEMAND = Flow(
     ],
     tools=[
         "confirm_market", "list_markets", "run_geo_demand",
-        "ai_citation_check", "ai_citability_brief", "ai_mentions",
+        "read_run_section", "ai_citation_check", "ai_citability_brief", "ai_mentions",
         "serp_ai_mode", "submit_deliverable",
     ],
     entrypoint="run_geo_demand",

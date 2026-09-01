@@ -33,6 +33,7 @@ from collections import Counter
 
 from .. import market as market_mod
 from .. import pipeline_recorder as rec
+from .run_sections import write_full_result
 from .dataforseo import (
     ai_mentions_keywords, budget_remaining, bulk_domain_ranks,
     keyword_overview, serp_paa,
@@ -439,48 +440,29 @@ def _previous_result() -> dict | None:
     return None
 
 
-def _compact(result: dict) -> dict:
-    """What the MODEL gets back. The full artifact is recorded on the stage.
+def _handoff(result: dict) -> dict:
+    """Persist the full brief, hand back a manifest plus the headline numbers.
 
-    Tool results are capped at 4,000 characters before they reach the model.
-    The full GEO return is several times that, and content_plan sits at the END
-    of each brief entry — so the questions, the whole point of the flow, were
-    exactly what got cut. Observed 2026-09-01: the agent could see that
-    questions had been found, could not read them, and re-called the paid
-    graph eight times trying to get at them.
-
-    So the model receives a deliberately small summary that fits, with a
-    pointer to the recorded stage for everything else. Nothing is lost: the UI
-    and WebMCP read the full artifact.
+    See run_sections: the agent reads what it decides it needs. A projection
+    that pre-selects fields hides whatever the chooser did not think of, which
+    is the opposite of useful when the agent is the one doing the judging.
     """
-    topics = []
-    for entry in result.get("brief", []):
-        metrics = entry.get("metrics", {})
-        plan = entry.get("content_plan", [])
-        topics.append({
-            "topic": entry.get("topic"),
-            "search_volume": metrics.get("search_volume"),
-            "difficulty": metrics.get("difficulty"),
-            "cpc": metrics.get("cpc"),
-            "ai_questions_found": metrics.get("ai_questions_found"),
+    run_id = rec.active_run_id() or ""
+    manifest = write_full_result(run_id, "geo_demand", result)
+    topics = [
+        {
+            "topic": e.get("topic"),
+            "search_volume": (e.get("metrics") or {}).get("search_volume"),
+            "ai_questions_found": (e.get("metrics") or {}).get("ai_questions_found"),
             "cited_authority_range": [
-                metrics.get("weakest_cited_authority"),
-                metrics.get("strongest_cited_authority"),
+                (e.get("metrics") or {}).get("weakest_cited_authority"),
+                (e.get("metrics") or {}).get("strongest_cited_authority"),
             ],
-            "verdict": entry.get("can_you_displace_them"),
-            "niche_sites_already_cited": [
-                f"{d['domain']} ({d['authority_rank']})"
-                for d in entry.get("niche_sites_already_cited", [])[:4]
-            ],
-            "out_answer_these": [
-                d.get("domain") for d in entry.get("currently_cited", [])[:5]
-                if d.get("confidence") != "needs_review"
-            ],
-            # The headings, in full — this is what the user is here for.
-            "write_these_sections": [sec.get("heading") for sec in plan][:8],
-            "sections_total": len(plan),
-        })
-
+            "verdict": e.get("can_you_displace_them"),
+            "sections_to_write": len(e.get("content_plan") or []),
+        }
+        for e in result.get("brief", [])
+    ]
     return {
         "success": result.get("success"),
         "market": result.get("market"),
@@ -490,14 +472,32 @@ def _compact(result: dict) -> dict:
         "not_sent_to_paid_call": result.get("not_sent_to_paid_call"),
         "cost_note": result.get("cost_note"),
         "reading_the_numbers": result.get("reading_the_numbers"),
-        "full_detail": (
-            "This is a summary. The complete brief — every question, the "
-            "answer-first instruction per section, and all cited domains with "
-            "their authority and confidence — is recorded as the `ai_citability` "
-            "stage of this run. Do NOT call this tool again to get it; read the "
-            "stage, or tell the user it is in the Run view."
+        "full_result": manifest,
+        "how_to_read": (
+            "The complete brief is saved. Read any part with "
+            "read_run_section(name='geo_demand', section='brief') — that is "
+            "where the questions and the answer-first instructions are — "
+            "paging with page= when `more` is true. Do not re-run the graph to "
+            "see it; it costs money and the data is already here."
         ),
     }
+
+
+def _previous_result() -> dict | None:
+    """The GEO brief already recorded on this run, if any."""
+    from .. import runs as runs_store
+
+    run_id = rec.active_run_id()
+    if not run_id:
+        return None
+    run = runs_store.get_run(run_id)
+    for stage in (run or {}).get("stages", []):
+        if stage.get("id") == "ai_citability":
+            artifact = stage.get("artifact") or {}
+            inner = artifact.get("artifact") if isinstance(artifact.get("artifact"), dict) else artifact
+            if inner.get("brief"):
+                return inner
+    return None
 
 
 def run_geo_demand(
@@ -539,7 +539,7 @@ def run_geo_demand(
                        "brief instead of paying for it twice",
             )
             return {
-                **_compact(previous),
+                **_handoff(previous),
                 "reused": True,
                 "note": (
                     "These topics were already measured in this run, so the "
@@ -714,4 +714,4 @@ def run_geo_demand(
     # Full artifact to the stage (UI + WebMCP read this), summary to the model.
     rec.record_deliverable("ai_citability", "GEO demand brief", result)
     rec.log_activity("step", detail="graph complete")
-    return _compact(result)
+    return _handoff(result)

@@ -61,6 +61,7 @@ from .tools.cluster_ops import (
 )
 from .tools.strategy_pipeline import run_keyword_strategy
 from .tools.geo_demand import run_geo_demand
+from .tools.run_sections import read_run_section
 from .tools.dataforseo import ai_mentions_domain
 from .market import confirm_market, catalog as market_catalog
 
@@ -206,6 +207,35 @@ Before making decisions, consult memory to understand past context. Use learning
 
 
 TOOL_DEFINITIONS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "read_run_section",
+            "description": (
+                "Read any part of a graph's FULL result. run_keyword_strategy and "
+                "run_geo_demand save everything they produce and return a manifest "
+                "listing the sections and their sizes; this reads whichever you "
+                "need, in pages. Use it instead of re-running a graph — the data is "
+                "already here and re-running costs money. Call with no section to "
+                "list what exists."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Artifact name from the manifest: 'keyword_strategy' or 'geo_demand'.",
+                    },
+                    "section": {
+                        "type": "string",
+                        "description": "Top-level section, e.g. 'brief', 'ranked', 'pillars', 'discarded'. Omit to list sections.",
+                    },
+                    "page": {"type": "integer", "description": "1-based page; `more` says if another follows."},
+                },
+                "required": ["name"],
+            },
+        },
+    },
     {
         "type": "function",
         "function": {
@@ -1224,6 +1254,7 @@ TOOL_DEFINITIONS = [
 
 # Map tool names to actual callables
 TOOL_CALLABLES = {
+    "read_run_section": read_run_section,
     "ai_citation_check": ai_mentions_domain,
     "run_geo_demand": run_geo_demand,
     "confirm_market": confirm_market,
@@ -1362,6 +1393,7 @@ INTENT_KEYWORDS = {
 # run_keyword_strategy out, so the enforced graph was unreachable and the
 # agent improvised with plan_calendar instead.
 CORE_TOOLS = [
+    "read_run_section",
     "confirm_market", "list_markets",
     "run_keyword_strategy", "run_geo_demand",
     "ai_citability_brief",

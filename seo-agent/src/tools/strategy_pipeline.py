@@ -13,6 +13,7 @@ import time
 
 from .. import market as market_mod
 from .. import pipeline_recorder as rec
+from .run_sections import write_full_result
 from .ai_citability import ai_citability_brief
 from .cluster_keywords import cluster_keywords
 from .extract_seeds import extract_seeds
@@ -90,47 +91,41 @@ def _cluster_with_retry(
     )
 
 
-def _compact_result(result: dict) -> dict:
-    """What the MODEL receives. The full detail is already on the stages.
+def _handoff(result: dict) -> dict:
+    """Persist the full result, hand back a manifest plus the headline numbers.
 
-    Tool results are truncated to 4,000 characters before the model sees them,
-    and this return runs to ~17,600 — with `discarded` (11,700 of it, full
-    cluster entries and per-keyword stats) sitting BEFORE `pillars`. So the
-    pillars, which are the actual deliverable, were the part that got cut, and
-    the agent then made repeated list_clusters_all calls trying to see the
-    result of the graph it had just run.
+    NOT a summary. An earlier version picked "the important fields", which put
+    one person's guess about what matters between the agent and its own work,
+    and then told it not to ask for more — so anything dropped was simply gone
+    at the step where judgement matters most.
 
-    This is a deterministic projection, not a summary: fields are selected, not
-    rewritten, so nothing can be invented here. Everything omitted is readable
-    from the run's stages (and via WebMCP).
+    Instead the complete result goes to disk and the agent is told what exists
+    and how to read it. It decides what it needs; long sections come back in
+    pages rather than truncated.
     """
-    discarded = result.get("discarded") or []
+    run_id = rec.active_run_id() or ""
+    manifest = write_full_result(run_id, "keyword_strategy", result)
     return {
+        # Numbers small enough to carry inline, so the common case needs no
+        # follow-up read.
         "success": result.get("success"),
         "market": result.get("market"),
         "keyword_count": result.get("keyword_count"),
         "cluster_count": result.get("cluster_count"),
         "steps": result.get("steps"),
         "validation_verdict": result.get("validation_verdict"),
-        "validation_issues": (result.get("validation_issues") or [])[:4],
         "validation_warning": result.get("validation_warning"),
         "relevance_gate_ran": result.get("relevance_gate_ran"),
         "selection_warning": result.get("selection_warning"),
         "selected_clusters": result.get("selected_clusters"),
-        "head_terms": result.get("head_terms"),
-        # names + reasons only; the full entries stay on the clusters stage
-        "discarded": [
-            {
-                "cluster_name": d.get("cluster_name") or d.get("name"),
-                "reason": str(d.get("reason") or d.get("discard_reason") or "")[:160],
-            }
-            for d in discarded
-        ][:10],
-        "pillars": result.get("pillars"),
-        "full_detail": (
-            "Cluster members, per-keyword stats and the AI-citability brief are "
-            "recorded as stages of this run — read them there or tell the user "
-            "they are in the Report view. Do NOT re-run the graph to see them."
+        # Everything else, addressable.
+        "full_result": manifest,
+        "how_to_read": (
+            "The complete result is saved. Read any part with "
+            "read_run_section(name='keyword_strategy', section='<section>'), "
+            "paging with page= when `more` is true. Sections and their sizes "
+            "are listed in full_result.sections — read what you actually need "
+            "rather than assuming what is there."
         ),
     }
 
@@ -381,7 +376,7 @@ def run_keyword_strategy(
     steps.append("pillars")
 
     rec.log_activity("step", detail="graph complete")
-    return _compact_result({
+    return _handoff({
         "success": True,
         "market": rec.market_label(location_code, language_code),
         "keyword_count": len(keywords),
