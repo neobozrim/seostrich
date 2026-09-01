@@ -84,6 +84,26 @@ chk("paging reconstructs the section EXACTLY", rebuilt == original,
     f"{len(rebuilt)} vs {len(original)}")
 chk("no question was lost", rebuilt.count("q5-39 what do AI engines answer here") == 1)
 
+print("3b. the manifest points at the sections a report actually needs")
+m = stage_manifest(RID)
+chk("hint tells the agent where to start", "usually_wanted" in m["hint"], m["hint"][:60])
+chk("pages are as large as the cap allows", PAGE >= 3500, str(PAGE))
+
+runs_store.save_run("test-wanted", {"id": "test-wanted", "project": "t", "title": "t",
+    "status": "done", "stages": [
+        {"id": "clusters", "label": "Clusters", "status": "done",
+         "artifact": {"clusters": [1], "discarded": [2], "count": 3, "selected": True}},
+        {"id": "pillars", "label": "Pillars", "status": "done",
+         "artifact": {"pillars": [1], "skipped": []}},
+    ]})
+wm = stage_manifest("test-wanted")
+by = {x["stage"]: x for x in wm["stages"]}
+chk("clusters flags clusters + discarded",
+    by["clusters"].get("usually_wanted") == ["clusters", "discarded"],
+    str(by["clusters"].get("usually_wanted")))
+chk("pillars flags pillars", by["pillars"].get("usually_wanted") == ["pillars"])
+chk("noise is not flagged", "count" not in (by["clusters"].get("usually_wanted") or []))
+
 print("4. mistakes are answerable, not dead ends")
 with rec.use_run(RID):
     bad = read_run_section("ai_citability", "nope")

@@ -16,9 +16,20 @@ from typing import Any
 from .. import pipeline_recorder as rec
 from .. import runs as runs_store
 
-# Comfortably under the 4,000-char tool-result cap, leaving room for the
-# wrapper fields.
-PAGE = 3000
+# As large as the 4,000-char tool-result cap allows once the wrapper fields are
+# accounted for. It was 3,000, which made a 12,000-char section four round trips:
+# one live run spent 22 reads across 8 rounds, and each round is an LLM call.
+PAGE = 3600
+
+# Sections a reporting question usually needs. The manifest flags these so the
+# agent goes straight to them instead of exploring — guidance, not concealment;
+# everything remains readable either way.
+LIKELY_WANTED = {
+    "clusters": ["clusters", "discarded"],
+    "pillars": ["pillars"],
+    "ai_citability": ["brief"],
+    "keywords": ["keywords"],
+}
 
 
 def stage_manifest(run_id: str = "") -> dict:
@@ -31,14 +42,27 @@ def stage_manifest(run_id: str = "") -> dict:
     for stage in run.get("stages", []):
         artifact = stage.get("artifact") or {}
         text = json.dumps(artifact, ensure_ascii=False, default=str)
-        stages.append({
+        sections = sorted(artifact) if isinstance(artifact, dict) else []
+        wanted = [s for s in LIKELY_WANTED.get(stage.get("id"), []) if s in sections]
+        entry = {
             "stage": stage.get("id"),
             "label": stage.get("label"),
             "chars": len(text),
             "pages": max(1, (len(text) + PAGE - 1) // PAGE),
-            "sections": sorted(artifact) if isinstance(artifact, dict) else [],
-        })
-    return {"run_id": rid, "stages": stages}
+            "sections": sections,
+        }
+        if wanted:
+            entry["usually_wanted"] = wanted
+        stages.append(entry)
+    return {
+        "run_id": rid,
+        "stages": stages,
+        "hint": (
+            "Read with read_run_section(stage=..., section=...). Sections marked "
+            "usually_wanted answer most reporting questions; read those first "
+            "rather than paging everything."
+        ),
+    }
 
 
 def read_run_section(
