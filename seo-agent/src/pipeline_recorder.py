@@ -278,6 +278,13 @@ def _apply_selection(run: dict, result: dict) -> None:
     for d in selection.get("discarded", []) or []:
         if isinstance(d, dict) and d.get("cluster_name"):
             discard_reasons[str(d["cluster_name"]).lower()] = str(d.get("reason", ""))[:300]
+    # Selected clusters carry a reason too: "why this pillar" is at least as
+    # useful to the reader as "why not that one", and without it the selected
+    # side was the only part of the decision with no explanation attached.
+    select_reasons = {}
+    for entry in selection.get("selected_reasons", []) or []:
+        if isinstance(entry, dict) and entry.get("cluster_name"):
+            select_reasons[str(entry["cluster_name"]).lower()] = str(entry.get("reason", ""))[:300]
     stage = _upsert_stage(run, "clusters")
     clusters = stage["artifact"].get("clusters", [])
     if not clusters or not selected_names:
@@ -287,7 +294,11 @@ def _apply_selection(run: dict, result: dict) -> None:
         name = str(c.get("name", "")).lower()
         head = str(c.get("head_term", "")).lower()
         if name in selected_names or head in selected_names:
-            keep.append(c)
+            entry = dict(c)
+            entry["selection_reason"] = select_reasons.get(
+                name, select_reasons.get(head, "")
+            )
+            keep.append(entry)
         else:
             entry = dict(c)
             entry["discard_reason"] = discard_reasons.get(name, discard_reasons.get(head, "not selected"))

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from .. import llm
+from ..config import settings
 
-# Budget sized to what this node emits (~12 seeds plus a one-line note); the deadline in
-# llm.timeout_for() is derived from it, so an unbounded budget means an
-# unmeetable deadline.
+# max_tokens here is a sanity cap, not a latency control: reasoning tokens are
+# not bounded by it (measured 2026-09-01 — a 2500-token cap did not stop a
+# 10,358-token completion). Latency is governed by model choice.
 
 
 SYSTEM_PROMPT = """You are an SEO strategist. Analyze the business description and extract keyword seeds for content research.
@@ -54,5 +55,13 @@ Competitor URLs:
 
 Extract keyword seeds for SEO research."""
 
-    resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3, max_tokens=800)
+    # Fast model: this node is extraction, and it kept the brief's own phrasing
+    # verbatim ("agentic commerce building blocks", "hands-on AI building")
+    # where the reasoning model generalised it away — 28s vs 44s, and better
+    # seeds, measured 2026-09-01. The seeds decide what the whole strategy is
+    # about, so preserving the user's own words matters more here than depth.
+    resp = llm.chat(
+        user_msg, system=SYSTEM_PROMPT, temperature=0.3,
+        max_tokens=800, model=settings.qwen_model_fast,
+    )
     return llm.parse_json_response(resp)

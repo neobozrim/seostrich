@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from .. import llm
 
-# Budget sized to what this node emits (selected names plus a reason per discard); the deadline in
-# llm.timeout_for() is derived from it, so an unbounded budget means an
-# unmeetable deadline.
+# max_tokens here is a sanity cap, not a latency control: reasoning tokens are
+# not bounded by it (measured 2026-09-01 — a 2500-token cap did not stop a
+# 10,358-token completion). Latency is governed by model choice.
 
 
 SYSTEM_PROMPT = """You are a head of SEO deciding which keyword clusters a lean team should actually pursue.
@@ -26,9 +26,17 @@ Selection criteria, in strict priority order:
 
 Every discarded cluster MUST get a concrete reason. For off-topic clusters the reason must say they are not relevant to THIS business (e.g. "off-topic: e-book platform, not poetry performance"). Other valid reasons: overlap with a selected cluster, weak intent, too broad/narrow. Never just "not selected", and never discard a tightly relevant cluster purely because another cluster has more volume.
 
+EVERY cluster, selected or discarded, must carry a one-sentence reason. A user
+reading this later needs to know why each pillar was chosen, not only why the
+others were dropped. For selected clusters say what it wins for THIS business
+(the audience it serves, the intent it captures, the angle it owns) — not just
+"high score".
+
 Output JSON format:
 {
-  "selected": ["cluster name", ...],
+  "selected": [
+    {"cluster_name": "...", "reason": "why this one earns a pillar, one sentence"}
+  ],
   "discarded": [
     {"cluster_name": "...", "reason": "specific, one sentence"}
   ]
@@ -51,7 +59,7 @@ def select_clusters(scored_clusters: dict, max_select: int = 4, business_descrip
     user_msg = f"""{biz_block}Scored clusters to select from:
 {llm.format_json(scored_clusters)}
 
-Select at most {max_select} clusters to pursue as pillars. Relevance to the business is the hard gate. Discard the rest with reasons."""
+Select at most {max_select} clusters to pursue as pillars. Relevance to the business is the hard gate. Discard the rest with reasons. Give a reason for the selected ones too."""
 
     try:
         resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.2, max_tokens=1500)
@@ -61,10 +69,30 @@ Select at most {max_select} clusters to pursue as pillars. Relevance to the busi
         selected = result.get("selected", [])
         if not isinstance(selected, list) or not selected:
             return {"success": False, "error": "selection list is empty", "selection": None}
+
+        # Accept either [{cluster_name, reason}] or the older bare ["name"]
+        # form, so a model that ignores the schema still yields a selection.
+        names: list[str] = []
+        reasons: list[dict] = []
+        for entry in selected:
+            if isinstance(entry, str) and entry.strip():
+                names.append(entry.strip())
+                reasons.append({"cluster_name": entry.strip(), "reason": ""})
+            elif isinstance(entry, dict):
+                name = entry.get("cluster_name") or entry.get("name")
+                if isinstance(name, str) and name.strip():
+                    names.append(name.strip())
+                    reasons.append({
+                        "cluster_name": name.strip(),
+                        "reason": str(entry.get("reason", ""))[:300],
+                    })
+        if not names:
+            return {"success": False, "error": "selection list is empty", "selection": None}
         return {
             "success": True,
             "selection": {
-                "selected": [s for s in selected if isinstance(s, str)],
+                "selected": names,
+                "selected_reasons": reasons,
                 "discarded": result.get("discarded", []),
             },
         }

@@ -38,8 +38,58 @@ def _match(entry: dict, name: str) -> bool:
     return False
 
 
+def _reasoning(entry: dict, decision: str) -> dict:
+    """Gather every piece of reasoning attached to a cluster, under stable keys.
+
+    The reasons were there but scattered across five differently-named fields
+    among ~19 keys (discard_reason, selection_reason, rationale, seo_rationale,
+    geo_rationale), so a caller had to know the schema to find them. An
+    external agent should be able to read WHY a cluster was chosen or dropped
+    without guessing.
+    """
+    return {
+        "decision": decision,
+        "decision_reason": (
+            entry.get("selection_reason") if decision == "selected"
+            else entry.get("discard_reason")
+        ) or "",
+        "why_these_keywords_group": entry.get("rationale") or "",
+        "seo_rationale": entry.get("seo_rationale") or "",
+        "geo_rationale": entry.get("geo_rationale") or "",
+        "scores": {
+            "seo": entry.get("seo_score"),
+            "geo": entry.get("geo_score"),
+            "combined": entry.get("combined_score"),
+            "opportunity": entry.get("opportunity"),
+        },
+    }
+
+
+def _public_cluster(entry: dict, decision: str) -> dict:
+    """One cluster in a shape a calling agent can rely on."""
+    keywords = []
+    for kw in entry.get("keywords") or []:
+        if isinstance(kw, dict):
+            keywords.append(kw)
+        elif kw:
+            keywords.append({"keyword": kw})
+    return {
+        "cluster_name": entry.get("cluster_name") or entry.get("name") or "",
+        "head_term": entry.get("head_term") or "",
+        "intent": entry.get("intent") or "",
+        "keyword_count": len(keywords),
+        "avg_volume": entry.get("avg_volume"),
+        "avg_difficulty": entry.get("avg_difficulty"),
+        "keywords": keywords,
+        "reasoning": _reasoning(entry, decision),
+        "proposed": bool(entry.get("proposed")),
+        "promoted": bool(entry.get("promoted")),
+        "refreshed": bool(entry.get("refreshed")),
+    }
+
+
 def list_clusters_all(run_id: str) -> dict | None:
-    """Selected + discarded clusters for a run (None if the run is missing)."""
+    """Selected + discarded clusters for a run, each with its full reasoning."""
     run = runs.get_run(run_id)
     if run is None:
         return None
@@ -48,8 +98,15 @@ def list_clusters_all(run_id: str) -> dict | None:
     return {
         "run_id": run_id,
         "selection_made": bool(artifact.get("selected")),
-        "selected": artifact.get("clusters", []),
-        "discarded": artifact.get("discarded", []),
+        "note": (
+            "Every cluster carries a `reasoning` block: decision_reason says why "
+            "it was kept or dropped, why_these_keywords_group says why the "
+            "keywords belong together, and seo/geo rationales explain the scores. "
+            "Discarded clusters are parked, not deleted — promote them back with "
+            "seo_promote_cluster."
+        ),
+        "selected": [_public_cluster(c, "selected") for c in artifact.get("clusters", [])],
+        "discarded": [_public_cluster(c, "discarded") for c in artifact.get("discarded", [])],
     }
 
 
@@ -69,6 +126,7 @@ def promote_cluster(run_id: str, cluster_name: str) -> dict:
     discarded.remove(hit)
     entry = dict(hit)
     entry.pop("discard_reason", None)
+    entry["selection_reason"] = "Promoted back into the selection by the user."
     entry["promoted"] = True
     artifact.setdefault("clusters", []).append(entry)
     artifact["count"] = len(artifact["clusters"])

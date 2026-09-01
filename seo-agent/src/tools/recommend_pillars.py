@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from .. import llm
 
-# Budget sized to what this node emits (a handful of pillars with rationales); the deadline in
-# llm.timeout_for() is derived from it, so an unbounded budget means an
-# unmeetable deadline.
+# max_tokens here is a sanity cap, not a latency control: reasoning tokens are
+# not bounded by it (measured 2026-09-01 — a 2500-token cap did not stop a
+# 10,358-token completion). Latency is governed by model choice.
 
 
 SYSTEM_PROMPT = """You are an SEO strategist. Select the best clusters to become content pillars based on opportunity scores and strategic fit.

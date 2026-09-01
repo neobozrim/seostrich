@@ -92,9 +92,9 @@ function buildTools() {
     },
     {
       name: 'seo_get_keyword_clusters',
-      title: 'SEO keyword clusters',
+      title: 'SEO keyword clusters (selected)',
       description:
-        'List the keyword clusters for the current run with their SEO/GEO/combined scores and member keywords.',
+        'List the SELECTED keyword clusters for the current run with their SEO/GEO/combined scores and member keywords. For the discarded ones and the reasoning behind every decision, use seo_list_clusters_all instead.',
       inputSchema: { type: 'object', properties: {} },
       annotations: READ_ONLY,
       execute: async () => {
@@ -193,9 +193,9 @@ function buildTools() {
     },
     {
       name: 'seo_list_clusters_all',
-      title: 'SEO clusters (selected + discarded)',
+      title: 'SEO clusters with the reasoning behind each decision',
       description:
-        'List BOTH the selected keyword clusters and the discarded ones (with discard reasons and full stats) for a run. Use this to see what was dropped before promoting or proposing.',
+        'List BOTH the selected keyword clusters and the discarded ones. Every cluster carries a `reasoning` block: decision_reason (why this cluster was kept, or why it was dropped), why_these_keywords_group, and the SEO/GEO score rationales. Use this to audit the strategy: check whether a discard reason actually holds, whether a selected cluster earns its place, and what was traded away. Discarded clusters are parked, not deleted — promote any back with seo_promote_cluster.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
       execute: async (input: { run_id?: string }, options?: any) => {
@@ -208,7 +208,7 @@ function buildTools() {
       name: 'seo_promote_cluster',
       title: 'Promote discarded cluster',
       description:
-        'Promote a previously discarded keyword cluster back into the active selection (reversible governance op).',
+        'Promote a previously discarded keyword cluster back into the active selection. Read its reasoning.decision_reason first (via seo_list_clusters_all) to see why it was dropped. Reversible.',
       inputSchema: {
         type: 'object',
         properties: {

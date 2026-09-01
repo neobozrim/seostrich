@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from .. import llm
+from ..config import settings
 
-# Budget sized to what this node emits (a score row per cluster); the deadline in
-# llm.timeout_for() is derived from it, so an unbounded budget means an
-# unmeetable deadline.
+# max_tokens here is a sanity cap, not a latency control: reasoning tokens are
+# not bounded by it (measured 2026-09-01 — a 2500-token cap did not stop a
+# 10,358-token completion). Latency is governed by model choice.
 
 
 SYSTEM_PROMPT = """You are an SEO analyst. Score each keyword cluster on SEO opportunity and GEO (AI citation) opportunity.
@@ -47,5 +48,6 @@ def score_clusters(clusters: dict) -> dict:
 
 Provide SEO, GEO, and combined scores."""
 
-    resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3, max_tokens=2000)
+    # Fast model: this node is arithmetic over cluster stats, no judgment.
+    resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.3, max_tokens=2000, model=settings.qwen_model_fast)
     return llm.parse_json_response(resp)
