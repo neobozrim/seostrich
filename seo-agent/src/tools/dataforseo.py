@@ -83,6 +83,50 @@ async def _post(endpoint: str, payload: list[dict] | dict) -> dict:
     return data
 
 
+async def _get(endpoint: str) -> dict:
+    """GET for reference endpoints (locations/languages) — free, not budgeted."""
+    url = f"{settings.dataforseo_base_url}{endpoint}"
+    async with httpx.AsyncClient(timeout=60) as client:
+        resp = await client.get(url, headers={"Authorization": _auth_header()})
+        resp.raise_for_status()
+        return resp.json()
+
+
+_LOC_LANG_CACHE: dict[int, list[str]] | None = None
+
+
+async def _location_languages() -> dict[int, list[str]]:
+    """location_code -> supported language codes, most keyword coverage first.
+
+    Cached per process; sourced from DFS's own locations_and_languages so we
+    never pay for a call with an unsupported location/language pair.
+    """
+    global _LOC_LANG_CACHE
+    if _LOC_LANG_CACHE is not None:
+        return _LOC_LANG_CACHE
+    try:
+        data = await _get("/v3/dataforseo_labs/locations_and_languages")
+    except Exception as exc:
+        print(f"  [dfs] locations_and_languages unavailable: {exc}")
+        return {}
+    tasks = data.get("tasks") or []
+    result = (tasks[0] or {}).get("result") if tasks else None
+    items = result if isinstance(result, list) else []
+    cache: dict[int, list[str]] = {}
+    for item in items:
+        langs = sorted(
+            item.get("available_languages") or [],
+            key=lambda l: l.get("keywords", 0),
+            reverse=True,
+        )
+        codes = [l.get("language_code") for l in langs if l.get("language_code")]
+        if codes:
+            cache[item.get("location_code")] = codes
+    if cache:
+        _LOC_LANG_CACHE = cache
+    return cache
+
+
 def _run(coro):
     try:
         loop = asyncio.get_running_loop()
@@ -192,11 +236,18 @@ _LANG_REJECTED: set[tuple[int, str]] = set()
 
 
 async def _labs_keywords(endpoint: str, seed: str, limit: int, location_code: int, language_code: str) -> dict:
-    """Post a labs keyword call; DFS rejects languages unavailable in a location
-    (40501) — retry once with the location's default language and remember."""
-    lang = language_code
-    if (location_code, language_code) in _LANG_REJECTED:
+    """Post a labs keyword call with a DFS-supported language for the location.
+
+    The language is resolved up front from locations_and_languages (cached),
+    so unsupported pairs never burn a paid call; the 40501 retry is a last resort.
+    """
+    supported = (await _location_languages()).get(location_code)
+    if supported:
+        lang = language_code if language_code in supported else supported[0]
+    elif (location_code, language_code) in _LANG_REJECTED:
         lang = _default_lang(location_code)
+    else:
+        lang = language_code
     payload = {
         "keyword": seed,
         "location_code": location_code,
