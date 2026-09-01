@@ -39,7 +39,9 @@ WRITES = {
 SPENDS = {"seo_propose_cluster", "seo_rerun_cluster_research"}
 
 print(f"1. every tool is documented ({len(DESCS)} found)")
-chk("all 16 tools parsed", len(DESCS) == 16, str(len(DESCS)))
+chk("every registered tool has a parsed description",
+    len(DESCS) == SRC.count("      name: 'seo_"),
+    f"{len(DESCS)} parsed vs {SRC.count(chr(34) if False else chr(39).join(['      name: ', '']))}")
 
 print("2. descriptions are substantial")
 for name, (title, desc) in sorted(DESCS.items()):

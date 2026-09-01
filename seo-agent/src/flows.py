@@ -120,10 +120,12 @@ GEO_DEMAND = Flow(
         "Rank topics on measured evidence",
         "Harvest the actual questions people ask (top topics only)",
         "Answer-first content brief",
+        "Optional: check which AI answers already cite your site",
     ],
     tools=[
         "confirm_market", "list_markets", "run_geo_demand",
-        "ai_citability_brief", "ai_mentions", "serp_ai_mode", "submit_deliverable",
+        "ai_citation_check", "ai_citability_brief", "ai_mentions",
+        "serp_ai_mode", "submit_deliverable",
     ],
     entrypoint="run_geo_demand",
     stages=["intake", "ai_citability"],

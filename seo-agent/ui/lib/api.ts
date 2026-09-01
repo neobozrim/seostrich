@@ -165,7 +165,7 @@ export async function getSessions(): Promise<any[]> {
 
 // Must match API_VERSION in api/main.py. A mismatch means the UI is talking
 // to a backend that predates the endpoints it depends on.
-export const EXPECTED_API_VERSION = '2026-09-01.webmcp';
+export const EXPECTED_API_VERSION = '2026-09-01.citations';
 
 export async function getApiHealth(): Promise<{
   status: string;
@@ -240,6 +240,20 @@ export async function rerunClusterResearch(
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify({ cluster_name: clusterName }),
+    signal,
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function checkAiCitations(
+  domain: string,
+  signal?: AbortSignal
+): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/ai-citations`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ domain }),
     signal,
   });
   await ensureOk(response);

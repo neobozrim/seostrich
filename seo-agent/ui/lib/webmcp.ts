@@ -28,6 +28,7 @@ import {
   getRunKeywords,
   rerunClusterResearch,
   getFlows,
+  checkAiCitations,
 } from './api';
 
 interface ModelContextLike {
@@ -351,6 +352,27 @@ function buildTools() {
         const run = await resolveRun(input?.run_id);
         if (!run) return 'No pipeline run found.';
         return rerunClusterResearch(run.id, input.cluster_name, options?.signal);
+      },
+    },
+    {
+      name: 'seo_check_ai_citations',
+      title: 'Is this site cited by AI answers?',
+      description:
+        'Ask which AI answers already cite a given DOMAIN, how many, what they were cited for, and which sites are quoted alongside them. Use it two ways: on your own site to see whether content has started getting cited at all (a new site returns 0, which is the honest baseline, not an error), or on a competitor to see what a comparable site actually gets quoted for — far more concrete than a keyword list. Read-only: it costs one DataForSEO call but changes nothing.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          domain: {
+            type: 'string',
+            description: "Domain to check, e.g. 'example.com'.",
+          },
+        },
+        required: ['domain'],
+      },
+      annotations: READ_ONLY,
+      execute: async (input: { domain: string }, options?: any) => {
+        if (!input?.domain) return 'A domain is required.';
+        return checkAiCitations(input.domain, options?.signal);
       },
     },
     {

@@ -61,6 +61,7 @@ from .tools.cluster_ops import (
 )
 from .tools.strategy_pipeline import run_keyword_strategy
 from .tools.geo_demand import run_geo_demand
+from .tools.dataforseo import ai_mentions_domain
 from .market import confirm_market, catalog as market_catalog
 
 # --- Exposed DataForSEO functions (previously internal only) ---
@@ -169,6 +170,28 @@ Before making decisions, consult memory to understand past context. Use learning
 
 
 TOOL_DEFINITIONS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "ai_citation_check",
+            "description": (
+                "Which AI answers already cite a DOMAIN, and which sites are quoted "
+                "alongside it. Two uses: check whether the user's own site is cited yet "
+                "(the tracking loop — a new site returns 0, which is the honest "
+                "baseline), or study a competitor to see what a comparable site actually "
+                "gets quoted for. One DataForSEO call. Deterministic, no LLM."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "domain": {"type": "string", "description": "Domain to check, e.g. 'example.com'."},
+                    "location_code": {"type": "integer"},
+                    "language_code": {"type": "string"},
+                },
+                "required": ["domain"],
+            },
+        },
+    },
     {
         "type": "function",
         "function": {
@@ -1165,6 +1188,7 @@ TOOL_DEFINITIONS = [
 
 # Map tool names to actual callables
 TOOL_CALLABLES = {
+    "ai_citation_check": ai_mentions_domain,
     "run_geo_demand": run_geo_demand,
     "confirm_market": confirm_market,
     "list_markets": lambda: {"markets": market_catalog()},
@@ -1253,7 +1277,8 @@ TOOL_CATEGORIES = {
         "content_quality_assessment",
     ],
     "research": [
-        "confirm_market", "list_markets", "run_keyword_strategy", "run_geo_demand", "extract_seeds", "pull_universe", "cluster_keywords",
+        "confirm_market", "list_markets", "run_keyword_strategy", "run_geo_demand",
+        "ai_citation_check", "extract_seeds", "pull_universe", "cluster_keywords",
         "validate_clusters", "score_clusters", "select_clusters", "list_clusters_all",
         "promote_cluster", "discard_cluster", "propose_cluster", "ai_citability_brief",
         "recommend_pillars", "serp_organic", "serp_ai_mode",

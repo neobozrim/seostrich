@@ -510,6 +510,7 @@ def ai_mentions_keywords(
     location_code: int = 2840,
     language_code: str = "en",
     limit: int = 100,
+    scope: str = "question",
 ) -> list[dict]:
     """AI-engine answers about the given KEYWORDS.
 
@@ -524,7 +525,18 @@ def ai_mentions_keywords(
     "save calls" therefore returned an empty AI-citability stage that looked
     like the topics simply had no AI presence.
 
-    search_scope is ["question"], not ["any"]. With "any" the same topic
+    ``scope`` selects WHERE the keyword must appear (the API validates this per
+    target type — for keywords it allows any|question|answer, and rejects
+    `sources`, which is a domain-target scope):
+      question — the user's question contains the term. Tight and on-topic;
+                 the right source for "what are people actually asking".
+      answer   — the AI's answer text contains the term. Far broader: on a
+                 measured topic, 3,504 matches vs 29, and 88 distinct cited
+                 domains vs 48, because it catches adjacent questions that
+                 never name the term. Use it for the competitive picture.
+      any      — either.
+
+    The default is "question", not "any". With "any" the same topic
     returned 2,227 loosely-matched rows ("ecommerce", "aviation in ww1" for
     "forward deployed engineer"); scoped to questions it returns 42 that are
     actually about the topic. match_type only accepts word_match.
@@ -543,7 +555,7 @@ def ai_mentions_keywords(
                     {
                         "keyword": keyword,
                         "search_filter": "include",
-                        "search_scope": ["question"],
+                        "search_scope": [scope if scope in _KEYWORD_SCOPES else "question"],
                         "match_type": "word_match",
                     }
                 ],
@@ -623,6 +635,99 @@ def bulk_domain_ranks(domains: list[str]) -> dict[str, int]:
     except Exception as exc:
         print(f"  [dfs] bulk_ranks failed: {exc}")
         return {}
+
+
+_KEYWORD_SCOPES = {"any", "question", "answer"}
+_DOMAIN_SCOPES = {"any", "sources"}
+
+
+def ai_mentions_domain(
+    domain: str,
+    location_code: int = 2840,
+    language_code: str = "en",
+    limit: int = 50,
+    scope: str = "sources",
+) -> dict:
+    """Which AI answers cite this DOMAIN, and who is cited alongside it.
+
+    The other direction from ai_mentions_keywords: instead of "what do AI
+    engines say about this topic", this asks "where does this site already get
+    quoted". Two uses:
+
+      - your own domain: the tracking loop. Did the content start getting
+        cited? Measured baseline for productpirates.club is 0 answers.
+      - a competitor's domain: what a comparable site gets cited for, which is
+        a far more concrete target than a keyword list. evidentlyai.com appears
+        in 692 answers; stripe.com in 51,782.
+
+    Domain targets take `domain` (not `keyword`), reject `match_type`, and
+    allow search_scope any|sources — the API validates all three.
+    """
+    target = _normalize(domain)
+    if not target:
+        return {"domain": "", "answers_citing": 0, "items": [], "cited_alongside": []}
+
+    async def _inner():
+        data = await _post("/v3/ai_optimization/llm_mentions/search_mentions/live", [
+            {
+                "target": [{
+                    "domain": target,
+                    "search_filter": "include",
+                    "search_scope": [scope if scope in _DOMAIN_SCOPES else "sources"],
+                }],
+                "location_code": location_code,
+                "language_code": language_code,
+                "limit": limit,
+            }
+        ])
+        tasks = data.get("tasks") or []
+        if not tasks or not tasks[0].get("result"):
+            return {"domain": target, "answers_citing": 0, "items": [], "cited_alongside": []}
+        result = tasks[0]["result"][0] or {}
+        items = result.get("items") or []
+
+        # _normalize strips "www.", the sources do not, so compare bare hosts —
+        # otherwise the target shows up in its own "cited alongside" list.
+        def _bare(host: str) -> str:
+            host = (host or "").lower().strip()
+            return host[4:] if host.startswith("www.") else host
+
+        self_host = _bare(target)
+        neighbours: dict[str, int] = {}
+        rows = []
+        for item in items:
+            others = []
+            for src in item.get("sources") or []:
+                dom = (src.get("domain") or "").lower()
+                if dom and _bare(dom) != self_host:
+                    neighbours[dom] = neighbours.get(dom, 0) + 1
+                    others.append(dom)
+            rows.append({
+                "question": item.get("question", ""),
+                "platform": item.get("platform", ""),
+                "ai_search_volume": item.get("ai_search_volume") or 0,
+                "cited_alongside": others[:5],
+            })
+
+        return {
+            "domain": target,
+            # total_count is the real figure; items are one capped page of it.
+            "answers_citing": result.get("total_count") or 0,
+            "sampled": len(rows),
+            "ai_search_volume_sum": sum(r["ai_search_volume"] for r in rows),
+            "items": rows,
+            "cited_alongside": [
+                {"domain": d, "times": n}
+                for d, n in sorted(neighbours.items(), key=lambda kv: kv[1], reverse=True)[:15]
+            ],
+        }
+
+    try:
+        return _run(_inner())
+    except Exception as exc:
+        print(f"  [dfs] ai_mentions_domain failed for {target!r}: {exc}")
+        return {"domain": target, "answers_citing": 0, "items": [], "cited_alongside": [],
+                "error": str(exc)[:200]}
 
 
 def serp_paa(keyword: str, location_code: int = 2840, language_code: str = "en") -> list[dict]:

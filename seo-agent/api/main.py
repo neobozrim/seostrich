@@ -76,7 +76,7 @@ app.add_middleware(
 # disabled, no /api/flows) silently served the UI for a whole session: every
 # browser test validated the wrong process, and the missing endpoints looked
 # like frontend bugs.
-API_VERSION = "2026-09-01.webmcp"
+API_VERSION = "2026-09-01.citations"
 
 
 @app.get("/api/health")
@@ -294,6 +294,27 @@ async def rerun_run_cluster(
     if not result.get("ok") and result.get("error") == "run not found":
         raise HTTPException(status_code=404, detail="Run not found")
     return result
+
+
+class CitationCheckIn(BaseModel):
+    domain: str
+    location_code: int = 2840
+    language_code: str = "en"
+
+
+@app.post("/api/ai-citations")
+async def ai_citation_check(body: CitationCheckIn, _auth: None = Depends(require_auth)):
+    """Which AI answers cite a domain, and who is quoted alongside it.
+
+    Not tied to a run: it answers "is this site cited yet" for any domain, so
+    an external agent can check the user's own site or size up a competitor.
+    """
+    from src.tools.dataforseo import ai_mentions_domain
+
+    return await asyncio.to_thread(
+        ai_mentions_domain, body.domain,
+        location_code=body.location_code, language_code=body.language_code,
+    )
 
 
 @app.get("/api/runs/{run_id}/activity")
