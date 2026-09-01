@@ -1,30 +1,30 @@
-"""GEO demand graph — search demand, then AI citability, then the real questions.
+"""GEO demand graph — narrow cheaply, then pay for the expensive signal.
 
-The node order matters and is enforced in code:
+Node order is enforced in code, and the order is a cost decision:
 
-  1. market gate        — country + language must be user-confirmed
-  2. search demand      — keyword_overview: real volume / difficulty / CPC
-  3. AI citability      — ai_mentions_keywords: what AI engines answer here,
-                          and which domains they cite
-  3b. displaceability   — bulk_domain_ranks: how strong those cited domains
-                          are. This is the signal that decides whether a small
-                          site can win the topic. "Is it answered" is NOT the
-                          signal: Google AI Overview answered 42 of 42
-                          questions on a measured topic, so an
-                          unanswered-share metric is near-always zero. What
-                          matters is whether any NICHE site is already cited
-                          alongside the giants — if agenticcommerce.dev
-                          (authority 259) appears next to Mastercard (660),
-                          the topic is winnable
-  4. pick the winners   — deterministic ranking over the two measurements above
-  5. real questions     — serp_paa, but ONLY on the winners
+  1. market gate      — country + language, user-confirmed
+  2. search demand    — keyword_overview: ONE cheap call covering every
+                        candidate, giving real volume / difficulty / CPC
+  3. shortlist        — keep the candidates with demand, drop the rest
+  4. AI citability    — search_mentions, ONE CALL PER KEYWORD at ~$0.10 each
+                        (DataForSEO's own example shows cost 0.101), so it runs
+                        only on the shortlist. Returns what AI engines answer,
+                        the answer text itself, and which domains it cites.
+  5. displaceability  — bulk_domain_ranks: ONE call grading every cited domain.
+                        This is what decides whether a small site can win the
+                        topic. "Is it answered" is not the signal — Google AI
+                        Overview answered 42 of 42 questions on a measured
+                        topic. Whether a NICHE site is already cited is.
+  6. real questions   — People-also-ask, cheap, on the final few winners.
 
-Step 5 is why the order is enforced. People-also-ask costs one SERP call per
-term, so asking it about everything is how a run burns its budget on topics
-that turned out to have neither search demand nor AI presence. Measuring first
-and harvesting questions only for terms that earned it is the whole point.
+On ai_search_volume, from DataForSEO's own documentation: for Google AI
+Overviews it is DERIVED FROM Google search volume, and a topic's figure is the
+SUM across every matched question. It is therefore a measure of the size of the
+question cluster, NOT a separate AI demand channel, and it must not be compared
+against a single head term's volume. For ChatGPT it is computed differently
+again (from People-also-ask counts), so cross-platform comparison is invalid.
 
-Everything here is measured. No model estimates any number; the ranking rule is
+Everything here is measured. No model estimates any number; the ranking is
 arithmetic and publishes its own inputs so a reader can re-rank differently.
 """
 from __future__ import annotations
@@ -38,8 +38,11 @@ from .dataforseo import (
     keyword_overview, serp_paa,
 )
 
-# One SERP call per term, so the harvest is capped.
+# People-also-ask is cheap but still one SERP call per term.
 MAX_QUESTION_TERMS = 4
+# search_mentions is the expensive call (~$0.10 each, one per keyword), so the
+# shortlist that reaches it is bounded separately and more tightly.
+MAX_MENTION_TERMS = 6
 # Cap on topics per run: search_mentions is one call PER topic (the endpoint
 # intersects batched targets rather than unioning them), so this bounds cost.
 MAX_TERMS = 10
@@ -55,10 +58,17 @@ def _demand_rows(topics: list[str], location_code: int, language_code: str) -> l
     by_kw = {str(r.get("keyword", "")).lower(): r for r in rows if isinstance(r, dict)}
     # Keep every requested topic, even those the API has no data for: a topic
     # with no search volume can still be worth writing if AI engines answer it.
-    return [
-        by_kw.get(t.lower(), {"keyword": t, "volume": 0, "difficulty": 0, "cpc": 0, "intent": ""})
-        for t in topics
-    ]
+    rows_out = []
+    for topic in topics:
+        row = dict(by_kw.get(topic.lower(),
+                             {"volume": 0, "difficulty": 0, "cpc": 0, "intent": ""}))
+        # Always key by the caller's own string. The API echoes its own
+        # normalised form, and every downstream lookup (citability,
+        # displaceability) is keyed by what the caller asked for — a silent
+        # mismatch there zeroes a topic that actually had data.
+        row["keyword"] = topic
+        rows_out.append(row)
+    return rows_out
 
 
 def _citability(topics: list[str], location_code: int, language_code: str) -> dict[str, dict]:
@@ -108,6 +118,10 @@ def _citability(topics: list[str], location_code: int, language_code: str) -> di
         answered = bucket["answered"]
         out[topic] = {
             "ai_questions_found": total,
+            # SUM across matched questions, and for Google AI Overviews it is
+            # derived from Google search volume — so it sizes the question
+            # cluster, and must NOT be compared against a head term's volume.
+            "ai_search_volume_sum": bucket["ai_search_volume"],
             "ai_search_volume": bucket["ai_search_volume"],
             "answered_share": round(answered / total, 2) if total else 0.0,
             # What no engine answers well yet is what you can win.
@@ -244,6 +258,7 @@ def run_geo_demand(
     location_code: int | None = None,
     language_code: str | None = None,
     max_question_terms: int = MAX_QUESTION_TERMS,
+    max_mention_terms: int = MAX_MENTION_TERMS,
 ) -> dict:
     """Run the GEO demand graph inside the active pipeline run."""
     if not rec.active_run_id():
@@ -262,14 +277,42 @@ def run_geo_demand(
 
     steps: list[str] = []
 
-    rec.log_activity("step", detail=f"node: search demand for {len(clean)} topics")
+    rec.log_activity("step", detail=f"node: search demand for {len(clean)} topics (1 call)")
     demand = _demand_rows(clean, loc, lang)
     rec.record_tool("keyword_overview", {"location_code": loc, "language_code": lang},
                     demand, True)
     steps.append("demand")
 
-    rec.log_activity("step", detail="node: AI citability (who answers, who is cited)")
-    citability = _citability(clean, loc, lang)
+    # Shortlist BEFORE the expensive call. search_mentions is ~$0.10 per
+    # keyword, so running it on every candidate pays for topics that the cheap
+    # volume check already showed are dead. Order by measured volume and keep
+    # the top few that have any.
+    with_volume = sorted(
+        (r for r in demand if (r.get("volume") or 0) > 0),
+        key=lambda r: r.get("volume") or 0, reverse=True,
+    )
+    shortlist = [r["keyword"] for r in with_volume[:max_mention_terms]]
+    no_volume = [r["keyword"] for r in demand if (r.get("volume") or 0) <= 0]
+    # Nothing had volume: fall back to the original list rather than give up —
+    # a niche topic can still be worth writing if AI engines answer it.
+    if not shortlist:
+        shortlist = clean[:max_mention_terms]
+        no_volume = []
+    dropped_before_paid_call = [
+        r["keyword"] for r in with_volume[max_mention_terms:]
+    ] + no_volume
+    rec.log_activity(
+        "step",
+        detail=f"node: shortlist {len(shortlist)} of {len(clean)} for the paid "
+               f"AI-citability call (skipping {len(dropped_before_paid_call)})",
+    )
+    steps.append("shortlist")
+
+    rec.log_activity(
+        "step",
+        detail=f"node: AI citability — {len(shortlist)} paid calls (who answers, who is cited)",
+    )
+    citability = _citability(shortlist, loc, lang)
     steps.append("citability")
 
     rec.log_activity("step", detail="node: grade the sites AI engines cite")
@@ -277,18 +320,29 @@ def run_geo_demand(
     steps.append("displaceability")
 
     rec.log_activity("step", detail="node: rank topics on measured demand")
-    ranked = _rank(demand, citability, competition)
+    measured = [r for r in demand if r["keyword"] in set(shortlist)]
+    ranked = _rank(measured, citability, competition)
     steps.append("ranked")
 
     # Harvest questions only where the evidence justifies a SERP call.
-    winners = [r for r in ranked if r["ai_questions_found"] or r["search_volume"]]
-    winners = winners[:max_question_terms] or ranked[:1]
-    skipped = [r["topic"] for r in ranked if r not in winners]
+    with_demand = [r for r in ranked if r["ai_questions_found"] or r["search_volume"]]
+    winners = with_demand[:max_question_terms] or ranked[:1]
+
+    # Two different reasons a topic gets no questions, reported separately.
+    # Collapsing them labelled a topic with 5,400/mo and 42 AI questions as
+    # "no demand" simply because it ranked below the cap.
+    no_demand = [r["topic"] for r in ranked if r not in with_demand]
+    capped = [
+        {"topic": r["topic"], "search_volume": r["search_volume"],
+         "ai_questions_found": r["ai_questions_found"]}
+        for r in with_demand[max_question_terms:]
+    ]
 
     rec.log_activity(
         "step",
         detail=f"node: People-also-ask for the top {len(winners)} "
-               f"(skipping {len(skipped)} with no measured demand)",
+               f"({len(no_demand)} had no demand, {len(capped)} had demand "
+               f"but fell below the cap of {max_question_terms})",
     )
     questions: dict[str, list[dict]] = {}
     for row in winners:
@@ -340,14 +394,36 @@ def run_geo_demand(
         "topics_examined": clean,
         "ranked": ranked,
         "brief": brief,
-        "skipped_no_demand": skipped,
+        "skipped_no_demand": no_demand,
+        "had_demand_but_capped": capped,
+        "not_sent_to_paid_call": dropped_before_paid_call,
+        "cost_note": (
+            f"1 keyword_overview call for all {len(clean)} candidates, "
+            f"{len(shortlist)} search_mentions calls (the expensive one, "
+            f"~$0.10 each) on the shortlist, 1 bulk domain-rank call, and "
+            f"{len(questions)} People-also-ask calls."
+        ),
         "steps": steps,
         "method": (
             "Search volume and AI presence are measured from DataForSEO; the "
             "ranking is arithmetic over those measurements and publishes its "
-            "inputs. People-also-ask was fetched only for topics that showed "
-            "demand, because it costs one SERP call per topic."
+            "inputs. The expensive per-keyword search_mentions call ran only on "
+            "the shortlist that the cheap volume check kept, and "
+            "People-also-ask only on the final winners."
         ),
+        "reading_the_numbers": (
+            "ai_search_volume is a SUM across every question matched for the "
+            "topic, and for Google AI Overviews DataForSEO derives it from "
+            "Google search volume — so it sizes the question cluster and is NOT "
+            "a separate AI demand channel. Do not compare it against "
+            "search_volume for a single head term. answered_share/open_share "
+            "are near-constant because AI Overview answers nearly everything; "
+            "judge the opportunity on can_you_displace_them."
+        ),
+        "platforms_measured": sorted({
+            q.get("platform", "") for geo in citability.values()
+            for q in geo.get("questions", []) if q.get("platform")
+        }),
     }
     rec.record_deliverable("ai_citability", "GEO demand brief", result)
     rec.log_activity("step", detail="graph complete")

@@ -39,7 +39,11 @@ def fake_keyword_overview(keywords, location_code=2840, language_code="en"):
              "intent": "informational"} for k in keywords]
 
 
+mention_calls: list[str] = []
+
+
 def fake_ai_mentions(keywords, location_code=2840, language_code="en", limit=100):
+    mention_calls.extend(keywords)
     return [
         {"question": "what is agentic commerce", "platform": "chatgpt", "has_answer": True,
          "answer_snippet": "…", "ai_search_volume": 40,
@@ -85,25 +89,39 @@ with rec.use_run(RID):
     res = gd.run_geo_demand(TOPICS, max_question_terms=2)
 chk("succeeded", res.get("success") is True, str(res)[:120])
 chk("steps in order",
-    res["steps"] == ["demand", "citability", "displaceability", "ranked", "questions"],
+    res["steps"] == ["demand", "shortlist", "citability", "displaceability",
+                     "ranked", "questions"],
     str(res["steps"]))
 chk("market recorded", res["market"] == "US-EN")
 
-print("3. PAA is harvested ONLY for topics with measured demand")
+print("3. the EXPENSIVE call is gated by the cheap one")
+# search_mentions is ~$0.10 per keyword; a topic the free volume check already
+# showed is dead must never reach it.
+chk("dead topic never sent to the paid call",
+    "dead topic" not in mention_calls, str(mention_calls))
+chk("only shortlisted topics were charged for",
+    set(mention_calls) <= {"agentic commerce", "knowledge graphs"}, str(mention_calls))
+chk("and it is reported, not silently dropped",
+    "dead topic" in res["not_sent_to_paid_call"], str(res["not_sent_to_paid_call"]))
+chk("llm evaluation (zero volume) also skipped",
+    "llm evaluation" in res["not_sent_to_paid_call"], str(res["not_sent_to_paid_call"]))
+chk("cost is stated back to the caller",
+    "search_mentions" in res["cost_note"], res["cost_note"])
+
+print("3b. PAA runs only on the winners")
 chk("2 SERP calls, not 4", len(paa_calls) == 2, str(paa_calls))
-chk("no call for the dead topic", "dead topic" not in paa_calls, str(paa_calls))
-chk("skipped topics are reported", "dead topic" in res["skipped_no_demand"], str(res["skipped_no_demand"]))
+chk("no PAA for the dead topic", "dead topic" not in paa_calls, str(paa_calls))
 
 print("4. ranking prefers AI presence, then volume")
 ranked = res["ranked"]
 chk("agentic commerce ranks first",
     ranked[0]["topic"] == "agentic commerce", ranked[0]["topic"])
-chk("dead topic ranks last", ranked[-1]["topic"] == "dead topic", ranked[-1]["topic"])
+chk("only measured topics are ranked", len(ranked) == 2, str([r["topic"] for r in ranked]))
+chk("dead topic absent from the ranking",
+    all(r["topic"] != "dead topic" for r in ranked), str(ranked))
 chk("every row states its evidence", all(r["evidence"] for r in ranked))
-chk("a no-demand row says so",
-    "no measured demand" in ranked[-1]["evidence"], ranked[-1]["evidence"])
-chk("a volume-only row is distinguished from an AI-only row",
-    len({r["evidence"] for r in ranked}) >= 2)
+chk("evidence names both channels",
+    "AI engines answer this" in ranked[0]["evidence"], ranked[0]["evidence"])
 
 print("5. the brief carries both question sources and the citation picture")
 top = res["brief"][0]
