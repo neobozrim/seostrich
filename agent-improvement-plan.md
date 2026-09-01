@@ -71,9 +71,22 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
       VERIFIED: `npx tsc --noEmit` clean; FastAPI TestClient integration test PASS (200/404/422 paths + promote/discard/propose)
 
 ## Verification (I test end-to-end myself)
-- [ ] Unit: parse helper vs malformed samples; budget cap with low test cap
-- [ ] Local E2E via browser automation: live chips during run; stop mid-run; crash injection → error status; budget → continue prompt; cluster ops; citability stage; RunView inspection of every stage
-- [ ] Production: push → Railway auto-deploys → re-run on Vercel URL, poll /api/runs, confirm orphaned run cleaned
+- [x] Unit: parse helper vs malformed samples; budget cap with low test cap — PASS 2026-08-31, re-PASS since
+- [x] Local E2E (browser, headless Chrome + CDP): live activity feed + stage chips stream mid-run in chat and RunView
+      ("Live activity" card) — PASS 2026-09-01 (3 runs, no console errors)
+- [x] Local E2E: enforced-graph driver `run_keyword_strategy` streams its nodes live (extract seeds ✓ → keyword universe ✓
+      → cluster …) and records seeds/intake/keywords stages as they happen — PASS 2026-09-01
+- [x] Local E2E: stop mid-run — `POST /api/chat/stop` flips the run to `stopped` within ~2-3 s (instant abandon, no waiting
+      for the in-flight LLM call) — PASS 2026-09-01 on 882a3cb
+- [x] Local E2E: DFS language resolution up front — BG market resolves to `bg` before any research call; intake shows
+      "Locale #2100 / bg, Market BG-BG"; zero wasted location/language pairing calls — PASS 2026-09-01
+- [!] Local E2E: full graph to the tail (validate → score → select → citability → pillars) BLOCKED locally — the token-plan
+      provider holds the large clustering LLM call past the 120 s timeout even with 20 s pacing (5/5 attempts stalled on
+      2026-09-01). Hardened in f943a30 (payload trimmed + bounded retry); production uses the cloud API which does not queue.
+- [x] Unit (offline, stubbed LLM): cluster payload trim (top-80 by volume, one-sentence rationale, max_tokens 4500) +
+      `_cluster_with_retry` bounded at 2 calls — PASS 2026-09-01
+- [ ] Production: push → Railway auto-deploys → run compact strategy on Vercel URL, poll /api/runs + /activity, confirm full
+      graph + orphaned-run sweep (in progress)
 
 ## Decisions log
 - 2026-08-31: Chat-confirm for optional steps (no quick-reply buttons) — user confirmed original flow.
@@ -82,5 +95,31 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
 - 2026-08-31: No knowledge graph for cluster governance — artifact CRUD + scoped re-seed suffices for the deadline (revisit post-hackathon).
 - 2026-08-31: Per-keyword difficulty/volume/intent/CPC = zero extra cost (already in keyword_suggestions responses) — surface only.
 - 2026-08-31: AI-citability folded in as headline stage on top of existing pipeline, not a replacement.
+- 2026-09-01: Strategy pipeline enforced as a code graph (`run_keyword_strategy` driver, 84d83c9): deterministic node order
+  seeds → universe → cluster → validate gate → score → select → citability → pillars. LLM fills content per node; the graph
+  enforces order and mandatory gates. Reason: free-form agent loops skipped validate/discard-reason steps.
+- 2026-09-01: Stop = instant abandon (be141f2): stop flag is checked inside streaming iteration, run closes as `stopped`
+  immediately — no waiting for the in-flight LLM call to finish.
+- 2026-09-01: LLM pacing (ae8cbb6): `LLM_MIN_INTERVAL_SECONDS` enforces a floor between LLM calls; local `.env` = 20s
+  (token-plan provider queues bursts), production leaves it unset (0).
+- 2026-09-01: DFS market → language resolved up front from `locations_and_languages`, cached process-wide (882a3cb), and
+  rejected location/language pairs memoized (3de62d2). Reason: BG market calls wasted budget on wrong pairings; the phantom
+  `keyword_difficulty` endpoint does not exist (924e131) — difficulty comes from keyword stats already in responses.
+- 2026-09-01: Cluster-node hardening (f943a30): clustering is the largest LLM call in the graph, so rank keywords by volume
+  and cap at 80, one-sentence rationales, cap completion at 4500 tokens, and one bounded node-level retry before failing
+  fast. Reason: queued/slow endpoints held the large prompt+completion past the 120 s timeout, aborting the graph and
+  forcing the outer agent to re-run seeds + universe (re-billing DataForSEO).
 
 ## Learnings (append as discovered)
+- Token-plan provider queues BURST traffic: isolated probes return in seconds, but 4+ rapid agent calls get held open with
+  keep-alive pings for 10+ minutes (defeats the 120s read timeout). Fix: pace calls (see decision above).
+- Worker threads do not inherit contextvars — parallel tool dispatch attributed runs/DFS budgets to the wrong run until the
+  context was copied into the thread (be141f2).
+- DataForSEO language support is market-bound: the BG market only serves Bulgarian keywords. A BG run legitimately yields
+  Bulgarian keywords; the agent should note the language mix in its answer rather than "fix" it.
+- Pacing alone does not protect LARGE LLM calls on a queued endpoint: with 20 s pacing the small calls (seeds, orchestrator
+  rounds) passed but the big clustering call stalled 5/5 times on 2026-09-01. Shrink the payload (fewer keywords, shorter
+  rationale, capped completion) in addition to pacing.
+- Two local backends sharing one runs dir + one LLM key is a trap: the browser E2E silently hit the OTHER backend (:8001),
+  so its in-memory activity was invisible from :8000 and the run tested stale code. Always confirm `POST /api/chat/stream`
+  landed in the backend under test before trusting an E2E.
