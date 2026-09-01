@@ -116,7 +116,7 @@ export function SystemPanel({ memory, onClose }: SystemPanelProps) {
   }, []);
 
   const handleRestore = async () => {
-    if (!confirm('Reset the example pipeline data back to defaults?')) return;
+    if (!confirm('Reset the example report data back to defaults?')) return;
     setRestoring(true);
     setRestoreMsg(null);
     try {

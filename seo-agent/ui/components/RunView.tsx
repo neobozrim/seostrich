@@ -272,7 +272,7 @@ function SortHeader({
     >
       <button
         onClick={() => onSort(column.key)}
-        title={'Sort by ' + column.label.toLowerCase() + ', ' + readable}
+        title={'Sort by ' + column.label + ', ' + readable}
         className={CLS_BTN(column, active)}
       >
         {column.label}
@@ -340,7 +340,7 @@ function KeywordTable({
     <div>
       {objects.length > 0 && (
         <div className="overflow-x-auto -mx-1">
-          <table className="w-full text-xs border-separate border-spacing-y-1 px-1">
+          <table className="w-full min-w-[480px] text-xs border-separate border-spacing-y-1 px-1">
             <thead>
               <tr className="text-[10px]">
                 {COLUMNS.map((c) => (
@@ -357,7 +357,10 @@ function KeywordTable({
             <tbody>
               {visible.map((k, i) => (
                 <tr key={i} className="bg-surface-100">
-                  <td className="pl-2 py-1.5 rounded-l-lg text-gray-800">
+                  <td
+                    className="pl-2 py-1.5 rounded-l-lg text-gray-800 max-w-[220px] truncate"
+                    title={k.keyword || k.query || ''}
+                  >
                     {k.keyword || k.query || ''}
                   </td>
                   <td className="py-1.5 text-right tabular-nums text-gray-700">
@@ -1076,7 +1079,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
         if (cancelled) return;
         setSummaries(sums);
         if (!sums.length) {
-          setError('No runs yet — ask the agent to run a pipeline.');
+          setError('No reports yet — ask the agent to build a strategy.');
           return;
         }
         const wanted =
@@ -1133,13 +1136,13 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
             />
           </button>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           {summaries.length > 1 && (
             <select
               value={run?.id || ''}
               onChange={(e) => loadRun(e.target.value)}
-              className="max-w-[220px] px-3 py-2 text-sm border border-surface-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-400"
-              title="Switch pipeline run"
+              className="min-w-0 max-w-[130px] sm:max-w-[220px] px-2 sm:px-3 py-2 text-sm border border-surface-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-400"
+              title="Switch report"
             >
               {summaries.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -1176,7 +1179,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
       <div className="max-w-3xl mx-auto px-6 pt-4 pb-8">
         {loading && (
           <div className="flex items-center justify-center py-24 text-gray-400 gap-2">
-            <Loader2 className="w-5 h-5 animate-spin" /> Loading pipeline…
+            <Loader2 className="w-5 h-5 animate-spin" /> Loading report…
           </div>
         )}
         {error && !loading && (
