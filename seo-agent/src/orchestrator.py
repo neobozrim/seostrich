@@ -375,38 +375,10 @@ def run_orchestrator_stream(
         # Step 1: Send session_id to frontend
         yield {"type": "session_id", "session_id": sid}
 
-        # Step 1.5: Generate plan (show to user, no confirmation needed)
-        # This is the "planning" pattern from Andrew Ng's framework
-        plan_prompt = f"""Based on the user's request, create a brief execution plan.
-        
-User request: {initial_message}
-
-Output a JSON object with:
-- "plan": array of 2-5 steps, each a short string describing what will be done
-- "agent": which specialist agent will handle this (seo_agent, brand_agent, builder_agent, monitoring_agent)
-
-If the request is simple or conversational (not requiring specialist work), return:
-{{"plan": [], "agent": null}}
-
-Be concise. Each step should be <10 words.
-"""
-        try:
-            plan_resp = llm.chat(
-                [{"role": "user", "content": plan_prompt}],
-                system="You are a planning assistant. Output only valid JSON.",
-                temperature=0.2,
-            )
-            plan_content = plan_resp.get("content", "")
-            if plan_content:
-                import json as json_lib
-                plan_data = json_lib.loads(plan_content)
-                plan_steps = plan_data.get("plan", [])
-                if plan_steps:
-                    # Stream plan to user (no confirmation — just transparency)
-                    yield {"type": "plan", "steps": plan_steps, "agent": plan_data.get("agent")}
-        except Exception:
-            # Plan generation failed — continue without it
-            pass
+        # Step 1.5: plan preview — REMOVED (2026-09-01).
+        # It cost a full extra LLM call on every user message just to render
+        # 2-5 bullet points. Iteration 1 restores the "plan" event
+        # deterministically from the selected flow's node list (zero calls).
 
         # Step 2: First LLM call — decide routing
         yield {"type": "status", "content": "Thinking..."}

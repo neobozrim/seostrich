@@ -6,6 +6,7 @@ from typing import Any
 
 from . import llm
 from . import memory
+from .config import reflection_enabled
 from . import pipeline_recorder
 from . import session as session_store
 from .tools.extract_seeds import extract_seeds
@@ -1211,6 +1212,21 @@ INTENT_KEYWORDS = {
 }
 
 
+# Tools that must be reachable in EVERY turn, whatever the phrasing.
+# Without this, "Create SEO strategy" — the exact task string the orchestrator
+# is prompted to emit — matched only the "strategy" category and filtered
+# run_keyword_strategy out, so the enforced graph was unreachable and the
+# agent improvised with plan_calendar instead.
+CORE_TOOLS = [
+    "run_keyword_strategy",
+    "ai_citability_brief",
+    "list_clusters_all", "promote_cluster", "discard_cluster", "propose_cluster",
+    "submit_deliverable",
+    "read_memory",
+    "web_search",
+]
+
+
 def select_tools_for_intent(user_message: str, always_include: list[str] | None = None) -> list[dict]:
     """Select relevant tool definitions based on user intent.
     
@@ -1234,18 +1250,13 @@ def select_tools_for_intent(user_message: str, always_include: list[str] | None 
                 selected_categories.add(category)
                 break
     
-    # If no categories matched, include all (fallback to full context)
-    if not selected_categories:
-        return TOOL_DEFINITIONS
-    
-    # Always include memory tools (needed for context in every interaction)
-    selected_categories.add("memory")
-    
-    # Collect tool names from selected categories
-    selected_tool_names = set()
+    # Collect tool names from the matched categories. An unmatched message
+    # falls back to CORE_TOOLS only — sending all 63 schemas (~9.4k tokens)
+    # on every round of a 20-round loop was a large share of the token bill.
+    selected_tool_names = set(CORE_TOOLS)
     for category in selected_categories:
         selected_tool_names.update(TOOL_CATEGORIES.get(category, []))
-    
+
     # Add always_include tools
     if always_include:
         selected_tool_names.update(always_include)
@@ -1614,7 +1625,7 @@ Review the detailed findings above and prioritize fixes based on severity.
     # Save session
     session_store.save_session(sid, session_data)
 
-    if session_data["tool_results"]:
+    if session_data["tool_results"] and reflection_enabled():
         tools_used = [t["tool"] for t in session_data["tool_results"]]
         successful = sum(1 for t in session_data["tool_results"] if t.get("success"))
         failed = sum(1 for t in session_data["tool_results"] if not t.get("success"))

@@ -11,16 +11,41 @@ if ENV_FILE.exists():
     load_dotenv(ENV_FILE)
 
 
+# OpenAI-compatible endpoints per provider. token-plan queues burst traffic
+# (4+ rapid calls get held open for minutes), which is what stalled the large
+# clustering call; the cloud API does not queue.
+PROVIDER_BASE_URLS = {
+    "cloud": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+    "token_plan": "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
+}
+
+
 class Settings(BaseSettings):
-    qwen_api_key: str = Field(
-        default="",
-        validation_alias=AliasChoices("QWEN_TOKEN_PLAN_API_KEY", "QWEN_CLOUD_API_KEY"),
-    )
-    qwen_base_url: str = Field(
-        default="https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
-        alias="QWEN_BASE_URL",
-    )
+    # "cloud" (default) or "token_plan". Selects which key and base URL to use.
+    llm_provider: str = Field(default="cloud", alias="LLM_PROVIDER")
+
+    qwen_cloud_api_key: str = Field(default="", alias="QWEN_CLOUD_API_KEY")
+    qwen_token_plan_api_key: str = Field(default="", alias="QWEN_TOKEN_PLAN_API_KEY")
+
+    # Explicit override; when unset the provider's default URL is used.
+    qwen_base_url_override: str = Field(default="", alias="QWEN_BASE_URL")
     qwen_model: str = Field(default="qwen3.6-plus", alias="QWEN_MODEL")
+
+    @property
+    def provider(self) -> str:
+        p = (self.llm_provider or "cloud").strip().lower().replace("-", "_")
+        return p if p in PROVIDER_BASE_URLS else "cloud"
+
+    @property
+    def qwen_api_key(self) -> str:
+        """Key for the selected provider, falling back to whichever is set."""
+        if self.provider == "token_plan":
+            return self.qwen_token_plan_api_key or self.qwen_cloud_api_key
+        return self.qwen_cloud_api_key or self.qwen_token_plan_api_key
+
+    @property
+    def qwen_base_url(self) -> str:
+        return self.qwen_base_url_override or PROVIDER_BASE_URLS[self.provider]
 
     dataforseo_login: str = Field(default="", alias="DATAFORSEO_LOGIN")
     dataforseo_password: str = Field(default="", alias="DATAFORSEO_PASSWORD")
@@ -48,6 +73,12 @@ class Settings(BaseSettings):
     # its run id, so the cap spans follow-up messages in the same session).
     dfs_max_calls_per_run: int = Field(default=25, alias="DFS_MAX_CALLS_PER_RUN")
 
+    # Post-run reflection tail (outcome summary + memory synthesis + Braintrust
+    # + self-learning). ~10 extra LLM calls per run, each carrying the full
+    # session JSON. Off by default: it costs more than the whole pipeline and
+    # produces nothing the user sees. Set AGENT_REFLECTION=on to re-enable.
+    agent_reflection: str = Field(default="off", alias="AGENT_REFLECTION")
+
     mock_llm: bool = Field(default=False, alias="MOCK_LLM")
     mock_dfs: bool = Field(default=False, alias="MOCK_DFS")
 
@@ -61,3 +92,8 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def reflection_enabled() -> bool:
+    """True when the post-run reflection tail should run (default: off)."""
+    return settings.agent_reflection.strip().lower() in ("1", "on", "true", "yes")
