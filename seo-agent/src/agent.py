@@ -1418,6 +1418,70 @@ def _core_tools() -> list[str]:
     return CORE_TOOLS
 
 
+# Ceiling on a single tool result placed in the conversation.
+#
+# This was 4,000 characters, set in the project's first commit and never
+# revisited. Measured on a real run it was cutting 70% off list_clusters_all
+# (13,366 chars), 51% off cluster_keywords (8,186) and 42% off both
+# pull_universe and the keyword table — silently, mid-JSON, so the model
+# received unparseable fragments of its own tool output and called the same
+# tools again trying to see the rest.
+#
+# 13,366 characters is roughly 3,300 tokens. Against this model's context that
+# is nothing; the old limit was costing far more in repeat calls than it ever
+# saved. 24,000 covers every tool measured, and anything above it is a genuine
+# outlier that should be read through read_run_section rather than pasted whole.
+MAX_TOOL_RESULT_CHARS = 24000
+
+
+class _CacheHit(Exception):
+    """Internal: skip execution, the cached result is already in hand."""
+
+
+def _tool_result_for_model(result_str: str, tool_name: str) -> str:
+    """Bound a tool result, and SAY SO when it is bounded.
+
+    Silent truncation is the worst option: the model cannot tell a complete
+    result from a severed one, so it re-calls. If a result really is too large,
+    it is told what happened and where to get the rest.
+    """
+    if len(result_str) <= MAX_TOOL_RESULT_CHARS:
+        return result_str
+    return (
+        result_str[:MAX_TOOL_RESULT_CHARS]
+        + f"\n\n[TRUNCATED: {tool_name} returned {len(result_str):,} characters, "
+        f"over the {MAX_TOOL_RESULT_CHARS:,} limit. This is a fragment. Use "
+        f"read_run_section(stage=..., section=...) to read the whole thing in "
+        f"pages — do NOT call {tool_name} again, it will return the same size.]"
+    )
+
+
+# Tool calls whose result depends only on stored state, so calling one twice in
+# a run with the same arguments must return the same thing. Cached per run: the
+# agent routinely re-lists clusters across rounds, and each call re-read and
+# re-serialised 13KB for no new information.
+CACHEABLE_TOOLS = {
+    "list_clusters_all", "read_run_section", "list_markets",
+    "ai_citation_check", "read_memory",
+}
+
+# Anything that changes the run invalidates the cache. Kept explicit rather
+# than inferred: a missed entry here would serve stale clusters after an edit,
+# which is worse than any saving.
+CACHE_INVALIDATING_TOOLS = {
+    "promote_cluster", "discard_cluster", "propose_cluster",
+    "rerun_cluster_research", "run_keyword_strategy", "run_geo_demand",
+    "confirm_market", "submit_deliverable",
+}
+
+
+def _cache_key(tool_name: str, args: dict) -> str:
+    try:
+        return f"{tool_name}:{json.dumps(args, sort_keys=True, default=str)}"
+    except Exception:
+        return ""
+
+
 def select_tools_for_intent(user_message: str, always_include: list[str] | None = None) -> list[dict]:
     """Select relevant tool definitions based on user intent.
     
@@ -1500,6 +1564,11 @@ def run_agent(
     if context:
         system += f"\n\nCurrent session context:\n{llm.format_json(context)}"
 
+    # Read-only tool results, cached for this run. The agent re-lists clusters
+    # across rounds as it reasons; without this each call re-read and
+    # re-serialised the same 13KB. Invalidated whenever anything mutates.
+    tool_cache: dict[str, str] = {}
+
     messages: list[dict[str, str]] = [{"role": "user", "content": user_message}]
     
     # A flow's allowlist wins over keyword intent matching.
@@ -1569,6 +1638,14 @@ def run_agent(
                         "success": False,
                     }
 
+                key = _cache_key(tool_name, parsed_args)
+                if tool_name in CACHEABLE_TOOLS and key and key in tool_cache:
+                    print(f"[Tool cache hit]: {tool_name}")
+                    return {
+                        "tc": tc, "result": None, "parsed_args": parsed_args,
+                        "result_str": tool_cache[key], "error": None, "success": True,
+                        "cached": True,
+                    }
                 try:
                     if run_ctx:
                         with pipeline_recorder.use_run(run_ctx):
@@ -1576,6 +1653,8 @@ def run_agent(
                     else:
                         result = TOOL_CALLABLES[tool_name](**parsed_args)
                     result_str = llm.format_json(result)
+                    if tool_name in CACHEABLE_TOOLS and key:
+                        tool_cache[key] = result_str
                     return {
                         "tc": tc,
                         "result": result,
@@ -1602,6 +1681,12 @@ def run_agent(
             with ThreadPoolExecutor(max_workers=min(len(tool_calls), 8)) as executor:
                 futures = {executor.submit(execute_tool, tc): tc for tc in tool_calls}
                 results = [future.result() for future in as_completed(futures)]
+
+            # Any mutation in this batch invalidates everything cached: a
+            # promote and a list in the same round must not leave the list
+            # cached from before the promote.
+            if any(tc["name"] in CACHE_INVALIDATING_TOOLS for tc in tool_calls):
+                tool_cache.clear()
 
             # Add ONE assistant message with ALL tool_calls (OpenAI format requirement)
             messages.append({
@@ -1640,7 +1725,7 @@ def run_agent(
                 messages.append({
                     "role": "tool",
                     "tool_call_id": tc["id"],
-                    "content": res["result_str"][:4000],
+                    "content": _tool_result_for_model(res["result_str"], tc["name"]),
                 })
         else:
             # Single tool call - execute sequentially
@@ -1667,9 +1752,24 @@ def run_agent(
                     "error": f"argument parse error: {parse_error}",
                 })
             else:
+                key = _cache_key(tool_name, parsed_args)
+                cached_str = (
+                    tool_cache.get(key) if tool_name in CACHEABLE_TOOLS and key else None
+                )
                 try:
+                    if cached_str is not None:
+                        print(f"[Tool cache hit]: {tool_name}")
+                        result_str = cached_str
+                        session_data["tool_results"].append({
+                            "round": round_num, "tool": tool_name, "args": tool_args,
+                            "result": None, "success": True, "error": None,
+                            "cached": True,
+                        })
+                        raise _CacheHit
                     result = TOOL_CALLABLES[tool_name](**parsed_args)
                     result_str = llm.format_json(result)
+                    if tool_name in CACHEABLE_TOOLS and key:
+                        tool_cache[key] = result_str
                     session_data["tool_results"].append({
                         "round": round_num,
                         "tool": tool_name,
@@ -1679,6 +1779,8 @@ def run_agent(
                         "error": None,
                     })
                     pipeline_recorder.record_tool(tool_name, parsed_args, result, True)
+                except _CacheHit:
+                    pass
                 except Exception as e:
                     result_str = json.dumps({"error": str(e)})
                     print(f"[Tool error]: {e}")
@@ -1691,6 +1793,9 @@ def run_agent(
                         "error": str(e),
                     })
                     pipeline_recorder.record_tool(tool_name, parsed_args, None, False)
+
+                if tool_name in CACHE_INVALIDATING_TOOLS:
+                    tool_cache.clear()
 
             messages.append({
                 "role": "assistant",
@@ -1707,7 +1812,7 @@ def run_agent(
             messages.append({
                 "role": "tool",
                 "tool_call_id": tc["id"],
-                "content": result_str[:4000],
+                "content": _tool_result_for_model(result_str, tool_name),
             })
 
     # Post-loop synthesis: if agent stopped with planning text but no final report, force synthesis
