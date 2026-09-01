@@ -171,6 +171,7 @@ export async function getApiHealth(): Promise<{
   status: string;
   version?: string;
   flows?: string[];
+  memory_enabled?: boolean;
   port?: number;
 }> {
   const response = await fetch(`${API_BASE}/api/health`);

@@ -48,6 +48,9 @@ export default function Home() {
   // The homepage is a canvas of work; chat only takes over once asked for.
   const [chatOpen, setChatOpen] = useState(false);
   const [openRunId, setOpenRunId] = useState<string | null>(null);
+  // System panel = memory + improvement proposals. Off by default, so its
+  // entry point is hidden rather than opening on an empty panel.
+  const [memoryEnabled, setMemoryEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -144,6 +147,7 @@ export default function Home() {
     getApiHealth()
       .then((h) => {
         if (cancelled) return;
+        setMemoryEnabled(Boolean(h.memory_enabled));
         if (h.version !== EXPECTED_API_VERSION) {
           setBackendWarning(
             `Connected to ${getApiBase()}, which reports API version ` +
@@ -454,6 +458,7 @@ export default function Home() {
                   Reports
                 </button>
               )}
+              {memoryEnabled && (
               <button
                 onClick={() => setShowSystem(true)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
@@ -461,6 +466,7 @@ export default function Home() {
                 <Settings2 className="w-4 h-4" />
                 System
               </button>
+              )}
               <ProfileMenu
                 username={username}
                 authRequired={authRequired}

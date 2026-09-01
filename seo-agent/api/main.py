@@ -83,11 +83,16 @@ API_VERSION = "2026-09-01.pins"
 async def health():
     """Health check endpoint. `version` lets the UI detect a stale backend."""
     from src import flows
+    from src.config import memory_enabled
 
     return {
         "status": "ok",
         "version": API_VERSION,
         "flows": list(flows.REGISTRY),
+        # The System panel only shows memory and improvement proposals. With
+        # memory switched off it is an empty room, so the UI hides its entry
+        # point rather than offering a dead end.
+        "memory_enabled": memory_enabled(),
         "port": int(os.getenv("PORT", "8001")),
     }
 

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Judge">
+  <!--
+    Judge avatar. Deliberately NOT the brand mark's treatment: the SEOstrich
+    logo is a solid brown disc with negative-space linework, so this inverts it
+    — sand disc, ink monoline — to read as a different kind of thing at a
+    glance while keeping the same drawing language (single weight, round caps).
+
+    The head and handle are thick capsule strokes rather than outlined
+    rectangles: an outlined rect with a large corner radius collapses into an
+    oval at avatar size and reads as a magnifying glass.
+    Palette: sand #F1E4D4, ink #191411, brown #6B4226 rim.
+  -->
+  <circle cx="100" cy="100" r="94" fill="#F1E4D4"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="#6B4226" stroke-width="6"/>
+
+  <g stroke="#191411" stroke-linecap="round" fill="none">
+    <!-- Nudged down and right so the tilted head does not weight the
+         top-left, and so the strike block clears the rim. -->
+    <g transform="translate(12 18) rotate(-40 100 76)">
+      <!-- mallet head -->
+      <path d="M64 76 H 136" stroke-width="40"/>
+      <!-- handle, out of the head's centre -->
+      <path d="M100 92 V 146" stroke-width="17"/>
+    </g>
+    <!-- the block it strikes -->
+    <path d="M62 160 H 138" stroke-width="16"/>
+  </g>
+</svg>

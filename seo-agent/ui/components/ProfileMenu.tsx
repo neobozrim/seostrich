@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { LogOut, User } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
 interface ProfileMenuProps {
   username: string | null;
@@ -27,17 +27,25 @@ export function ProfileMenu({ username, authRequired, onLogout }: ProfileMenuPro
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-9 h-9 rounded-full bg-primary-400 text-white flex items-center justify-center hover:bg-primary-500 transition-colors"
+        // Not a brown bubble: the brand mark already owns that treatment, so
+        // the avatar inverts it (sand disc, ink linework) to read as a
+        // different kind of thing sitting next to the logo.
+        className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center
+                   ring-1 ring-surface-300 hover:ring-primary-400 transition-all"
         title={username || 'Account'}
       >
-        <span className="text-sm font-semibold">{initial}</span>
+        <img
+          src="/icons/judge-avatar.svg"
+          alt={username || 'Account'}
+          className="w-full h-full"
+        />
       </button>
 
       {open && (
         <div className="absolute right-0 mt-2 w-52 bg-white border border-surface-300 rounded-xl shadow-lg overflow-hidden z-50">
           <div className="px-4 py-3 border-b border-surface-200 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center">
-              <User className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-surface-300 flex items-center justify-center">
+              <img src="/icons/judge-avatar.svg" alt="" className="w-full h-full" />
             </div>
             <div className="min-w-0">
               <div className="text-sm font-semibold text-gray-800 truncate">
