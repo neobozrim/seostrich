@@ -168,9 +168,18 @@ def run_keyword_strategy(
     steps.append("clusters")
 
     # Validation gate: approve, or re-cluster once on needs_revision (bounded).
+    #
+    # The re-cluster only happens if another validation will follow. Previously
+    # the loop re-clustered after the LAST attempt too, so the clusters that
+    # actually reached scoring, selection and pillars were the output of a
+    # third clustering that nobody ever validated — the gate exists to stop
+    # exactly that. Observed 2026-09-01: two needs_revision verdicts, then a
+    # third unchecked clustering carried the whole strategy, at 25s of extra
+    # cost for negative value.
+    MAX_ATTEMPTS = 2
     verdict = "rejected"
     validation: dict = {}
-    for attempt in (1, 2):
+    for attempt in range(1, MAX_ATTEMPTS + 1):
         rec.log_activity("step", detail=f"node: validate clusters (attempt {attempt})")
         validation = validate_clusters(
             {c["name"]: c["keywords"] for c in clusters},
@@ -178,6 +187,16 @@ def run_keyword_strategy(
         )
         verdict = str(validation.get("verdict") or "rejected")
         if verdict in ("approved", "rejected"):
+            break
+        if attempt == MAX_ATTEMPTS:
+            # Out of attempts: keep the set that was actually just validated,
+            # and let the verdict travel with the result so the answer can say
+            # the clusters were never approved.
+            rec.log_activity(
+                "step",
+                detail="gate: still needs_revision after the final attempt — "
+                       "continuing with the validated clusters and flagging it",
+            )
             break
         rec.log_activity("step", detail="gate: needs_revision -> re-clustering")
         reclustered = _cluster_with_retry(
@@ -253,6 +272,16 @@ def run_keyword_strategy(
         "cluster_count": len(clusters),
         "validation_verdict": verdict,
         "validation_issues": validation.get("global_issues", []),
+        "validation_warning": (
+            ""
+            if verdict == "approved"
+            else (
+                f"The clustering was never approved by the validation gate "
+                f"(verdict: {verdict}). The strategy below is still built on it, "
+                f"so treat the pillars as a starting point and check the cluster "
+                f"list before committing to it."
+            )
+        ),
         "selected_clusters": [c["name"] for c in selected],
         "discarded": selection_res["selection"].get("discarded", []),
         "head_terms": head_terms,
