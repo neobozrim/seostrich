@@ -184,7 +184,11 @@ def run_keyword_strategy(
     rec.record_tool("score_clusters", {}, scored, True)
 
     rec.log_activity("step", detail=f"node: select top {max_select} clusters")
-    selection_res = select_clusters(scored or {"clusters": clusters}, max_select=max_select)
+    selection_res = select_clusters(
+        scored or {"clusters": clusters},
+        max_select=max_select,
+        business_description=business_description,
+    )
     if not selection_res.get("success") or not selection_res.get("selection", {}).get("selected"):
         names = [c["name"] for c in clusters]
         selection_res = {

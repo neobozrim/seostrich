@@ -12,15 +12,15 @@ from .. import llm
 
 SYSTEM_PROMPT = """You are a head of SEO deciding which keyword clusters a lean team should actually pursue.
 
-You receive scored clusters (SEO/GEO scores, rationale, opportunity). Select the strongest ones to become content pillars; the rest are discarded — not deleted, parked with a reason so they can be promoted back later.
+You are told what the business is. You receive scored clusters (SEO/GEO scores, rationale, opportunity). Select the ones to become content pillars; the rest are discarded — not deleted, parked with a reason so they can be promoted back later.
 
-Selection criteria:
-- Highest combined opportunity (volume vs difficulty vs strategic fit)
-- Distinct intents/topics — do not select two clusters that overlap heavily
-- Prefer clusters that support the business goal over generic traffic
-- 3-4 selections is the target; fewer is fine if the rest are weak
+Selection criteria, in strict priority order:
+1. RELEVANCE TO THE BUSINESS is the hard gate. A cluster only qualifies if it directly serves what this business is, does, or sells — or what its real audience would search for in relation to it. Reject any cluster that is merely adjacent, tangential, or generic, no matter how high its volume or how good its scores. High volume on an off-topic cluster is worthless to this client: it attracts the wrong audience.
+2. Among the RELEVANT clusters, prefer the best opportunity (volume vs difficulty vs strategic fit). In thin/niche markets a low-volume but tightly relevant cluster beats a high-volume irrelevant one.
+3. Distinct intents/topics — do not select two clusters that overlap heavily.
+4. 3-4 selections is the target; fewer is fine if the rest are off-topic or weak. If almost nothing is relevant, select the single closest match rather than padding with off-topic volume.
 
-Every discarded cluster MUST get a concrete reason (overlap with a selected one, low volume, weak intent, off-goal, too broad/narrow) — never just "not selected".
+Every discarded cluster MUST get a concrete reason. For off-topic clusters the reason must say they are not relevant to THIS business (e.g. "off-topic: e-book platform, not poetry performance"). Other valid reasons: overlap with a selected cluster, weak intent, too broad/narrow. Never just "not selected", and never discard a tightly relevant cluster purely because another cluster has more volume.
 
 Output JSON format:
 {
@@ -31,17 +31,23 @@ Output JSON format:
 }"""
 
 
-def select_clusters(scored_clusters: dict, max_select: int = 4) -> dict:
-    """Pick the top clusters from a scored, over-generated set."""
+def select_clusters(scored_clusters: dict, max_select: int = 4, business_description: str = "") -> dict:
+    """Pick the top clusters from a scored, over-generated set.
+
+    ``business_description`` is required for the relevance gate — without it the
+    LLM can only rank by volume/opportunity and drifts toward off-topic traffic.
+    """
     if not isinstance(scored_clusters, dict) or not (
         scored_clusters.get("scored_clusters") or scored_clusters.get("clusters")
     ):
         return {"success": False, "error": "scored_clusters must contain a scored_clusters list"}
 
-    user_msg = f"""Scored clusters to select from:
+    biz = (business_description or "").strip()
+    biz_block = f"The business this strategy is for:\n{biz}\n\n" if biz else ""
+    user_msg = f"""{biz_block}Scored clusters to select from:
 {llm.format_json(scored_clusters)}
 
-Select at most {max_select} clusters to pursue as pillars. Discard the rest with reasons."""
+Select at most {max_select} clusters to pursue as pillars. Relevance to the business is the hard gate. Discard the rest with reasons."""
 
     try:
         resp = llm.chat(user_msg, system=SYSTEM_PROMPT, temperature=0.2)
