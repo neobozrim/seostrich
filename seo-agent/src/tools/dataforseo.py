@@ -511,7 +511,11 @@ def ai_mentions_keywords(
     language_code: str = "en",
     limit: int = 100,
 ) -> list[dict]:
-    """AI-engine answers about the given KEYWORDS (ChatGPT + Google AI).
+    """AI-engine answers about the given KEYWORDS.
+
+    Measured 2026-09-01: every row this account returns is platform "google",
+    model "google_ai_overview". The endpoint advertises more engines; do not
+    claim ChatGPT coverage without re-checking the `platform` field.
 
     ONE CALL PER KEYWORD, deliberately. The endpoint accepts a list of targets
     but INTERSECTS them rather than unioning, which is not documented and is
@@ -583,6 +587,42 @@ def ai_mentions_keywords(
         return out
 
     return _run(_inner())
+
+
+def bulk_domain_ranks(domains: list[str]) -> dict[str, int]:
+    """Authority rank (0-1000) for many domains in ONE call.
+
+    Used to answer the question that actually decides a GEO opportunity: are
+    the sites an AI answer cites displaceable? "Is this question answered" is
+    not the signal — Google AI Overview answers nearly everything (42 of 42 on
+    a measured topic). "Who does it cite, and are any of them small" is.
+    """
+    clean = []
+    seen = set()
+    for d in domains or []:
+        name = str(d or "").strip().lower()
+        if name and name not in seen:
+            seen.add(name)
+            clean.append(name)
+    if not clean:
+        return {}
+
+    async def _inner():
+        data = await _post("/v3/backlinks/bulk_ranks/live", [{"targets": clean[:1000]}])
+        tasks = data.get("tasks") or []
+        if not tasks or not tasks[0].get("result"):
+            return {}
+        items = (tasks[0]["result"][0] or {}).get("items") or []
+        return {
+            str(i.get("target", "")).lower(): int(i.get("rank") or 0)
+            for i in items if i.get("target")
+        }
+
+    try:
+        return _run(_inner())
+    except Exception as exc:
+        print(f"  [dfs] bulk_ranks failed: {exc}")
+        return {}
 
 
 def serp_paa(keyword: str, location_code: int = 2840, language_code: str = "en") -> list[dict]:

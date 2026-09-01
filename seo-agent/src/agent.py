@@ -387,7 +387,7 @@ TOOL_DEFINITIONS = [
         "type": "function",
         "function": {
             "name": "ai_citability_brief",
-            "description": "Headline AI-citability stage: how AI engines (ChatGPT/Google AI) answer questions around the SELECTED head terms — AI demand, answer share, currently cited sources, top questions + People-also-ask. Deterministic (no LLM), 1 mentions call + 1 SERP call per head term. Run after select_clusters on the selected head terms.",
+            "description": "Headline AI-citability stage: how AI engines (measured: Google AI Overviews) answer questions around the SELECTED head terms — AI demand, answer share, currently cited sources, top questions + People-also-ask. Deterministic (no LLM), 1 mentions call + 1 SERP call per head term. Run after select_clusters on the selected head terms.",
             "parameters": {
                 "type": "object",
                 "properties": {

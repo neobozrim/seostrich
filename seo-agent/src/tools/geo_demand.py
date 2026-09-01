@@ -4,9 +4,18 @@ The node order matters and is enforced in code:
 
   1. market gate        — country + language must be user-confirmed
   2. search demand      — keyword_overview: real volume / difficulty / CPC
-  3. AI citability      — ai_mentions_keywords: is this something ChatGPT and
-                          Google AI actually answer, who do they cite, and how
-                          much of the answer space is unclaimed
+  3. AI citability      — ai_mentions_keywords: what AI engines answer here,
+                          and which domains they cite
+  3b. displaceability   — bulk_domain_ranks: how strong those cited domains
+                          are. This is the signal that decides whether a small
+                          site can win the topic. "Is it answered" is NOT the
+                          signal: Google AI Overview answered 42 of 42
+                          questions on a measured topic, so an
+                          unanswered-share metric is near-always zero. What
+                          matters is whether any NICHE site is already cited
+                          alongside the giants — if agenticcommerce.dev
+                          (authority 259) appears next to Mastercard (660),
+                          the topic is winnable
   4. pick the winners   — deterministic ranking over the two measurements above
   5. real questions     — serp_paa, but ONLY on the winners
 
@@ -24,7 +33,10 @@ from collections import Counter
 
 from .. import market as market_mod
 from .. import pipeline_recorder as rec
-from .dataforseo import ai_mentions_keywords, budget_remaining, keyword_overview, serp_paa
+from .dataforseo import (
+    ai_mentions_keywords, budget_remaining, bulk_domain_ranks,
+    keyword_overview, serp_paa,
+)
 
 # One SERP call per term, so the harvest is capped.
 MAX_QUESTION_TERMS = 4
@@ -108,12 +120,77 @@ def _citability(topics: list[str], location_code: int, language_code: str) -> di
     return out
 
 
-def _rank(demand: list[dict], citability: dict[str, dict]) -> list[dict]:
+# Backlink authority rank runs 0-1000. A site under this is one a small,
+# focused publisher can realistically out-rank on a specific question.
+NICHE_AUTHORITY_MAX = 350
+# Above this a domain is a global brand or major publisher: being cited
+# alongside them is possible, displacing them is not.
+GIANT_AUTHORITY_MIN = 600
+
+
+def _displaceability(citability: dict[str, dict]) -> dict[str, dict]:
+    """Grade the domains AI engines cite, in ONE extra DataForSEO call.
+
+    Answers the question a strategy actually turns on: are the incumbents
+    displaceable? A topic whose answers cite only Mastercard, Stripe and
+    McKinsey is closed to a new site no matter how much AI demand it has. A
+    topic where a niche site already appears is open.
+    """
+    domains = {
+        src["domain"]
+        for geo in citability.values()
+        for src in geo.get("cited_sources", [])
+        if src.get("domain")
+    }
+    ranks = bulk_domain_ranks(sorted(domains)) if domains else {}
+
+    out: dict[str, dict] = {}
+    for topic, geo in citability.items():
+        graded = []
+        for src in geo.get("cited_sources", []):
+            rank = ranks.get(str(src.get("domain", "")).lower(), 0)
+            graded.append({**src, "authority_rank": rank})
+        graded.sort(key=lambda d: d["authority_rank"], reverse=True)
+
+        niche = [d for d in graded if 0 < d["authority_rank"] <= NICHE_AUTHORITY_MAX]
+        giants = [d for d in graded if d["authority_rank"] >= GIANT_AUTHORITY_MIN]
+
+        if not graded:
+            verdict = "no citation data — cannot judge the competition yet"
+        elif niche:
+            verdict = (
+                f"winnable: {len(niche)} niche site(s) are already cited here "
+                f"(weakest {min(d['authority_rank'] for d in niche)}), so this "
+                f"topic does not require a global brand to be quoted"
+            )
+        elif giants:
+            verdict = (
+                f"hard: every cited source is a high-authority site "
+                f"(top {giants[0]['authority_rank']}), so expect to be quoted "
+                f"only alongside them, not instead of them"
+            )
+        else:
+            verdict = "mid-authority sites hold the citations; contestable with depth"
+
+        out[topic] = {
+            "cited_sources": graded,
+            "niche_sites_cited": niche,
+            "distinct_domains": len(graded),
+            "weakest_cited_authority": min((d["authority_rank"] for d in graded), default=0),
+            "strongest_cited_authority": max((d["authority_rank"] for d in graded), default=0),
+            "displaceability": verdict,
+        }
+    return out
+
+
+def _rank(demand: list[dict], citability: dict[str, dict],
+          competition: dict[str, dict] | None = None) -> list[dict]:
     """Order topics by measured evidence. Arithmetic, and it shows its work."""
     ranked = []
     for row in demand:
         topic = row.get("keyword", "")
         geo = citability.get(topic, {})
+        comp = (competition or {}).get(topic, {})
         volume = row.get("volume") or 0
         ai_questions = geo.get("ai_questions_found", 0)
         ai_volume = geo.get("ai_search_volume", 0)
@@ -138,14 +215,25 @@ def _rank(demand: list[dict], citability: dict[str, dict]) -> list[dict]:
             "ai_search_volume": ai_volume,
             "answered_share": geo.get("answered_share", 0.0),
             "open_share": open_share,
-            "cited_sources": geo.get("cited_sources", []),
+            "cited_sources": comp.get("cited_sources") or geo.get("cited_sources", []),
+            "niche_sites_cited": comp.get("niche_sites_cited", []),
+            "weakest_cited_authority": comp.get("weakest_cited_authority", 0),
+            "strongest_cited_authority": comp.get("strongest_cited_authority", 0),
+            "displaceability": comp.get("displaceability", ""),
             "evidence": basis,
         })
 
     # AI presence first (this is a GEO flow), then classic volume, then how much
     # of the answer space is still unclaimed.
+    # Winnable topics first. A topic whose citations are all high-authority is
+    # worth less to a small publisher than a slightly smaller one where a niche
+    # site is already quoted, however much AI demand the former has.
     ranked.sort(
-        key=lambda r: (r["ai_questions_found"], r["search_volume"], r["open_share"]),
+        key=lambda r: (
+            bool(r["niche_sites_cited"]),
+            r["ai_questions_found"],
+            r["search_volume"],
+        ),
         reverse=True,
     )
     return ranked
@@ -184,8 +272,12 @@ def run_geo_demand(
     citability = _citability(clean, loc, lang)
     steps.append("citability")
 
+    rec.log_activity("step", detail="node: grade the sites AI engines cite")
+    competition = _displaceability(citability)
+    steps.append("displaceability")
+
     rec.log_activity("step", detail="node: rank topics on measured demand")
-    ranked = _rank(demand, citability)
+    ranked = _rank(demand, citability, competition)
     steps.append("ranked")
 
     # Harvest questions only where the evidence justifies a SERP call.
@@ -224,10 +316,20 @@ def run_geo_demand(
                 "intent": row["intent"],
                 "ai_questions_found": row["ai_questions_found"],
                 "ai_search_volume": row["ai_search_volume"],
+                # Near-always 1.0 / 0.0: Google AI Overview answers almost
+                # everything, so these say little. Judge the opportunity on
+                # can_you_displace_them instead.
                 "answered_share": row["answered_share"],
                 "open_share": row["open_share"],
+                "weakest_cited_authority": row["weakest_cited_authority"],
+                "strongest_cited_authority": row["strongest_cited_authority"],
             },
             "currently_cited": row["cited_sources"],
+            "can_you_displace_them": row["displaceability"],
+            "niche_sites_already_cited": [
+                {"domain": d["domain"], "authority_rank": d["authority_rank"]}
+                for d in row["niche_sites_cited"]
+            ],
             "questions_people_ask": [q.get("question") for q in paa][:10],
             "questions_ai_answers": [q.get("question") for q in ai_questions][:10],
         })
