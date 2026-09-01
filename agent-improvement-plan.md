@@ -126,6 +126,13 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
   poet", so expansion + competitor discovery had no in-market term to latch onto. extract_seeds now preserves verbatim native
   terms and seeds in the target search language (language_code passed from the pipeline). Verified: BG brief now yields
   "моноспектакъл"/"изречена поезия" verbatim, which expand to ~58 keywords.
+- 2026-09-01: Cluster selection is gated on relevance to the business, not volume (aea1030, user request): the thin-market
+  poetry re-run (chat-20260901T071832) selected high-volume OFF-TOPIC clusters (Chitanka e-books, literature curriculum,
+  folklore) and discarded the on-topic "Bulgarian Poetry Performance & Spoken Word" cluster, because select_clusters ranked
+  by opportunity and never saw the business description. Relevance to the business is now the hard gate (business_description
+  threaded from the pipeline); off-topic volume is explicitly rejected and never padded in, and in thin markets a low-volume
+  tightly-relevant cluster beats a high-volume irrelevant one. Verified: the poetry scenario now selects the low-volume poetry
+  cluster and discards the three off-topic ones with concrete "off-topic" reasons. Discarded clusters remain visible/reversible.
 
 ## Learnings (append as discovered)
 - Token-plan provider queues BURST traffic: isolated probes return in seconds, but 4+ rapid agent calls get held open with
