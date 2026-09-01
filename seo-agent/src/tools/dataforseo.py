@@ -38,6 +38,14 @@ def dfs_usage_report(run_id: str | None = None) -> str:
     return f"{stats['calls']} calls so far ({parts})"
 
 
+def budget_remaining(run_id: str | None = None) -> int:
+    """Paid DFS calls still available this run before hitting the cap."""
+    key = run_id or _budget_key()
+    calls = (_RUN_STATS.get(key) or {}).get("calls", 0)
+    cap = _CAP_OVERRIDES.get(key, settings.dfs_max_calls_per_run)
+    return max(0, cap - calls)
+
+
 def _account(endpoint: str) -> None:
     key = _budget_key()
     stats = _RUN_STATS.setdefault(key, {"calls": 0, "by_endpoint": {}})
@@ -168,30 +176,27 @@ def _task_items(data: dict, label: str = "") -> list:
 
 def keywords_for_site(url: str, limit: int = 100) -> list[dict]:
     async def _inner():
-        data = await _post("/v3/dataforseo_labs/ranked_keywords/live", [
-            {
-                "target": _normalize(url),
-                "limit": limit,
-                "order_by": ["estimated_traffic.desc"],
-                "filters": [
-                    "impressions_info.impression_info.position,less_than,100"
-                ],
-            }
-        ])
+        payload = {
+            "target": _normalize(url),
+            "limit": limit,
+        }
+        data = await _post("/v3/dataforseo_labs/ranked_keywords/live", [payload])
         items = _task_items(data)
         results = []
         for item in items:
-            kw = item.get("keyword_data", {})
-            info = item.get("impressions_info", {})
+            kw = item.get("keyword_data") or {}
+            info = kw.get("keyword_info") or {}
+            serp = item.get("ranked_serp_element") or {}
+            serp_item = serp.get("serp_item") or {}
             results.append({
                 "keyword": kw.get("keyword", ""),
-                "volume": kw.get("search_volume", 0),
-                "difficulty": kw.get("keyword_difficulty", 0),
-                "cpc": kw.get("cpc", 0),
+                "volume": info.get("search_volume", 0),
+                "difficulty": serp.get("keyword_difficulty", 0),
+                "cpc": info.get("cpc", 0),
                 "intent": _intent_for(kw.get("keyword", "")),
-                "rank": info.get("position", 99),
-                "ranking_url": info.get("url", ""),
-                "estimated_traffic": info.get("count", 0),
+                "rank": serp_item.get("rank_absolute", 99),
+                "ranking_url": serp_item.get("url", ""),
+                "estimated_traffic": serp_item.get("etv", 0),
             })
         return results
     return _run(_inner())

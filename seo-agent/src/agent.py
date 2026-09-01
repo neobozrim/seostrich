@@ -111,6 +111,8 @@ For ANY request for keyword strategy, clusters, pillars or a content plan you MU
 - Never quote volumes, difficulties, intents or CPCs that did not come from tool output. Invented numbers are a hard failure.
 - If the pipeline returns an error (e.g. DataForSEO budget exhausted), report exactly what it produced so far and ask how to proceed.
 
+**Thin-data markets:** Some languages and niches have few or no search terms (e.g. niche art forms in smaller markets — spoken-word poetry in Bulgarian is a real case). The pipeline handles this automatically: when direct keyword expansion comes back thin it falls back to what competitors rank for, and always keeps the discovery seeds themselves so a strategy can still be built. In a thin run, low or zero volumes are NOT a failure — say plainly that the strategy leans on competitor and thematic evidence rather than search volume, and never invent volumes to compensate.
+
 Cluster governance (user can adjust after the run — same session):
 - list_clusters_all: show selected + discarded with reasons
 - promote_cluster / discard_cluster: move clusters between the two sets (reversible)

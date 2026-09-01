@@ -128,11 +128,19 @@ def run_keyword_strategy(
         universe, True,
     )
     if not keywords:
+        # pull_universe keeps the seeds themselves as a floor, so reaching this
+        # means seed extraction produced nothing — not a normal thin-market case.
         return {
             "success": False,
-            "error": "keyword research returned no keywords (DataForSEO empty or budget exhausted)",
+            "error": "keyword universe is empty (seed extraction returned no seeds; DataForSEO budget may be exhausted)",
             "steps": steps,
         }
+    if len(keywords) < 15:
+        rec.log_activity(
+            "step",
+            detail=f"note: thin market — only {len(keywords)} keywords, "
+            "strategy leans on the seeds/competitor fallback rather than volume data",
+        )
     steps.append("keywords")
 
     rec.log_activity("step", detail=f"node: cluster {len(keywords)} keywords (over-generate 10)")
