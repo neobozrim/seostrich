@@ -29,6 +29,7 @@ import {
   rerunClusterResearch,
   getFlows,
   checkAiCitations,
+  getRunGovernance,
 } from './api';
 
 interface ModelContextLike {
@@ -373,6 +374,19 @@ function buildTools() {
       execute: async (input: { domain: string }, options?: any) => {
         if (!input?.domain) return 'A domain is required.';
         return checkAiCitations(input.domain, options?.signal);
+      },
+    },
+    {
+      name: 'seo_get_governance_history',
+      title: 'How this strategy was shaped',
+      description:
+        'List every change made to the cluster selection since the pipeline produced it — promotions, discards and proposals, in order, each with its reason and who made it (the agent, an external assistant over WebMCP, or the user). Use it to see what a human already decided before you suggest changing it again, or to show how a strategy reached its current shape. Empty means nothing has been adjusted. Read-only, no cost.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return getRunGovernance(run.id, options?.signal);
       },
     },
     {

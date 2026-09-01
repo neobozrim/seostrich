@@ -291,7 +291,13 @@ def _apply_selection(run: dict, result: dict) -> None:
     select_reasons = {}
     for entry in selection.get("selected_reasons", []) or []:
         if isinstance(entry, dict) and entry.get("cluster_name"):
-            select_reasons[str(entry["cluster_name"]).lower()] = str(entry.get("reason", ""))[:300]
+            select_reasons[str(entry["cluster_name"]).lower()] = {
+                "reason": str(entry.get("reason", ""))[:300],
+                # A reader acting on the strategy needs to know what the cluster
+                # IS and what to do with it, not only why it beat the others.
+                "what_it_is": str(entry.get("what_it_is", ""))[:300],
+                "how_to_use_it": str(entry.get("how_to_use_it", ""))[:300],
+            }
     stage = _upsert_stage(run, "clusters")
     clusters = stage["artifact"].get("clusters", [])
     if not clusters or not selected_names:
@@ -302,9 +308,12 @@ def _apply_selection(run: dict, result: dict) -> None:
         head = str(c.get("head_term", "")).lower()
         if name in selected_names or head in selected_names:
             entry = dict(c)
-            entry["selection_reason"] = select_reasons.get(
-                name, select_reasons.get(head, "")
-            )
+            picked = select_reasons.get(name) or select_reasons.get(head) or {}
+            entry["selection_reason"] = picked.get("reason", "")
+            if picked.get("what_it_is"):
+                entry["what_it_is"] = picked["what_it_is"]
+            if picked.get("how_to_use_it"):
+                entry["how_to_use_it"] = picked["how_to_use_it"]
             keep.append(entry)
         else:
             entry = dict(c)

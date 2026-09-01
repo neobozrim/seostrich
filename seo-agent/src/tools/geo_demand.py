@@ -172,9 +172,12 @@ def _citability(
             # cluster, and must NOT be compared against a head term's volume.
             "ai_search_volume_sum": bucket["ai_search_volume"],
             "ai_search_volume": bucket["ai_search_volume"],
+            # Kept because it is cheap, but it is NOT the opportunity signal:
+            # AI Overviews answer nearly everything, so this is ~1.0 always.
             "answered_share": round(answered / total, 2) if total else 0.0,
-            # What no engine answers well yet is what you can win.
-            "open_share": round((total - answered) / total, 2) if total else 0.0,
+            # open_share is computed in _displaceability, where the cited
+            # domains have been graded — it is a property of WHO is cited, not
+            # of how many questions got an answer.
             "cited_sources": [
                 {"domain": d, "citations": n} for d, n in bucket["sources"].most_common(5)
             ],
@@ -292,7 +295,30 @@ def _displaceability(citability: dict[str, dict]) -> dict[str, dict]:
         else:
             verdict = "mid-authority sites hold the citations; contestable with depth"
 
+        # OPEN SHARE: the proportion of cited sources that are NOT giants —
+        # how much of the citation field a newcomer could realistically enter.
+        #
+        # This previously measured the share of questions with no answer, which
+        # is a different thing entirely and is ~0 on every topic because AI
+        # Overviews answer almost everything. That number told you whether the
+        # engine bothered to reply; this one tells you whether you could be one
+        # of the sources it replies WITH.
+        ranked_known = [d for d in graded if d["authority_rank"] > 0]
+        contestable = [
+            d for d in ranked_known if d["authority_rank"] < GIANT_AUTHORITY_MIN
+        ]
+        open_share = (
+            round(len(contestable) / len(ranked_known), 2) if ranked_known else 0.0
+        )
+
         out[topic] = {
+            "open_share": open_share,
+            "open_share_means": (
+                f"{len(contestable)} of {len(ranked_known)} graded sources sit "
+                f"below authority {GIANT_AUTHORITY_MIN}, so that share of the "
+                f"citation field is contestable by a smaller site"
+            ),
+            "contestable_sources": contestable[:8],
             "cited_sources": graded,
             "niche_sites_cited": niche,
             "niche_sites_confirmed_on_topic": niche_confirmed,
@@ -326,7 +352,9 @@ def _rank(demand: list[dict], citability: dict[str, dict],
         volume = row.get("volume") or 0
         ai_questions = geo.get("ai_questions_found", 0)
         ai_volume = geo.get("ai_search_volume", 0)
-        open_share = geo.get("open_share", 0.0)
+        # from the graded citation field (see _displaceability), not from the
+        # answered/unanswered count it used to mean
+        open_share = comp.get("open_share", geo.get("open_share", 0.0))
 
         if ai_questions and volume:
             basis = "AI engines answer this AND it has search volume"
@@ -701,7 +729,7 @@ def run_geo_demand(
             "topic, and for Google AI Overviews DataForSEO derives it from "
             "Google search volume — so it sizes the question cluster and is NOT "
             "a separate AI demand channel. Do not compare it against "
-            "search_volume for a single head term. answered_share/open_share "
+            "search_volume for a single head term. answered_share "
             "are near-constant because AI Overview answers nearly everything; "
             "judge the opportunity on can_you_displace_them."
         ),

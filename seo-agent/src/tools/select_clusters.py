@@ -34,10 +34,20 @@ others were dropped. For selected clusters say what it wins for THIS business
 (the audience it serves, the intent it captures, the angle it owns) — not just
 "high score".
 
+For each SELECTED cluster also describe it, because whoever reads this strategy
+next has to act on it without seeing the keyword list:
+- "what_it_is": one sentence naming the topic and WHO is searching it.
+- "how_to_use_it": one sentence on the content play — the kind of page, and the
+  angle that suits this business specifically.
+Discarded clusters need only the reason; keep those short.
+
 Output JSON format:
 {
   "selected": [
-    {"cluster_name": "...", "reason": "why this one earns a pillar, one sentence"}
+    {"cluster_name": "...",
+     "reason": "why this one earns a pillar, one sentence",
+     "what_it_is": "the topic and who searches it, one sentence",
+     "how_to_use_it": "the content play, one sentence"}
   ],
   "discarded": [
     {"cluster_name": "...", "reason": "specific, one sentence"}
@@ -128,6 +138,8 @@ Select at most {max_select} clusters to pursue as pillars. Relevance to the busi
                     reasons.append({
                         "cluster_name": name.strip(),
                         "reason": str(entry.get("reason", ""))[:300],
+                        "what_it_is": str(entry.get("what_it_is", ""))[:300],
+                        "how_to_use_it": str(entry.get("how_to_use_it", ""))[:300],
                     })
         if not names:
             return {"success": False, "error": "selection list is empty", "selection": None}

@@ -76,7 +76,7 @@ app.add_middleware(
 # disabled, no /api/flows) silently served the UI for a whole session: every
 # browser test validated the wrong process, and the missing endpoints looked
 # like frontend bugs.
-API_VERSION = "2026-09-01.pins"
+API_VERSION = "2026-09-01.governance"
 
 
 @app.get("/api/health")
@@ -336,6 +336,17 @@ async def ai_citation_check(body: CitationCheckIn, _auth: None = Depends(require
     )
 
 
+@app.get("/api/runs/{run_id}/governance")
+async def get_run_governance(run_id: str, _auth: None = Depends(require_auth)):
+    """How this strategy was shaped: every promote/discard/propose, and by whom."""
+    from src import cluster_governance
+
+    result = cluster_governance.governance_history(run_id)
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail="Run not found")
+    return result
+
+
 @app.get("/api/runs/{run_id}/activity")
 async def get_run_activity(run_id: str, cursor: int = 0, _auth: None = Depends(require_auth)):
     """Live activity feed (LLM rounds, graph nodes, tool starts/ends) for a run."""
@@ -364,7 +375,7 @@ async def promote_run_cluster(run_id: str, body: ClusterNameIn, _auth: None = De
     """Promote a discarded cluster back into the selection."""
     from src import cluster_governance
 
-    result = cluster_governance.promote_cluster(run_id, body.cluster_name)
+    result = cluster_governance.promote_cluster(run_id, body.cluster_name, by="webmcp")
     if not result.get("ok") and result.get("error") == "run not found":
         raise HTTPException(status_code=404, detail="Run not found")
     return result
@@ -375,7 +386,7 @@ async def discard_run_cluster(run_id: str, body: ClusterDiscardIn, _auth: None =
     """Discard a selected cluster (kept in the discarded set with its stats)."""
     from src import cluster_governance
 
-    result = cluster_governance.discard_cluster(run_id, body.cluster_name, body.reason)
+    result = cluster_governance.discard_cluster(run_id, body.cluster_name, body.reason, by="webmcp")
     if not result.get("ok") and result.get("error") == "run not found":
         raise HTTPException(status_code=404, detail="Run not found")
     return result
@@ -386,7 +397,7 @@ async def propose_run_cluster(run_id: str, body: ClusterProposeIn, _auth: None =
     """Propose a new cluster via a scoped keyword re-seed on one topic (1 DataForSEO call)."""
     from src import cluster_governance
 
-    result = await asyncio.to_thread(cluster_governance.propose_cluster, run_id, body.topic)
+    result = await asyncio.to_thread(cluster_governance.propose_cluster, run_id, body.topic, None, None, "webmcp")
     if not result.get("ok") and result.get("error") == "run not found":
         raise HTTPException(status_code=404, detail="Run not found")
     return result

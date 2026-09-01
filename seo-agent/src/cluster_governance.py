@@ -46,6 +46,39 @@ def _run_lock(run_id: str) -> threading.Lock:
         return lock
 
 
+def _log_change(run: dict, op: str, cluster: str, reason: str = "",
+                by: str = "agent", **extra) -> None:
+    """Append one line to the run's governance history.
+
+    Append-only and deliberately small: op, target, who, why, and the selected
+    count before and after. Every governance op mutates the cluster artifact in
+    place, so without this there is no record of how a strategy was shaped —
+    only where it ended up. For a tool whose point is collaboration, the
+    shaping IS the story.
+
+    Full artifact snapshots per change were considered and rejected: storage
+    grows fast and nobody diffs two complete states. The op plus the counts
+    answers "what happened here", which is the question actually asked.
+
+    Called inside the run lock by every mutating op, so entries cannot
+    interleave or be lost the way the writes themselves once were.
+    """
+    stage = _clusters_stage(run)
+    artifact = stage["artifact"] if stage else {}
+    entry = {
+        "at": datetime.now(timezone.utc).isoformat(),
+        "by": by,
+        "op": op,
+        "cluster": cluster,
+        "selected_after": len(artifact.get("clusters") or []),
+        "discarded_after": len(artifact.get("discarded") or []),
+    }
+    if reason:
+        entry["reason"] = reason[:300]
+    entry.update({k: v for k, v in extra.items() if v not in (None, "", [])})
+    run.setdefault("governance", []).append(entry)
+
+
 def _clusters_stage(run: dict) -> dict | None:
     for stage in run.get("stages", []):
         if stage["id"] == "clusters":
@@ -78,6 +111,10 @@ def _reasoning(entry: dict, decision: str) -> dict:
             entry.get("selection_reason") if decision == "selected"
             else entry.get("discard_reason")
         ) or "",
+        # What it is and what to do with it — written where the business
+        # context exists (selection), so a reader can act without the keywords.
+        "what_it_is": entry.get("what_it_is") or "",
+        "how_to_use_it": entry.get("how_to_use_it") or "",
         "why_these_keywords_group": entry.get("rationale") or "",
         "seo_rationale": entry.get("seo_rationale") or "",
         "geo_rationale": entry.get("geo_rationale") or "",
@@ -145,13 +182,13 @@ def list_clusters_all(run_id: str) -> dict | None:
     }
 
 
-def promote_cluster(run_id: str, cluster_name: str) -> dict:
+def promote_cluster(run_id: str, cluster_name: str, by: str = "agent") -> dict:
     """Move a discarded cluster back into the selection. Serialised per run."""
     with _run_lock(run_id):
-        return _promote_cluster_locked(run_id, cluster_name)
+        return _promote_cluster_locked(run_id, cluster_name, by)
 
 
-def _promote_cluster_locked(run_id: str, cluster_name: str) -> dict:
+def _promote_cluster_locked(run_id: str, cluster_name: str, by: str = "agent") -> dict:
     run = runs.get_run(run_id)
     if run is None:
         return {"ok": False, "error": "run not found"}
@@ -170,17 +207,24 @@ def _promote_cluster_locked(run_id: str, cluster_name: str) -> dict:
     entry["promoted"] = True
     artifact.setdefault("clusters", []).append(entry)
     artifact["count"] = len(artifact["clusters"])
+    # Logged AFTER the mutation: the entry records the state the change
+    # produced, so selected_after must count the promoted cluster.
+    _log_change(run, "promote", entry.get("cluster_name") or entry.get("name") or cluster_name,
+                reason="promoted back into the selection", by=by,
+                was_discarded_for=hit.get("discard_reason"))
     runs.save_run(run_id, run)
     return {"ok": True, "promoted": entry.get("name"), "selected_count": artifact["count"]}
 
 
-def discard_cluster(run_id: str, cluster_name: str, reason: str = "") -> dict:
+def discard_cluster(run_id: str, cluster_name: str, reason: str = "",
+                    by: str = "agent") -> dict:
     """Move a selected cluster into the discarded set. Serialised per run."""
     with _run_lock(run_id):
-        return _discard_cluster_locked(run_id, cluster_name, reason)
+        return _discard_cluster_locked(run_id, cluster_name, reason, by)
 
 
-def _discard_cluster_locked(run_id: str, cluster_name: str, reason: str = "") -> dict:
+def _discard_cluster_locked(run_id: str, cluster_name: str, reason: str = "",
+                            by: str = "agent") -> dict:
     run = runs.get_run(run_id)
     if run is None:
         return {"ok": False, "error": "run not found"}
@@ -199,6 +243,8 @@ def _discard_cluster_locked(run_id: str, cluster_name: str, reason: str = "") ->
     entry.pop("promoted", None)
     artifact.setdefault("discarded", []).append(entry)
     artifact["count"] = len(clusters)
+    _log_change(run, "discard", entry.get("cluster_name") or entry.get("name") or cluster_name,
+                reason=reason or "discarded by user", by=by)
     runs.save_run(run_id, run)
     return {"ok": True, "discarded": entry.get("name"), "selected_count": len(clusters)}
 
@@ -296,6 +342,7 @@ def propose_cluster(
     topic: str,
     location_code: int | None = None,
     language_code: str | None = None,
+    by: str = "agent",
 ) -> dict:
     """Propose a new cluster via a scoped re-seed on one topic.
 
@@ -388,5 +435,28 @@ def propose_cluster(
             return {"ok": False, "error": f"a cluster for '{topic}' already exists"}
         existing.append(entry)
         artifact["count"] = len(existing)
+        _log_change(run, "propose", entry.get("cluster_name") or topic,
+                    reason=f"proposed and researched: {topic}", by=by,
+                    keywords_found=len(members))
         runs.save_run(run_id, run)
     return {"ok": True, "proposed": entry}
+
+
+def governance_history(run_id: str) -> dict:
+    """How this strategy was shaped: every change, in order, and by whom."""
+    run = runs.get_run(run_id)
+    if run is None:
+        return {"ok": False, "error": "run not found"}
+    entries = run.get("governance") or []
+    return {
+        "ok": True,
+        "run_id": run_id,
+        "changes": entries,
+        "count": len(entries),
+        "note": (
+            "Append-only record of promote/discard/propose operations. `by` "
+            "says whether a change came from the agent, an external assistant "
+            "over WebMCP, or the user. Empty means the pipeline's own output "
+            "was never adjusted."
+        ),
+    }
