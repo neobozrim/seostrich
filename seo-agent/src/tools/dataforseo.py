@@ -188,17 +188,24 @@ def keyword_overview(keywords: list[str], location_code: int = 2840, language_co
     return _run(_inner())
 
 
+_LANG_REJECTED: set[tuple[int, str]] = set()
+
+
 async def _labs_keywords(endpoint: str, seed: str, limit: int, location_code: int, language_code: str) -> dict:
     """Post a labs keyword call; DFS rejects languages unavailable in a location
-    (40501) — retry once with the location's default language."""
+    (40501) — retry once with the location's default language and remember."""
+    lang = language_code
+    if (location_code, language_code) in _LANG_REJECTED:
+        lang = _default_lang(location_code)
     payload = {
         "keyword": seed,
         "location_code": location_code,
-        "language_code": language_code,
+        "language_code": lang,
         "limit": limit,
     }
     data = await _post(endpoint, [payload])
-    if _task_status(data) == 40501 and language_code != _default_lang(location_code):
+    if _task_status(data) == 40501 and lang != _default_lang(location_code):
+        _LANG_REJECTED.add((location_code, language_code))
         payload["language_code"] = _default_lang(location_code)
         print(f"  [dfs] {endpoint.split('/')[-2]}: language '{language_code}' invalid for location {location_code}; retried with '{payload['language_code']}'")
         data = await _post(endpoint, [payload])
