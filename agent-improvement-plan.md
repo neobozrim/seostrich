@@ -121,6 +121,11 @@ retry encouragement, no stop mechanism, stages only surfaced after completion.
   input carried the strategy). pull_universe therefore (1) caps direct seed expansion to 5 seeds, (2) always keeps the seeds
   themselves as a floor, and (3) escalates to competitor discovery (SERP → top domains → ranked keywords) when expansion is
   thin. Low/zero volumes in a thin run are reported as "competitor/thematic evidence", never back-filled with invented data.
+- 2026-09-01: Seeds must stay in the market's own language (94a8cf3): first prod thin-market run (chat-20260901T070533) built
+  a strategy from 8 seed-only keywords — but extract_seeds had transliterated "моноспектакъл" into "Bulgarian monospectacle
+  poet", so expansion + competitor discovery had no in-market term to latch onto. extract_seeds now preserves verbatim native
+  terms and seeds in the target search language (language_code passed from the pipeline). Verified: BG brief now yields
+  "моноспектакъл"/"изречена поезия" verbatim, which expand to ~58 keywords.
 
 ## Learnings (append as discovered)
 - Token-plan provider queues BURST traffic: isolated probes return in seconds, but 4+ rapid agent calls get held open with
