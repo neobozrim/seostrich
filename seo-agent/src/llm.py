@@ -37,6 +37,10 @@ def get_client() -> OpenAI:
             api_key=settings.qwen_api_key,
             base_url=settings.qwen_base_url,
             timeout=120.0,  # 2 minute timeout for LLM calls
+            # SDK default retries twice on timeout — a queued/hung request
+            # would then block a run for ~7 min. Fail fast; the agent loop
+            # surfaces the error as a tool result instead.
+            max_retries=1,
         )
     return _client
 

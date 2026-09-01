@@ -93,6 +93,22 @@ def _run(coro):
         return pool.submit(asyncio.run, coro).result()
 
 
+def _task_items(data: dict, label: str = "") -> list:
+    """Safely extract tasks[0].result[0].items — DFS returns result:null on failed tasks."""
+    tasks = data.get("tasks") or []
+    if not tasks:
+        return []
+    task = tasks[0] or {}
+    result = task.get("result")
+    if not result:
+        status = task.get("status_code") or data.get("status_code")
+        message = task.get("status_message") or data.get("status_message")
+        print(f"  [dfs] empty result{f' for {label}' if label else ''}: status={status} {message}")
+        return []
+    first = result[0] if isinstance(result, list) else {}
+    return (first or {}).get("items") or []
+
+
 def keywords_for_site(url: str, limit: int = 100) -> list[dict]:
     async def _inner():
         data = await _post("/v3/dataforseo_labs/ranked_keywords/live", [
@@ -105,7 +121,7 @@ def keywords_for_site(url: str, limit: int = 100) -> list[dict]:
                 ],
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         results = []
         for item in items:
             kw = item.get("keyword_data", {})
@@ -141,7 +157,7 @@ def keyword_overview(keywords: list[str], location_code: int = 2840, language_co
                     "limit": 1,  # Just get the keyword itself
                 }
             ])
-            items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+            items = _task_items(data)
             if items:
                 item = items[0]
                 info = item.get("keyword_info", {})
@@ -169,7 +185,7 @@ def related_keywords(seed: str, limit: int = 50, location_code: int = 2840, lang
                 "limit": limit,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         return [_kw_item_related(i) for i in items]
     return _run(_inner())
 
@@ -184,7 +200,7 @@ def keyword_suggestions(seed: str, limit: int = 50, location_code: int = 2840, l
                 "limit": limit,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         return [_kw_item(i) for i in items]
     return _run(_inner())
 
@@ -199,7 +215,7 @@ def serp_organic(keyword: str, location_code: int = 2840, language_code: str = "
                 "depth": depth,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         results = []
         for item in items:
             if item.get("type") == "organic":
@@ -223,9 +239,7 @@ def serp_ai_mode(keyword: str, location_code: int = 2840, language_code: str = "
                 "language_code": language_code,
             }
         ])
-        tasks = data.get("tasks", [{}])
-        results = tasks[0].get("result", [{}])
-        items = results[0].get("items", []) if results else []
+        items = _task_items(data)
         cited = []
         for item in items:
             if item.get("type") == "ai_mode" and item.get("references"):
@@ -248,7 +262,7 @@ def keyword_difficulty(keywords: list[str], location_code: int = 2840, language_
                 "language_code": language_code,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         return [
             {"keyword": i.get("keyword", ""), "difficulty": i.get("keyword_difficulty", 0)}
             for i in items
@@ -265,7 +279,7 @@ def historical_search_volume(keywords: list[str], location_code: int = 2840, lan
                 "language_code": language_code,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         results = []
         for item in items:
             monthly = item.get("monthly_searches", [])
@@ -288,7 +302,7 @@ def trends_trending(location_code: int = 2840, language_code: str = "en", limit:
                 "limit": limit,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         return [
             {"keyword": i.get("keyword", ""), "volume": i.get("search_volume", 0)}
             for i in items
@@ -304,7 +318,7 @@ def competitors_domain(domain: str, limit: int = 10) -> list[str]:
                 "limit": limit,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         return [i.get("domain", "") for i in items]
     return _run(_inner())
 
@@ -318,7 +332,7 @@ def domain_intersection(domain1: str, domain2: str, limit: int = 50) -> list[dic
                 "limit": limit,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         results = []
         for item in items:
             kw_data = item.get("keyword_data", {})
@@ -478,7 +492,7 @@ def serp_paa(keyword: str, location_code: int = 2840, language_code: str = "en")
                 "depth": 20,
             }
         ])
-        items = data.get("tasks", [{}])[0].get("result", [{}])[0].get("items", [])
+        items = _task_items(data)
         questions = []
         for item in items:
             if item.get("type") != "people_also_ask":

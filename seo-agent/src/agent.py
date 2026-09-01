@@ -1315,7 +1315,11 @@ def run_agent(
         if len(tool_calls) > 1:
             print(f"\n[Parallel execution]: Running {len(tool_calls)} tools concurrently...")
             from concurrent.futures import ThreadPoolExecutor, as_completed
-            
+
+            # Executor threads don't inherit contextvars — re-enter the run
+            # context so recording/budgeting work inside parallel tools.
+            run_ctx = pipeline_recorder.active_run_id()
+
             def execute_tool(tc):
                 tool_name = tc["name"]
                 tool_args = tc["arguments"]
@@ -1337,7 +1341,11 @@ def run_agent(
                     }
 
                 try:
-                    result = TOOL_CALLABLES[tool_name](**parsed_args)
+                    if run_ctx:
+                        with pipeline_recorder.use_run(run_ctx):
+                            result = TOOL_CALLABLES[tool_name](**parsed_args)
+                    else:
+                        result = TOOL_CALLABLES[tool_name](**parsed_args)
                     result_str = llm.format_json(result)
                     return {
                         "tc": tc,

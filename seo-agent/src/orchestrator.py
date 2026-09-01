@@ -497,6 +497,13 @@ Be concise. Each step should be <10 words.
                             yield {"type": "stage", "run_id": run_id, **stage}
                         if not worker.is_alive():
                             break
+                        # Stop must not wait for a hung network call: abandon
+                        # the daemon worker and close the run right away.
+                        with _stop_lock:
+                            stopped_now = bool(_stop_flags.get(sid))
+                        if stopped_now:
+                            worker_outcome["error"] = StopRequested("stopped by user")
+                            break
                 except GeneratorExit:
                     # Client went away mid-run: ask the agent to stop and
                     # close the run so it doesn't stay "running" forever.
