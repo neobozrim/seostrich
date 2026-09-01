@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  X,
   ChevronDown,
   ChevronRight,
   Send,
@@ -12,6 +11,9 @@ import {
   MessageSquare,
   Loader2,
   RefreshCw,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
 } from 'lucide-react';
 import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent } from '@/types';
 import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, AuthError } from '@/lib/api';
@@ -42,16 +44,6 @@ const STATUS_META: Record<string, { label: string; cls: string }> = {
   stopped: { label: 'Stopped', cls: 'bg-surface-200 text-gray-600' },
   error: { label: 'Error', cls: 'bg-red-100 text-red-700' },
 };
-
-function StatusBadge({ status }: { status?: string }) {
-  const meta = STATUS_META[status || ''] || { label: status || 'unknown', cls: 'bg-surface-200 text-gray-600' };
-  return (
-    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${meta.cls}`}>
-      {status === 'running' && <Loader2 className="w-3 h-3 inline mr-1 animate-spin" />}
-      {meta.label}
-    </span>
-  );
-}
 
 function ScoreBadge({ value }: { value: number | null | undefined }) {
   if (value === null || value === undefined) return null;
@@ -197,12 +189,152 @@ function DiffBadge({ value }: { value: number | undefined }) {
   return <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${tone}`}>KD {value}</span>;
 }
 
+type SortKey = 'keyword' | 'volume' | 'difficulty' | 'cpc' | 'intent';
+type SortDir = 'asc' | 'desc';
+
+// Numbers are most useful biggest-first, names A-Z, difficulty easiest-first.
+// Clicking a column applies the direction people actually want first, and
+// clicking again reverses it — the pattern every spreadsheet and data grid
+// uses, so nobody has to learn it here.
+const DEFAULT_DIR: Record<SortKey, SortDir> = {
+  keyword: 'asc',
+  volume: 'desc',
+  difficulty: 'asc',
+  cpc: 'desc',
+  intent: 'asc',
+};
+
+const COLUMNS: Array<{
+  key: SortKey;
+  label: string;
+  align: 'left' | 'right';
+  className: string;
+}> = [
+  { key: 'keyword', label: 'Keyword', align: 'left', className: 'pl-2' },
+  { key: 'volume', label: 'Volume', align: 'right', className: 'w-20' },
+  { key: 'difficulty', label: 'KD', align: 'right', className: 'w-14' },
+  { key: 'cpc', label: 'CPC', align: 'right', className: 'w-16' },
+  { key: 'intent', label: 'Intent', align: 'left', className: 'pl-3 w-28' },
+];
+
+function sortValue(row: Record<string, any>, key: SortKey): string | number | null {
+  if (key === 'keyword') return String(row.keyword || row.query || '').toLowerCase();
+  if (key === 'intent') return String(row.intent || '').toLowerCase();
+  const v = row[key];
+  return v === undefined || v === null ? null : Number(v);
+}
+
+function sortRows(
+  rows: Record<string, any>[],
+  key: SortKey,
+  dir: SortDir,
+): Record<string, any>[] {
+  const sign = dir === 'asc' ? 1 : -1;
+  return [...rows].sort((a, b) => {
+    const av = sortValue(a, key);
+    const bv = sortValue(b, key);
+    // Missing values sink to the bottom in BOTH directions. Sorting by CPC
+    // descending should not fill the top of the table with blanks.
+    const aMissing = av === null || av === '';
+    const bMissing = bv === null || bv === '';
+    if (aMissing && bMissing) return 0;
+    if (aMissing) return 1;
+    if (bMissing) return -1;
+    if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * sign;
+    return String(av).localeCompare(String(bv)) * sign;
+  });
+}
+
+function SortHeader({
+  column,
+  active,
+  dir,
+  onSort,
+}: {
+  column: (typeof COLUMNS)[number];
+  active: boolean;
+  dir: SortDir;
+  onSort: (key: SortKey) => void;
+}) {
+  const nextDir = active ? (dir === 'asc' ? 'desc' : 'asc') : DEFAULT_DIR[column.key];
+  const readable =
+    column.key === 'keyword' || column.key === 'intent'
+      ? nextDir === 'asc'
+        ? 'A to Z'
+        : 'Z to A'
+      : nextDir === 'asc'
+        ? 'lowest first'
+        : 'highest first';
+  return (
+    <th
+      className={CLS_TH(column, active)}
+      aria-sort={active ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+    >
+      <button
+        onClick={() => onSort(column.key)}
+        title={'Sort by ' + column.label.toLowerCase() + ', ' + readable}
+        className={CLS_BTN(column, active)}
+      >
+        {column.label}
+        {active ? (
+          dir === 'asc' ? (
+            <ArrowUp className="w-3 h-3" />
+          ) : (
+            <ArrowDown className="w-3 h-3" />
+          )
+        ) : (
+          // Inactive columns stay quiet until hovered: the active sort is then
+          // never ambiguous, but every column still advertises that it sorts.
+          <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-60 transition-opacity" />
+        )}
+      </button>
+    </th>
+  );
+}
+
+function CLS_TH(column: (typeof COLUMNS)[number], _active: boolean): string {
+  return (
+    'font-medium pb-1 ' +
+    column.className +
+    (column.align === 'right' ? ' text-right' : ' text-left')
+  );
+}
+
+function CLS_BTN(column: (typeof COLUMNS)[number], active: boolean): string {
+  return (
+    'group inline-flex items-center gap-0.5 uppercase tracking-wide transition-colors ' +
+    (column.align === 'right' ? 'flex-row-reverse ' : '') +
+    (active ? 'text-primary-600' : 'text-gray-400 hover:text-gray-600')
+  );
+}
+
 // Keywords are read by SCANNING a column — "which of these has volume?" — so
 // they are laid out as a table with fixed columns and right-aligned numbers,
-// not as inline chips where every row starts at a different x position.
-function KeywordTable({ rows }: { rows: Array<string | Record<string, any>> }) {
+// not as inline chips where every row starts at a different x position. And
+// scanning a column is exactly when you want to sort by it.
+function KeywordTable({
+  rows,
+  limit,
+}: {
+  rows: Array<string | Record<string, any>>;
+  limit?: number;
+}) {
+  const [sort, setSort] = useState<{ key: SortKey; dir: SortDir } | null>(null);
+
   const objects = rows.filter((r) => typeof r === 'object') as Record<string, any>[];
   const plain = rows.filter((r) => typeof r === 'string') as string[];
+
+  const handleSort = (key: SortKey) =>
+    setSort((prev) =>
+      prev?.key === key
+        ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' }
+        : { key, dir: DEFAULT_DIR[key] },
+    );
+
+  // Sort the WHOLE set before truncating: sorting only the visible 24 would
+  // quietly answer a different question than the one the click asked.
+  const ordered = sort ? sortRows(objects, sort.key, sort.dir) : objects;
+  const visible = limit != null ? ordered.slice(0, limit) : ordered;
 
   return (
     <div>
@@ -210,16 +342,20 @@ function KeywordTable({ rows }: { rows: Array<string | Record<string, any>> }) {
         <div className="overflow-x-auto -mx-1">
           <table className="w-full text-xs border-separate border-spacing-y-1 px-1">
             <thead>
-              <tr className="text-[10px] uppercase tracking-wide text-gray-400">
-                <th className="text-left font-medium pl-2 pb-1">Keyword</th>
-                <th className="text-right font-medium pb-1 w-20">Volume</th>
-                <th className="text-right font-medium pb-1 w-14">KD</th>
-                <th className="text-right font-medium pb-1 w-16">CPC</th>
-                <th className="text-left font-medium pb-1 pl-3 w-28">Intent</th>
+              <tr className="text-[10px]">
+                {COLUMNS.map((c) => (
+                  <SortHeader
+                    key={c.key}
+                    column={c}
+                    active={sort?.key === c.key}
+                    dir={sort?.key === c.key ? sort.dir : DEFAULT_DIR[c.key]}
+                    onSort={handleSort}
+                  />
+                ))}
               </tr>
             </thead>
             <tbody>
-              {objects.map((k, i) => (
+              {visible.map((k, i) => (
                 <tr key={i} className="bg-surface-100">
                   <td className="pl-2 py-1.5 rounded-l-lg text-gray-800">
                     {k.keyword || k.query || ''}
@@ -256,7 +392,6 @@ function KeywordTable({ rows }: { rows: Array<string | Record<string, any>> }) {
 function KeywordsArtifact({ artifact }: { artifact: Record<string, any> }) {
   const [open, setOpen] = useState(false);
   const keywords: Array<string | Record<string, any>> = artifact.keywords || [];
-  const shown = open ? keywords : keywords.slice(0, 24);
   const totalVol = keywords.reduce(
     (acc, k) => acc + (typeof k === 'object' ? k.volume || 0 : 0),
     0
@@ -278,7 +413,7 @@ function KeywordsArtifact({ artifact }: { artifact: Record<string, any> }) {
         </button>
       </div>
       <div>
-        <KeywordTable rows={shown} />
+        <KeywordTable rows={keywords} limit={open ? undefined : 24} />
         {!open && keywords.length > 24 && (
           <span className="text-xs text-gray-400"> +{keywords.length - 24} more…</span>
         )}
@@ -983,21 +1118,20 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
     <div className="fixed inset-0 z-50 bg-surface-50 overflow-y-auto">
       {/* Top bar */}
       <div className="sticky top-0 z-10 bg-surface-100 border-b border-surface-300 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {/* No decorative icon here: the SEOstrich logo sits top-left on every
-              internal view, and a second generic glyph beside the title just
-              competes with it. */}
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold text-primary-700">
-                {run ? run.title || run.project || 'Report' : 'Report'}
-              </h2>
-              {run?.status && <StatusBadge status={run.status} />}
-            </div>
-            {run?.project && (
-              <p className="text-xs text-gray-500">{run.project}</p>
-            )}
-          </div>
+        <div className="flex items-center gap-3 min-w-0">
+          {/* The logo is the way home on every internal view — clicking it
+              closes the report, so there is no need to hunt for an X. */}
+          <button
+            onClick={onClose}
+            title="Back to your work"
+            className="shrink-0 hover:opacity-80 transition-opacity"
+          >
+            <img
+              src="/logo/seostrich-lockup-horizontal.svg"
+              alt="SEOstrich — back to your work"
+              className="h-7 w-auto"
+            />
+          </button>
         </div>
         <div className="flex items-center gap-2">
           {summaries.length > 1 && (
@@ -1021,17 +1155,25 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
           >
             <RefreshCw className="w-4 h-4 text-gray-500" />
           </button>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-surface-200 rounded-lg transition-colors"
-            title="Close pipeline view"
-          >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      {/* The report is ABOUT something — say so as a page heading rather than
+          shrinking it into the chrome. No status badge: "complete" on a
+          finished report tells the reader nothing, and a run that failed says
+          so in its own body. */}
+      {run && !loading && !error && (
+        <div className="max-w-3xl mx-auto px-6 pt-8">
+          <h1 className="text-2xl font-display text-primary-700">
+            {run.title || run.project || 'Report'}
+          </h1>
+          {run.project && run.project !== run.title && (
+            <p className="text-sm text-gray-500 mt-1">{run.project}</p>
+          )}
+        </div>
+      )}
+
+      <div className="max-w-3xl mx-auto px-6 pt-4 pb-8">
         {loading && (
           <div className="flex items-center justify-center py-24 text-gray-400 gap-2">
             <Loader2 className="w-5 h-5 animate-spin" /> Loading pipeline…

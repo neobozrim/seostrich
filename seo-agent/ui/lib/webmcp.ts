@@ -72,7 +72,7 @@ const RUN_ID_PROP = {
 const READ_ONLY = { readOnlyHint: true };
 const READ_WRITE = { readOnlyHint: false };
 
-function buildTools() {
+export function buildTools() {
   return [
     {
       name: 'seo_get_pipeline_overview',

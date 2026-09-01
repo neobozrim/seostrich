@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Plus, X, Settings2, Workflow, Square } from 'lucide-react';
+import { Send, Plus, X, Settings2, Workflow, Square, Plug } from 'lucide-react';
 import { Message, MemoryState, ToolCall, ActivityEvent } from '@/types';
 import { activityLine } from '@/lib/activity';
 import { ChatMessage } from '@/components/ChatMessage';
@@ -10,6 +10,7 @@ import { RunView } from '@/components/RunView';
 import { FlowCards } from '@/components/FlowCards';
 import { HomeCanvas } from '@/components/HomeCanvas';
 import { ProfileMenu } from '@/components/ProfileMenu';
+import { WebMcpGuide } from '@/components/WebMcpGuide';
 import { LoginForm } from '@/components/LoginForm';
 import {
   sendMessage,
@@ -39,6 +40,7 @@ export default function Home() {
   });
   const [showSystem, setShowSystem] = useState(false);
   const [showRun, setShowRun] = useState(false);
+  const [showWebMcp, setShowWebMcp] = useState(false);
   const [username, setUser] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [authReady, setAuthReady] = useState(false);
@@ -178,10 +180,11 @@ export default function Home() {
 
   // Handle browser back button to close panels
   useEffect(() => {
-    if (!showSystem && !showRun) return;
+    if (!showSystem && !showRun && !showWebMcp) return;
 
     const handlePopState = () => {
-      if (showRun) setShowRun(false);
+      if (showWebMcp) setShowWebMcp(false);
+      else if (showRun) setShowRun(false);
       else if (showSystem) setShowSystem(false);
     };
 
@@ -194,7 +197,7 @@ export default function Home() {
         window.history.back();
       }
     };
-  }, [showSystem, showRun]);
+  }, [showSystem, showRun, showWebMcp]);
 
   const handleSend = async () => {
     if (!input.trim() && attachments.length === 0) return;
@@ -467,6 +470,14 @@ export default function Home() {
                 <span className="hidden sm:inline">System</span>
               </button>
               )}
+              <button
+                onClick={() => setShowWebMcp(true)}
+                title="Drive this app with your own assistant"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
+              >
+                <Plug className="w-4 h-4" />
+                <span className="hidden sm:inline">WebMCP</span>
+              </button>
               <ProfileMenu
                 username={username}
                 authRequired={authRequired}
@@ -610,6 +621,8 @@ export default function Home() {
       )}
 
       {/* Reports (run detail) */}
+      {showWebMcp && <WebMcpGuide onClose={() => setShowWebMcp(false)} />}
+
       {showRun && (
         <RunView
           tasks={memory.tasks}
