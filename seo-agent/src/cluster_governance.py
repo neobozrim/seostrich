@@ -15,10 +15,35 @@ it is budget-accounted to the run being edited.
 """
 from __future__ import annotations
 
+import threading
 from datetime import datetime, timezone
 
 from . import runs
 from .pipeline_recorder import market_label, use_run
+
+
+# Governance ops are read-run -> mutate -> save-whole-run. The agent dispatches
+# tool calls in PARALLEL (ThreadPoolExecutor in agent.py), so several of these
+# can interleave on the same run document and silently lose each other's writes.
+#
+# Observed 2026-09-01: seven promote/discard/propose calls fired at the same
+# timestamp; a discard was reverted by a concurrent promote writing back a stale
+# copy, and the agent — correctly — reported that its change had been "backfilled
+# into the selection", then spent extra rounds re-applying it.
+#
+# One lock per run id: mutations on the same run serialise, different runs stay
+# concurrent.
+_run_locks: dict[str, threading.Lock] = {}
+_locks_guard = threading.Lock()
+
+
+def _run_lock(run_id: str) -> threading.Lock:
+    with _locks_guard:
+        lock = _run_locks.get(run_id)
+        if lock is None:
+            lock = threading.Lock()
+            _run_locks[run_id] = lock
+        return lock
 
 
 def _clusters_stage(run: dict) -> dict | None:
@@ -121,7 +146,12 @@ def list_clusters_all(run_id: str) -> dict | None:
 
 
 def promote_cluster(run_id: str, cluster_name: str) -> dict:
-    """Move a discarded cluster back into the selection."""
+    """Move a discarded cluster back into the selection. Serialised per run."""
+    with _run_lock(run_id):
+        return _promote_cluster_locked(run_id, cluster_name)
+
+
+def _promote_cluster_locked(run_id: str, cluster_name: str) -> dict:
     run = runs.get_run(run_id)
     if run is None:
         return {"ok": False, "error": "run not found"}
@@ -145,7 +175,12 @@ def promote_cluster(run_id: str, cluster_name: str) -> dict:
 
 
 def discard_cluster(run_id: str, cluster_name: str, reason: str = "") -> dict:
-    """Move a selected cluster into the discarded set (keeps its stats)."""
+    """Move a selected cluster into the discarded set. Serialised per run."""
+    with _run_lock(run_id):
+        return _discard_cluster_locked(run_id, cluster_name, reason)
+
+
+def _discard_cluster_locked(run_id: str, cluster_name: str, reason: str = "") -> dict:
     run = runs.get_run(run_id)
     if run is None:
         return {"ok": False, "error": "run not found"}
@@ -338,15 +373,20 @@ def propose_cluster(
         "seed_stats": kws[:12],
     }
 
-    stage = _clusters_stage(run)
-    if stage is None:
-        stage = {"id": "clusters", "label": "Clusters", "status": "done", "artifact": {}}
-        run.setdefault("stages", []).append(stage)
-    artifact = stage["artifact"]
-    existing = artifact.setdefault("clusters", [])
-    if any(_match(c, topic) for c in existing):
-        return {"ok": False, "error": f"a cluster for '{topic}' already exists"}
-    existing.append(entry)
-    artifact["count"] = len(existing)
-    runs.save_run(run_id, run)
+    # Same read-modify-write hazard as promote/discard: take the run lock for
+    # the mutating half. The DataForSEO call above is deliberately outside it,
+    # so a slow network call cannot block other governance ops.
+    with _run_lock(run_id):
+        run = runs.get_run(run_id) or run
+        stage = _clusters_stage(run)
+        if stage is None:
+            stage = {"id": "clusters", "label": "Clusters", "status": "done", "artifact": {}}
+            run.setdefault("stages", []).append(stage)
+        artifact = stage["artifact"]
+        existing = artifact.setdefault("clusters", [])
+        if any(_match(c, topic) for c in existing):
+            return {"ok": False, "error": f"a cluster for '{topic}' already exists"}
+        existing.append(entry)
+        artifact["count"] = len(existing)
+        runs.save_run(run_id, run)
     return {"ok": True, "proposed": entry}
