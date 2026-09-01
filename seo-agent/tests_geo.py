@@ -42,8 +42,21 @@ def fake_keyword_overview(keywords, location_code=2840, language_code="en"):
 mention_calls: list[str] = []
 
 
-def fake_ai_mentions(keywords, location_code=2840, language_code="en", limit=100):
-    mention_calls.extend(keywords)
+def fake_ai_mentions(keywords, location_code=2840, language_code="en", limit=100,
+                     scope="question"):
+    mention_calls.extend(f"{k}:{scope}" for k in keywords)
+    if scope == "answer":
+        # answer-scope: adjacent questions that never name the term, and a
+        # competitor the tight pass never saw
+        return [{"question": "how do checkout agents work", "platform": "google",
+                 "has_answer": True, "answer_snippet": "", "ai_search_volume": 3,
+                 "matched_keyword": "agentic commerce",
+                 "sources": [{"domain": "smallcommerceblog.io", "url": "u", "title": "t"}]},
+                {"question": "who builds checkout agents", "platform": "google",
+                 "has_answer": True, "answer_snippet": "", "ai_search_volume": 2,
+                 "matched_keyword": "agentic commerce",
+                 "sources": [{"domain": "smallcommerceblog.io", "url": "u", "title": "t"},
+                             {"domain": "tinyblog.dev", "url": "u", "title": "t"}]}]
     return [
         {"question": "what is agentic commerce", "platform": "chatgpt", "has_answer": True,
          "answer_snippet": "…", "ai_search_volume": 40,
@@ -71,6 +84,8 @@ gd.budget_remaining = lambda *a, **k: 99
 # stripe/mastercard-tier vs a niche site, so displaceability has something to judge
 gd.bulk_domain_ranks = lambda doms: {
     "stripe.com": 729, "neo4j.com": 520, "tinyblog.dev": 180,
+    # smallcommerceblog.io deliberately absent: the API returns nothing for
+    # some domains, and rank 0 must mean "unknown", not "weakest".
 }
 
 RID = "test-geo-run"
@@ -98,9 +113,13 @@ print("3. the EXPENSIVE call is gated by the cheap one")
 # search_mentions is ~$0.10 per keyword; a topic the free volume check already
 # showed is dead must never reach it.
 chk("dead topic never sent to the paid call",
-    "dead topic" not in mention_calls, str(mention_calls))
+    not any(c.startswith("dead topic") for c in mention_calls), str(mention_calls))
 chk("only shortlisted topics were charged for",
-    set(mention_calls) <= {"agentic commerce", "knowledge graphs"}, str(mention_calls))
+    {c.split(":")[0] for c in mention_calls} <= {"agentic commerce", "knowledge graphs"},
+    str(mention_calls))
+chk("both scopes were used (wide competitive scan on)",
+    {c.split(":")[1] for c in mention_calls} == {"question", "answer"}, str(mention_calls))
+chk("cost note reflects two scopes", "two scopes" in res["cost_note"], res["cost_note"])
 chk("and it is reported, not silently dropped",
     "dead topic" in res["not_sent_to_paid_call"], str(res["not_sent_to_paid_call"]))
 chk("llm evaluation (zero volume) also skipped",
@@ -150,9 +169,28 @@ chk("authority range reported",
     top["metrics"]["strongest_cited_authority"] == 729
     and top["metrics"]["weakest_cited_authority"] == 180,
     str(top["metrics"]))
+chk("an unranked domain does not become the floor",
+    top["metrics"]["weakest_cited_authority"] > 0, str(top["metrics"]))
 kg = next(b for b in res["brief"] if b["topic"] == "knowledge graphs")
 chk("giants-only topic marked hard, not winnable",
     "winnable" not in kg["can_you_displace_them"], kg["can_you_displace_them"])
+
+print("6b. the wide answer-scope pass widens the competitive set only")
+ac = next(b for b in res["brief"] if b["topic"] == "agentic commerce")
+cited = [d["domain"] for d in ac["currently_cited"]]
+chk("competitor seen only in answer scope is graded",
+    "smallcommerceblog.io" in cited, str(cited))
+chk("tight-pass sources still present", "stripe.com" in cited, str(cited))
+chk("answer-scope questions stay OUT of the brief",
+    "how do checkout agents work" not in ac["questions_ai_answers"],
+    str(ac["questions_ai_answers"]))
+
+print("6c. a one-off citation is not treated as proof")
+chk("repeat-cited niche site counts",
+    any(d["domain"] == "tinyblog.dev" for d in ac["niche_sites_already_cited"]),
+    str(ac["niche_sites_already_cited"]))
+chk("verdict says 'more than once'", "more than" in ac["can_you_displace_them"],
+    ac["can_you_displace_them"])
 
 print("7. recorded as an inspectable stage")
 run = runs.get_run(RID)

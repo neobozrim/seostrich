@@ -478,7 +478,7 @@ export default function Home() {
                   className="h-40 w-auto mx-auto mb-4"
                 />
                 <p className="text-gray-500">
-                  An SEO agent that shows its work — and lets your own agent steer it.
+                  Get discovered.
                 </p>
               </div>
               <FlowCards onPick={(prompt) => { setInput(prompt); textareaRef.current?.focus(); }} />

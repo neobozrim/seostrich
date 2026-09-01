@@ -38,7 +38,7 @@ export function LoginForm({ onLoggedIn }: LoginFormProps) {
           className="h-32 w-auto mx-auto mb-3"
         />
         <p className="text-sm text-gray-500 mb-6 text-center">
-          An SEO agent that has memory, inspects its work and self-improves.
+          Get discovered.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">

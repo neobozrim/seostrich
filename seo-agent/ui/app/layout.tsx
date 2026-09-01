@@ -24,7 +24,7 @@ const monoFont = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: 'SEOstrich',
-  description: 'An SEO agent that has memory, inspects its work and self-improves.',
+  description: 'Get discovered.',
   manifest: '/site.webmanifest',
   icons: {
     icon: [

@@ -71,13 +71,47 @@ def _demand_rows(topics: list[str], location_code: int, language_code: str) -> l
     return rows_out
 
 
-def _citability(topics: list[str], location_code: int, language_code: str) -> dict[str, dict]:
-    """Per-topic AI presence: answered questions, AI volume, who gets cited."""
+def _citability(
+    topics: list[str],
+    location_code: int,
+    language_code: str,
+    wide: bool = True,
+) -> dict[str, dict]:
+    """Per-topic AI presence: answered questions, AI volume, who gets cited.
+
+    Two passes, because the two scopes answer different questions:
+
+      question scope — the user's question contains the term. Tight and
+        on-topic: these are the questions worth writing against.
+      answer scope   — the AI's ANSWER contains the term, whatever the question
+        was. Far broader (3,504 matches vs 29 on a measured topic, 88 distinct
+        cited domains vs 48) because it catches adjacent questions that never
+        name the term. Those extra domains are the real competitive set — the
+        sites getting cited on this subject even when nobody asked about it by
+        name.
+
+    The wide pass doubles the paid call per topic, so it is a flag. It only
+    contributes to the citation picture; the questions in the brief still come
+    from the tight pass, so a broad match cannot pollute what gets written.
+    """
     try:
-        mentions = ai_mentions_keywords(topics, location_code=location_code, language_code=language_code)
+        mentions = ai_mentions_keywords(
+            topics, location_code=location_code, language_code=language_code,
+            scope="question",
+        )
     except Exception as exc:
-        print(f"[geo_demand] ai_mentions_keywords failed: {exc}")
+        print(f"[geo_demand] ai_mentions_keywords(question) failed: {exc}")
         mentions = []
+
+    wide_mentions: list[dict] = []
+    if wide:
+        try:
+            wide_mentions = ai_mentions_keywords(
+                topics, location_code=location_code, language_code=language_code,
+                scope="answer",
+            )
+        except Exception as exc:
+            print(f"[geo_demand] ai_mentions_keywords(answer) failed: {exc}")
 
     per_topic: dict[str, dict] = {
         t: {"questions": [], "ai_search_volume": 0, "answered": 0, "sources": Counter()}
@@ -112,6 +146,20 @@ def _citability(topics: list[str], location_code: int, language_code: str) -> di
             if source.get("domain"):
                 bucket["sources"][source["domain"]] += 1
 
+    # The wide pass contributes DOMAINS ONLY. Its questions are deliberately
+    # kept out of the brief: they matched on answer text, so they are about the
+    # subject but often not about the topic as asked.
+    wide_sources: dict[str, Counter] = {t: Counter() for t in topics}
+    wide_seen: dict[str, int] = {t: 0 for t in topics}
+    for item in wide_mentions:
+        topic = item.get("matched_keyword")
+        if topic not in wide_sources:
+            continue
+        wide_seen[topic] += 1
+        for source in item.get("sources") or []:
+            if source.get("domain"):
+                wide_sources[topic][source["domain"]] += 1
+
     out = {}
     for topic, bucket in per_topic.items():
         total = len(bucket["questions"])
@@ -129,6 +177,13 @@ def _citability(topics: list[str], location_code: int, language_code: str) -> di
             "cited_sources": [
                 {"domain": d, "citations": n} for d, n in bucket["sources"].most_common(5)
             ],
+            # Union of both passes: the widest honest view of who holds this
+            # subject, used for the displaceability verdict.
+            "competitive_domains": [
+                {"domain": d, "citations": n}
+                for d, n in (bucket["sources"] + wide_sources[topic]).most_common(15)
+            ],
+            "wide_answers_scanned": wide_seen[topic],
             "questions": bucket["questions"][:10],
         }
     return out
@@ -153,7 +208,7 @@ def _displaceability(citability: dict[str, dict]) -> dict[str, dict]:
     domains = {
         src["domain"]
         for geo in citability.values()
-        for src in geo.get("cited_sources", [])
+        for src in (geo.get("competitive_domains") or geo.get("cited_sources", []))
         if src.get("domain")
     }
     ranks = bulk_domain_ranks(sorted(domains)) if domains else {}
@@ -161,21 +216,44 @@ def _displaceability(citability: dict[str, dict]) -> dict[str, dict]:
     out: dict[str, dict] = {}
     for topic, geo in citability.items():
         graded = []
-        for src in geo.get("cited_sources", []):
+        for src in (geo.get("competitive_domains") or geo.get("cited_sources", [])):
             rank = ranks.get(str(src.get("domain", "")).lower(), 0)
-            graded.append({**src, "authority_rank": rank})
+            # `citations` comes through from the counter; the >1 filter below
+            # depends on it, so assert its presence rather than defaulting to 0
+            # and silently disqualifying everything.
+            graded.append({**src, "authority_rank": rank,
+                           "citations": src.get("citations", 0)})
         graded.sort(key=lambda d: d["authority_rank"], reverse=True)
 
-        niche = [d for d in graded if 0 < d["authority_rank"] <= NICHE_AUTHORITY_MAX]
+        # A niche site must be cited MORE THAN ONCE to count toward the verdict.
+        # The wide answer-scope pass matches on answer text, so a single stray
+        # hit is common — "forward deployed engineer" pulled in a Hunger Games
+        # fan wiki. One appearance is noise; repeat citation is a pattern.
+        niche = [
+            d for d in graded
+            if 0 < d["authority_rank"] <= NICHE_AUTHORITY_MAX
+            and (d.get("citations") or 0) > 1
+        ]
+        niche_single_hit = [
+            d for d in graded
+            if 0 < d["authority_rank"] <= NICHE_AUTHORITY_MAX
+            and (d.get("citations") or 0) <= 1
+        ]
         giants = [d for d in graded if d["authority_rank"] >= GIANT_AUTHORITY_MIN]
 
         if not graded:
             verdict = "no citation data — cannot judge the competition yet"
         elif niche:
             verdict = (
-                f"winnable: {len(niche)} niche site(s) are already cited here "
-                f"(weakest {min(d['authority_rank'] for d in niche)}), so this "
-                f"topic does not require a global brand to be quoted"
+                f"winnable: {len(niche)} niche site(s) are cited here more than "
+                f"once (weakest {min(d['authority_rank'] for d in niche)}), so "
+                f"this topic does not require a global brand to be quoted"
+            )
+        elif niche_single_hit:
+            verdict = (
+                f"uncertain: {len(niche_single_hit)} niche site(s) appear, but each "
+                f"only once, which is as likely to be a stray match as a real "
+                f"opening — check them before betting on this topic"
             )
         elif giants:
             verdict = (
@@ -189,9 +267,18 @@ def _displaceability(citability: dict[str, dict]) -> dict[str, dict]:
         out[topic] = {
             "cited_sources": graded,
             "niche_sites_cited": niche,
+            # Surfaced separately so the reader can judge rather than being
+            # silently excluded — a single citation may still be a real signal.
+            "niche_sites_cited_once": niche_single_hit,
             "distinct_domains": len(graded),
-            "weakest_cited_authority": min((d["authority_rank"] for d in graded), default=0),
+            # Rank 0 means the backlink API had no data for that domain, not
+            # "weakest site on earth" — it is already excluded from `niche`, so
+            # it must not set the floor here either.
+            "weakest_cited_authority": min(
+                (d["authority_rank"] for d in graded if d["authority_rank"] > 0), default=0
+            ),
             "strongest_cited_authority": max((d["authority_rank"] for d in graded), default=0),
+            "unranked_domains": sum(1 for d in graded if d["authority_rank"] == 0),
             "displaceability": verdict,
         }
     return out
@@ -259,6 +346,7 @@ def run_geo_demand(
     language_code: str | None = None,
     max_question_terms: int = MAX_QUESTION_TERMS,
     max_mention_terms: int = MAX_MENTION_TERMS,
+    wide_competitive_scan: bool = True,
 ) -> dict:
     """Run the GEO demand graph inside the active pipeline run."""
     if not rec.active_run_id():
@@ -310,9 +398,10 @@ def run_geo_demand(
 
     rec.log_activity(
         "step",
-        detail=f"node: AI citability — {len(shortlist)} paid calls (who answers, who is cited)",
+        detail=f"node: AI citability — {len(shortlist) * (2 if wide_competitive_scan else 1)} "
+               f"paid calls ({'question + answer scope' if wide_competitive_scan else 'question scope'})",
     )
-    citability = _citability(shortlist, loc, lang)
+    citability = _citability(shortlist, loc, lang, wide=wide_competitive_scan)
     steps.append("citability")
 
     rec.log_activity("step", detail="node: grade the sites AI engines cite")
@@ -399,8 +488,10 @@ def run_geo_demand(
         "not_sent_to_paid_call": dropped_before_paid_call,
         "cost_note": (
             f"1 keyword_overview call for all {len(clean)} candidates, "
-            f"{len(shortlist)} search_mentions calls (the expensive one, "
-            f"~$0.10 each) on the shortlist, 1 bulk domain-rank call, and "
+            f"{len(shortlist) * (2 if wide_competitive_scan else 1)} search_mentions "
+            f"calls (the expensive one, ~$0.10 each; two scopes per topic when "
+            f"the wide competitive scan is on) on the shortlist, "
+            f"1 bulk domain-rank call, and "
             f"{len(questions)} People-also-ask calls."
         ),
         "steps": steps,
