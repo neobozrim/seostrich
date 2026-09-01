@@ -17,6 +17,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
+from . import errors
 from . import flows
 from . import llm
 from .config import memory_enabled
@@ -552,21 +553,30 @@ def run_orchestrator_stream(
                         yield {"type": "status", "content": "Stopped"}
                         break
                     print(f"[Orchestrator] seo_agent worker failed: {err!r}")
-                    pipeline_recorder.fail_run(run_id, str(err))
+                    # Raw exception text goes on the run for debugging; the
+                    # chat gets a sentence the user can act on.
+                    pipeline_recorder.fail_run(run_id, errors.detail(err))
+                    friendly = errors.user_message(err)
                     session_data["agent_calls"].append({
                         "task": task,
                         "context": context,
                         "agent_session_id": None,
                         "tool_calls": 0,
-                        "response": f"SEO agent failed: {err}",
+                        "response": friendly,
+                        "error_detail": errors.detail(err),
                     })
                     yield {
                         "type": "tool_end",
                         "tool": "seo_agent",
-                        "result": {"response": f"SEO agent failed: {err}", "tool_calls_made": 0},
+                        "result": {"response": friendly, "tool_calls_made": 0},
                         "success": False,
                     }
-                    yield {"type": "error", "content": str(err)}
+                    yield {
+                        "type": "error",
+                        "content": friendly,
+                        "detail": errors.detail(err),
+                        "recoverable": errors.is_recoverable(err),
+                    }
                     continue
 
                 pipeline_recorder.end_run(run_id)
@@ -751,7 +761,12 @@ def run_orchestrator_stream(
     except Exception as e:
         import traceback
         traceback.print_exc()
-        yield {"type": "error", "content": str(e)}
+        yield {
+            "type": "error",
+            "content": errors.user_message(e),
+            "detail": errors.detail(e),
+            "recoverable": errors.is_recoverable(e),
+        }
     finally:
         with _stop_lock:
             _stop_flags.pop(sid, None)

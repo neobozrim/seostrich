@@ -347,7 +347,16 @@ export default function Home() {
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMessage.id
-                ? { ...msg, content: msg.content + '\n\n⚠️ Error: ' + chunk.content, statusText: undefined }
+                ? {
+                    ...msg,
+                    // chunk.content is already a readable, actionable sentence
+                    // (src/errors.py). Raw exception text used to be streamed
+                    // straight into the bubble — "run_keyword_strategy() got an
+                    // unexpected keyword argument 'angle'" is not something a
+                    // user can act on. The detail stays available in the run.
+                    content: msg.content + '\n\n⚠️ ' + chunk.content,
+                    statusText: undefined,
+                  }
                 : msg
             )
           );
