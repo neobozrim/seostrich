@@ -47,7 +47,7 @@ def _reasoning(entry: dict, decision: str) -> dict:
     external agent should be able to read WHY a cluster was chosen or dropped
     without guessing.
     """
-    return {
+    block = {
         "decision": decision,
         "decision_reason": (
             entry.get("selection_reason") if decision == "selected"
@@ -56,13 +56,23 @@ def _reasoning(entry: dict, decision: str) -> dict:
         "why_these_keywords_group": entry.get("rationale") or "",
         "seo_rationale": entry.get("seo_rationale") or "",
         "geo_rationale": entry.get("geo_rationale") or "",
-        "scores": {
+        # Measured, not modelled. The previous seo/geo/combined 0-100 scores
+        # were LLM estimates of arithmetic it had the inputs to compute, and
+        # they disagreed with the data (a 670-volume cluster outranked a
+        # 4,360-volume one). They are surfaced only if an older run still
+        # carries them, clearly separated from the measurements.
+        "metrics": entry.get("metrics") or {},
+        "opportunity": entry.get("opportunity"),
+        "opportunity_rule": entry.get("opportunity_rule"),
+    }
+    if any(entry.get(f) is not None for f in ("seo_score", "geo_score", "combined_score")):
+        block["legacy_model_scores"] = {
+            "note": "Estimated by a model in an older run; prefer `metrics`.",
             "seo": entry.get("seo_score"),
             "geo": entry.get("geo_score"),
             "combined": entry.get("combined_score"),
-            "opportunity": entry.get("opportunity"),
-        },
-    }
+        }
+    return block
 
 
 def _public_cluster(entry: dict, decision: str) -> dict:

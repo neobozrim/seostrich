@@ -16,7 +16,9 @@ from .. import llm
 
 SYSTEM_PROMPT = """You are a head of SEO deciding which keyword clusters a lean team should actually pursue.
 
-You are told what the business is. You receive scored clusters (SEO/GEO scores, rationale, opportunity). Select the ones to become content pillars; the rest are discarded — not deleted, parked with a reason so they can be promoted back later.
+You are told what the business is. You receive clusters with a `metrics` block measured from real DataForSEO data (total_volume, avg_difficulty, avg_cpc, commercial_share, top_keywords) plus an `opportunity` label produced by a stated rule. These are measurements, not estimates. Select the ones to become content pillars; the rest are discarded — not deleted, parked with a reason so they can be promoted back later.
+
+When you cite a number, cite one from the metrics block. Do not invent scores.
 
 Selection criteria, in strict priority order:
 1. RELEVANCE TO THE BUSINESS is the hard gate. A cluster only qualifies if it directly serves what this business is, does, or sells — or what its real audience would search for in relation to it. Reject any cluster that is merely adjacent, tangential, or generic, no matter how high its volume or how good its scores. High volume on an off-topic cluster is worthless to this client: it attracts the wrong audience.

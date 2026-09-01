@@ -332,7 +332,12 @@ def _record_scores(run: dict, result: dict) -> None:
         target = by_name.get(name)
         if target is None:
             continue
-        for field in ("seo_score", "geo_score", "combined_score", "seo_rationale", "geo_rationale", "opportunity", "rationale"):
+        # `metrics` is measured from the keyword rows; opportunity is a stated
+        # rule. The old seo/geo/combined scores were model estimates and are
+        # gone — they are still merged when present so older runs keep rendering.
+        for field in ("metrics", "opportunity", "opportunity_rule", "rationale",
+                      "seo_score", "geo_score", "combined_score",
+                      "seo_rationale", "geo_rationale"):
             if s.get(field) is not None:
                 target[field] = s[field]
 

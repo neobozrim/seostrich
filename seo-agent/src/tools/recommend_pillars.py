@@ -7,7 +7,13 @@ from .. import llm
 # 10,358-token completion). Latency is governed by model choice.
 
 
-SYSTEM_PROMPT = """You are an SEO strategist. Select the best clusters to become content pillars based on opportunity scores and strategic fit.
+SYSTEM_PROMPT = """You are an SEO strategist. Select the best clusters to become content pillars based on their MEASURED metrics and strategic fit.
+
+Each cluster carries a `metrics` block computed from real DataForSEO data:
+total_volume, max_volume, median_volume, avg_difficulty, max_difficulty,
+avg_cpc, max_cpc, commercial_share and top_keywords. These are measurements,
+not estimates — reason about them directly. There is no composite score to
+sort by, and you must not invent one; say which metric drove your choice.
 
 Output JSON format:
 {
@@ -31,7 +37,10 @@ Output JSON format:
 
 Rules:
 - Select 3-5 pillars
-- Prioritize by combined_score (highest first)
+- Prioritise on the metrics that matter for this cluster, and NAME the metric
+  in the rationale (e.g. "3,400 total volume at avg difficulty 12", or "low
+  volume but 0.8 commercial share and $11 CPC")
+- Never cite a number that is not in the metrics block
 - Pillar titles should be compelling and comprehensive
 - Include mix of pillar types if appropriate
 - Explain why each pillar was selected or skipped

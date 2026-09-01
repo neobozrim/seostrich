@@ -191,8 +191,10 @@ def run_keyword_strategy(
             {"clusters": clusters}, True,
         )
 
-    rec.log_activity("step", detail="node: score clusters")
-    scored = score_clusters({"clusters": clusters}) or {}
+    rec.log_activity("step", detail="node: compute cluster metrics")
+    # Deterministic now — pass the keyword universe so each cluster's volume,
+    # difficulty, CPC and intent mix are measured from the real rows.
+    scored = score_clusters({"clusters": clusters}, keywords=keywords) or {}
     rec.record_tool("score_clusters", {}, scored, True)
 
     rec.log_activity("step", detail=f"node: select top {max_select} clusters")

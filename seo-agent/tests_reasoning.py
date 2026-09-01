@@ -82,7 +82,14 @@ chk("keeps why the keywords group", sel["reasoning"]["why_these_keywords_group"]
 chk("carries the score rationales",
     sel["reasoning"]["seo_rationale"] == "low volume"
     and sel["reasoning"]["geo_rationale"] == "highly citable")
-chk("scores exposed", sel["reasoning"]["scores"]["combined"] == 65)
+chk("measured metrics exposed", isinstance(sel["reasoning"]["metrics"], dict))
+chk("opportunity label present", "opportunity" in sel["reasoning"])
+# The fixture carries the old model-estimated scores; they must be surfaced
+# separately and labelled, never mixed in with the measurements.
+chk("legacy model scores quarantined", "legacy_model_scores" in sel["reasoning"])
+chk("legacy block is labelled as estimated",
+    "Estimated by a model" in sel["reasoning"]["legacy_model_scores"]["note"])
+chk("legacy values preserved", sel["reasoning"]["legacy_model_scores"]["combined"] == 65)
 
 print("3. discarded clusters keep theirs")
 for d in data["discarded"]:
