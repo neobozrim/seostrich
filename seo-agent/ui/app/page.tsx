@@ -539,6 +539,17 @@ export default function Home() {
             >
               New chat <span className="text-lg leading-none">+</span>
             </button>
+            {/* Who is signed in, and the one thing they can do about it. No
+                icon hiding a single option: the name and "Log out", small,
+                the height of one button. */}
+            {authRequired && username && (
+              <div className="flex flex-col items-start leading-tight text-xs">
+                <span className="font-semibold text-primary-700 truncate max-w-[8rem]" title={username}>{username}</span>
+                <button onClick={handleLogout} className="underline underline-offset-2 text-gray-500 hover:text-gray-900">
+                  Log out
+                </button>
+              </div>
+            )}
           </div>
         </header>
 
