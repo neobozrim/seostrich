@@ -43,7 +43,7 @@ app.include_router(auth_router)
 @app.on_event("startup")
 def _seed_default_runs():
     """Populate the example run(s) on first boot so judges see real data."""
-    runs.seed_defaults(force=False)
+    runs.sync_seeds()  # installs new/changed bundled reports; leaves everything else alone
     # Runs left in "running" are orphans from a crash or restart — close them
     # so the Run view never shows forever-running pipelines.
     for summary in runs.list_runs():

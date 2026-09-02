@@ -9,6 +9,7 @@ restored at any time (restore-default).
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import shutil
@@ -144,6 +145,51 @@ def seed_defaults(force: bool = False) -> list[str]:
             continue
         shutil.copyfile(path, target)
         written.append(path.stem)
+    return written
+
+
+# Not "*.json": list_runs() globs "*.json" in the runs dir, so a marker with
+# that extension would show up on the canvas as a report.
+_SEED_MARKER = ".seeds-installed"
+
+
+def sync_seeds() -> list[str]:
+    """Install every bundled report whose seed file changed since it was last
+    installed. Returns the ids written.
+
+    Runs at startup. The rule is deliberately NOT "copy on every start": the
+    process restarts on every deploy, and that would wipe a judge's
+    in-progress edits each time a commit lands. Instead each seed's content
+    hash is remembered when it is installed, and a seed is re-copied only when
+    that hash changes — i.e. when a new version of the fixture ships. Edits
+    made to the live copy survive restarts until the fixture itself is
+    updated, which is exactly when they should be replaced.
+
+    A seed whose live copy has gone missing is reinstalled regardless.
+    """
+    seed_dir = _seed_dir()
+    if not seed_dir.exists():
+        return []
+    runs_dir = _runs_dir()
+    runs_dir.mkdir(parents=True, exist_ok=True)
+    marker = runs_dir / _SEED_MARKER
+    try:
+        installed = json.loads(marker.read_text(encoding="utf-8")) if marker.exists() else {}
+    except (OSError, ValueError):
+        installed = {}
+
+    written = []
+    for path in sorted(seed_dir.glob("*.json")):
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        target = runs_dir / path.name
+        if installed.get(path.name) == digest and target.exists():
+            continue
+        shutil.copyfile(path, target)
+        installed[path.name] = digest
+        written.append(path.stem)
+
+    if written:
+        marker.write_text(json.dumps(installed, indent=2), encoding="utf-8")
     return written
 
 
