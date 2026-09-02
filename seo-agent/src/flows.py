@@ -80,12 +80,15 @@ KEYWORD_STRATEGY = Flow(
     ],
     nodes=[
         "Confirm target market",
+        "Read your own pages",
         "Extract keyword seeds",
-        "Build keyword universe (DataForSEO)",
+        "Build keyword universe (DataForSEO) + what competitors rank for",
         "Cluster into themes",
+        "Verify clusters against live SERPs",
         "Validation gate",
-        "Score and select clusters",
+        "Measure, then select for the business",
         "Recommend content pillars",
+        "Write the brief",
     ],
     tools=[
         "confirm_market", "list_markets", "run_keyword_strategy",
@@ -94,7 +97,7 @@ KEYWORD_STRATEGY = Flow(
         "propose_cluster", "submit_deliverable", "plan_calendar",
     ],
     entrypoint="run_keyword_strategy",
-    stages=["intake", "seeds", "keywords", "clusters", "pillars"],
+    stages=["intake", "seeds", "keywords", "competitors", "clusters", "pillars", "brief"],
     icon="target",
 )
 

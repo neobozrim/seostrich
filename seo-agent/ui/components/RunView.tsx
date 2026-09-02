@@ -20,7 +20,6 @@ import {
   Undo2,
 } from 'lucide-react';
 import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent, Message } from '@/types';
-import { ChatMessage } from '@/components/ChatMessage';
 import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, getRunChanges, renameRun, fetchCompetitorKeywords, regenerateBrief,
   resetRun, getRunGovernance, AuthError } from '@/lib/api';
 import { activityLabel, currentActivity } from '@/lib/activity';
@@ -228,7 +227,7 @@ function artefactName(run: Run): string {
 // old run gets the right tag too.
 function flowTag(run: Run): string {
   const ids = new Set((run.stages || []).map((s) => s.id));
-  if (ids.has('pillars') || ids.has('clusters') || ids.has('keywords')) return 'SEO content strategy';
+  if (ids.has('pillars') || ids.has('clusters') || ids.has('keywords') || ids.has('seeds')) return 'SEO content strategy';
   if (ids.has('ai_citability')) return 'AI visibility';
   if (ids.has('audit')) return 'Technical audit';
   return 'Strategy';
@@ -1754,13 +1753,26 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
       {onSend && (
         <div className="sticky bottom-0 z-20 border-t border-surface-300 bg-surface-50/95 backdrop-blur">
           <div className="max-w-3xl lg:max-w-6xl mx-auto px-6 py-3">
-            {recent.length > 0 && (
-              <div className="max-h-64 overflow-y-auto -mx-4 mb-2">
-                {recent.map((m) => (
-                  <ChatMessage key={m.id} message={m} />
-                ))}
-              </div>
-            )}
+            {/* One line, not the transcript: while it runs, the progress is
+                already on the artefact; once it answers, the reply — clamped,
+                expandable — sits here where you asked. */}
+            {(() => {
+              const last = [...recent].reverse().find((m) => m.role === 'assistant');
+              if (!last || isStreaming || !last.content) return null;
+              return (
+                <div className="mb-2 text-sm text-gray-700 bg-white border border-surface-300 rounded-xl px-4 py-2.5">
+                  <details>
+                    <summary className="cursor-pointer list-none">
+                      <span className="line-clamp-2">{last.content}</span>
+                      <span className="text-xs text-gray-400">show the full reply</span>
+                    </summary>
+                    <div className="mt-2 prose prose-sm max-w-none max-h-64 overflow-y-auto">
+                      <ReactMarkdown>{last.content}</ReactMarkdown>
+                    </div>
+                  </details>
+                </div>
+              );
+            })()}
             <div className="flex items-end gap-2">
               <textarea
                 value={draft}

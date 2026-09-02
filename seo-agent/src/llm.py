@@ -40,6 +40,7 @@ def _pace() -> None:
 # that, so tuning max_tokens controls nothing. Model choice does: the same call
 # on qwen3.8-flash took 44s and produced the same ten clusters.
 DEFAULT_TIMEOUT = 300.0
+REASONING_HEADROOM = 6000
 
 
 def _request(model: str, msgs: list, temperature: float, max_tokens: int, tools) -> dict[str, Any]:
@@ -51,7 +52,13 @@ def _request(model: str, msgs: list, temperature: float, max_tokens: int, tools)
     pay for thinking. Qwen keeps the plain shape."""
     kwargs: dict[str, Any] = {"model": model, "messages": msgs}
     if settings.is_openai:
-        kwargs["max_completion_tokens"] = max_tokens
+        # max_completion_tokens covers the model's THINKING as well as its
+        # answer. A 2,500-token answer budget on a reasoning model can be spent
+        # entirely on thinking and return an empty answer — observed on the
+        # clustering node: "Could not parse JSON from LLM output: " with
+        # nothing after the colon. Headroom for the reasoning; the cap only
+        # bounds a runaway, it is not what the model is expected to use.
+        kwargs["max_completion_tokens"] = max_tokens + REASONING_HEADROOM
         if tools:
             # Chat completions accept function tools on these models only with
             # reasoning_effort 'none' (anything else is a 400: "use /v1/responses
@@ -147,6 +154,18 @@ def chat(
     _pace()
     client = get_client().with_options(timeout=timeout or DEFAULT_TIMEOUT)
     resp = _create(client, kwargs)
+    # An empty answer with finish_reason "length" means the budget went to
+    # thinking. Once, with double the budget, before giving up.
+    try:
+        choice0 = resp.choices[0]
+        if (choice0.finish_reason == "length" and not (choice0.message.content or "").strip()
+                and not getattr(choice0.message, "tool_calls", None)):
+            key = "max_completion_tokens" if "max_completion_tokens" in kwargs else "max_tokens"
+            bigger = dict(kwargs); bigger[key] = int(kwargs[key]) * 2
+            print(f"[llm] empty answer on finish_reason=length; retrying with {key}={bigger[key]}")
+            resp = _create(client, bigger)
+    except Exception:
+        pass
     choice = resp.choices[0]
     result: dict[str, Any] = {
         "content": choice.message.content or "",
