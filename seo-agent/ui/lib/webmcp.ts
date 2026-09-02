@@ -32,6 +32,7 @@ import {
   getRunGovernance,
   getRunChanges,
   resetRun,
+  regenerateBrief,
 } from './api';
 
 interface ModelContextLike {
@@ -390,6 +391,36 @@ export function buildTools() {
         const run = await resolveRun(input?.run_id);
         if (!run) return 'No pipeline run found.';
         return getRunGovernance(run.id, options?.signal);
+      },
+    },
+    {
+      name: 'seo_get_brief',
+      title: 'The brief: what to build, in what order, and why',
+      description:
+        'The one page a content team acts on, built from the measured stages: which pillar to build first and why (with the numbers), who owns the keywords in that space, six pieces each with a working title and the exact question it answers, and what was parked and why. Use this when you want the plan rather than the working. It is rebuilt whenever the selection changes, so after a discard or promote read it again to see the new plan. If `stale` is true a rebuild is in progress. Read-only, no cost.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        try {
+          return await getRunStage(run.id, 'brief', options?.signal);
+        } catch {
+          return 'No brief yet — the strategy graph writes it after the pillars.';
+        }
+      },
+    },
+    {
+      name: 'seo_regenerate_brief',
+      title: 'Rebuild the brief from the current selection',
+      description:
+        'Rewrite the brief from the clusters as they stand now. Use this after you have changed the selection and want the plan to reflect it immediately, or when the brief says it is stale. Writes to the run; costs a model call but no DataForSEO calls.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
+      annotations: READ_WRITE,
+      execute: async (input: { run_id?: string }, options?: any) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        return regenerateBrief(run.id);
       },
     },
     {

@@ -20,6 +20,7 @@ from .pull_universe import pull_universe
 from .recommend_pillars import recommend_pillars
 from .score_clusters import score_clusters
 from .select_clusters import select_clusters
+from .strategy_brief import write_brief
 from .serp_verify import apply_merges, verify_clusters
 from .validate_clusters import validate_clusters
 
@@ -439,6 +440,16 @@ def run_keyword_strategy(
     pillars = recommend_pillars(pillars_input) or {}
     rec.record_tool("recommend_pillars", {}, pillars, True)
     steps.append("pillars")
+
+    # The brief: the one page a reader acts on, built from the stages above.
+    run_id_now = rec.active_run_id()
+    if run_id_now:
+        rec.log_activity("step", detail="node: write the brief")
+        brief_res = write_brief(run_id_now, business_description)
+        if brief_res.get("ok"):
+            steps.append("brief")
+        else:
+            rec.log_activity("step", detail=f"brief not written: {brief_res.get('error', '')[:80]}")
 
     rec.log_activity("step", detail="graph complete")
     return _handoff({

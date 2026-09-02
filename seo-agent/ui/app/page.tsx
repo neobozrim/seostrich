@@ -203,7 +203,27 @@ export default function Home() {
     };
   }, [showSystem, showRun, showWebMcp]);
 
-  const handleSend = async () => {
+  // One entry point for both composers: the chat's and the artefact's.
+  const sendText = async (text: string) => {
+    const prior = input;
+    setInput(text);
+    await handleSendWith(text);
+    if (prior && prior !== text) setInput('');
+  };
+
+  // Steer: stop what is running, then send the correction into the same session.
+  const steer = async (text: string) => {
+    if (isStreaming) {
+      handleStop();
+      await new Promise((r) => setTimeout(r, 400));
+    }
+    await sendText(text);
+  };
+
+  const handleSend = async () => handleSendWith(input);
+
+  const handleSendWith = async (text: string) => {
+    const input = text;
     if (!input.trim() && attachments.length === 0) return;
 
     const userMessage: Message = {
@@ -639,6 +659,11 @@ export default function Home() {
           tasks={memory.tasks}
           initialRunId={openRunId}
           live={isStreaming}
+          isStreaming={isStreaming}
+          onSend={sendText}
+          onSteer={steer}
+          onStop={handleStop}
+          recent={messages.slice(-2)}
           onClose={() => {
             setShowRun(false);
             setOpenRunId(null);

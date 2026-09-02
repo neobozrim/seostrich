@@ -109,6 +109,7 @@ When starting a new conversation, ask what the user wants to accomplish. Then pl
 - **Always chain multiple tools** when a task requires comprehensive analysis.
 - After an initial audit, if issues are found, call additional specialized tools to investigate further.
 - Don't stop after one tool call unless the task is truly complete. If you say "let me dig deeper", actually call the next tool.
+- EXCEPTION — after `run_keyword_strategy` or `run_geo_demand` returns, your job is to READ and REPORT. The graph already selected the clusters with stated reasons and wrote the brief. Do NOT propose, discard, promote or re-research clusters on your own initiative; those tools are for the user (and their assistant over WebMCP) and are removed from your toolbox for the rest of the turn. If the user asks for a change, do it and state the reason in the tool call.
 - Produce a **structured final report** that synthesizes findings from all tools called.
 
 **Report what the SERP check found.** `run_keyword_strategy` returns
@@ -1590,7 +1591,19 @@ def run_agent(
         # Select tools based on intent (reduces context window usage)
         tools_for_session = select_tools_for_intent(user_message)
 
+    # Tools that change the pipeline's selection. After a graph has run they
+    # are removed from the turn: the graph already made the call with reasons,
+    # and the agent inventing clusters on top of it — observed: four empty
+    # placeholders, then five re-proposals, nine paid calls, "ai engineer
+    # jobs" on a community site — is not "digging deeper". Editing is the
+    # user's and WebMCP's job.
+    SELECTION_WRITE_TOOLS = {"propose_cluster", "discard_cluster", "promote_cluster", "rerun_cluster_research"}
+    graph_ran = False
+
     for round_num in range(max_rounds):
+        if graph_ran:
+            tools_for_session = [t for t in tools_for_session
+                                 if t.get("function", {}).get("name") not in SELECTION_WRITE_TOOLS]
         if stop_check is not None:
             stop_check()
 
@@ -1687,6 +1700,8 @@ def run_agent(
             # cached from before the promote.
             if any(tc["name"] in CACHE_INVALIDATING_TOOLS for tc in tool_calls):
                 tool_cache.clear()
+            if any(tc["name"] in ("run_keyword_strategy", "run_geo_demand") for tc in tool_calls):
+                graph_ran = True
 
             # Add ONE assistant message with ALL tool_calls (OpenAI format requirement)
             messages.append({
@@ -1796,6 +1811,8 @@ def run_agent(
 
                 if tool_name in CACHE_INVALIDATING_TOOLS:
                     tool_cache.clear()
+                if tool_name in ("run_keyword_strategy", "run_geo_demand"):
+                    graph_ran = True
 
             messages.append({
                 "role": "assistant",

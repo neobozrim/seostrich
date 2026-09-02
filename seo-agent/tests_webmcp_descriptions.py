@@ -34,6 +34,7 @@ DESCS = {n: (t, ' '.join(re.findall(r"'([^']*)'", d))) for n, t, d in blocks}
 
 WRITES = {
     "seo_reset_run",
+    "seo_regenerate_brief",
     "seo_promote_cluster", "seo_discard_cluster", "seo_propose_cluster",
     "seo_rerun_cluster_research", "seo_submit_feedback", "seo_restore_defaults",
 }

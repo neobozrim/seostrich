@@ -12,14 +12,16 @@ import {
   Loader2,
   RefreshCw,
   Pencil,
+  Square,
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
   PencilLine,
   Undo2,
 } from 'lucide-react';
-import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent } from '@/types';
-import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, getRunChanges, renameRun, fetchCompetitorKeywords,
+import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent, Message } from '@/types';
+import { ChatMessage } from '@/components/ChatMessage';
+import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, getRunChanges, renameRun, fetchCompetitorKeywords, regenerateBrief,
   resetRun, getRunGovernance, AuthError } from '@/lib/api';
 import { activityLabel, currentActivity } from '@/lib/activity';
 import { StageIcon } from '@/components/StageIcon';
@@ -41,6 +43,14 @@ interface RunViewProps {
   // may have finished while the agent still edits the artefact (proposing a
   // cluster, writing the summary), so polling follows the stream too.
   live?: boolean;
+  // The conversation this artefact belongs to. Follow-ups go into the same
+  // session so "drop the courses cluster" has context; while a run is
+  // streaming the same box is Steer: stop, then send the correction.
+  isStreaming?: boolean;
+  onSend?: (text: string) => void | Promise<void>;
+  onSteer?: (text: string) => void | Promise<void>;
+  onStop?: () => void;
+  recent?: Message[];
 }
 
 // Icons live in StageIcon.tsx, drawn in the brand mark's language (filled
@@ -261,6 +271,84 @@ const STAGE_PURPOSE: Record<string, string> = {
   onpage:
     'How specific pages measure up against what they are trying to rank for.',
 };
+
+function briefOf(run: Run | null): any | null {
+  if (!run) return null;
+  const st = (run.stages || []).find((s) => s.id === 'brief');
+  return st?.artifact && st.artifact.the_call ? st.artifact : null;
+}
+
+// The brief is the deliverable: it sits under the heading, before the
+// working. Six pieces, the call, who to out-answer, what was parked.
+function BriefCard({ brief, onRegenerate, regenerating }: { brief: any; onRegenerate: () => void; regenerating: boolean }) {
+  const pieces: any[] = brief.pieces || [];
+  const out: any[] = brief.out_answer || [];
+  const parked: any[] = brief.parked || [];
+  return (
+    <div className="mt-5 bg-white border border-surface-300 rounded-xl px-5 py-5 shadow-sm">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div className="text-[10px] font-semibold tracking-[0.16em] uppercase text-gray-400">The brief</div>
+        {brief.stale ? (
+          <span className="flex items-center gap-1.5 text-xs text-amber-800">
+            <Loader2 className="w-3 h-3 animate-spin" /> updating after: {brief.stale_reason || 'a change to the selection'}
+          </span>
+        ) : (
+          <button onClick={onRegenerate} disabled={regenerating} className="text-xs text-gray-400 hover:text-gray-700 disabled:opacity-50">
+            {regenerating ? 'Rebuilding…' : 'Rebuild'}
+          </button>
+        )}
+      </div>
+
+      <div className="mb-4">
+        <div className="text-xs font-semibold text-gray-500 mb-1">The call</div>
+        <div className="font-display text-lg text-primary-700">{brief.the_call?.pillar}</div>
+        <p className="text-sm text-gray-700 mt-1 leading-relaxed">{brief.the_call?.why}</p>
+      </div>
+
+      {out.length > 0 && (
+        <div className="mb-4">
+          <div className="text-xs font-semibold text-gray-500 mb-1">Who to out-answer</div>
+          <ul className="text-sm text-gray-700 space-y-0.5">
+            {out.map((o, i) => (
+              <li key={i}><span className="font-medium text-gray-800">{o.who}</span> — {o.for_what}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="mb-4">
+        <div className="text-xs font-semibold text-gray-500 mb-2">{pieces.length} pieces</div>
+        <ol className="space-y-2">
+          {pieces.map((pc, i) => (
+            <li key={i} className="border border-surface-200 rounded-lg px-3 py-2">
+              <div className="flex items-start gap-2">
+                <span className="text-xs font-semibold text-gray-400 pt-0.5 w-5 shrink-0">{i + 1}.</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-gray-900">{pc.title}</div>
+                  <div className="text-sm text-gray-600 mt-0.5">Answers: <span className="italic">{pc.question}</span></div>
+                  <div className="text-[11px] text-gray-400 mt-1">
+                    {pc.cluster}{pc.target_keyword ? ' · ' + pc.target_keyword : ''}{pc.format ? ' · ' + pc.format : ''}
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {parked.length > 0 && (
+        <div>
+          <div className="text-xs font-semibold text-gray-500 mb-1">Parked</div>
+          <ul className="text-sm text-gray-600 space-y-0.5">
+            {parked.map((pk, i) => (
+              <li key={i}><span className="text-gray-800">{pk.cluster}</span> — {pk.why}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function fmtCpc(n: number | undefined): string {
   if (n === undefined || n === null) return '';
@@ -1273,7 +1361,15 @@ function renderStage(
   }
 }
 
-export function RunView({ tasks, onClose, initialRunId, live }: RunViewProps) {
+export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSend, onSteer, onStop, recent = [] }: RunViewProps) {
+  const [draft, setDraft] = useState('');
+  const submitDraft = async () => {
+    const text = draft.trim();
+    if (!text) return;
+    setDraft('');
+    if (isStreaming && onSteer) await onSteer(text);
+    else if (onSend) await onSend(text);
+  };
   const [run, setRun] = useState<Run | null>(null);
   const [summaries, setSummaries] = useState<RunSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1284,6 +1380,19 @@ export function RunView({ tasks, onClose, initialRunId, live }: RunViewProps) {
   // own verdict unless the report says so.
   const [changes, setChanges] = useState<any | null>(null);
   const [editingTitle, setEditingTitle] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
+  const regenerate = async () => {
+    if (!run) return;
+    setRegenerating(true);
+    try {
+      await regenerateBrief(run.id);
+      await refresh(run.id);
+    } catch (e: any) {
+      setError(e?.message || 'Could not rebuild the brief');
+    } finally {
+      setRegenerating(false);
+    }
+  };
   const [titleDraft, setTitleDraft] = useState('');
   const commitTitle = async () => {
     if (!run) return;
@@ -1370,12 +1479,13 @@ export function RunView({ tasks, onClose, initialRunId, live }: RunViewProps) {
   };
 
   // While a run is in progress, poll so stages stream in without a manual refresh
+  const briefStale = !!briefOf(run)?.stale;
   useEffect(() => {
     if (!run) return;
-    if (run.status !== 'running' && !live) return;
+    if (run.status !== 'running' && !live && !briefStale) return;
     const t = setInterval(() => refresh(run.id), 1500);
     return () => clearInterval(t);
-  }, [run?.id, run?.status, live]);
+  }, [run?.id, run?.status, live, briefStale]);
 
   // When the stream closes, fetch once more so the summary and any late edit
   // (a proposed cluster) are on screen without a manual refresh.
@@ -1507,6 +1617,7 @@ export function RunView({ tasks, onClose, initialRunId, live }: RunViewProps) {
               <Pencil className="w-4 h-4 mt-2 text-gray-300 group-hover:text-gray-600 shrink-0" />
             </button>
           )}
+          {briefOf(run) && <BriefCard brief={briefOf(run)} onRegenerate={regenerate} regenerating={regenerating} />}
           {run.summary && (
             <div className="mt-5 bg-white border border-surface-300 rounded-xl px-5 py-4 prose prose-sm max-w-none text-gray-800">
               <ReactMarkdown>{run.summary}</ReactMarkdown>
@@ -1581,12 +1692,12 @@ export function RunView({ tasks, onClose, initialRunId, live }: RunViewProps) {
 
             {/* Vertical stage flow */}
             <div>
-              {run.stages.map((stage, i) => (
+              {run.stages.filter((st) => st.id !== 'brief').map((stage, i) => (
                 <StageCard
                   key={stage.id}
                   stage={stage}
                   index={i}
-                  isLast={i === run.stages.length - 1}
+                  isLast={i === run.stages.filter((st) => st.id !== 'brief').length - 1}
                 >
                   {renderStage(
                     stage,
@@ -1631,6 +1742,51 @@ export function RunView({ tasks, onClose, initialRunId, live }: RunViewProps) {
          </aside>
        )}
       </div>
+
+      {/* The conversation, on the artefact. The last exchange shows so a
+          reply is visible without leaving; the box sends into the same
+          session. While a run streams it steers instead. */}
+      {onSend && (
+        <div className="sticky bottom-0 z-20 border-t border-surface-300 bg-surface-50/95 backdrop-blur">
+          <div className="max-w-3xl lg:max-w-6xl mx-auto px-6 py-3">
+            {recent.length > 0 && (
+              <div className="max-h-64 overflow-y-auto -mx-4 mb-2">
+                {recent.map((m) => (
+                  <ChatMessage key={m.id} message={m} />
+                ))}
+              </div>
+            )}
+            <div className="flex items-end gap-2">
+              <textarea
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    submitDraft();
+                  }
+                }}
+                rows={1}
+                placeholder={isStreaming ? 'Steer it — this stops the current step and sends your correction' : 'Ask a follow-up, or change something: "drop the courses cluster"'}
+                className="flex-1 resize-none rounded-xl border border-surface-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:border-action-400"
+              />
+              {isStreaming && onStop && (
+                <button onClick={onStop} title="Stop" className="p-2.5 rounded-xl border border-surface-300 bg-white text-gray-600 hover:bg-surface-100">
+                  <Square className="w-4 h-4" />
+                </button>
+              )}
+              <button
+                onClick={submitDraft}
+                disabled={!draft.trim()}
+                title={isStreaming ? 'Steer' : 'Send'}
+                className="px-4 py-2.5 rounded-xl bg-action-400 text-white text-sm font-semibold hover:bg-action-500 disabled:opacity-50 flex items-center gap-1.5"
+              >
+                {isStreaming ? 'Steer' : <Send className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

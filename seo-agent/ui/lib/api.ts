@@ -173,7 +173,7 @@ export async function getSession(id: string): Promise<{ id: string; messages: { 
 
 // Must match API_VERSION in api/main.py. A mismatch means the UI is talking
 // to a backend that predates the endpoints it depends on.
-export const EXPECTED_API_VERSION = '2026-09-02.history';
+export const EXPECTED_API_VERSION = '2026-09-02.brief';
 
 export async function getApiHealth(): Promise<{
   status: string;
@@ -300,6 +300,15 @@ export async function fetchCompetitorKeywords(runId: string, domain: string): Pr
     method: 'POST',
     headers: { ...authHeaders(), 'Content-Type': 'application/json' },
     body: JSON.stringify({ domain }),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
+export async function regenerateBrief(runId: string): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/brief/regenerate`, {
+    method: 'POST',
+    headers: authHeaders(),
   });
   await ensureOk(response);
   return response.json();

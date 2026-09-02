@@ -72,6 +72,7 @@ STAGE_LABELS = {
     "competitors": "Competitor map",
     "onpage": "On-page recommendations",
     "ai_citability": "AI citability",
+    "brief": "The brief",
 }
 
 # Google Ads location codes used by DataForSEO -> human market labels

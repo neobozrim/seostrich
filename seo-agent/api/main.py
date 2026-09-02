@@ -76,7 +76,7 @@ app.add_middleware(
 # disabled, no /api/flows) silently served the UI for a whole session: every
 # browser test validated the wrong process, and the missing endpoints looked
 # like frontend bugs.
-API_VERSION = "2026-09-02.history"
+API_VERSION = "2026-09-02.brief"
 
 
 @app.get("/api/health")
@@ -429,6 +429,19 @@ async def fetch_competitor_keywords(run_id: str, body: CompetitorFetchIn, _auth:
     entry["fetched_later"] = True
     runs.save_run(run_id, run)
     return {"ok": True, "domain": domain, "keywords": len(rows), "brand_terms_skipped": len(kws) - len(rows), "rows": rows}
+
+
+@app.post("/api/runs/{run_id}/brief/regenerate")
+async def regenerate_brief(run_id: str, _auth: None = Depends(require_auth)):
+    """Rebuild the brief from the current selection, synchronously."""
+    from src.tools import strategy_brief
+
+    if runs.get_run(run_id) is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    result = await asyncio.to_thread(strategy_brief.write_brief, run_id)
+    if not result.get("ok"):
+        raise HTTPException(status_code=400, detail=result.get("error", "brief not produced"))
+    return result
 
 
 @app.get("/api/runs/{run_id}/changes")
