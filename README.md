@@ -30,7 +30,7 @@ This is a **pre-existing project that was meaningfully extended using WebMCP aft
 
 ### Baseline — the project state BEFORE the Submission Period
 
-**Commit [`f9b3f10`](https://github.com/neobozrim/agent-memory/tree/f9b3f10) (2026-07-06) is the last commit before the Submission Period began.** Browse the pre-existing project at that tag: https://github.com/neobozrim/agent-memory/tree/f9b3f10
+**Commit [`f9b3f10`](https://github.com/neobozrim/seostrich/tree/f9b3f10) (2026-07-06) is the last commit before the Submission Period began.** Browse the pre-existing project at that tag: https://github.com/neobozrim/seostrich/tree/f9b3f10
 
 At `f9b3f10`, the project contained:
 
@@ -42,22 +42,22 @@ There was **no web UI, no hosted service, and no WebMCP** at the baseline.
 
 ### Work added DURING the Submission Period (Aug 25 – Sep 3, 2026)
 
-Complete diff: [`f9b3f10` → `main`](https://github.com/neobozrim/agent-memory/compare/f9b3f10...main)
+Complete diff: [`f9b3f10` → `main`](https://github.com/neobozrim/seostrich/compare/f9b3f10...main)
 
 | Commit | Date (EEST) | Added |
 |---|---|---|
-| [`d2b4e4e`](https://github.com/neobozrim/agent-memory/commit/d2b4e4e) | 2026-08-30 | Multi-agent orchestrator, FastAPI backend, Next.js chat UI (streaming chat, tool-call display, live memory panel) |
-| [`49ec857`](https://github.com/neobozrim/agent-memory/commit/49ec857), [`8ff9e61`](https://github.com/neobozrim/agent-memory/commit/8ff9e61), [`281d15c`](https://github.com/neobozrim/agent-memory/commit/281d15c), [`b476fe7`](https://github.com/neobozrim/agent-memory/commit/b476fe7) | 2026-08-30 → 31 | Hosting: Railway deployment config, env-driven persistent storage paths, CORS/PORT handling, declared dependencies |
-| [`d0bf7d8`](https://github.com/neobozrim/agent-memory/commit/d0bf7d8) | 2026-08-31 | Qwen Cloud API key configuration |
-| [`6a1ee0b`](https://github.com/neobozrim/agent-memory/commit/6a1ee0b) | 2026-08-31 | Shared-account auth: login flow, signed bearer tokens, UI gate |
-| [`590e3c7`](https://github.com/neobozrim/agent-memory/commit/590e3c7) | 2026-08-31 | Memory response rendering fix |
-| [`06bbd14`](https://github.com/neobozrim/agent-memory/commit/06bbd14) | 2026-08-31 | **WebMCP tool registration** (`seo-agent/ui/lib/webmcp.ts`), pipeline Run view, consolidated System panel, profile menu |
-| [`9af66ec`](https://github.com/neobozrim/agent-memory/commit/9af66ec), [`c623428`](https://github.com/neobozrim/agent-memory/commit/c623428) | 2026-09-01 | **WebMCP write tools**: promote / discard / propose clusters, stage artifacts, AI-citability, deterministic run analysis — an external agent drives the pipeline, not just reads it |
-| [`84d83c9`](https://github.com/neobozrim/agent-memory/commit/84d83c9), [`d3f2dc7`](https://github.com/neobozrim/agent-memory/commit/d3f2dc7), [`ee27de2`](https://github.com/neobozrim/agent-memory/commit/ee27de2) | 2026-09-01 | Strategy pipeline enforced as a code graph; flow registry as the single source of truth for cards, plan, tool allowlist and WebMCP; market confirmed by the user, never inferred |
-| [`1b97506`](https://github.com/neobozrim/agent-memory/commit/1b97506), [`935c2f8`](https://github.com/neobozrim/agent-memory/commit/935c2f8), [`41d7a0a`](https://github.com/neobozrim/agent-memory/commit/41d7a0a) | 2026-09-01 | GEO as a real graph: AI search demand, who is cited, displaceability, open share, People-also-ask; `seo_check_ai_citations` for any domain |
-| [`d297774`](https://github.com/neobozrim/agent-memory/commit/d297774), [`2a53fed`](https://github.com/neobozrim/agent-memory/commit/2a53fed), [`85e6f69`](https://github.com/neobozrim/agent-memory/commit/85e6f69) | 2026-09-01 | Measured cluster metrics replace model-estimated scores; reasoning on both sides of every cut; SERP-overlap cluster verification |
-| [`e957f8d`](https://github.com/neobozrim/agent-memory/commit/e957f8d), [`fec78c0`](https://github.com/neobozrim/agent-memory/commit/fec78c0), [`c7e5e40`](https://github.com/neobozrim/agent-memory/commit/c7e5e40) | 2026-09-01 | Governance: per-run locking, append-only change history, "edited" badge, reset-to-as-produced, `seo_check_if_edited` / `seo_reset_run` for shared multi-judge use |
-| [`01ddb2a`](https://github.com/neobozrim/agent-memory/commit/01ddb2a), [`b6066f6`](https://github.com/neobozrim/agent-memory/commit/b6066f6), [`419e0c6`](https://github.com/neobozrim/agent-memory/commit/419e0c6) | 2026-09-01 | Judge experience: in-app WebMCP guide rendered from the live registry, pinned featured reports on the home canvas, sortable keyword table, mobile layout |
+| [`d2b4e4e`](https://github.com/neobozrim/seostrich/commit/d2b4e4e) | 2026-08-30 | Multi-agent orchestrator, FastAPI backend, Next.js chat UI (streaming chat, tool-call display, live memory panel) |
+| [`49ec857`](https://github.com/neobozrim/seostrich/commit/49ec857), [`8ff9e61`](https://github.com/neobozrim/seostrich/commit/8ff9e61), [`281d15c`](https://github.com/neobozrim/seostrich/commit/281d15c), [`b476fe7`](https://github.com/neobozrim/seostrich/commit/b476fe7) | 2026-08-30 → 31 | Hosting: Railway deployment config, env-driven persistent storage paths, CORS/PORT handling, declared dependencies |
+| [`d0bf7d8`](https://github.com/neobozrim/seostrich/commit/d0bf7d8) | 2026-08-31 | Qwen Cloud API key configuration |
+| [`6a1ee0b`](https://github.com/neobozrim/seostrich/commit/6a1ee0b) | 2026-08-31 | Shared-account auth: login flow, signed bearer tokens, UI gate |
+| [`590e3c7`](https://github.com/neobozrim/seostrich/commit/590e3c7) | 2026-08-31 | Memory response rendering fix |
+| [`06bbd14`](https://github.com/neobozrim/seostrich/commit/06bbd14) | 2026-08-31 | **WebMCP tool registration** (`seo-agent/ui/lib/webmcp.ts`), pipeline Run view, consolidated System panel, profile menu |
+| [`9af66ec`](https://github.com/neobozrim/seostrich/commit/9af66ec), [`c623428`](https://github.com/neobozrim/seostrich/commit/c623428) | 2026-09-01 | **WebMCP write tools**: promote / discard / propose clusters, stage artifacts, AI-citability, deterministic run analysis — an external agent drives the pipeline, not just reads it |
+| [`84d83c9`](https://github.com/neobozrim/seostrich/commit/84d83c9), [`d3f2dc7`](https://github.com/neobozrim/seostrich/commit/d3f2dc7), [`ee27de2`](https://github.com/neobozrim/seostrich/commit/ee27de2) | 2026-09-01 | Strategy pipeline enforced as a code graph; flow registry as the single source of truth for cards, plan, tool allowlist and WebMCP; market confirmed by the user, never inferred |
+| [`1b97506`](https://github.com/neobozrim/seostrich/commit/1b97506), [`935c2f8`](https://github.com/neobozrim/seostrich/commit/935c2f8), [`41d7a0a`](https://github.com/neobozrim/seostrich/commit/41d7a0a) | 2026-09-01 | GEO as a real graph: AI search demand, who is cited, displaceability, open share, People-also-ask; `seo_check_ai_citations` for any domain |
+| [`d297774`](https://github.com/neobozrim/seostrich/commit/d297774), [`2a53fed`](https://github.com/neobozrim/seostrich/commit/2a53fed), [`85e6f69`](https://github.com/neobozrim/seostrich/commit/85e6f69) | 2026-09-01 | Measured cluster metrics replace model-estimated scores; reasoning on both sides of every cut; SERP-overlap cluster verification |
+| [`e957f8d`](https://github.com/neobozrim/seostrich/commit/e957f8d), [`fec78c0`](https://github.com/neobozrim/seostrich/commit/fec78c0), [`c7e5e40`](https://github.com/neobozrim/seostrich/commit/c7e5e40) | 2026-09-01 | Governance: per-run locking, append-only change history, "edited" badge, reset-to-as-produced, `seo_check_if_edited` / `seo_reset_run` for shared multi-judge use |
+| [`01ddb2a`](https://github.com/neobozrim/seostrich/commit/01ddb2a), [`b6066f6`](https://github.com/neobozrim/seostrich/commit/b6066f6), [`419e0c6`](https://github.com/neobozrim/seostrich/commit/419e0c6) | 2026-09-01 | Judge experience: in-app WebMCP guide rendered from the live registry, pinned featured reports on the home canvas, sortable keyword table, mobile layout |
 
 ---
 
