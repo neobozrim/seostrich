@@ -120,6 +120,9 @@ def begin_run(run_id: str, title: str, project: str = "Chat pipeline") -> None:
             "id": run_id,
             "project": project,
             "title": title[:80],
+            # The message as typed. The pipeline reads URLs from it directly
+            # rather than trusting the model to copy them into a tool call.
+            "prompt": title[:4000],
             "created": datetime.now(timezone.utc).isoformat(),
             "status": "running",
             "stages": [],

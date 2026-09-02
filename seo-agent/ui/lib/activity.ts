@@ -10,7 +10,8 @@ import { ActivityEvent } from '../types';
 
 const TOOL_PHRASES: Record<string, string> = {
   seo_agent: 'Working on your strategy',
-  extract_seeds: 'Building seed phrases from your brief',
+  extract_seeds: 'Building seed phrases from your brief and your pages',
+  read_page: 'Reading your page',
   pull_universe: 'Pulling keyword data from DataForSEO',
   keyword_suggestions: 'Fetching keyword stats',
   related_keywords: 'Expanding related keywords',
@@ -40,6 +41,8 @@ const TOOL_PHRASES: Record<string, string> = {
 // first match wins, so the specific ones come before the generic ones.
 const STEP_PHRASES: Array<[RegExp, string | ((m: RegExpMatchArray) => string)]> = [
   [/^market: (.+)/, (m) => `Market confirmed: ${m[1]}`],
+  [/^reading your page: (.+)/, (m) => `Reading your page: ${m[1]}`],
+  [/^links: (.+)/, (m) => `Links found — ${m[1]}`],
   [/^node: extract seeds/, 'Building seed phrases from your brief'],
   [/^node: keyword universe/, 'Pulling keyword data from DataForSEO'],
   [/^competitors: (\d+) queried.*?(\d+) keywords.*?(\d+) ranked by two or more/,

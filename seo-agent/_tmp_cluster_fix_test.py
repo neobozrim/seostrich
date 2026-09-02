@@ -42,8 +42,8 @@ assert captured["max_tokens"] == 2500, f"expected max_tokens 2500, got {captured
 # mechanical, and the reasoning model spends ~9.5k thinking tokens on it.
 from src.config import settings as _settings
 assert captured["timeout"] is None, "node should rely on the default deadline"
-assert captured["model"] == _settings.qwen_model_fast, (
-    f"expected fast model {_settings.qwen_model_fast}, got {captured['model']}")
+assert captured["model"] == _settings.model_fast, (
+    f"expected fast model {_settings.model_fast}, got {captured['model']}")
 ck.llm.chat = orig_chat
 print("PASS payload: 80 numbered lines, volume desc, max_tokens=2500, fast model requested")
 

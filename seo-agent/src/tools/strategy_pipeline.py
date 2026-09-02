@@ -21,6 +21,8 @@ from .recommend_pillars import recommend_pillars
 from .score_clusters import score_clusters
 from .select_clusters import select_clusters
 from .strategy_brief import write_brief
+from . import site_fetch
+from .. import runs as runs_store
 from .serp_verify import apply_merges, verify_clusters
 from .validate_clusters import validate_clusters
 
@@ -145,6 +147,7 @@ def run_keyword_strategy(
     site_description: str = "",
     competitor_urls: list[str] | None = None,
     max_select: int = 4,
+    own_urls: list[str] | None = None,
 ) -> dict:
     """Run the enforced strategy graph end-to-end inside the active run.
 
@@ -168,11 +171,56 @@ def run_keyword_strategy(
     language_code = market["language_code"]
     rec.log_activity("step", detail=f"market: {market['label']}")
 
-    competitors = (competitor_urls or [])[:10]
     steps: list[str] = []
 
+    # Every URL the user typed, read from the message itself. The model that
+    # fills the tool call drops some — a run that got three competitors was
+    # given more — so the prompt is the source of truth and the tool call is
+    # merged into it, not the other way round.
+    run_now = runs_store.get_run(rec.active_run_id()) if rec.active_run_id() else None
+    prompt_text = (run_now or {}).get("prompt") or ""
+    found = site_fetch.classify_urls(prompt_text, site_description)
+    site_url = site_description if site_fetch.domain_of(site_description) else ""
+    if not site_url and found["own"]:
+        site_url = found["own"][0]
+    own_pages = []
+    seen_own = set()
+    for u in list(own_urls or []) + ([site_url] if site_url else []) + found["own"]:
+        d = site_fetch.domain_of(u)
+        if u and d and u not in seen_own:
+            seen_own.add(u)
+            own_pages.append(u)
+    own_domains = {site_fetch.domain_of(u) for u in own_pages}
+    competitors = []
+    seen_c = set()
+    for u in list(competitor_urls or []) + found["competitors"]:
+        d = site_fetch.domain_of(u)
+        if d and d not in seen_c and d not in own_domains:
+            seen_c.add(d)
+            competitors.append(u)
+    competitors = competitors[:10]
+    if len(found["own"]) + len(found["competitors"]) > 0:
+        rec.log_activity("step", detail=(
+            f"links: {len(own_pages)} of yours, {len(competitors)} competitors "
+            f"({len(found['competitors'])} read from your message)"))
+
+    # Read the user's own pages so the seeds come from what they say.
+    site_blocks = []
+    for u in own_pages[:4]:
+        rec.log_activity("step", detail=f"reading your page: {site_fetch.domain_of(u)}")
+        page = site_fetch.fetch_page(u)
+        site_blocks.append(site_fetch.page_summary_for_prompt(page, site_fetch.domain_of(u) or u))
+        if page.get("ok"):
+            rec.record_tool("read_page", {"url": u},
+                            {"url": page.get("url"), "title": page.get("title"),
+                             "headings": page.get("headings", [])[:25]}, True)
+    site_content = "\n\n".join(site_blocks)
+    if site_url and not site_description:
+        site_description = site_url
+
     rec.log_activity("step", detail="node: extract seeds")
-    seeds = extract_seeds(business_description, site_description, competitors, language_code=language_code)
+    seeds = extract_seeds(business_description, site_description, competitors,
+                          language_code=language_code, site_content=site_content)
     rec.record_tool("extract_seeds", {"business_description": business_description}, seeds, True)
     steps.append("seeds")
     run_id_now = rec.active_run_id()
@@ -186,7 +234,7 @@ def run_keyword_strategy(
     rec.log_activity("step", detail="node: keyword universe via DataForSEO")
     universe = pull_universe(
         seeds, location_code=location_code, language_code=language_code,
-        competitor_urls=competitors, site_url=site_description,
+        competitor_urls=competitors, site_url=site_url or site_description,
         business_description=business_description,
     )
     keywords = universe.get("keywords") or []
