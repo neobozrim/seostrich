@@ -522,11 +522,19 @@ async def chat_stream(
 ):
     """Stream chat responses from orchestrator."""
 
-    # Save uploaded files temporarily
+    # Only the first 500 characters of an attachment ever reach the model, so
+    # there is no reason to hold an unbounded upload in memory. Bounded per
+    # file and per request; anything over is refused, not silently cut.
+    MAX_ATTACHMENT_BYTES = 2 * 1024 * 1024
+    MAX_ATTACHMENTS = 5
+    if len(files) > MAX_ATTACHMENTS:
+        raise HTTPException(status_code=413, detail=f"At most {MAX_ATTACHMENTS} attachments per message")
     attachments = []
     for file in files:
         if file.filename:
-            content = await file.read()
+            content = await file.read(MAX_ATTACHMENT_BYTES + 1)
+            if len(content) > MAX_ATTACHMENT_BYTES:
+                raise HTTPException(status_code=413, detail=f"{file.filename} is over 2 MB")
             attachments.append({
                 "name": file.filename,
                 "content": content.decode("utf-8", errors="ignore"),

@@ -34,7 +34,21 @@ def _valid_run_id(run_id: str) -> bool:
     return bool(run_id) and _RUN_ID_RE.match(run_id) is not None
 
 
+# A run id becomes a file name. Every run id the API sees comes from a URL
+# path segment, so without this "../../seed/runs/productpirates" reads or
+# OVERWRITES a .json file anywhere the process can reach. The ids the app
+# itself mints are slugs of this shape; anything else is rejected before it
+# touches the filesystem.
+_RUN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
+
+
+def _valid_id(run_id: str) -> bool:
+    return bool(run_id) and bool(_RUN_ID.match(run_id)) and ".." not in run_id
+
+
 def _run_path(run_id: str) -> Path:
+    if not _valid_id(run_id):
+        raise ValueError(f"invalid run id: {run_id!r}")
     return _runs_dir() / f"{run_id}.json"
 
 
@@ -68,6 +82,8 @@ def list_runs() -> list[dict]:
 
 
 def get_run(run_id: str) -> dict | None:
+    if not _valid_id(run_id):
+        return None
     if not _valid_run_id(run_id):
         return None
     path = _run_path(run_id)
@@ -80,6 +96,8 @@ def get_run(run_id: str) -> dict | None:
 
 
 def save_run(run_id: str, run: dict) -> bool:
+    if not _valid_id(run_id):
+        return False
     if not _valid_run_id(run_id):
         return False
     path = _run_path(run_id)

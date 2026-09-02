@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   BookOpenCheck,
@@ -9,8 +9,10 @@ import {
   Pencil,
   Plug,
   Search,
+  CircleCheck,
+  CircleAlert,
 } from 'lucide-react';
-import { buildTools } from '@/lib/webmcp';
+import { buildTools, registerWebMcpTools } from '@/lib/webmcp';
 
 /**
  * What this page is for
@@ -119,6 +121,21 @@ const RECIPES: Recipe[] = [
 
 export function WebMcpGuide({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState('');
+  // 'unknown' until checked; then whether this browser exposes WebMCP at all,
+  // and whether our registration went through.
+  const [status, setStatus] = useState<'unknown' | 'registered' | 'unavailable' | 'failed'>('unknown');
+
+  useEffect(() => {
+    const w = window as any;
+    const available = !!(w.document?.modelContext || w.navigator?.modelContext);
+    if (!available) {
+      setStatus('unavailable');
+      return;
+    }
+    registerWebMcpTools()
+      .then((ok) => setStatus(ok ? 'registered' : 'failed'))
+      .catch(() => setStatus('failed'));
+  }, []);
 
   // Rendered from the live registry: if a tool is removed from the app, it
   // disappears from this page too.
@@ -183,6 +200,50 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
           the working; the rest let it argue back and change the outcome.
         </p>
 
+        {/* ---- is it live here? ---- */}
+        {status === 'registered' && (
+          <div className="mt-6 flex items-start gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+            <CircleCheck className="w-5 h-5 text-green-700 shrink-0 mt-0.5" />
+            <div className="text-sm text-green-900">
+              <strong>Live in this browser.</strong> All {tools.length} tools are
+              registered on this page right now — your assistant can call them.
+            </div>
+          </div>
+        )}
+        {status === 'unavailable' && (
+          <div className="mt-6 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+            <div className="flex items-start gap-3">
+              <CircleAlert className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+              <div className="text-sm text-amber-900">
+                <strong>This browser does not expose WebMCP</strong>, so nothing on
+                this page is registered yet. The app itself works as usual. To
+                try the tools:
+              </div>
+            </div>
+            <ol className="mt-3 ml-8 space-y-1.5 text-sm text-amber-900 list-decimal">
+              <li>
+                <strong>Google Chrome:</strong> open{' '}
+                <code className="font-mono bg-white/70 px-1.5 py-0.5 rounded border border-amber-200">chrome://flags/#enable-webmcp-testing</code>
+                , set it to <em>Enabled</em>, relaunch, then reopen this page.
+              </li>
+              <li>
+                <strong>ChatGPT&apos;s in-app browser:</strong> open this URL there —
+                WebMCP works natively, no flag needed.
+              </li>
+              <li>Then ask your assistant any of the prompts below.</li>
+            </ol>
+          </div>
+        )}
+        {status === 'failed' && (
+          <div className="mt-6 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+            <CircleAlert className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+            <div className="text-sm text-amber-900">
+              <strong>WebMCP is available here, but registration did not complete.</strong>{' '}
+              Reload the page; if it persists, the browser console will say which tool was refused.
+            </div>
+          </div>
+        )}
+
         {/* ---- the recipes ---- */}
         <h2 className="mt-12 mb-1 text-lg font-semibold text-primary-700 flex items-center gap-2">
           <BookOpenCheck className="w-5 h-5 text-primary-400" />
@@ -229,8 +290,10 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
           Every tool on this page
         </h2>
         <p className="text-sm text-gray-500 mb-4">
-          Read straight from the live registry — if it is listed here, it is
-          registered in your browser right now.
+          Rendered from the same registry the page registers, so this list
+          cannot drift from the code.
+          {status === 'registered' && ' Every tool below is live in this browser.'}
+          {status === 'unavailable' && ' None are active in this browser yet — see above.'}
         </p>
 
         <div className="relative mb-5">
@@ -288,8 +351,9 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
 
         <p className="mt-10 text-xs text-gray-500 leading-relaxed">
           Tools are registered on <code className="font-mono">document.modelContext</code>{' '}
-          when this page loads. If your assistant reports none available, it is
-          not connected to this tab — the app itself is unaffected.
+          (falling back to <code className="font-mono">navigator.modelContext</code>) once
+          you are signed in. Registration code:{' '}
+          <code className="font-mono">ui/lib/webmcp.ts</code>.
         </p>
       </div>
     </div>

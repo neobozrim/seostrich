@@ -1,14 +1,28 @@
-# Agent Memory
+# SEOstrich — *Get discovered.*
 
-**Submission to [The WebMCP Challenge](https://webmcp.devpost.com) (Submission Period: Aug 25 – Sep 3, 2026, 1pm PT)**
+**Submission to [The WebMCP Challenge](https://webmcp.devpost.com)** · Submission period Aug 25 – Sep 3, 2026, 1pm PT
 
-A self-improving, multi-agent SEO system with blackboard-style shared memory — extended during the hackathon with a hosted web app that exposes its analysis pipeline to in-browser AI agents via **WebMCP**.
+An SEO strategy agent whose every decision is on the page as a WebMCP tool, so
+the visitor's *own* assistant can read the working, argue with it, and change
+the outcome. It builds keyword strategies and AI-visibility (GEO) briefs from
+measured DataForSEO data — never a number a model made up — and exposes
+**20 tools** on `document.modelContext` to read, audit, edit and reset them.
 
-- **Live demo:** https://agent-memory-virid.vercel.app/
+- **Live app:** https://agent-memory-virid.vercel.app/ — credentials are on the submission form
+- **The tools, explained:** open the app and press **WebMCP** in the header (lists all 20 from the live registry, with twelve worked prompts)
+- **Registration code:** [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts)
 - **Backend API:** https://agent-memory-production-7d5d.up.railway.app
-- **License:** MIT (see [LICENSE](LICENSE))
+- **Licence:** MIT (see [LICENSE](LICENSE))
 
----
+## Try WebMCP in 60 seconds
+
+1. Open the live app in **Google Chrome** with `chrome://flags/#enable-webmcp-testing` set to *Enabled* (relaunch), or in **ChatGPT's in-app browser** (works natively). Sign in.
+2. Open the pinned **Product Pirates Club** report.
+3. Ask your assistant: *"Audit this SEO strategy for me — do the discard reasons actually hold up?"*
+4. Then: *"Drop the courses cluster, we don't sell courses, and bring back the one on building AI products."* Watch the report change.
+5. Then: *"Reset it to as-produced."* — hands it back clean for the next person, history kept.
+
+`seo_check_if_edited` tells an assistant whether it is looking at the pipeline's own verdict or somebody's edit; that is the whole point of the governance layer.
 
 ## Hackathon eligibility — what we started with vs. what we built during the Submission Period
 
@@ -28,7 +42,7 @@ There was **no web UI, no hosted service, and no WebMCP** at the baseline.
 
 ### Work added DURING the Submission Period (Aug 25 – Sep 3, 2026)
 
-Complete diff: [`f9b3f10` → `06bbd14`](https://github.com/neobozrim/agent-memory/compare/f9b3f10...06bbd14)
+Complete diff: [`f9b3f10` → `main`](https://github.com/neobozrim/agent-memory/compare/f9b3f10...main)
 
 | Commit | Date (EEST) | Added |
 |---|---|---|
@@ -38,6 +52,12 @@ Complete diff: [`f9b3f10` → `06bbd14`](https://github.com/neobozrim/agent-memo
 | [`6a1ee0b`](https://github.com/neobozrim/agent-memory/commit/6a1ee0b) | 2026-08-31 | Shared-account auth: login flow, signed bearer tokens, UI gate |
 | [`590e3c7`](https://github.com/neobozrim/agent-memory/commit/590e3c7) | 2026-08-31 | Memory response rendering fix |
 | [`06bbd14`](https://github.com/neobozrim/agent-memory/commit/06bbd14) | 2026-08-31 | **WebMCP tool registration** (`seo-agent/ui/lib/webmcp.ts`), pipeline Run view, consolidated System panel, profile menu |
+| [`9af66ec`](https://github.com/neobozrim/agent-memory/commit/9af66ec), [`c623428`](https://github.com/neobozrim/agent-memory/commit/c623428) | 2026-09-01 | **WebMCP write tools**: promote / discard / propose clusters, stage artifacts, AI-citability, deterministic run analysis — an external agent drives the pipeline, not just reads it |
+| [`84d83c9`](https://github.com/neobozrim/agent-memory/commit/84d83c9), [`d3f2dc7`](https://github.com/neobozrim/agent-memory/commit/d3f2dc7), [`ee27de2`](https://github.com/neobozrim/agent-memory/commit/ee27de2) | 2026-09-01 | Strategy pipeline enforced as a code graph; flow registry as the single source of truth for cards, plan, tool allowlist and WebMCP; market confirmed by the user, never inferred |
+| [`1b97506`](https://github.com/neobozrim/agent-memory/commit/1b97506), [`935c2f8`](https://github.com/neobozrim/agent-memory/commit/935c2f8), [`41d7a0a`](https://github.com/neobozrim/agent-memory/commit/41d7a0a) | 2026-09-01 | GEO as a real graph: AI search demand, who is cited, displaceability, open share, People-also-ask; `seo_check_ai_citations` for any domain |
+| [`d297774`](https://github.com/neobozrim/agent-memory/commit/d297774), [`2a53fed`](https://github.com/neobozrim/agent-memory/commit/2a53fed), [`85e6f69`](https://github.com/neobozrim/agent-memory/commit/85e6f69) | 2026-09-01 | Measured cluster metrics replace model-estimated scores; reasoning on both sides of every cut; SERP-overlap cluster verification |
+| [`e957f8d`](https://github.com/neobozrim/agent-memory/commit/e957f8d), [`fec78c0`](https://github.com/neobozrim/agent-memory/commit/fec78c0), [`c7e5e40`](https://github.com/neobozrim/agent-memory/commit/c7e5e40) | 2026-09-01 | Governance: per-run locking, append-only change history, "edited" badge, reset-to-as-produced, `seo_check_if_edited` / `seo_reset_run` for shared multi-judge use |
+| [`01ddb2a`](https://github.com/neobozrim/agent-memory/commit/01ddb2a), [`b6066f6`](https://github.com/neobozrim/agent-memory/commit/b6066f6), [`419e0c6`](https://github.com/neobozrim/agent-memory/commit/419e0c6) | 2026-09-01 | Judge experience: in-app WebMCP guide rendered from the live registry, pinned featured reports on the home canvas, sortable keyword table, mobile layout |
 
 ---
 

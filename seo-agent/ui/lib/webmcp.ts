@@ -73,6 +73,7 @@ const RUN_ID_PROP = {
 
 const READ_ONLY = { readOnlyHint: true };
 const READ_WRITE = { readOnlyHint: false };
+const READ_ONLY_UNTRUSTED = { readOnlyHint: true, untrustedContentHint: true };
 
 export function buildTools() {
   return [
@@ -279,7 +280,7 @@ export function buildTools() {
       description:
         'What AI engines already do with these topics: how much AI search demand each head term has, which sources ChatGPT and Google AI currently cite, how much of the answer space is unclaimed, and the real questions people ask (People-also-ask). Use this to judge whether content could realistically be cited by an AI answer, and to write against questions users actually ask rather than guessed ones. Read-only, no cost — the data was already fetched during the run.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
-      annotations: READ_ONLY,
+      annotations: READ_ONLY_UNTRUSTED,
       execute: async (input: { run_id?: string }, options?: any) => {
         const run = await resolveRun(input?.run_id);
         if (!run) return 'No pipeline run found.';
@@ -372,7 +373,7 @@ export function buildTools() {
         },
         required: ['domain'],
       },
-      annotations: READ_ONLY,
+      annotations: READ_ONLY_UNTRUSTED,
       execute: async (input: { domain: string }, options?: any) => {
         if (!input?.domain) return 'A domain is required.';
         return checkAiCitations(input.domain, options?.signal);
@@ -395,7 +396,7 @@ export function buildTools() {
       name: 'seo_check_if_edited',
       title: 'Has this report been changed?',
       description:
-        'Say whether the cluster selection still matches what the pipeline produced, or whether someone has edited it since — how many changes are standing, and who made the most recent one. Call this BEFORE you judge a strategy or suggest changes of your own: on a shared deployment the report you are reading may already carry another person\'s decisions, and reading those as the pipeline\'s own verdict is the easiest mistake to make here. Read-only, no cost.',
+        'Say whether the cluster selection still matches what the pipeline produced, or whether someone has edited it since — how many changes are standing, and who made the most recent one. Use this when you are about to judge a strategy or suggest changes of your own: on a shared deployment the report you are reading may already carry decisions someone else made, and reading those as the verdict of the pipeline is the easiest mistake to make here. Read-only, no cost.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
       execute: async (input: { run_id?: string }, options?: any) => {
@@ -408,7 +409,7 @@ export function buildTools() {
       name: 'seo_reset_run',
       title: 'Undo every change to this report',
       description:
-        'Put the cluster selection back to exactly what the pipeline produced, undoing every promotion, discard and proposal made since. Use it to hand a report back in its original state after experimenting, or when the edits on it were somebody else\'s and you want to judge the pipeline rather than their edits. The history of what was changed is KEPT, including this reset — nothing is erased, only the selection moves back. Writes to the run, no API cost.',
+        'Put the cluster selection back to exactly what the pipeline produced, undoing every promotion, discard and proposal made since. Use it to hand a report back in its original state after experimenting, or when the edits on it were made by somebody else and you want to judge the pipeline rather than their edits. The history of what was changed is KEPT, including this reset — nothing is erased, only the selection moves back. Writes to the run, no API cost.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_WRITE,
       execute: async (input: { run_id?: string }, options?: any) => {
