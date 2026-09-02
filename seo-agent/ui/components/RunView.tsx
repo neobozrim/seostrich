@@ -131,26 +131,21 @@ function StageCard({
 }) {
   const summary = stageSummary(stage);
   return (
-    <div className="relative flex gap-4" id={`stage-${stage.id}`}>
-      {/* connector rail */}
-      <div className="flex flex-col items-center">
-        <div
-          className={`w-9 h-9 rounded-full flex items-center justify-center text-base flex-shrink-0 ${
-            stage.status === 'done' ? '' : 'opacity-40 grayscale'
-          }`}
-          title={stage.label}
-        >
-          <StageIcon stage={stage.id} className="w-8 h-8" />
-        </div>
-        {!isLast && <div className="w-px flex-1 bg-surface-300 my-1" />}
-      </div>
-
-      <div className={`flex-1 min-w-0 ${open ? 'pb-8' : 'pb-4'}`}>
+    <div className="relative" id={`stage-${stage.id}`}>
+      <div className={`min-w-0 ${open ? 'pb-8' : 'pb-3'}`}>
         <button
           onClick={onToggle}
           aria-expanded={open}
           className="w-full text-left flex items-center gap-2 mb-1 group"
         >
+          {/* A disclosure triangle, as in the tool inspector: it points at
+              what it hides, and turns down when the step is open. */}
+          <span
+            aria-hidden
+            className={`inline-block w-4 text-center text-gray-500 group-hover:text-gray-900 transition-transform ${open ? 'rotate-90' : ''}`}
+          >
+            &#9656;
+          </span>
           <span className="text-sm text-gray-400">
             Step {index + 1}
           </span>
@@ -160,10 +155,7 @@ function StageCard({
           ) : (
             <Circle className="w-4 h-4 text-gray-300" />
           )}
-          {!open && summary && <span className="text-sm text-gray-500 truncate">· {summary}</span>}
-          <span className="ml-auto text-sm text-gray-500 shrink-0 group-hover:text-gray-800">
-            {open ? 'collapse ▴' : 'expand ▾'}
-          </span>
+          {!open && summary && <span className="text-sm text-gray-500 truncate">&middot; {summary}</span>}
         </button>
         {open && STAGE_PURPOSE[stage.id] && (
           <p className="text-sm text-gray-500 mb-3 max-w-prose leading-relaxed">{STAGE_PURPOSE[stage.id]}</p>
