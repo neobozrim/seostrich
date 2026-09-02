@@ -4,7 +4,7 @@ import React from 'react';
 import { Message } from '@/types';
 import ReactMarkdown from 'react-markdown';
 import { Loader2, Check } from 'lucide-react';
-import { activityLabel } from '@/lib/activity';
+import { activityLabel, currentActivity } from '@/lib/activity';
 
 interface ChatMessageProps {
   message: Message;
@@ -30,12 +30,15 @@ function progressLines(message: Message): string[] {
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
-  const working = !isUser && !message.content && (message.statusText || (message.activity || []).length > 0);
+  // Live until the stream says it is over. The first sentence the orchestrator
+  // writes ("Routing it now.") used to hide this — and then nothing moved on
+  // screen for ten minutes while the graph ran.
+  const working = !isUser && !message.done && !!(message.statusText || (message.activity || []).length > 0);
   const lines = isUser ? [] : progressLines(message);
-  const current = message.statusText && lines[lines.length - 1] !== message.statusText
-    ? message.statusText
-    : lines[lines.length - 1];
-  const done = message.content ? lines : lines.slice(0, -1);
+  const current = (message.activity || []).length
+    ? currentActivity(message.activity || [])
+    : message.statusText || lines[lines.length - 1];
+  const done = message.done ? lines : lines.slice(0, -1);
 
   return (
     <div className={`flex p-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
@@ -47,6 +50,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
               : 'bg-secondary-300 text-gray-900 rounded-bl-md'
           }`}
         >
+          {message.content && (
+            <div className={`prose prose-sm max-w-none ${isUser ? 'prose-invert' : ''}`}>
+              <ReactMarkdown>{message.content}</ReactMarkdown>
+            </div>
+          )}
+
           {working && (
             <div className="space-y-1">
               {done.map((l, i) => (
@@ -62,14 +71,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
             </div>
           )}
 
-          {message.content && (
-            <div className={`prose prose-sm max-w-none ${isUser ? 'prose-invert' : ''}`}>
-              <ReactMarkdown>{message.content}</ReactMarkdown>
-            </div>
-          )}
-
           {/* Once the answer is in, the steps fold away but stay reachable. */}
-          {message.content && !isUser && done.length > 0 && (
+          {message.done && !isUser && done.length > 0 && (
             <details className="mt-2 text-xs text-gray-500">
               <summary className="cursor-pointer hover:text-gray-700">
                 What it did · {done.length} step{done.length === 1 ? '' : 's'}

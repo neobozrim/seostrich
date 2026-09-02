@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  ArrowLeft,
   BookOpenCheck,
   CircleDollarSign,
   Eye,
@@ -161,21 +160,7 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
   const readCount = tools.filter((t: any) => t.annotations?.readOnlyHint).length;
 
   return (
-    <div className="fixed inset-0 bg-surface-50 z-40 overflow-y-auto">
-      <div className="sticky top-0 z-10 bg-surface-100 border-b border-surface-300 px-4 sm:px-6 py-4">
-        <button
-          onClick={onClose}
-          title="Back to your work"
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-        >
-          <ArrowLeft className="w-4 h-4 text-gray-500" />
-          <img
-            src="/logo/seostrich-lockup-horizontal.svg"
-            alt="SEOstrich — back to your work"
-            className="h-7 w-auto"
-          />
-        </button>
-      </div>
+    <div className="fixed inset-x-0 bottom-0 top-16 bg-surface-50 z-40 overflow-y-auto">
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <div className="flex items-center gap-2 text-xs font-medium text-primary-500 mb-3">

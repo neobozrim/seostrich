@@ -50,7 +50,10 @@ function subtitleOf(run: RunSummary): string {
   return t && t !== name ? t : '';
 }
 function isFixture(run: RunSummary): boolean {
-  return nameOf(run).length <= 2 && !run.pinned;
+  if (run.pinned) return false;
+  if (/^(test|diag)-/.test(run.id)) return true;
+  const p = (run.project || '').trim();
+  return nameOf(run).length <= 2 || p.length <= 1;
 }
 
 interface Props {

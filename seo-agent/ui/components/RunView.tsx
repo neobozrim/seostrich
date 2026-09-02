@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Loader2,
   RefreshCw,
+  Pencil,
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
@@ -18,10 +19,11 @@ import {
   Undo2,
 } from 'lucide-react';
 import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent } from '@/types';
-import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, getRunChanges,
+import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, getRunChanges, renameRun,
   resetRun, getRunGovernance, AuthError } from '@/lib/api';
-import { activityLabel } from '@/lib/activity';
+import { activityLabel, currentActivity } from '@/lib/activity';
 import { StageIcon } from '@/components/StageIcon';
+import ReactMarkdown from 'react-markdown';
 
 function fmtVol(n: number): string {
   // Grouped digits, not "3.6k" — an abbreviation costs a mental step every
@@ -35,6 +37,10 @@ interface RunViewProps {
   // Which run to open. Set when the user clicks a card on the home canvas;
   // without it the view falls back to the most recent run.
   initialRunId?: string | null;
+  // True while the chat stream producing this artefact is open. The graph
+  // may have finished while the agent still edits the artefact (proposing a
+  // cluster, writing the summary), so polling follows the stream too.
+  live?: boolean;
 }
 
 // Icons live in StageIcon.tsx, drawn in the brand mark's language (filled
@@ -109,6 +115,9 @@ function StageCard({
             <Circle className="w-4 h-4 text-gray-300" />
           )}
         </div>
+        {STAGE_PURPOSE[stage.id] && (
+          <p className="text-sm text-gray-500 mb-3 max-w-prose leading-relaxed">{STAGE_PURPOSE[stage.id]}</p>
+        )}
         <div className="bg-white border border-surface-300 rounded-xl p-4 shadow-sm">
           {children}
         </div>
@@ -175,6 +184,83 @@ function SeedsArtifact({ artifact }: { artifact: Record<string, any> }) {
     </div>
   );
 }
+
+// The rail shows each step once, in words; consecutive duplicates and the
+// model's internal rounds are noise.
+function dedupeLabels(events: ActivityEvent[]): string[] {
+  const out: string[] = [];
+  for (const ev of events) {
+    if (ev.kind === 'llm_round' || (ev.kind === 'tool_end' && ev.success)) continue;
+    const l = activityLabel(ev);
+    if (l && out[out.length - 1] !== l) out.push(l);
+  }
+  return out;
+}
+
+// Older runs are titled with the prompt that started them. A name is short
+// and does not end like a sentence; anything else is clamped at a word
+// boundary so the heading never cuts mid-word.
+function artefactName(run: Run): string {
+  const t = (run.title || '').trim();
+  const p = (run.project || '').trim();
+  if (t && t.length <= 48 && !/[.!?]$/.test(t)) return t;
+  if (p && p.toLowerCase() !== 'chat pipeline') return p.split(' · ')[0];
+  if (!t) return 'Untitled';
+  const words = t.split(/\s+/);
+  let out = '';
+  for (const w of words) {
+    if ((out + ' ' + w).trim().length > 44) break;
+    out = (out + ' ' + w).trim();
+  }
+  return out ? out + '…' : t.slice(0, 44) + '…';
+}
+// The kind of artefact, read from what it contains rather than stored — an
+// old run gets the right tag too.
+function flowTag(run: Run): string {
+  const ids = new Set((run.stages || []).map((s) => s.id));
+  if (ids.has('pillars') || ids.has('clusters') || ids.has('keywords')) return 'SEO content strategy';
+  if (ids.has('ai_citability')) return 'AI visibility';
+  if (ids.has('audit')) return 'Technical audit';
+  return 'Strategy';
+}
+function artefactLine(run: Run): string {
+  const t = (run.title || '').trim();
+  const p = (run.project || '').trim();
+  if (p && p.toLowerCase() !== 'chat pipeline' && p !== artefactName(run)) return p;
+  if (t && t !== artefactName(run) && t.length > 48) return t;
+  return '';
+}
+function formatCreated(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// What each step is FOR, and what it hands to the next one. A reader lands on
+// an artefact cold; the stage names alone ("Intake", "Clusters") explain
+// nothing. One short paragraph each, in plain words.
+const STAGE_PURPOSE: Record<string, string> = {
+  intake:
+    'The market you confirmed: which country your audience searches from and in which language. Never inferred from the domain. Every number below is measured for this market only.',
+  seeds:
+    'A handful of searchable phrases pulled from your brief, your site and your competitors. They are the starting points, not the answer: each one is expanded into everything people actually search around it.',
+  keywords:
+    'The keyword universe: every phrase found by expanding the seeds, plus what your competitors rank for, each with real search volume, difficulty, cost-per-click and intent from DataForSEO. Difficulty is 0–100 and measures how strong the pages ranking today are, not how many people search — a low number on a real-volume keyword is a gap a new site can win. Nothing here is estimated by a model.',
+  competitors:
+    'What the competition ranks for, keyword by keyword, and where they overlap. These keywords join the universe above — capped at the number found from your own seeds, most-shared first — and are clustered with everything else on equal footing; there is no separate weight. Every keyword that came from a competitor is tagged with its source wherever it appears.',
+  clusters:
+    'The universe grouped into themes a single page could own, verified against live Google results: two keywords belong together only if Google shows the same pages for both. Each theme is measured, then kept or parked with a stated reason — and any decision can be argued with, here or over WebMCP.',
+  pillars:
+    'The recommendation: which themes to build content around, in what order, and why — citing the measured numbers that earned each one its place. This is what you take to a writer.',
+  mix:
+    'The publishing plan built from the pillars: what to write first, and at what cadence.',
+  ai_citability:
+    'What AI engines already do with these topics: how much AI search demand there is, which sources ChatGPT and Google AI cite today, how much of the answer space is unclaimed, and the questions people actually ask. Write against those questions to get cited.',
+  audit:
+    'Technical checks on the site itself — crawlability, metadata, rendering — the things that keep good content from being found.',
+  onpage:
+    'How specific pages measure up against what they are trying to rank for.',
+};
 
 function fmtCpc(n: number | undefined): string {
   if (n === undefined || n === null) return '';
@@ -318,9 +404,13 @@ function CLS_BTN(column: (typeof COLUMNS)[number], active: boolean): string {
 function KeywordTable({
   rows,
   limit,
+  hideOwner = false,
 }: {
   rows: Array<string | Record<string, any>>;
   limit?: number;
+  // Inside one competitor's own list every row is "from" that competitor;
+  // the tag would only repeat the heading.
+  hideOwner?: boolean;
 }) {
   const [sort, setSort] = useState<{ key: SortKey; dir: SortDir } | null>(null);
 
@@ -361,10 +451,15 @@ function KeywordTable({
               {visible.map((k, i) => (
                 <tr key={i} className="bg-surface-100">
                   <td
-                    className="pl-2 py-1.5 rounded-l-lg text-gray-800 max-w-[220px] truncate"
-                    title={k.keyword || k.query || ''}
+                    className="pl-2 py-1.5 rounded-l-lg text-gray-800 max-w-[260px] truncate"
+                    title={(k.keyword || k.query || '') + (Array.isArray(k.owned_by) && k.owned_by.length ? ' — ranked by ' + k.owned_by.join(', ') : '')}
                   >
                     {k.keyword || k.query || ''}
+                    {!hideOwner && Array.isArray(k.owned_by) && k.owned_by.length > 0 && (
+                      <span className="ml-1.5 text-[10px] text-accent-500 font-medium">
+                        from {k.owned_by[0].replace(/^www\./, '').split('.')[0]}{k.owned_by.length > 1 ? ' +' + (k.owned_by.length - 1) : ''}
+                      </span>
+                    )}
                   </td>
                   <td className="py-1.5 text-right tabular-nums text-gray-700">
                     {k.volume != null ? fmtVol(k.volume) : '—'}
@@ -490,11 +585,15 @@ function ClusterCard({ c }: { c: any }) {
               {c.rationale || [c.seo_rationale, c.geo_rationale].filter(Boolean).join(' · ')}
             </p>
           )}
-          <div>
-            {(c.keywords || []).map((k: string, ki: number) => (
-              <ClusterMember key={ki} name={k} stats={stats[k]} />
-            ))}
-          </div>
+          {/* One row per keyword, in the same table as keyword discovery —
+              the same columns, the same sort, so the eye does not relearn. */}
+          <KeywordTable
+            rows={(c.keywords || []).map((k: any) => {
+              const name = typeof k === 'string' ? k : k?.keyword || '';
+              const st = stats[name] || (typeof k === 'object' ? k : {}) || {};
+              return { keyword: name, volume: st.volume, difficulty: st.difficulty, cpc: st.cpc, intent: st.intent, owned_by: st.owned_by };
+            })}
+          />
         </div>
       )}
     </div>
@@ -690,24 +789,161 @@ function AuditArtifact({ artifact }: { artifact: Record<string, any> }) {
   );
 }
 
-function CompetitorsArtifact({ artifact }: { artifact: Record<string, any> }) {
-  const sources = artifact.sources || {};
-  const names = Object.keys(sources);
-  return (
-    <div className="space-y-2">
-      <div className="text-sm text-gray-700">
-        <span className="font-semibold">{names.length}</span> competitor data source{names.length === 1 ? '' : 's'}
+function CompetitorsArtifact({ artifact, universe = [] }: { artifact: Record<string, any>; universe?: any[] }) {
+  // Runs recorded before the map kept every keyword: rebuild each
+  // competitor's list from the universe rows tagged with their owners.
+  const rowsFor = (d: string): any[] => {
+    const own = artifact.per_domain?.[d]?.rows;
+    if (Array.isArray(own) && own.length) return own;
+    return (universe || []).filter((k: any) => Array.isArray(k?.owned_by) && k.owned_by.includes(d));
+  };
+  const queried: string[] = artifact.competitors || [];
+  const user: string[] = artifact.user_supplied || [];
+  const discovered: string[] = artifact.discovered || [];
+  const per: Record<string, any> = artifact.per_domain || {};
+  const kept = artifact.kept_in_universe;
+  const contributed = artifact.keywords_contributed;
+  const [openDomain, setOpenDomain] = useState<string | null>(null);
+  const [gridOpen, setGridOpen] = useState(true);
+
+  if (queried.length === 0) {
+    return (
+      <div className="text-sm text-gray-500">
+        No competitors were checked for this run. Add competitor URLs to the brief and the
+        keywords they rank for join the universe.
       </div>
-      {names.map((n) => {
-        const v = sources[n];
-        const count = Array.isArray(v) ? v.length : v?.count ?? null;
-        return (
-          <div key={n} className="flex items-center justify-between text-sm border border-surface-200 rounded-lg px-3 py-2">
-            <span className="text-gray-700 font-medium">{n}</span>
-            {count != null && <span className="text-xs text-gray-400">{count} result{count === 1 ? '' : 's'}</span>}
-          </div>
-        );
-      })}
+    );
+  }
+
+  // Overlap grid: every keyword any competitor ranks for, most-shared first,
+  // then by volume. Columns are the competitors; a dot means "ranks for it".
+  const owners = new Map<string, { row: any; by: Set<string> }>();
+  for (const d of queried) {
+    for (const r of rowsFor(d)) {
+      const k = (r.keyword || '').toLowerCase();
+      if (!k) continue;
+      const cur = owners.get(k) || { row: r, by: new Set<string>() };
+      cur.by.add(d);
+      if ((r.volume || 0) > (cur.row.volume || 0)) cur.row = r;
+      owners.set(k, cur);
+    }
+  }
+  const grid = Array.from(owners.values())
+    .sort((a, b) => b.by.size - a.by.size || (b.row.volume || 0) - (a.row.volume || 0))
+    .slice(0, 40);
+  const shared = grid.filter((g) => g.by.size >= 2).length;
+  const short = (d: string) => d.replace(/^www\./, '').split('.')[0];
+
+  const named = user.length;
+  const checkedLine =
+    queried.length + ' checked' +
+    (named > queried.length ? ' of the ' + named + ' you named' : named ? ' · ' + named + ' you named' : '') +
+    (discovered.length ? ' · ' + discovered.length + ' discovered' : '');
+  const contributedLine =
+    contributed != null
+      ? contributed + ' keywords they rank for' + (kept != null ? ' · ' + kept + ' kept in the universe' : '')
+      : '';
+
+  return (
+    <div className="space-y-4">
+      <div className="text-sm text-gray-700">
+        <span className="font-semibold">{checkedLine}</span>
+        {contributedLine && <span className="text-gray-400"> · {contributedLine}</span>}
+      </div>
+      {named > queried.length && (
+        <div className="text-xs text-gray-500">
+          At most five are checked per run, yours first. Not checked: {user.filter((d) => !queried.includes(d)).join(', ')}.
+        </div>
+      )}
+      {artifact.site_has_rankings === false && (
+        <div className="text-xs text-gray-500">
+          Your site does not rank for anything yet, so every keyword here is one you are absent from.
+        </div>
+      )}
+
+      {/* Who ranks for what */}
+      {grid.length > 0 && (
+        <div>
+          <button
+            onClick={() => setGridOpen(!gridOpen)}
+            className="flex items-center gap-1 text-xs font-semibold text-gray-700 mb-1"
+          >
+            {gridOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+            Who ranks for what · top {grid.length}{shared ? ' · ' + shared + ' shared by two or more' : ''}
+          </button>
+          {gridOpen && (
+            <div className="overflow-x-auto -mx-1">
+              <table className="w-full text-xs border-separate border-spacing-y-1 px-1 min-w-[420px]">
+                <thead>
+                  <tr className="text-[10px] uppercase tracking-wide text-gray-400">
+                    <th className="text-left font-medium pl-2 pb-1">Keyword</th>
+                    <th className="text-right font-medium pb-1 w-16">Vol</th>
+                    <th className="text-left font-medium pb-1 pl-3">Ranked by</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {grid.map((g, i) => (
+                    <tr key={i} className={g.by.size >= 2 ? 'bg-action-50' : 'bg-surface-100'}>
+                      <td className="pl-2 py-1 rounded-l-lg text-gray-800 max-w-[220px] truncate" title={g.row.keyword}>{g.row.keyword}</td>
+                      <td className="py-1 text-right tabular-nums text-gray-600">{g.row.volume != null ? fmtVol(g.row.volume) : '—'}</td>
+                      <td className="py-1 pl-3 pr-2 rounded-r-lg">
+                        <span className="flex flex-wrap gap-1">
+                          {Array.from(g.by).map((d) => (
+                            <span key={d} className="text-[10px] px-1.5 py-0.5 rounded bg-white border border-surface-300 text-accent-600 font-medium" title={d}>
+                              {short(d)}
+                            </span>
+                          ))}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Each competitor, with everything it ranks for */}
+      <div className="space-y-2">
+        {queried.map((d) => {
+          const v = per[d] || {};
+          const rows: any[] = rowsFor(d);
+          const open = openDomain === d;
+          const meta =
+            (v.keywords ?? rows.length) + ' keywords' +
+            (v.shared_with_site ? ' · ' + v.shared_with_site + ' shared with you' : '') +
+            (user.includes(d) ? '' : ' · discovered');
+          return (
+            <div key={d} className="border border-surface-300 rounded-lg">
+              <button
+                onClick={() => setOpenDomain(open ? null : d)}
+                className="w-full flex items-center justify-between px-3 py-2 hover:bg-surface-50 rounded-lg text-left"
+              >
+                <span className="flex items-center gap-2 min-w-0">
+                  {open ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
+                  <span className="text-sm font-medium text-gray-800">{d}</span>
+                </span>
+                <span className="text-xs text-gray-400">{meta}</span>
+              </button>
+              {open && (
+                <div className="px-3 pb-3">
+                  {rows.length > 0 && v.keywords && rows.length < v.keywords && (
+                    <div className="text-xs text-gray-500 mb-2">
+                      Showing the {rows.length} of {v.keywords} that made it into the universe — this run was recorded before the full list was kept.
+                    </div>
+                  )}
+                  {rows.length ? (
+                    <KeywordTable rows={rows} hideOwner />
+                  ) : (
+                    <div className="text-xs text-gray-400">{(v.top || []).join(' · ') || 'No keywords recorded.'}</div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -955,7 +1191,8 @@ function renderStage(
   stage: RunStage,
   feedback: RunFeedback[],
   onSubmitFeedback: (text: string) => void,
-  submitting: boolean
+  submitting: boolean,
+  universe: any[] = []
 ) {
   switch (stage.id) {
     case 'intake':
@@ -971,7 +1208,7 @@ function renderStage(
     case 'audit':
       return <AuditArtifact artifact={stage.artifact} />;
     case 'competitors':
-      return <CompetitorsArtifact artifact={stage.artifact} />;
+      return <CompetitorsArtifact artifact={stage.artifact} universe={universe} />;
     case 'ai_citability':
       // The GEO graph and the older brief both land on this stage id.
       return stage.artifact?.brief ? (
@@ -993,7 +1230,7 @@ function renderStage(
   }
 }
 
-export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
+export function RunView({ tasks, onClose, initialRunId, live }: RunViewProps) {
   const [run, setRun] = useState<Run | null>(null);
   const [summaries, setSummaries] = useState<RunSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1003,6 +1240,20 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
   // deployment somebody else's edits are indistinguishable from the pipeline's
   // own verdict unless the report says so.
   const [changes, setChanges] = useState<any | null>(null);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleDraft, setTitleDraft] = useState('');
+  const commitTitle = async () => {
+    if (!run) return;
+    const next = titleDraft.trim();
+    setEditingTitle(false);
+    if (!next || next === run.title) return;
+    setRun({ ...run, title: next });
+    try {
+      await renameRun(run.id, next);
+    } catch (e: any) {
+      setError(e?.message || 'Could not rename');
+    }
+  };
   const [resetting, setResetting] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<any[] | null>(null);
@@ -1077,10 +1328,19 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
 
   // While a run is in progress, poll so stages stream in without a manual refresh
   useEffect(() => {
-    if (run?.status !== 'running') return;
+    if (!run) return;
+    if (run.status !== 'running' && !live) return;
     const t = setInterval(() => refresh(run.id), 1500);
     return () => clearInterval(t);
-  }, [run?.id, run?.status]);
+  }, [run?.id, run?.status, live]);
+
+  // When the stream closes, fetch once more so the summary and any late edit
+  // (a proposed cluster) are on screen without a manual refresh.
+  const wasLive = useRef(false);
+  useEffect(() => {
+    if (wasLive.current && !live && run) refresh(run.id);
+    wasLive.current = !!live;
+  }, [live]);
 
   // Live activity feed (graph nodes, tool starts/ends) — cursor-based polling
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
@@ -1092,7 +1352,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
   }, [run?.id]);
 
   useEffect(() => {
-    if (!run || run.status !== 'running') return;
+    if (!run || (run.status !== 'running' && !live)) return;
     const t = setInterval(async () => {
       try {
         const res = await getRunActivity(run.id, actCursor.current);
@@ -1167,67 +1427,47 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-surface-50 overflow-y-auto">
-      {/* Top bar */}
-      <div className="sticky top-0 z-10 bg-surface-100 border-b border-surface-300 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3 min-w-0">
-          {/* The logo is the way home on every internal view — clicking it
-              closes the report, so there is no need to hunt for an X. */}
-          <button
-            onClick={onClose}
-            title="Back to your work"
-            className="shrink-0 hover:opacity-80 transition-opacity"
-          >
-            <img
-              src="/logo/seostrich-lockup-horizontal.svg"
-              alt="SEOstrich — back to your work"
-              className="h-7 w-auto"
-            />
-          </button>
-        </div>
-        <div className="flex items-center gap-2 min-w-0">
-          {summaries.length > 1 && (
-            <select
-              value={run?.id || ''}
-              onChange={(e) => loadRun(e.target.value)}
-              className="min-w-0 max-w-[130px] sm:max-w-[220px] px-2 sm:px-3 py-2 text-sm border border-surface-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-400"
-              title="Switch"
-            >
-              {summaries.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {(s.title || s.id).slice(0, 40)}
-                </option>
-              ))}
-            </select>
-          )}
-          <button
-            onClick={onClose}
-            className="text-sm text-gray-700 hover:text-primary-700 hover:font-semibold hover:underline underline-offset-4 decoration-2"
-            title="Back to the conversation"
-          >
-            Conversation
-          </button>
-          <button
-            onClick={() => refresh()}
-            className="p-2 hover:bg-surface-200 rounded-lg transition-colors"
-            title="Refresh"
-          >
-            <RefreshCw className="w-4 h-4 text-gray-500" />
-          </button>
-        </div>
-      </div>
+    <div className="fixed inset-x-0 bottom-0 top-16 z-40 bg-surface-50 overflow-y-auto">
 
       {/* The report is ABOUT something — say so as a page heading rather than
           shrinking it into the chrome. No status badge: "complete" on a
           finished report tells the reader nothing, and a run that failed says
           so in its own body. */}
       {run && !loading && !error && (
-        <div className="max-w-3xl mx-auto px-6 pt-8">
-          <h1 className="text-2xl font-display text-primary-700">
-            {run.title || run.project || 'Untitled'}
-          </h1>
-          {run.project && run.project !== run.title && (
-            <p className="text-sm text-gray-500 mt-1">{run.project}</p>
+        <div className="max-w-3xl lg:max-w-6xl mx-auto px-6 pt-8"><div className="lg:max-w-[48rem]">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2 py-0.5 rounded bg-accent-50 text-accent-600 border border-accent-100">
+              {flowTag(run)}
+            </span>
+            {run.created && <span className="text-xs text-gray-400">{formatCreated(run.created)}</span>}
+          </div>
+          {editingTitle ? (
+            <input
+              autoFocus
+              value={titleDraft}
+              onChange={(e) => setTitleDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') commitTitle();
+                if (e.key === 'Escape') setEditingTitle(false);
+              }}
+              onBlur={commitTitle}
+              maxLength={80}
+              className="w-full text-2xl font-display text-primary-700 bg-white border-b-2 border-action-400 focus:outline-none py-0.5"
+            />
+          ) : (
+            <button
+              onClick={() => { setTitleDraft(artefactName(run)); setEditingTitle(true); }}
+              title="Rename"
+              className="group text-left flex items-start gap-2 max-w-full"
+            >
+              <h1 className="text-2xl font-display text-primary-700 break-words">{artefactName(run)}</h1>
+              <Pencil className="w-4 h-4 mt-2 text-gray-300 group-hover:text-gray-600 shrink-0" />
+            </button>
+          )}
+          {run.summary && (
+            <div className="mt-5 bg-white border border-surface-300 rounded-xl px-5 py-4 prose prose-sm max-w-none text-gray-800">
+              <ReactMarkdown>{run.summary}</ReactMarkdown>
+            </div>
           )}
 
           {/* Only ever shown when it is true. An "unedited" badge on every
@@ -1279,9 +1519,11 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
             </ul>
           )}
         </div>
+        </div>
       )}
 
-      <div className="max-w-3xl mx-auto px-6 pt-4 pb-8">
+      <div className="max-w-3xl lg:max-w-6xl mx-auto px-6 pt-4 pb-8 lg:grid lg:grid-cols-[minmax(0,48rem)_16rem] lg:gap-10">
+       <div className="min-w-0">
         {loading && (
           <div className="flex items-center justify-center py-24 text-gray-400 gap-2">
             <Loader2 className="w-5 h-5 animate-spin" /> Loading…
@@ -1293,42 +1535,6 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
 
         {run && !loading && !error && (
           <>
-            {/* Tasks on top */}
-            {tasks.length > 0 && (
-              <div className="mb-8 bg-white border border-surface-300 rounded-xl p-4 shadow-sm">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-sm font-semibold text-gray-800">Active tasks</h3>
-                  <span className="text-xs text-gray-500 bg-surface-200 px-2 py-0.5 rounded">
-                    {tasks.length}
-                  </span>
-                </div>
-                <ul className="space-y-1">
-                  {tasks.slice(0, 5).map((t, i) => (
-                    <li key={i} className="text-sm text-gray-600 flex gap-2">
-                      <span className="text-primary-400">▸</span>
-                      <span className="truncate">{t}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Live activity — what the agent is doing right now */}
-            {activity.length > 0 && (
-              <div className="mb-8 bg-white border border-surface-300 rounded-xl p-4 shadow-sm">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-sm font-semibold text-gray-800">Live activity</h3>
-                  {run.status === 'running' && (
-                    <Loader2 className="w-3 h-3 animate-spin text-gray-400" />
-                  )}
-                </div>
-                <ul className="space-y-0.5 font-mono text-[11px] text-gray-500">
-                  {activity.slice(-10).map((ev, i) => (
-                    <li key={`${ev.ts}-${i}`}>{activityLabel(ev)}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
 
             {/* Vertical stage flow */}
             <div>
@@ -1344,12 +1550,42 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
                     run.feedback || [],
                     handleSubmitFeedback,
                     submitting
-                  )}
+                  ,
+                    (run.stages.find((x) => x.id === 'keywords')?.artifact?.keywords || []))}
                 </StageCard>
               ))}
             </div>
+
+            {/* What is happening NOW, where the next stage will appear. One
+                line, in words. The full log lives in the rail on wide screens. */}
+            {(run.status === 'running' || live) && (
+              <div className="flex items-center gap-3 pl-1 mt-2 text-gray-800">
+                <Loader2 className="w-4 h-4 animate-spin text-action-500 shrink-0" />
+                <span className="text-sm">
+                  {activity.length ? currentActivity(activity) : 'Starting'}…
+                </span>
+              </div>
+            )}
           </>
         )}
+       </div>
+       {/* Desktop only: the steps so far, newest last. On a phone this would
+           push the artefact itself below the fold, so it is not shown. */}
+       {activity.length > 0 && (
+         <aside className="hidden lg:block pt-2">
+           <div className="sticky top-20 text-xs text-gray-500">
+             <div className="font-semibold text-gray-700 mb-2">Steps</div>
+             <ol className="space-y-1.5">
+               {dedupeLabels(activity).slice(-14).map((l, i, arr) => (
+                 <li key={i} className={`flex gap-2 ${i === arr.length - 1 && run?.status === 'running' ? 'text-gray-800' : ''}`}>
+                   <span className="shrink-0">{i === arr.length - 1 && run?.status === 'running' ? '›' : '✓'}</span>
+                   <span>{l}</span>
+                 </li>
+               ))}
+             </ol>
+           </div>
+         </aside>
+       )}
       </div>
     </div>
   );

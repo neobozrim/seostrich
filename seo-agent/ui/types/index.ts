@@ -8,6 +8,8 @@ export interface Message {
   statusText?: string;
   stages?: StageCard[];
   activity?: ActivityEvent[];
+  // Set when the stream ends. Until then the turn is live, whatever it has said.
+  done?: boolean;
 }
 
 export interface ActivityEvent {
@@ -63,6 +65,7 @@ export interface RunSummary {
   project?: string;
   title?: string;
   created?: string;
+  summary?: string;
   status?: string;
   stages: number;
   modified?: number;
@@ -88,6 +91,7 @@ export interface Run {
   project?: string;
   title?: string;
   created?: string;
+  summary?: string;
   status?: string;
   stages: RunStage[];
   feedback?: RunFeedback[];

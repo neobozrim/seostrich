@@ -150,4 +150,22 @@ kws = {k["keyword"] for k in out["keywords"]}
 ok("product strategy" in kws and "seed kw 0" in kws, "competitor keywords merged with seed expansion")
 ok(len(pu.MAX_COMPETITOR_URLS.__class__.__name__) and pu.MAX_COMPETITOR_URLS == 10, "the accepted cap is 10")
 
+print("6. a competitor's own brand terms are not topics")
+ok(pu._is_brand_term("lenny podcast", "lennysnewsletter.com"), "short stem matches: lenny -> lennysnewsletter")
+ok(pu._is_brand_term("lennys newsletter pricing", "www.lennysnewsletter.com"), "full label matches")
+ok(pu._is_brand_term("maven", "maven.com"), "the bare brand")
+ok(pu._is_brand_term("aiproducts", "aiproduct.com"), "label inside a compact keyword")
+ok(not pu._is_brand_term("ai product management", "aiproduct.com"), "a topical phrase with a space is not the brand")
+ok(not pu._is_brand_term("product strategy", "lennysnewsletter.com"), "an ordinary topic passes")
+ok(not pu._is_brand_term("mind the product", "mtp.com"), "a stem under five letters is never used")
+
+with patch.object(pu.dfs, "keywords_for_site", lambda d, limit=100: [
+        {"keyword": "lenny podcast", "volume": 4400}, {"keyword": "product strategy", "volume": 1200},
+        {"keyword": "lennys newsletter", "volume": 9000}] if d == "lennysnewsletter.com" else []),      patch.object(pu.dfs, "competitors_domain", lambda d, limit=10: []),      patch.object(pu.dfs, "domain_intersection", lambda a, b, limit=50: []),      patch.object(pu.dfs, "budget_remaining", lambda: 9):
+    m6 = pu._competitor_universe(["lennysnewsletter.com"], "", 2840, "en")
+ok([r["keyword"] for r in m6["_rows"]] == ["product strategy"], "brand rows never enter the universe")
+ok(m6["per_domain"]["lennysnewsletter.com"]["brand_terms_skipped"] == 2, "and the map counts what was skipped")
+ok(m6["per_domain"]["lennysnewsletter.com"]["keywords"] == 1, "the keyword count is the topical count")
+ok([r["keyword"] for r in m6["per_domain"]["lennysnewsletter.com"]["rows"]] == ["product strategy"], "the stored list is topical too")
+
 print(f"competitors: {PASS} assertions passed")

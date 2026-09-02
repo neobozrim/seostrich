@@ -393,6 +393,28 @@ def trends_trending(location_code: int = 2840, language_code: str = "en", limit:
     return _run(_inner())
 
 
+def bulk_keyword_difficulty(keywords: list[str], location_code: int = 2840,
+                            language_code: str = "en") -> dict[str, int]:
+    """Difficulty for up to 1,000 keywords in ONE call. keyword_overview costs
+    a call per keyword; this is the endpoint for filling gaps in bulk."""
+    clean = [k for k in dict.fromkeys((k or "").strip() for k in keywords) if k][:1000]
+    if not clean:
+        return {}
+
+    async def _inner():
+        data = await _post("/v3/dataforseo_labs/google/bulk_keyword_difficulty/live", [
+            {"keywords": clean, "location_code": location_code, "language_code": language_code}
+        ])
+        out: dict[str, int] = {}
+        for item in _task_items(data, "bulk_keyword_difficulty"):
+            kw = (item.get("keyword") or "").lower()
+            kd = item.get("keyword_difficulty")
+            if kw and kd is not None:
+                out[kw] = int(kd)
+        return out
+    return _run(_inner())
+
+
 def competitors_domain(domain: str, limit: int = 10) -> list[str]:
     async def _inner():
         data = await _post("/v3/dataforseo_labs/competitors_domain/live", [

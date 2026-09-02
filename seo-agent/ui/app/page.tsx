@@ -7,7 +7,6 @@ import { activityLine, toolPhrase } from '@/lib/activity';
 import { ChatMessage } from '@/components/ChatMessage';
 import { SystemPanel } from '@/components/SystemPanel';
 import { RunView } from '@/components/RunView';
-import { FlowCards } from '@/components/FlowCards';
 import { HomeCanvas } from '@/components/HomeCanvas';
 import { ProfileMenu } from '@/components/ProfileMenu';
 import { WebMcpGuide } from '@/components/WebMcpGuide';
@@ -342,6 +341,11 @@ export default function Home() {
             )
           );
         } else if (chunk.type === 'activity') {
+          if (chunk.run_id && !openedRunRef.current) {
+            openedRunRef.current = chunk.run_id;
+            setOpenRunId(chunk.run_id);
+            setShowRun(true);
+          }
           const ev: ActivityEvent = {
             ts: chunk.ts,
             kind: chunk.kind,
@@ -365,9 +369,11 @@ export default function Home() {
         } else if (chunk.type === 'done') {
           setIsStreaming(false);
           resolveRunningTools('success');
+          setMessages((prev) => prev.map((m) => (m.id === assistantMessage.id ? { ...m, done: true, statusText: undefined } : m)));
         } else if (chunk.type === 'error') {
           setIsStreaming(false);
           resolveRunningTools('error', 'Interrupted by error');
+          setMessages((prev) => prev.map((m) => (m.id === assistantMessage.id ? { ...m, done: true, statusText: undefined } : m)));
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMessage.id
@@ -471,24 +477,29 @@ export default function Home() {
       {/* Main chat area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-surface-100 border-b border-surface-300 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <button onClick={goHome} title="Home" className="flex items-center hover:opacity-80 transition-opacity">
-              <img src="/logo/seostrich-lockup-horizontal.svg" alt="SEOstrich — home" className="h-8 w-auto" />
+        {/* The one header. Every view — home, chat, an artefact, the WebMCP
+            guide — sits under it. The logo is home from anywhere; WebMCP is a
+            word; the only button is the one that starts something. */}
+        <header className="sticky top-0 z-50 h-16 bg-surface-100 border-b border-surface-300 px-6 flex items-center justify-between">
+          <button onClick={goHome} title="Home" className="flex items-center hover:opacity-80 transition-opacity">
+            <img src="/logo/seostrich-lockup-horizontal.svg" alt="SEOstrich — home" className="h-8 w-auto" />
+          </button>
+          <div className="flex items-center gap-5 sm:gap-7">
+            <button onClick={() => setShowWebMcp(true)} className={NAV} title="Drive this app with your own assistant">
+              WebMCP
             </button>
-            <div className="flex items-center gap-4 sm:gap-6">
-              {/* Header actions are words, not buttons: the page is the product,
-                  the header is a table of contents. */}
-              {memoryEnabled && (
-                <button onClick={() => setShowSystem(true)} className={NAV}>
-                  System
-                </button>
-              )}
-              <button onClick={() => setShowWebMcp(true)} className={NAV} title="Drive this app with your own assistant">
-                WebMCP
+            {memoryEnabled && (
+              <button onClick={() => setShowSystem(true)} className={NAV}>
+                System
               </button>
-
-            </div>
+            )}
+            <button
+              onClick={newChat}
+              className="inline-flex items-center gap-1.5 rounded-full bg-action-400 text-white font-semibold
+                         px-5 py-2 text-sm hover:bg-action-500 active:scale-[0.98] transition shadow-sm"
+            >
+              New chat <span className="text-lg leading-none">+</span>
+            </button>
           </div>
         </header>
 
@@ -513,16 +524,9 @@ export default function Home() {
               }}
             />
           ) : messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full gap-8 py-8">
-              <div className="text-center max-w-lg">
-                <p className="font-display tracking-[0.18em] text-primary-700">GET FOUND</p>
-              </div>
-              <FlowCards
-                onPick={(prompt) => {
-                  setInput(prompt);
-                  textareaRef.current?.focus();
-                }}
-              />
+            <div className="flex flex-col items-center justify-center h-full py-8">
+              <img src="/brand/ostrich-run.png" alt="" aria-hidden className="w-36 sm:w-44 h-auto mb-4" />
+              <p className="font-display text-3xl sm:text-4xl tracking-[0.18em] text-primary-700">GET FOUND</p>
             </div>
           ) : (
             <div className="max-w-3xl mx-auto divide-y divide-gray-200">
@@ -628,25 +632,13 @@ export default function Home() {
       )}
 
       {/* Reports (run detail) */}
-      {/* The one action. Blue because nothing else on the page is. */}
-      {!showRun && !showWebMcp && (
-        <button
-          onClick={newChat}
-          title="New"
-          aria-label="Start something new"
-          className="fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-action-400 text-white shadow-lg
-                     hover:bg-action-500 hover:shadow-xl active:scale-95 transition flex items-center justify-center"
-        >
-          <Plus className="w-7 h-7" />
-        </button>
-      )}
-
       {showWebMcp && <WebMcpGuide onClose={() => setShowWebMcp(false)} />}
 
       {showRun && (
         <RunView
           tasks={memory.tasks}
           initialRunId={openRunId}
+          live={isStreaming}
           onClose={() => {
             setShowRun(false);
             setOpenRunId(null);

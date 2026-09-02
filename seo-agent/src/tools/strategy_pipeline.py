@@ -129,6 +129,14 @@ def _handoff(result: dict) -> dict:
     }
 
 
+def _domain_only(url: str) -> str:
+    u = (url or "").strip()
+    if not u or " " in u:
+        return ""
+    u = u.split("://", 1)[-1].split("/", 1)[0]
+    return u.removeprefix("www.")
+
+
 def run_keyword_strategy(
     business_description: str,
     location_code: int | None = None,
@@ -166,6 +174,13 @@ def run_keyword_strategy(
     seeds = extract_seeds(business_description, site_description, competitors, language_code=language_code)
     rec.record_tool("extract_seeds", {"business_description": business_description}, seeds, True)
     steps.append("seeds")
+    run_id_now = rec.active_run_id()
+    if run_id_now and isinstance(seeds, dict) and seeds.get("business_name"):
+        domain = _domain_only(site_description)
+        rec.name_run(
+            run_id_now, str(seeds["business_name"]),
+            " · ".join(x for x in (domain, "Content strategy", market.get("label", "")) if x),
+        )
 
     rec.log_activity("step", detail="node: keyword universe via DataForSEO")
     universe = pull_universe(
@@ -179,6 +194,8 @@ def run_keyword_strategy(
         universe, True,
     )
     comp = universe.get("competitors") or {}
+    if not comp.get("queried"):
+        rec.log_activity("step", detail="competitors: none to check — add competitor URLs to the brief for a stronger universe")
     if comp.get("queried"):
         rec.record_tool("competitor_map", {"competitor_urls": competitors}, comp, True)
         rec.log_activity(

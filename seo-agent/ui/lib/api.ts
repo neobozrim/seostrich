@@ -285,6 +285,16 @@ export async function pinRun(
   return response.json();
 }
 
+export async function renameRun(runId: string, title: string): Promise<{ ok: boolean; title: string }> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/rename`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title }),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
 export async function getRunChanges(runId: string, signal?: AbortSignal) {
   const response = await fetch(`${API_BASE}/api/runs/${runId}/changes`, {
     headers: authHeaders(),

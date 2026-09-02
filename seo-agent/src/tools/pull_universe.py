@@ -78,11 +78,46 @@ def pull_universe(
     # volume sink to the bottom in rich markets but carry thin ones.
     unique.sort(key=lambda x: x.get("volume") or 0, reverse=True)
 
+    # Balance. Three competitors at 100 keywords each out-number the seed
+    # expansion several times over, and a plain top-200-by-volume cut then
+    # keeps mostly theirs — the strategy stops being about the business the
+    # user described. Seed-derived keywords lead; competitor keywords fill up
+    # to the same number, consensus (shared by 2+ competitors) first, then by
+    # volume. The map records what was kept so the report can say so.
+    seed_rows = [k for k in unique if k.get("source") != "competitor"]
+    comp_rows = [k for k in unique if k.get("source") == "competitor"]
+    comp_rows.sort(key=lambda k: (-(k.get("consensus") or 0), -(k.get("volume") or 0)))
+    seed_keep = seed_rows[:200]
+    comp_keep = comp_rows[:max(0, min(len(seed_keep), 200 - len(seed_keep)))]
+    _backfill_difficulty(comp_keep, location_code, language_code)
+    kept = sorted(seed_keep + comp_keep, key=lambda k: -(k.get("volume") or 0))
+    if isinstance(competitor_map, dict):
+        competitor_map["kept_in_universe"] = len(comp_keep)
+        competitor_map["seed_derived_in_universe"] = len(seed_keep)
     return {
-        "keywords": unique[:200],  # Top 200
+        "keywords": kept,
         "total_count": len(unique),
         "competitors": competitor_map,
     }
+
+
+def _backfill_difficulty(rows: list[dict], location_code: int, language_code: str) -> None:
+    """The ranked-keywords endpoint does not always carry difficulty. One bulk
+    call fills it for the rows that survived the cut, so a competitor keyword
+    shows KD like every other row. One call, not one per keyword."""
+    missing = [r for r in rows if r.get("difficulty") in (None, 0) and r.get("keyword")]
+    if not missing or dfs.budget_remaining() <= 0:
+        return
+    try:
+        kd = dfs.bulk_keyword_difficulty([r["keyword"] for r in missing],
+                                         location_code=location_code, language_code=language_code)
+    except Exception as e:
+        print(f"  [WARN] bulk difficulty backfill failed: {e}")
+        return
+    for r in missing:
+        v = kd.get(r["keyword"].lower())
+        if v is not None:
+            r["difficulty"] = v
 
 
 def _collect_seeds(seeds: dict) -> list[str]:
@@ -335,9 +370,16 @@ def _competitor_universe(
             except Exception as e:
                 print(f"  [WARN] domain_intersection failed for '{domain}': {e}")
         shared_set = {(r.get("keyword") or "").lower() for r in shared}
+        # A competitor's own brand terms ("lenny podcast", "maven") are
+        # navigational for THEM; nobody else can win them and they only crowd
+        # out the topical keywords. Dropped, and counted, so the map says so.
+        brand_hits = 0
         for kw in kws:
             key = (kw.get("keyword") or "").strip().lower()
             if not key:
+                continue
+            if _is_brand_term(key, domain):
+                brand_hits += 1
                 continue
             owners.setdefault(key, set()).add(domain)
             row = rows_by_kw.get(key)
@@ -350,9 +392,19 @@ def _competitor_universe(
             if key in shared_set:
                 row["site_ranks_too"] = True
         result["per_domain"][domain] = {
-            "keywords": len(kws),
+            "keywords": len(kws) - brand_hits,
+            "brand_terms_skipped": brand_hits,
             "shared_with_site": len(shared_set),
             "top": [k.get("keyword") for k in kws[:5]],
+            # The whole list, so the report can show what each one ranks for
+            # and draw the overlap between them. ~100 small rows per domain.
+            "rows": [
+                {"keyword": k.get("keyword"), "volume": k.get("volume"),
+                 "difficulty": k.get("difficulty"), "cpc": k.get("cpc"),
+                 "intent": k.get("intent"), "rank": k.get("rank")}
+                for k in kws
+                if not _is_brand_term((k.get("keyword") or "").lower(), domain)
+            ],
         }
         print(f"  [pull_universe] competitor '{domain}' contributed {len(kws)} keywords"
               + (f", {len(shared_set)} shared with the site" if shared_set else ""))
@@ -371,6 +423,47 @@ def _competitor_universe(
     result["_rows"] = list(rows_by_kw.values())
     result["keywords_contributed"] = len(rows_by_kw)
     return result
+
+
+_GENERIC = {
+    "product", "products", "ai", "the", "school", "news", "newsletter", "blog", "app",
+    "apps", "hq", "web", "dev", "tech", "data", "cloud", "lab", "labs", "media", "digital",
+    "online", "official", "podcast", "mind", "guide", "guides", "tools", "tool", "hub",
+}
+_SUFFIXES = ("newsletter", "school", "blog", "labs", "media", "digital", "online", "official",
+             "podcast", "hq", "app", "ai", "io")
+
+
+def _brand_tokens(domain: str) -> set[str]:
+    """Words that mean the competitor itself. From lennysnewsletter.com:
+    lennysnewsletter, lennys, lenny. From productschool.com: only
+    productschool — "product" is a topic word, not a brand."""
+    label = (domain or "").lower().removeprefix("www.").split(".")[0]
+    if not label:
+        return set()
+    cands = {label, label + "s"}
+    if label.endswith("s"):
+        cands.add(label[:-1])
+    for suf in _SUFFIXES:
+        if label.endswith(suf) and len(label) > len(suf) + 3:
+            prefix = label[: -len(suf)]
+            cands.add(prefix)
+            if prefix.endswith("s"):
+                cands.add(prefix[:-1])
+    return {t for t in cands if len(t) >= 4 and t not in _GENERIC}
+
+
+def _is_brand_term(keyword: str, domain: str) -> bool:
+    """True when a keyword is about the competitor itself rather than a topic:
+    a whole word equals a brand token, or the keyword collapsed to one word
+    IS the brand ("lennys newsletter", "aiproducts")."""
+    tokens = _brand_tokens(domain)
+    if not tokens:
+        return False
+    kw = keyword.lower().replace("'", "").replace("-", " ")
+    words = kw.split()
+    compact = "".join(words)
+    return any(w in tokens for w in words) or compact in tokens
 
 
 def _domain_of(url: str) -> str:

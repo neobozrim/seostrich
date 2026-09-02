@@ -12,6 +12,7 @@ SYSTEM_PROMPT = """You are an SEO strategist. Analyze the business description a
 
 Output JSON format:
 {
+  "business_name": "the business's proper name, 1-4 words, as it would appear as a page title",
   "business_seeds": ["seed1", "seed2"],
   "site_seeds": ["seed1"],
   "competitor_seeds": ["seed1"],

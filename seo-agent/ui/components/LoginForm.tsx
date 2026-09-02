@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { LogIn } from 'lucide-react';
 import { login } from '@/lib/api';
 
 interface LoginFormProps {
@@ -31,7 +30,13 @@ export function LoginForm({ onLoggedIn }: LoginFormProps) {
 
   return (
     <div className="flex items-center justify-center h-screen bg-surface-50">
-      <div className="w-full max-w-sm bg-white border border-surface-300 rounded-xl shadow-sm p-8">
+      <img
+        src="/brand/ostrich-peek.png"
+        alt=""
+        aria-hidden
+        className="pointer-events-none select-none fixed left-0 bottom-0 w-[16rem] sm:w-[22rem] lg:w-[28rem] -translate-x-[22%] translate-y-[14%]"
+      />
+      <div className="relative w-full max-w-sm bg-white border border-surface-300 rounded-xl shadow-sm p-8">
         <img
           src="/logo/seostrich-lockup-vertical.svg"
           alt="SEOstrich"
@@ -81,7 +86,6 @@ export function LoginForm({ onLoggedIn }: LoginFormProps) {
             disabled={loading || !username.trim() || !password}
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-400 text-white rounded-lg hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            <LogIn className="w-4 h-4" />
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>

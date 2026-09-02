@@ -62,7 +62,7 @@ const STEP_PHRASES: Array<[RegExp, string | ((m: RegExpMatchArray) => string)]> 
 ];
 
 export function activityLabel(ev: ActivityEvent): string {
-  if (ev.kind === 'llm_round') return 'Thinking';
+  if (ev.kind === 'llm_round') return 'Writing the summary';
   if (ev.kind === 'answer') return 'Writing the summary';
   if (ev.kind === 'step') {
     const d = ev.detail || '';
@@ -85,4 +85,23 @@ export function activityLine(ev: ActivityEvent): string {
 /** The phrase for a tool the orchestrator just started. */
 export function toolPhrase(tool: string): string {
   return TOOL_PHRASES[tool] || tool.replace(/_/g, ' ');
+}
+
+/** The phrase for what is happening NOW: a tool that has started and not
+ *  finished wins over anything the model is doing in between; otherwise the
+ *  most recent step. Never a bare "thinking" while research is running. */
+export function currentActivity(events: ActivityEvent[]): string {
+  const open: ActivityEvent[] = [];
+  let lastStep: ActivityEvent | null = null;
+  for (const ev of events) {
+    if (ev.kind === 'tool_start') open.push(ev);
+    else if (ev.kind === 'tool_end') {
+      const i = open.map((o) => o.tool).lastIndexOf(ev.tool);
+      if (i >= 0) open.splice(i, 1);
+    } else if (ev.kind === 'step') lastStep = ev;
+  }
+  if (open.length) return activityLabel(open[open.length - 1]);
+  if (lastStep) return activityLabel(lastStep);
+  const last = events[events.length - 1];
+  return last ? activityLabel(last) : 'Starting';
 }

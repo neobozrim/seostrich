@@ -368,6 +368,26 @@ async def get_run_governance(run_id: str, _auth: None = Depends(require_auth)):
     return result
 
 
+class RenameIn(BaseModel):
+    title: str
+
+
+@app.post("/api/runs/{run_id}/rename")
+async def rename_run(run_id: str, body: RenameIn, _auth: None = Depends(require_auth)):
+    """The artefact's heading, as the person wants it. Chat-started runs are
+    titled with the prompt that started them until the pipeline names them;
+    either way the person has the last word."""
+    title = " ".join((body.title or "").split())[:80]
+    if not title:
+        raise HTTPException(status_code=400, detail="Title cannot be empty")
+    run = runs.get_run(run_id)
+    if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    run["title"] = title
+    runs.save_run(run_id, run)
+    return {"ok": True, "title": title}
+
+
 @app.get("/api/runs/{run_id}/changes")
 async def get_run_changes(run_id: str, _auth: None = Depends(require_auth)):
     """Whether this report still differs from what the pipeline produced."""

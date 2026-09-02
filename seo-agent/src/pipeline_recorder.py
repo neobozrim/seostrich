@@ -126,6 +126,39 @@ def begin_run(run_id: str, title: str, project: str = "Chat pipeline") -> None:
     _active_run_id.set(run_id)
 
 
+def name_run(run_id: str, name: str, subtitle: str = "") -> None:
+    """Give a run the name a person would use for it.
+
+    A chat-started run is titled with the prompt that started it — a
+    paragraph — and its project is the internal "Chat pipeline". Once the
+    seeds step has read the brief it knows the business's name; that becomes
+    the title, and a short line (domain · flow · market) becomes the project.
+    """
+    name = " ".join((name or "").split())[:48]
+    if not name:
+        return
+    run = runs.get_run(run_id)
+    if not run:
+        return
+    run["title"] = name
+    if subtitle:
+        run["project"] = subtitle[:80]
+    runs.save_run(run_id, run)
+
+
+def set_summary(run_id: str, text: str) -> None:
+    """The agent's closing answer, kept on the artefact. The chat that made
+    the artefact is covered by it, so the summary has to live here."""
+    text = (text or "").strip()
+    if not text:
+        return
+    run = runs.get_run(run_id)
+    if not run:
+        return
+    run["summary"] = text[:6000]
+    runs.save_run(run_id, run)
+
+
 def active_run_id() -> str | None:
     """The run currently open on this thread/context (None outside a run)."""
     return _active_run_id.get()
@@ -260,6 +293,10 @@ def _record_clusters(run: dict, args: dict, result: dict) -> None:
             if s.get("cpc"):
                 cpcs.append(s["cpc"])
                 row["cpc"] = s["cpc"]
+            # Provenance travels with the keyword into the cluster, so the
+            # report can show which members came from a competitor.
+            if s.get("owned_by"):
+                row["owned_by"] = list(s["owned_by"])
             if row:
                 member_stats[m] = row
         if intents:
@@ -406,6 +443,8 @@ def record_tool(tool_name: str, args: dict, result, success: bool) -> None:
             "per_domain": m.get("per_domain") or {},
             "consensus": m.get("consensus") or [],
             "keywords_contributed": m.get("keywords_contributed", 0),
+            "kept_in_universe": m.get("kept_in_universe", 0),
+            "seed_derived_in_universe": m.get("seed_derived_in_universe", 0),
         }
     elif tool_name in COMPETITOR_TOOLS:
         stage = _upsert_stage(run, "competitors")

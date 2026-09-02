@@ -619,6 +619,10 @@ def run_orchestrator_stream(
                 # had nothing to refer to and started a fresh run.
                 if agent_response:
                     messages.append({"role": "assistant", "content": agent_response})
+                    try:
+                        pipeline_recorder.set_summary(run_id, agent_response)
+                    except Exception as e:  # a summary write must never break the stream
+                        print(f"[orchestrator] summary not saved: {e}")
 
                 # Yield the agent's response directly in chunks for streaming
                 if agent_response:
