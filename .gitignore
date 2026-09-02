@@ -1,23 +1,39 @@
+# Secrets and local config
 .env
-.env.bak*
-.env.*.bak
+.env.*
+!.env.example
+seo-agent/.env
+seo-agent/gsc-console-creds.json
+seo-agent/ui/.env.local
 
-# Personal runtime memory data (keeps protocol/structure public, hides accumulated data)
-agent-memory/qwen/
-agent-memory/agents/
+# Runtime state written by the app (never published)
+agent-memory/
 seo-agent/agent-memory/
+seo-agent/sessions/
+seo-agent/cache/
 
-# Local tooling / build / runtime artifacts
-.qwen/
+# Experiments, diagnostics and logs
+*.log
+seo-agent/_tmp_*
+seo-agent/diag_*
+seo-agent/cluster_input.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+dist/
+*.egg-info/
+
+# Node / Next.js
 node_modules/
 .next/
-seo-agent/cache/
-seo-agent/outputs/
-seo-agent/research/
-pp_*.json
+seo-agent/ui/tsconfig.tsbuildinfo
+
+# Local tooling
+.qwen/
+.DS_Store
 
 # Brand source kit (production assets live in seo-agent/ui/public)
 design-assets/
-
-# Blog content (personal articles, not for repo)
-blog/

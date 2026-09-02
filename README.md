@@ -6,23 +6,122 @@ An SEO strategy agent whose every decision is on the page as a WebMCP tool, so
 the visitor's *own* assistant can read the working, argue with it, and change
 the outcome. It builds keyword strategies and AI-visibility (GEO) briefs from
 measured DataForSEO data — never a number a model made up — and exposes
-**20 tools** on `document.modelContext` to read, audit, edit and reset them.
+**23 tools** on `document.modelContext` to read, audit, edit and reset them.
 
 - **Live app:** https://agent-memory-virid.vercel.app/ — credentials are on the submission form
-- **The tools, explained:** open the app and press **WebMCP** in the header (lists all 20 from the live registry, with twelve worked prompts)
+- **The tools, explained:** open the app and press **WebMCP** in the header (lists all 23 from the live registry, with twelve worked prompts)
 - **Registration code:** [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts)
+- **How the pipeline works:** [`seo-agent/docs/graphs.md`](seo-agent/docs/graphs.md) — the system, strategy and GEO graphs, with diagrams
 - **Backend API:** https://agent-memory-production-7d5d.up.railway.app
 - **Licence:** MIT (see [LICENSE](LICENSE))
 
 ## Try WebMCP in 60 seconds
 
-1. Open the live app in **Google Chrome** with `chrome://flags/#enable-webmcp-testing` set to *Enabled* (relaunch), or in **ChatGPT's in-app browser** (works natively). Sign in.
+1. Open the live app in **ChatGPT's desktop app** (its in-app browser supports WebMCP out of the box), or in **Google Chrome 149+** with `chrome://flags/#enable-webmcp-testing` set to *Enabled* (relaunch). Sign in.
+   - In Chrome, the [Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd) extension lists every tool the page registers, lets you call any of them by hand with its JSON schema, and has a chat that shows which tool an agent picks for a prompt. Handy for checking all 23 without guessing.
 2. Open the pinned **Product Pirates Club** report.
 3. Ask your assistant: *"Audit this SEO strategy for me — do the discard reasons actually hold up?"*
 4. Then: *"Drop the courses cluster, we don't sell courses, and bring back the one on building AI products."* Watch the report change.
 5. Then: *"Reset it to as-produced."* — hands it back clean for the next person, history kept.
 
 `seo_check_if_edited` tells an assistant whether it is looking at the pipeline's own verdict or somebody's edit; that is the whole point of the governance layer.
+
+## Why WebMCP here
+
+An SEO strategy is a chain of judgement calls — which market, which keywords
+matter, which clusters are worth pursuing, which topics you could realistically
+win. Every one of those is a place a human, or their agent, may reasonably
+disagree with the machine.
+
+So the pipeline does not just publish results. It publishes **the reasoning
+behind each decision**, and the operations to change it. A visiting agent can
+read why a cluster was discarded, override that call with its own reason, add a
+topic the pipeline never explored, refresh one cluster's data without re-billing
+the rest, and hand the report back exactly as produced when it is done. The
+human sees the same report change in front of them, with an "edited" badge and
+a full history of who changed what.
+
+## The 23 tools
+
+Registered in [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts) with the standard pattern:
+
+```js
+document.modelContext.registerTool({
+  name: "seo_list_clusters_all",
+  title: "SEO clusters with the reasoning behind each decision",
+  description: "List BOTH the selected keyword clusters and the discarded ones. Every cluster carries a `reasoning` block ...",
+  inputSchema: { type: "object", properties: {} },
+  annotations: { readOnlyHint: true },
+  execute: async () => { /* fetches the clusters stage of the current run */ },
+}, { signal });
+```
+
+**Read the strategy**
+
+| Tool | What it returns |
+|---|---|
+| `seo_get_pipeline_overview` | Start here: the current run, who it is for, its status, every stage it produced |
+| `seo_list_flows` | The flows the agent can run end to end, and what each needs before it starts |
+| `seo_get_keywords` | Flat keyword table: volume, difficulty, CPC, intent, cluster membership |
+| `seo_get_keyword_clusters` | The selected clusters with measured metrics and member keywords |
+| `seo_list_clusters_all` | Selected *and* discarded clusters, each with a `reasoning` block for why it was kept or cut |
+| `seo_get_content_pillars` | The pillars to actually write, with type and rationale |
+| `seo_get_brief` | The one page a content team acts on: what to build first, in what order, and why |
+| `seo_get_content_calendar` | Publishing order from the brief |
+| `seo_get_ai_citability` | AI search demand per topic, which sources AI answers cite, how displaceable they are |
+| `seo_check_ai_citations` | Which AI answers cite any domain, and for what. Point it at your site or a competitor |
+| `seo_get_stage_artifact` | The raw artifact of one stage, unshaped |
+| `seo_analyze_run` | Deterministic check for missing stages, errors or early stops before trusting a run |
+
+**Change it**
+
+| Tool | What it does |
+|---|---|
+| `seo_promote_cluster` | Bring a discarded cluster back, with your reason |
+| `seo_discard_cluster` | Drop a cluster, with your reason. Parked, not deleted |
+| `seo_propose_cluster` | Add a topic the pipeline never explored. Runs real keyword research on it |
+| `seo_rerun_cluster_research` | Refresh one cluster's data without re-running or re-billing the rest |
+| `seo_research_competitor` | Put a competitor on the map and pull the keywords it ranks for |
+| `seo_regenerate_brief` | Rebuild the brief from the selection as it stands now |
+| `seo_submit_feedback` | Leave a note on the run for the human |
+
+**Govern it**
+
+| Tool | What it does |
+|---|---|
+| `seo_check_if_edited` | Is this the pipeline's own verdict, or has someone edited it since? |
+| `seo_get_governance_history` | Every promotion, discard and proposal since the run was produced |
+| `seo_reset_run` | Undo every change. History kept |
+| `seo_restore_defaults` | Reset the bundled example run to its shipped state |
+
+Tools that spend DataForSEO money say so in their description. Every tool is
+documented in the app's **WebMCP** panel from the live registry.
+
+## The flows
+
+**Content strategy** — intake → seeds → keyword universe → competitors →
+clusters → validation gate → scoring → selection → pillars → brief.
+
+**AI visibility (GEO)** — measure real AI search demand, check which AI answers
+exist and who they cite, grade whether those sites can realistically be
+displaced, then harvest the questions people actually ask, only for the topics
+that earned it.
+
+Each flow is a code graph, not a prompt: the order and the gates are fixed,
+every node records its output as a stage on the run, and the only thing a model
+decides is wording and grouping. Diagrams in [`seo-agent/docs/graphs.md`](seo-agent/docs/graphs.md).
+
+## Two principles the code enforces
+
+**The market is never inferred.** A `.bg` domain does not mean the business
+targets Bulgaria in Bulgarian. The pipeline refuses to start until the user has
+stated the country *and* language.
+
+**Measured, not estimated.** Cluster metrics are computed from the DataForSEO
+rows, not guessed by a model. An earlier version asked an LLM for 0-100 "SEO
+scores"; it rated a 670-volume cluster above a 4,360-volume one. Numbers now
+come from arithmetic, and every input is published so an agent can re-rank on
+whichever metric it cares about.
 
 ## Hackathon eligibility — what we started with vs. what we built during the Submission Period
 
@@ -61,57 +160,37 @@ Complete diff: [`f9b3f10` → `main`](https://github.com/neobozrim/seostrich/com
 
 ---
 
-## WebMCP implementation
-
-The Next.js frontend registers the SEO pipeline as WebMCP tools using the standard registration pattern, in [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts):
-
-```js
-document.modelContext.registerTool({
-  name: "seo_get_keyword_clusters",
-  title: "SEO keyword clusters",
-  description: "List the keyword clusters for the current run with their SEO/GEO/combined scores and member keywords.",
-  inputSchema: { type: "object", properties: {} },
-  annotations: { readOnlyHint: true },
-  execute: async () => { /* fetches the clusters stage of the current pipeline run */ },
-}, { signal });
-```
-
-Registered tools:
-
-| Tool | Access | Purpose |
-|---|---|---|
-| `seo_get_pipeline_overview` | read-only | Project, status, and stage list of the current pipeline run |
-| `seo_get_keyword_clusters` | read-only | Scored keyword clusters with member keywords |
-| `seo_get_content_pillars` | read-only | Prioritized content pillars |
-| `seo_get_content_calendar` | read-only | Week-by-week planned content calendar |
-| `seo_submit_feedback` | read-write | Attach a review-feedback note to the run for the agent to revise against |
-| `seo_restore_defaults` | read-write | Restore the example pipeline run |
-
-**What this enables:** an AI agent running in the browser (ChatGPT's in-app browser, or Chrome with WebMCP enabled) can see the same pipeline artifacts the human sees — read the clusters, explain the strategy, and submit feedback into the agent system's shared memory. Human and agent collaborate on one live analysis instead of copy-pasting between tools.
-
----
-
 ## Repository structure
 
 ```
-agent-memory/            — blackboard-style shared memory (protocol + entries)
-seo-agent/               — the entire multi-agent system:
-├── src/                 — orchestrator + SEO/brand/builder/monitoring agents, 40+ tools
-├── api/                 — FastAPI backend (chat streaming, memory, runs, artifacts, auth)
-├── ui/                  — Next.js chat UI; ui/lib/webmcp.ts = WebMCP registration
-├── seed/runs/           — example pipeline run shown in the Run view
-└── intake-*.yaml        — example project intake configurations
+README.md                — this file
+LICENSE                  — MIT
+seo-agent/
+├── api/                 — FastAPI backend: chat streaming, runs, artifacts, governance, auth
+├── src/                 — orchestrator, agents, flow graphs, 40+ tools
+├── ui/                  — Next.js app; ui/lib/webmcp.ts registers the 23 WebMCP tools
+├── docs/graphs.md       — the system, strategy and GEO graphs, with diagrams
+├── seed/runs/           — the bundled Product Pirates run shown on the home canvas
+├── tests/               — standalone test scripts, one concern each
+└── requirements.txt, railway.toml, .python-version, .env.example
 ```
+
+`agent-memory/` appears at the repo root at runtime: the API writes pipeline
+runs there. It is gitignored and never published.
 
 ## Run locally
 
-**Backend** (Python):
+Copy `seo-agent/.env.example` to `.env` **at the repo root** and fill in
+DataForSEO credentials and a Qwen API key. Set `USER_NAME` / `PASSWORD` to
+require login; leave them unset and the app stays open (fine locally, not in
+public).
+
+**Backend** (Python 3.11+):
 
 ```bash
 cd seo-agent
-python -m venv .venv && .venv\Scripts\activate   # Windows
+python -m venv .venv && .venv\Scripts\activate   # Windows; source .venv/bin/activate elsewhere
 pip install -r requirements.txt
-copy .env.example .env                            # fill in API keys
 uvicorn api.main:app --port 8001
 ```
 
@@ -123,14 +202,20 @@ npm install
 npm run dev                                       # expects NEXT_PUBLIC_API_URL=http://localhost:8001
 ```
 
-## The agent memory blackboard
+**Tests** are standalone scripts, one concern each. Run any of them from
+`seo-agent/`:
 
-The original core of the project: a shared-memory system all agents follow.
+```bash
+python tests/geo.py
+```
 
-- Agents read `agent-memory/PROTOCOL.md` before every run
-- Each entry is tagged with the agent name and timestamp
-- Old entries are struck through, never deleted (substance preserved in run summaries)
-- Agents coordinate via the shared `tasks.md` board
-- Artefacts are durable deliverables with rationale and changelog
+Each prints its assertions and exits non-zero on failure.
 
-See `memoryagent-light-buildplan.md` for the original build specification.
+## Before WebMCP: the agent memory blackboard
+
+The original core of the project was a blackboard-style shared memory that
+every agent wrote to: timestamped facts, decisions and learnings, a task board,
+and a self-improvement loop that proposed skills from past runs. That layer is
+off by default now (`AGENT_MEMORY=off`) because cross-project memory leaked one
+client's context into another's run. The design is in git history at the
+baseline commit.
