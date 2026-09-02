@@ -66,6 +66,7 @@ export interface RunSummary {
   title?: string;
   created?: string;
   summary?: string;
+  prompt?: string;
   status?: string;
   stages: number;
   modified?: number;
@@ -96,4 +97,5 @@ export interface Run {
   status?: string;
   stages: RunStage[];
   feedback?: RunFeedback[];
+  prompt?: string;
 }

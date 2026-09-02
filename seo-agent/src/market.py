@@ -84,6 +84,35 @@ def _supported_languages(location_code: int) -> list[str]:
         return []
 
 
+# People say "English"; DataForSEO wants "en". A model asked to confirm a
+# market copies what the person wrote, gets rejected for it, promises to
+# retry — and the turn ends. Accept names and common aliases deterministically.
+_LANGUAGE_ALIASES = {
+    "english": "en", "eng": "en", "en-us": "en", "en-gb": "en", "en_us": "en", "en_gb": "en",
+    "английски": "en", "spanish": "es", "español": "es", "espanol": "es", "castellano": "es",
+    "french": "fr", "français": "fr", "francais": "fr", "german": "de", "deutsch": "de",
+    "italian": "it", "italiano": "it", "dutch": "nl", "nederlands": "nl", "polish": "pl",
+    "polski": "pl", "romanian": "ro", "română": "ro", "greek": "el", "ελληνικά": "el",
+    "bulgarian": "bg", "български": "bg", "portuguese": "pt", "português": "pt",
+    "swedish": "sv", "svenska": "sv", "danish": "da", "dansk": "da", "norwegian": "no",
+    "norsk": "no", "finnish": "fi", "suomi": "fi", "czech": "cs", "čeština": "cs",
+    "hungarian": "hu", "magyar": "hu", "turkish": "tr", "türkçe": "tr", "japanese": "ja",
+    "日本語": "ja", "chinese": "zh", "中文": "zh", "korean": "ko", "한국어": "ko",
+}
+
+
+def _language_code(language: str) -> str:
+    lang = str(language or "").strip().lower().replace("_", "-")
+    if not lang:
+        return ""
+    if lang in _LANGUAGE_ALIASES:
+        return _LANGUAGE_ALIASES[lang]
+    # "en-US" style: the language part is the code
+    if "-" in lang and len(lang.split("-")[0]) == 2:
+        return lang.split("-")[0]
+    return lang
+
+
 def resolve(country: str, language: str) -> dict:
     """Validate a country + language pair without pinning it to a run.
 
@@ -100,7 +129,7 @@ def resolve(country: str, language: str) -> dict:
     key, market = found
     code = market["code"]
 
-    lang = str(language or "").strip().lower()
+    lang = _language_code(language)
     if not lang:
         return {
             "ok": False,

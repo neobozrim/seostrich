@@ -1621,6 +1621,21 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
               <Pencil className="w-4 h-4 mt-2 text-gray-300 group-hover:text-gray-600 shrink-0" />
             </button>
           )}
+          {/* What you asked for, kept with what you got. Collapsed: the
+              first line is enough to recognise it; open it to reread. */}
+          {run.prompt && (
+            <details className="mt-4 group">
+              <summary className="cursor-pointer list-none flex items-baseline gap-2 text-sm">
+                <span className="text-[10px] font-semibold tracking-[0.16em] uppercase text-gray-400 shrink-0">Your brief</span>
+                <span className="text-gray-600 truncate group-open:hidden">{run.prompt.split(String.fromCharCode(10))[0].slice(0, 140)}</span>
+                <span className="text-xs text-gray-400 shrink-0 group-open:hidden">expand</span>
+                <span className="text-xs text-gray-400 shrink-0 hidden group-open:inline">collapse</span>
+              </summary>
+              <div className="mt-2 bg-white border border-surface-300 rounded-xl px-4 py-3 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto">
+                {run.prompt}
+              </div>
+            </details>
+          )}
           {briefOf(run) && <BriefCard brief={briefOf(run)} onRegenerate={regenerate} regenerating={regenerating} />}
           {run.summary && (
             <div className="mt-5 bg-white border border-surface-300 rounded-xl px-5 py-4 prose prose-sm max-w-none text-gray-800">
@@ -1753,26 +1768,6 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
       {onSend && (
         <div className="sticky bottom-0 z-20 border-t border-surface-300 bg-surface-50/95 backdrop-blur">
           <div className="max-w-3xl lg:max-w-6xl mx-auto px-6 py-3">
-            {/* One line, not the transcript: while it runs, the progress is
-                already on the artefact; once it answers, the reply — clamped,
-                expandable — sits here where you asked. */}
-            {(() => {
-              const last = [...recent].reverse().find((m) => m.role === 'assistant');
-              if (!last || isStreaming || !last.content) return null;
-              return (
-                <div className="mb-2 text-sm text-gray-700 bg-white border border-surface-300 rounded-xl px-4 py-2.5">
-                  <details>
-                    <summary className="cursor-pointer list-none">
-                      <span className="line-clamp-2">{last.content}</span>
-                      <span className="text-xs text-gray-400">show the full reply</span>
-                    </summary>
-                    <div className="mt-2 prose prose-sm max-w-none max-h-64 overflow-y-auto">
-                      <ReactMarkdown>{last.content}</ReactMarkdown>
-                    </div>
-                  </details>
-                </div>
-              );
-            })()}
             <div className="flex items-end gap-2">
               <textarea
                 value={draft}
