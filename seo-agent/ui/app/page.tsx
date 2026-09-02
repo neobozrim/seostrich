@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Plus, X, Settings2, Workflow, Square, Plug } from 'lucide-react';
+import { Send, Plus, X, Square, History, MessageSquarePlus } from 'lucide-react';
 import { Message, MemoryState, ToolCall, ActivityEvent } from '@/types';
-import { activityLine } from '@/lib/activity';
+import { activityLine, toolPhrase } from '@/lib/activity';
 import { ChatMessage } from '@/components/ChatMessage';
 import { SystemPanel } from '@/components/SystemPanel';
 import { RunView } from '@/components/RunView';
@@ -12,19 +12,20 @@ import { HomeCanvas } from '@/components/HomeCanvas';
 import { ProfileMenu } from '@/components/ProfileMenu';
 import { WebMcpGuide } from '@/components/WebMcpGuide';
 import { LoginForm } from '@/components/LoginForm';
-import {
-  sendMessage,
-  getMemory,
-  checkAuth,
-  clearToken,
-  getUsername,
-  stopSession,
-  getApiHealth,
-  getApiBase,
-  EXPECTED_API_VERSION,
-  AuthError,
-} from '@/lib/api';
+import { sendMessage, getMemory, checkAuth, clearToken, getUsername, stopSession, getApiHealth, getApiBase, EXPECTED_API_VERSION, AuthError, getSession, getSessions } from '@/lib/api';
 import { registerWebMcpTools } from '@/lib/webmcp';
+
+// Header links: plain text that gets bold and underlined on hover. The bold
+// state is reserved with a ghost so the row does not shift width on hover.
+const NAV =
+  'relative text-sm text-gray-700 hover:text-primary-700 hover:font-semibold hover:underline underline-offset-4 decoration-2 transition-colors';
+
+function formatSessionTime(createdAt: string): string {
+  // ids start with 20260902T101530
+  const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/.exec(createdAt || '');
+  if (!m) return createdAt || '';
+  return `${m[3]}.${m[2]} ${m[4]}:${m[5]}`;
+}
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -41,6 +42,8 @@ export default function Home() {
   const [showSystem, setShowSystem] = useState(false);
   const [showRun, setShowRun] = useState(false);
   const [showWebMcp, setShowWebMcp] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [history, setHistory] = useState<any[] | null>(null);
   const [username, setUser] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [authReady, setAuthReady] = useState(false);
@@ -180,10 +183,11 @@ export default function Home() {
 
   // Handle browser back button to close panels
   useEffect(() => {
-    if (!showSystem && !showRun && !showWebMcp) return;
+    if (!showSystem && !showRun && !showWebMcp && !showHistory) return;
 
     const handlePopState = () => {
-      if (showWebMcp) setShowWebMcp(false);
+      if (showHistory) setShowHistory(false);
+      else if (showWebMcp) setShowWebMcp(false);
       else if (showRun) setShowRun(false);
       else if (showSystem) setShowSystem(false);
     };
@@ -197,7 +201,7 @@ export default function Home() {
         window.history.back();
       }
     };
-  }, [showSystem, showRun, showWebMcp]);
+  }, [showSystem, showRun, showWebMcp, showHistory]);
 
   const handleSend = async () => {
     if (!input.trim() && attachments.length === 0) return;
@@ -289,7 +293,7 @@ export default function Home() {
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMessage.id
-                ? { ...msg, toolCalls: [...(msg.toolCalls || []), toolCall], statusText: `Running ${chunk.tool}...` }
+                ? { ...msg, toolCalls: [...(msg.toolCalls || []), toolCall], statusText: toolPhrase(chunk.tool) }
                 : msg
             )
           );
@@ -404,6 +408,54 @@ export default function Home() {
     abortRef.current?.abort();
   };
 
+  // Home = the canvas. The chat is kept, so "home" never destroys work.
+  const goHome = () => {
+    setShowRun(false);
+    setShowWebMcp(false);
+    setShowHistory(false);
+    setChatOpen(false);
+  };
+
+  const newChat = () => {
+    if (isStreaming) handleStop();
+    setMessages([]);
+    setSessionId(null);
+    setChatOpen(true);
+    setShowHistory(false);
+    setTimeout(() => textareaRef.current?.focus(), 0);
+  };
+
+  const openHistory = async () => {
+    const next = !showHistory;
+    setShowHistory(next);
+    if (next) {
+      try {
+        setHistory(await getSessions());
+      } catch {
+        setHistory([]);
+      }
+    }
+  };
+
+  const loadSession = async (id: string) => {
+    try {
+      const data = await getSession(id);
+      setMessages(
+        data.messages.map((m, i) => ({
+          id: `${id}-${i}`,
+          role: m.role as 'user' | 'assistant',
+          content: m.content,
+          timestamp: new Date(),
+        }))
+      );
+      setSessionId(id);
+      setChatOpen(true);
+      setShowHistory(false);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleLogout = () => {
     clearToken();
     setAuthed(false);
@@ -445,39 +497,49 @@ export default function Home() {
         {/* Header */}
         <header className="bg-surface-100 border-b border-surface-300 px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src="/logo/seostrich-lockup-horizontal.svg" alt="SEOstrich" className="h-8 w-auto" />
-            </div>
-            <div className="flex items-center gap-2">
-              {/* On the canvas the run cards ARE the way in, so a second door
-                  labelled "Pipeline" was redundant. Keep it only once chat has
-                  taken over the screen, and call it what it opens. */}
-              {(chatOpen || messages.length > 0) && (
-                <button
-                  onClick={() => setShowRun(true)}
-                  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors bg-primary-400 text-white hover:bg-primary-500"
-                >
-                  <Workflow className="w-4 h-4" />
-                  <span className="hidden sm:inline">Reports</span>
+            <button onClick={goHome} title="Home" className="flex items-center hover:opacity-80 transition-opacity">
+              <img src="/logo/seostrich-lockup-horizontal.svg" alt="SEOstrich — home" className="h-8 w-auto" />
+            </button>
+            <div className="flex items-center gap-4 sm:gap-6 relative">
+              {/* Header actions are words, not buttons: the page is the product,
+                  the header is a table of contents. */}
+              <button onClick={newChat} className={NAV} title="Start a new chat">
+                <MessageSquarePlus className="w-4 h-4 sm:hidden" />
+                <span className="hidden sm:inline">New chat</span>
+              </button>
+              <button onClick={openHistory} className={NAV} title="Previous chats">
+                <History className="w-4 h-4 sm:hidden" />
+                <span className="hidden sm:inline">History</span>
+              </button>
+              <button onClick={() => setShowRun(true)} className={NAV}>
+                Reports
+              </button>
+              {memoryEnabled && (
+                <button onClick={() => setShowSystem(true)} className={NAV}>
+                  System
                 </button>
               )}
-              {memoryEnabled && (
-              <button
-                onClick={() => setShowSystem(true)}
-                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
-              >
-                <Settings2 className="w-4 h-4" />
-                <span className="hidden sm:inline">System</span>
+              <button onClick={() => setShowWebMcp(true)} className={NAV} title="Drive this app with your own assistant">
+                WebMCP
               </button>
+
+              {showHistory && (
+                <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto bg-white border border-surface-300 rounded-xl shadow-lg z-30">
+                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 border-b border-surface-200">Previous chats</div>
+                  {history === null && <div className="px-3 py-3 text-sm text-gray-400">Loading…</div>}
+                  {history?.length === 0 && <div className="px-3 py-3 text-sm text-gray-400">No chats yet.</div>}
+                  {history?.map((h) => (
+                    <button
+                      key={h.id}
+                      onClick={() => loadSession(h.id)}
+                      className={`w-full text-left px-3 py-2 hover:bg-surface-100 border-b border-surface-100 last:border-0 ${h.id === sessionId ? 'bg-surface-100' : ''}`}
+                    >
+                      <div className="text-sm text-gray-800 truncate">{h.title || '(untitled)'}</div>
+                      <div className="text-[11px] text-gray-400">{formatSessionTime(h.createdAt)} · {h.messages} messages</div>
+                    </button>
+                  ))}
+                </div>
               )}
-              <button
-                onClick={() => setShowWebMcp(true)}
-                title="Drive this app with your own assistant"
-                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors bg-surface-200 hover:bg-secondary-100 text-gray-700"
-              >
-                <Plug className="w-4 h-4" />
-                <span className="hidden sm:inline">WebMCP</span>
-              </button>
               <ProfileMenu
                 username={username}
                 authRequired={authRequired}
@@ -522,7 +584,7 @@ export default function Home() {
           ) : (
             <div className="max-w-3xl mx-auto divide-y divide-gray-200">
               {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} onViewRun={() => setShowRun(true)} />
+                <ChatMessage key={message.id} message={message} />
               ))}
               <div ref={messagesEndRef} />
             </div>

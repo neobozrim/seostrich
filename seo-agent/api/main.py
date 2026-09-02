@@ -76,7 +76,7 @@ app.add_middleware(
 # disabled, no /api/flows) silently served the UI for a whole session: every
 # browser test validated the wrong process, and the missing endpoints looked
 # like frontend bugs.
-API_VERSION = "2026-09-01.reset"
+API_VERSION = "2026-09-02.history"
 
 
 @app.get("/api/health")
@@ -135,7 +135,28 @@ async def get_sessions(_auth: None = Depends(require_auth)):
     """Get list of sessions."""
     from src import session as session_store
     sessions = session_store.list_sessions()
-    return [{"id": sid, "createdAt": sid.split("-")[0]} for sid in sessions[:20]]
+    out = []
+    for sid in sessions[:30]:
+        summary = session_store.session_summary(sid)
+        if summary and summary["messages"]:
+            out.append(summary)
+    return out
+
+
+@app.get("/api/sessions/{session_id}")
+async def get_session(session_id: str, _auth: None = Depends(require_auth)):
+    """A past chat, as the messages a person actually exchanged with the agent."""
+    from src import session as session_store
+
+    data = session_store.load_session(session_id)
+    if data is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    messages = [
+        {"role": m["role"], "content": m["content"]}
+        for m in data.get("messages") or []
+        if m.get("role") in ("user", "assistant") and isinstance(m.get("content"), str) and m["content"].strip()
+    ]
+    return {"id": session_id, "messages": messages}
 
 
 @app.get("/api/artifacts")

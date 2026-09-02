@@ -161,11 +161,19 @@ export async function getSessions(): Promise<any[]> {
   return response.json();
 }
 
+export async function getSession(id: string): Promise<{ id: string; messages: { role: string; content: string }[] }> {
+  const response = await fetch(`${API_BASE}/api/sessions/${encodeURIComponent(id)}`, {
+    headers: authHeaders(),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
 // --- Pipeline runs ---------------------------------------------------------
 
 // Must match API_VERSION in api/main.py. A mismatch means the UI is talking
 // to a backend that predates the endpoints it depends on.
-export const EXPECTED_API_VERSION = '2026-09-01.reset';
+export const EXPECTED_API_VERSION = '2026-09-02.history';
 
 export async function getApiHealth(): Promise<{
   status: string;

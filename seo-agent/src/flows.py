@@ -85,7 +85,6 @@ KEYWORD_STRATEGY = Flow(
         "Cluster into themes",
         "Validation gate",
         "Score and select clusters",
-        "AI-citability brief",
         "Recommend content pillars",
     ],
     tools=[

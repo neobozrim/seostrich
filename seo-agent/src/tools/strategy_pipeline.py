@@ -14,7 +14,6 @@ import time
 from .. import market as market_mod
 from .. import pipeline_recorder as rec
 from .run_sections import stage_manifest
-from .ai_citability import ai_citability_brief
 from .cluster_keywords import cluster_keywords
 from .extract_seeds import extract_seeds
 from .pull_universe import pull_universe
@@ -141,7 +140,7 @@ def run_keyword_strategy(
     """Run the enforced strategy graph end-to-end inside the active run.
 
     Nodes: seeds -> keyword universe (DataForSEO) -> over-cluster (10) ->
-    validate gate (<=2 attempts) -> score -> select top N -> AI-citability
+    validate gate (<=2 attempts) -> score -> select top N
     brief on selected head terms -> pillars from the selection only.
     """
     if not rec.active_run_id():
@@ -400,13 +399,11 @@ def run_keyword_strategy(
     selected = [c for c in clusters if c["name"].lower() in selected_names] or clusters[:max_select]
     head_terms = [_head_term(c) for c in selected if _head_term(c)][:6]
 
+    # AI-citability is NOT part of the content strategy. It sat here as a
+    # paid step after selection whose output the pillars never read, and it
+    # made the strategy report look like it was about AI answers when it is
+    # about search. It lives in the GEO flow, where it is the whole point.
     brief: dict = {}
-    if head_terms:
-        rec.log_activity("step", detail=f"node: AI-citability brief on {len(head_terms)} head terms")
-        brief = ai_citability_brief(head_terms, location_code=location_code, language_code=language_code)
-        if brief.get("brief"):
-            rec.record_tool("ai_citability_brief", {}, brief, True)
-            steps.append("ai_citability")
 
     rec.log_activity("step", detail="node: pillars from selected clusters only")
     scored_list = scored.get("scored_clusters") or scored.get("clusters") or []
