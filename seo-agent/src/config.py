@@ -75,7 +75,10 @@ class Settings(BaseSettings):
 
     # Hard cap on DataForSEO API calls per pipeline run (chat session reuses
     # its run id, so the cap spans follow-up messages in the same session).
-    dfs_max_calls_per_run: int = Field(default=25, alias="DFS_MAX_CALLS_PER_RUN")
+    # Raised from 25 when competitor lookups became part of every run: up to 5
+    # ranked_keywords calls, 1 discovery call, and up to 5 intersections when
+    # the site has rankings, on top of seed expansion and SERP verification.
+    dfs_max_calls_per_run: int = Field(default=40, alias="DFS_MAX_CALLS_PER_RUN")
 
     # The shared blackboard memory: cross-project facts/learnings/decisions
     # read into every prompt, plus the post-run reflection tail that writes

@@ -392,6 +392,21 @@ def record_tool(tool_name: str, args: dict, result, success: bool) -> None:
         checks = stage["artifact"].setdefault("checks", {})
         checks[tool_name] = _trim(result)
         stage["artifact"]["checks_count"] = len(checks)
+    elif tool_name == "competitor_map":
+        # The map the strategy graph builds: who was queried, what each
+        # contributed, and the keywords two or more competitors share. The
+        # `competitors` list is what the existing renderer shows as chips.
+        stage = _upsert_stage(run, "competitors")
+        m = result if isinstance(result, dict) else {}
+        stage["artifact"] = {
+            "competitors": list(m.get("queried") or []),
+            "user_supplied": list(m.get("user") or []),
+            "discovered": list(m.get("discovered") or []),
+            "site_has_rankings": m.get("site_has_rankings"),
+            "per_domain": m.get("per_domain") or {},
+            "consensus": m.get("consensus") or [],
+            "keywords_contributed": m.get("keywords_contributed", 0),
+        }
     elif tool_name in COMPETITOR_TOOLS:
         stage = _upsert_stage(run, "competitors")
         sources = stage["artifact"].setdefault("sources", {})

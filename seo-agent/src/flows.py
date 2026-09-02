@@ -75,7 +75,7 @@ KEYWORD_STRATEGY = Flow(
         MARKET_INPUT,
         Input("site_description", "Website", "The site's URL, if there is one.",
               required=False, kind="url"),
-        Input("competitor_urls", "Competitors", "Known competitor URLs.",
+        Input("competitor_urls", "Competitors", "Known competitor URLs, up to 10. What they rank for goes into the keyword universe.",
               required=False, kind="list"),
     ],
     nodes=[

@@ -8,6 +8,15 @@ from .cache import get_cached, set_cached
 # Below this many deduped keywords the market is "thin" and we escalate to
 # competitor discovery so the strategy graph still has material to work with.
 THIN_THRESHOLD = 15
+
+# Competitor handling. Up to MAX_COMPETITOR_URLS supplied URLs are accepted;
+# the first MAX_COMPETITORS_QUERIED are queried (user-supplied first), and
+# when a site is given, DataForSEO's own competitor discovery fills any
+# remaining slots. Each queried domain costs one ranked_keywords call, plus
+# one domain_intersection call IF the site itself has rankings to intersect.
+MAX_COMPETITOR_URLS = 10
+MAX_COMPETITORS_QUERIED = 5
+COMPETITOR_KEYWORDS_PER_DOMAIN = 100
 # Cap direct seed expansion to keep the DataForSEO budget sane on wide briefs.
 MAX_EXPAND_SEEDS = 5
 
@@ -17,6 +26,7 @@ def pull_universe(
     location_code: int = 2840,
     language_code: str = "en",
     competitor_urls: list[str] = None,
+    site_url: str = "",
 ) -> dict:
     """Expand keyword seeds into a full keyword universe using DataForSEO.
 
@@ -26,7 +36,7 @@ def pull_universe(
     keep the seeds themselves in the universe so the strategy graph never
     runs dry.
     """
-    competitor_urls = competitor_urls or []
+    competitor_urls = (competitor_urls or [])[:MAX_COMPETITOR_URLS]
     all_keywords: list[dict] = []
 
     # ---- Ladder 1: direct seed expansion (related + suggestions) ----
@@ -39,6 +49,15 @@ def pull_universe(
     # call only ever burned budget. Re-enable once a working endpoint is wired.
     # all_keywords.extend(_trending(location_code, language_code))
 
+    # ---- Ladder 2: what competitors rank for — always, not only when thin ----
+    # This used to be an emergency fallback that fired only under 15 keywords,
+    # so a normal run never touched the competitor URLs the user typed in; all
+    # it got from them was whatever the model guessed from the domain names.
+    # What the competition actually ranks for is the strongest signal in the
+    # whole universe, and it belongs in every run.
+    competitor_map = _competitor_universe(competitor_urls, site_url, location_code, language_code)
+    all_keywords.extend(competitor_map.pop("_rows", []))
+
     # Always keep the seeds themselves as a floor. In thin markets these are
     # often the only usable terms — the discovery-input keyword survives even
     # when the APIs return nothing for it.
@@ -47,7 +66,7 @@ def pull_universe(
     unique = _dedupe(all_keywords)
 
     # ---- Ladder 3: thin market -> competitor discovery ----
-    if len(unique) < THIN_THRESHOLD and dfs.budget_remaining() > 0:
+    if len(unique) < THIN_THRESHOLD and dfs.budget_remaining() > 0 and not competitor_map.get("queried"):
         print(f"  [pull_universe] thin market ({len(unique)} keywords) -> competitor discovery")
         comp_keywords = _competitor_keywords(
             expand_seeds, competitor_urls, location_code, language_code
@@ -62,6 +81,7 @@ def pull_universe(
     return {
         "keywords": unique[:200],  # Top 200
         "total_count": len(unique),
+        "competitors": competitor_map,
     }
 
 
@@ -222,6 +242,135 @@ def _competitor_keywords(
             print(f"  [pull_universe] competitor '{domain}' contributed {len(kws)} keywords")
             results.extend(kws)
     return results
+
+
+def _competitor_universe(
+    competitor_urls: list[str],
+    site_url: str,
+    location_code: int,
+    language_code: str,
+) -> dict:
+    """What the competition ranks for, with every keyword tagged by owner.
+
+    Returns a map for the report plus the keyword rows under "_rows":
+      user        — domains the user supplied (up to MAX_COMPETITOR_URLS)
+      discovered  — domains DataForSEO found competing with the site
+      queried     — the domains actually looked up, user-supplied first
+      per_domain  — keywords contributed by each, and how many the site shares
+      consensus   — keywords ranked by TWO OR MORE competitors: where the
+                    space competes, which is the gap for a site that ranks for
+                    nothing yet
+      site_has_rankings — whether domain_intersection was worth calling
+
+    domain_intersection(site, competitor) returns keywords BOTH rank for. A
+    new site ranks for nothing, so that call is an empty result at full price;
+    it runs only after one cheap check shows the site has rankings at all.
+    """
+    empty = {"user": [], "discovered": [], "queried": [], "per_domain": {},
+             "consensus": [], "site_has_rankings": None, "_rows": []}
+    domains: list[str] = []
+    seen = set()
+
+    def _add(domain: str) -> None:
+        d = (domain or "").lower().strip().removeprefix("www.")
+        if d and d not in seen and d != site_domain:
+            seen.add(d)
+            domains.append(d)
+
+    site_domain = _domain_of(site_url).lower().removeprefix("www.") if site_url else ""
+    user = []
+    for url in competitor_urls:
+        d = _domain_of(url).lower().removeprefix("www.")
+        if d:
+            user.append(d)
+            _add(d)
+    result = dict(empty, user=user)
+    if not domains and not site_domain:
+        return result
+
+    # Fill remaining slots from DataForSEO's own competitor discovery.
+    if site_domain and len(domains) < MAX_COMPETITORS_QUERIED and dfs.budget_remaining() > 0:
+        try:
+            found = dfs.competitors_domain(site_domain, limit=MAX_COMPETITORS_QUERIED * 2)
+        except Exception as e:
+            print(f"  [WARN] competitors_domain failed for '{site_domain}': {e}")
+            found = []
+        for d in found:
+            if len(domains) >= MAX_COMPETITORS_QUERIED:
+                break
+            before = len(domains)
+            _add(d)
+            if len(domains) > before:
+                result["discovered"].append(domains[-1])
+
+    queried = domains[:MAX_COMPETITORS_QUERIED]
+    result["queried"] = queried
+    if not queried:
+        return result
+
+    # One cheap check decides whether intersection is worth paying for.
+    site_has_rankings = None
+    if site_domain and dfs.budget_remaining() > 0:
+        try:
+            site_has_rankings = bool(dfs.keywords_for_site(site_domain, limit=1))
+        except Exception as e:
+            print(f"  [WARN] keywords_for_site failed for site '{site_domain}': {e}")
+    result["site_has_rankings"] = site_has_rankings
+
+    owners: dict[str, set] = {}
+    rows_by_kw: dict[str, dict] = {}
+    for domain in queried:
+        if dfs.budget_remaining() <= 0:
+            print("  [pull_universe] DFS budget exhausted before competitor lookups finished")
+            break
+        try:
+            kws = dfs.keywords_for_site(domain, limit=COMPETITOR_KEYWORDS_PER_DOMAIN)
+        except Exception as e:
+            print(f"  [WARN] keywords_for_site failed for '{domain}': {e}")
+            kws = []
+        shared = []
+        if kws and site_has_rankings and dfs.budget_remaining() > 0:
+            try:
+                shared = dfs.domain_intersection(site_domain, domain, limit=50)
+            except Exception as e:
+                print(f"  [WARN] domain_intersection failed for '{domain}': {e}")
+        shared_set = {(r.get("keyword") or "").lower() for r in shared}
+        for kw in kws:
+            key = (kw.get("keyword") or "").strip().lower()
+            if not key:
+                continue
+            owners.setdefault(key, set()).add(domain)
+            row = rows_by_kw.get(key)
+            if row is None:
+                row = dict(kw)
+                row["source"] = "competitor"
+                row["owned_by"] = []
+                rows_by_kw[key] = row
+            row["owned_by"].append(domain)
+            if key in shared_set:
+                row["site_ranks_too"] = True
+        result["per_domain"][domain] = {
+            "keywords": len(kws),
+            "shared_with_site": len(shared_set),
+            "top": [k.get("keyword") for k in kws[:5]],
+        }
+        print(f"  [pull_universe] competitor '{domain}' contributed {len(kws)} keywords"
+              + (f", {len(shared_set)} shared with the site" if shared_set else ""))
+
+    consensus = sorted(
+        (k for k, o in owners.items() if len(o) >= 2),
+        key=lambda k: (-len(owners[k]), -(rows_by_kw[k].get("volume") or 0)),
+    )
+    result["consensus"] = [
+        {"keyword": rows_by_kw[k].get("keyword"), "volume": rows_by_kw[k].get("volume"),
+         "owned_by": sorted(owners[k])}
+        for k in consensus[:40]
+    ]
+    for k in consensus:
+        rows_by_kw[k]["consensus"] = len(owners[k])
+    result["_rows"] = list(rows_by_kw.values())
+    result["keywords_contributed"] = len(rows_by_kw)
+    return result
 
 
 def _domain_of(url: str) -> str:

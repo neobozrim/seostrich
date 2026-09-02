@@ -160,7 +160,7 @@ def run_keyword_strategy(
     language_code = market["language_code"]
     rec.log_activity("step", detail=f"market: {market['label']}")
 
-    competitors = competitor_urls or []
+    competitors = (competitor_urls or [])[:10]
     steps: list[str] = []
 
     rec.log_activity("step", detail="node: extract seeds")
@@ -171,7 +171,7 @@ def run_keyword_strategy(
     rec.log_activity("step", detail="node: keyword universe via DataForSEO")
     universe = pull_universe(
         seeds, location_code=location_code, language_code=language_code,
-        competitor_urls=competitors,
+        competitor_urls=competitors, site_url=site_description,
     )
     keywords = universe.get("keywords") or []
     rec.record_tool(
@@ -179,6 +179,16 @@ def run_keyword_strategy(
         {"location_code": location_code, "language_code": language_code},
         universe, True,
     )
+    comp = universe.get("competitors") or {}
+    if comp.get("queried"):
+        rec.record_tool("competitor_map", {"competitor_urls": competitors}, comp, True)
+        rec.log_activity(
+            "step",
+            detail=(f"competitors: {len(comp['queried'])} queried "
+                    f"({len(comp.get('user') or [])} supplied, {len(comp.get('discovered') or [])} discovered), "
+                    f"{comp.get('keywords_contributed', 0)} keywords, "
+                    f"{len(comp.get('consensus') or [])} ranked by two or more"),
+        )
     if not keywords:
         # pull_universe keeps the seeds themselves as a floor, so reaching this
         # means seed extraction produced nothing — not a normal thin-market case.
