@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Plus, X, Square, History, MessageSquarePlus } from 'lucide-react';
+import { Send, Plus, X, Square } from 'lucide-react';
 import { Message, MemoryState, ToolCall, ActivityEvent } from '@/types';
 import { activityLine, toolPhrase } from '@/lib/activity';
 import { ChatMessage } from '@/components/ChatMessage';
@@ -12,7 +12,7 @@ import { HomeCanvas } from '@/components/HomeCanvas';
 import { ProfileMenu } from '@/components/ProfileMenu';
 import { WebMcpGuide } from '@/components/WebMcpGuide';
 import { LoginForm } from '@/components/LoginForm';
-import { sendMessage, getMemory, checkAuth, clearToken, getUsername, stopSession, getApiHealth, getApiBase, EXPECTED_API_VERSION, AuthError, getSession, getSessions } from '@/lib/api';
+import { sendMessage, getMemory, checkAuth, clearToken, getUsername, stopSession, getApiHealth, getApiBase, EXPECTED_API_VERSION, AuthError } from '@/lib/api';
 import { registerWebMcpTools } from '@/lib/webmcp';
 
 // Header links: plain text that gets bold and underlined on hover. The bold
@@ -42,8 +42,7 @@ export default function Home() {
   const [showSystem, setShowSystem] = useState(false);
   const [showRun, setShowRun] = useState(false);
   const [showWebMcp, setShowWebMcp] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
-  const [history, setHistory] = useState<any[] | null>(null);
+
   const [username, setUser] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [authReady, setAuthReady] = useState(false);
@@ -53,6 +52,9 @@ export default function Home() {
   // The homepage is a canvas of work; chat only takes over once asked for.
   const [chatOpen, setChatOpen] = useState(false);
   const [openRunId, setOpenRunId] = useState<string | null>(null);
+  // Which run this chat turn already opened, so a second stage event does
+  // not re-open it after the person closed it to read the conversation.
+  const openedRunRef = useRef<string | null>(null);
   // System panel = memory + improvement proposals. Off by default, so its
   // entry point is hidden rather than opening on an empty panel.
   const [memoryEnabled, setMemoryEnabled] = useState(false);
@@ -183,11 +185,10 @@ export default function Home() {
 
   // Handle browser back button to close panels
   useEffect(() => {
-    if (!showSystem && !showRun && !showWebMcp && !showHistory) return;
+    if (!showSystem && !showRun && !showWebMcp) return;
 
     const handlePopState = () => {
-      if (showHistory) setShowHistory(false);
-      else if (showWebMcp) setShowWebMcp(false);
+      if (showWebMcp) setShowWebMcp(false);
       else if (showRun) setShowRun(false);
       else if (showSystem) setShowSystem(false);
     };
@@ -201,7 +202,7 @@ export default function Home() {
         window.history.back();
       }
     };
-  }, [showSystem, showRun, showWebMcp, showHistory]);
+  }, [showSystem, showRun, showWebMcp]);
 
   const handleSend = async () => {
     if (!input.trim() && attachments.length === 0) return;
@@ -262,6 +263,7 @@ export default function Home() {
       );
     };
 
+    openedRunRef.current = null;
     try {
       await sendMessage(input, attachments, sessionId, (chunk) => {
         if (chunk.type === 'session_id') {
@@ -319,6 +321,13 @@ export default function Home() {
             )
           );
         } else if (chunk.type === 'stage') {
+          // The artefact is the product: the moment it starts to exist, show
+          // it. It fills in live from here; the chat stays underneath.
+          if (chunk.run_id && !openedRunRef.current) {
+            openedRunRef.current = chunk.run_id;
+            setOpenRunId(chunk.run_id);
+            setShowRun(true);
+          }
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMessage.id
@@ -412,7 +421,6 @@ export default function Home() {
   const goHome = () => {
     setShowRun(false);
     setShowWebMcp(false);
-    setShowHistory(false);
     setChatOpen(false);
   };
 
@@ -421,39 +429,7 @@ export default function Home() {
     setMessages([]);
     setSessionId(null);
     setChatOpen(true);
-    setShowHistory(false);
     setTimeout(() => textareaRef.current?.focus(), 0);
-  };
-
-  const openHistory = async () => {
-    const next = !showHistory;
-    setShowHistory(next);
-    if (next) {
-      try {
-        setHistory(await getSessions());
-      } catch {
-        setHistory([]);
-      }
-    }
-  };
-
-  const loadSession = async (id: string) => {
-    try {
-      const data = await getSession(id);
-      setMessages(
-        data.messages.map((m, i) => ({
-          id: `${id}-${i}`,
-          role: m.role as 'user' | 'assistant',
-          content: m.content,
-          timestamp: new Date(),
-        }))
-      );
-      setSessionId(id);
-      setChatOpen(true);
-      setShowHistory(false);
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const handleLogout = () => {
@@ -500,20 +476,9 @@ export default function Home() {
             <button onClick={goHome} title="Home" className="flex items-center hover:opacity-80 transition-opacity">
               <img src="/logo/seostrich-lockup-horizontal.svg" alt="SEOstrich — home" className="h-8 w-auto" />
             </button>
-            <div className="flex items-center gap-4 sm:gap-6 relative">
+            <div className="flex items-center gap-4 sm:gap-6">
               {/* Header actions are words, not buttons: the page is the product,
                   the header is a table of contents. */}
-              <button onClick={newChat} className={NAV} title="Start a new chat">
-                <MessageSquarePlus className="w-4 h-4 sm:hidden" />
-                <span className="hidden sm:inline">New chat</span>
-              </button>
-              <button onClick={openHistory} className={NAV} title="Previous chats">
-                <History className="w-4 h-4 sm:hidden" />
-                <span className="hidden sm:inline">History</span>
-              </button>
-              <button onClick={() => setShowRun(true)} className={NAV}>
-                Reports
-              </button>
               {memoryEnabled && (
                 <button onClick={() => setShowSystem(true)} className={NAV}>
                   System
@@ -523,28 +488,6 @@ export default function Home() {
                 WebMCP
               </button>
 
-              {showHistory && (
-                <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto bg-white border border-surface-300 rounded-xl shadow-lg z-30">
-                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 border-b border-surface-200">Previous chats</div>
-                  {history === null && <div className="px-3 py-3 text-sm text-gray-400">Loading…</div>}
-                  {history?.length === 0 && <div className="px-3 py-3 text-sm text-gray-400">No chats yet.</div>}
-                  {history?.map((h) => (
-                    <button
-                      key={h.id}
-                      onClick={() => loadSession(h.id)}
-                      className={`w-full text-left px-3 py-2 hover:bg-surface-100 border-b border-surface-100 last:border-0 ${h.id === sessionId ? 'bg-surface-100' : ''}`}
-                    >
-                      <div className="text-sm text-gray-800 truncate">{h.title || '(untitled)'}</div>
-                      <div className="text-[11px] text-gray-400">{formatSessionTime(h.createdAt)} · {h.messages} messages</div>
-                    </button>
-                  ))}
-                </div>
-              )}
-              <ProfileMenu
-                username={username}
-                authRequired={authRequired}
-                onLogout={handleLogout}
-              />
             </div>
           </div>
         </header>
@@ -572,7 +515,7 @@ export default function Home() {
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-8 py-8">
               <div className="text-center max-w-lg">
-                <p className="text-gray-500">Get discovered.</p>
+                <p className="font-display tracking-[0.18em] text-primary-700">GET FOUND</p>
               </div>
               <FlowCards
                 onPick={(prompt) => {
@@ -627,6 +570,7 @@ export default function Home() {
               </div>
             )}
 
+            {(chatOpen || messages.length > 0) && (
             <div className="flex gap-2">
               <button
                 onClick={() => fileInputRef.current?.click()}
@@ -673,6 +617,7 @@ export default function Home() {
                 </button>
               )}
             </div>
+            )}
           </div>
         </div>
       </div>
@@ -683,6 +628,19 @@ export default function Home() {
       )}
 
       {/* Reports (run detail) */}
+      {/* The one action. Blue because nothing else on the page is. */}
+      {!showRun && !showWebMcp && (
+        <button
+          onClick={newChat}
+          title="New"
+          aria-label="Start something new"
+          className="fixed bottom-6 right-6 z-30 w-14 h-14 rounded-full bg-action-400 text-white shadow-lg
+                     hover:bg-action-500 hover:shadow-xl active:scale-95 transition flex items-center justify-center"
+        >
+          <Plus className="w-7 h-7" />
+        </button>
+      )}
+
       {showWebMcp && <WebMcpGuide onClose={() => setShowWebMcp(false)} />}
 
       {showRun && (

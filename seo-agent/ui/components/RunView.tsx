@@ -1043,7 +1043,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
       await refresh(run.id);
       setHistory(null);
     } catch (e: any) {
-      setError(e?.message || 'Could not reset the report');
+      setError(e?.message || 'Could not reset');
     } finally {
       setResetting(false);
     }
@@ -1128,7 +1128,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
         if (cancelled) return;
         setSummaries(sums);
         if (!sums.length) {
-          setError('No reports yet — ask the agent to build a strategy.');
+          setError('Nothing here yet.');
           return;
         }
         const wanted =
@@ -1191,7 +1191,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
               value={run?.id || ''}
               onChange={(e) => loadRun(e.target.value)}
               className="min-w-0 max-w-[130px] sm:max-w-[220px] px-2 sm:px-3 py-2 text-sm border border-surface-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-400"
-              title="Switch report"
+              title="Switch"
             >
               {summaries.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -1201,9 +1201,16 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
             </select>
           )}
           <button
+            onClick={onClose}
+            className="text-sm text-gray-700 hover:text-primary-700 hover:font-semibold hover:underline underline-offset-4 decoration-2"
+            title="Back to the conversation"
+          >
+            Conversation
+          </button>
+          <button
             onClick={() => refresh()}
             className="p-2 hover:bg-surface-200 rounded-lg transition-colors"
-            title="Refresh run"
+            title="Refresh"
           >
             <RefreshCw className="w-4 h-4 text-gray-500" />
           </button>
@@ -1217,7 +1224,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
       {run && !loading && !error && (
         <div className="max-w-3xl mx-auto px-6 pt-8">
           <h1 className="text-2xl font-display text-primary-700">
-            {run.title || run.project || 'Report'}
+            {run.title || run.project || 'Untitled'}
           </h1>
           {run.project && run.project !== run.title && (
             <p className="text-sm text-gray-500 mt-1">{run.project}</p>
@@ -1277,7 +1284,7 @@ export function RunView({ tasks, onClose, initialRunId }: RunViewProps) {
       <div className="max-w-3xl mx-auto px-6 pt-4 pb-8">
         {loading && (
           <div className="flex items-center justify-center py-24 text-gray-400 gap-2">
-            <Loader2 className="w-5 h-5 animate-spin" /> Loading report…
+            <Loader2 className="w-5 h-5 animate-spin" /> Loading…
           </div>
         )}
         {error && !loading && (

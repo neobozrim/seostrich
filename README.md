@@ -1,4 +1,4 @@
-# SEOstrich — *Get discovered.*
+# SEOstrich — **GET FOUND**
 
 **Submission to [The WebMCP Challenge](https://webmcp.devpost.com)** · Submission period Aug 25 – Sep 3, 2026, 1pm PT
 

@@ -49,6 +49,16 @@ module.exports = {
           800: '#40382F',
           900: '#191411',
         },
+        // The single action colour. Everything else on the page is brown, sand
+        // and cream; the one thing you DO — start — is the only blue.
+        action: {
+          50: '#EAF1FD',
+          100: '#D6E3FB',
+          300: '#8FB1F2',
+          400: '#2E6BE6',
+          500: '#245BC9',
+          600: '#1D4BA8',
+        },
         surface: {
           50: '#FCFAF8',
           100: '#F9F5F0',

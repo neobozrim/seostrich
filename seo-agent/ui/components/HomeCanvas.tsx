@@ -1,32 +1,56 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Send, Lock, Pin, PinOff } from 'lucide-react';
-import { StageIcon } from '@/components/StageIcon';
-import { getRuns, getFlows, pinRun, FlowCard, FlowCatalog } from '@/lib/api';
+import { Pin, PinOff, Send } from 'lucide-react';
+import { getRuns, pinRun } from '@/lib/api';
 import { RunSummary } from '@/types';
 
-const STARTERS: Record<string, string> = {
-  keyword_strategy: 'I want a content strategy. My business is: ',
-  geo_demand:
-    'I want to know how AI engines answer questions in my space. The topics are: ',
-};
+/**
+ * The home is the artefacts. Nothing else.
+ *
+ * There used to be a second column ("Ask for anything") and a row of service
+ * cards ("Content strategy", "AI visibility"). Together they gave a visitor
+ * three doors into the same product, and the service cards led to an
+ * intermediate state that looked like a form. Now: your artefacts as cards,
+ * one blue + to make another, and when there is nothing yet, the one thing a
+ * new visitor needs — somewhere to type.
+ */
 
-// Two rows of two. The service cards sit directly beneath, so an unbounded
-// work list would shove the main calls to action off the first screen as soon
-// as a few runs are pinned.
-const FEATURED_LIMIT = 4;
-
-function featured(runs: RunSummary[]): RunSummary[] {
-  // The API returns pinned-first, then newest. A pinned run is a deliberate
-  // choice about what someone should see, so it always survives the cut —
-  // only the unpinned tail competes for the remaining slots.
+function ordered(runs: RunSummary[]): RunSummary[] {
   const pinned = runs.filter((r) => r.pinned);
   const rest = runs.filter((r) => !r.pinned);
   const rank = (r: RunSummary) =>
-    r.status === 'complete' || r.status === 'done' ? 0 : r.status === 'running' ? 1 : 2;
+    r.status === 'running' ? 0 : r.status === 'complete' || r.status === 'done' ? 1 : 2;
   rest.sort((a, b) => rank(a) - rank(b) || (b.modified || 0) - (a.modified || 0));
-  return [...pinned, ...rest].slice(0, Math.max(FEATURED_LIMIT, pinned.length));
+  return [...pinned, ...rest];
+}
+
+// A run whose title is a chat prompt gets its project as the name; the
+// prompt becomes the subtitle. Test fixtures with one-letter names are hidden.
+// A title that reads like a name ("Product Pirates Club") leads; a title that
+// reads like the prompt that produced the run ("Global English audience,
+// target the United States. Build the strategy.") becomes the subtitle and
+// the project (usually the domain) leads instead.
+function looksLikeName(t: string): boolean {
+  return t.length > 0 && t.length <= 48 && !/[.!?]$/.test(t) && !/(build|run|want|target|audience)/i.test(t);
+}
+function nameOf(run: RunSummary): string {
+  const t = (run.title || '').trim();
+  const p = (run.project || '').trim();
+  if (looksLikeName(t)) return t;
+  if (p && p.toLowerCase() !== 'chat pipeline') return p;
+  return t || run.id;
+}
+function subtitleOf(run: RunSummary): string {
+  const t = (run.title || '').trim();
+  const p = (run.project || '').trim();
+  const name = nameOf(run);
+  const internal = p.toLowerCase() === 'chat pipeline';
+  if (name === t) return p && p !== t && !internal ? p : '';
+  return t && t !== name ? t : '';
+}
+function isFixture(run: RunSummary): boolean {
+  return nameOf(run).length <= 2 && !run.pinned;
 }
 
 interface Props {
@@ -35,176 +59,64 @@ interface Props {
 }
 
 export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
-  const [runs, setRuns] = useState<RunSummary[]>([]);
-  const [catalog, setCatalog] = useState<FlowCatalog | null>(null);
+  const [runs, setRuns] = useState<RunSummary[] | null>(null);
   const [draft, setDraft] = useState('');
+  const [peekOk, setPeekOk] = useState(true);
+  const [runOk, setRunOk] = useState(true);
 
-  // Optimistic: the canvas re-sorts immediately, and reverts if the call fails.
   const togglePin = async (run: RunSummary) => {
     const next = !run.pinned;
-    setRuns((prev) =>
-      featured(prev.map((r) => (r.id === run.id ? { ...r, pinned: next } : r)))
-    );
+    setRuns((prev) => ordered((prev || []).map((r) => (r.id === run.id ? { ...r, pinned: next } : r))));
     try {
       await pinRun(run.id, next);
     } catch {
-      setRuns((prev) =>
-        featured(prev.map((r) => (r.id === run.id ? { ...r, pinned: !next } : r)))
-      );
+      setRuns((prev) => ordered((prev || []).map((r) => (r.id === run.id ? { ...r, pinned: !next } : r))));
     }
   };
 
   useEffect(() => {
-    const ctrl = new AbortController();
-    getRuns().then((r) => setRuns(featured(r || []))).catch(() => setRuns([]));
-    getFlows(ctrl.signal).then(setCatalog).catch(() => setCatalog(null));
-    return () => ctrl.abort();
+    getRuns()
+      .then((r) => setRuns(ordered((r || []).filter((x: RunSummary) => !isFixture(x)))))
+      .catch(() => setRuns([]));
   }, []);
 
+  const empty = runs !== null && runs.length === 0;
+
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-      {/* items-stretch, not items-start: the chat panel is sized to match the
-          left column (two rows of work + the service row) rather than hugging
-          its own content. On small screens the columns stack and chat leads,
-          because on a phone the input is the point. */}
-      <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1fr_20rem] items-stretch">
-        {/* Projects — the canvas itself */}
-        <div className="order-2 lg:order-1">
-          <h2 className="text-sm font-medium text-gray-700 mb-3">Your work</h2>
-          {runs.length === 0 ? (
-            <p className="text-sm text-gray-400">
-              Nothing here yet. Start a flow and it will show up as a page you can
-              come back to.
-            </p>
-          ) : (
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-              {runs.map((run) => (
-                <button
-                  key={run.id}
-                  onClick={() => onOpenRun(run.id)}
-                  className="group text-left rounded-lg border border-surface-300 bg-white p-4
-                             hover:border-gray-400 hover:shadow-sm transition"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="font-medium text-gray-900 truncate">
-                      {run.project || run.id}
-                    </span>
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      aria-label={run.pinned ? 'Unpin this run' : 'Pin this run'}
-                      title={
-                        run.pinned
-                          ? 'Pinned — always shown first'
-                          : 'Pin so this is always shown first'
-                      }
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        togglePin(run);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          togglePin(run);
-                        }
-                      }}
-                      className={`p-1 rounded flex-shrink-0 hover:bg-surface-100 ${
-                        run.pinned ? 'text-primary-400' : 'text-gray-300 hover:text-gray-600'
-                      }`}
-                    >
-                      {run.pinned ? <Pin className="w-3.5 h-3.5" /> : <PinOff className="w-3.5 h-3.5" />}
-                    </span>
-                    <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded-full border flex-shrink-0 ${
-                        run.status === 'complete' || run.status === 'done'
-                          ? 'bg-green-50 border-green-300 text-green-800'
-                          : run.status === 'running'
-                          ? 'bg-blue-50 border-blue-300 text-blue-800'
-                          : 'bg-surface-100 border-surface-300 text-gray-600'
-                      }`}
-                    >
-                      {run.status}
-                    </span>
-                  </div>
-                  {run.title && (
-                    <div className="text-sm text-gray-500 mt-1 line-clamp-2">
-                      {run.title}
-                    </div>
-                  )}
-                  <div className="text-xs text-gray-400 mt-2 flex items-center gap-1
-                                  group-hover:text-gray-700">
-                    {run.stages} stage{run.stages === 1 ? '' : 's'}
-                    <ArrowRight className="w-3 h-3" />
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
+    <div className="relative min-h-full">
+      {/* The ostrich, peeking in from the bottom-left. Decorative: content
+          flows over it, and it never intercepts a click. */}
+      {peekOk && !empty && (
+        <img
+          src="/brand/ostrich-peek.png"
+          alt=""
+          aria-hidden
+          onError={() => setPeekOk(false)}
+          className="pointer-events-none select-none fixed left-0 bottom-0 w-[18rem] sm:w-[24rem] lg:w-[30rem] opacity-90 -translate-x-[22%] translate-y-[14%]"
+        />
+      )}
 
-          {catalog?.flows?.length ? (
-            <>
-              <h2 className="text-sm font-medium text-gray-700 mt-8 mb-3">Start something</h2>
-              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-                {catalog.flows.map((flow: FlowCard) => {
-                  return (
-                    <button
-                      key={flow.id}
-                      onClick={() =>
-                        onStartChat(STARTERS[flow.id] ?? `Run the ${flow.label} flow. `)
-                      }
-                      // Clay tint + display face: a service is a different kind
-                      // of thing from a saved run, and should not read as one.
-                      className="group text-left rounded-lg border border-accent-300 bg-accent-50 p-4
-                                 hover:border-accent-400 hover:shadow-sm transition"
-                    >
-                      <div className="flex items-start gap-3">
-                        <StageIcon stage={`flow_${flow.id}`} className="w-9 h-9 shrink-0" />
-                        <div className="min-w-0">
-                          <div className="font-display text-base text-primary-700">
-                            {flow.label}
-                          </div>
-                          <div className="text-sm text-gray-600">{flow.tagline}</div>
-                        </div>
-                      </div>
-                      {flow.required_inputs.length > 0 && (
-                        <div className="mt-3 pt-2 border-t border-accent-200 text-xs text-gray-600">
-                          Asks first: {flow.required_inputs.map((i) => i.label).join(' · ')}
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-              {catalog.planned?.length > 0 && (
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <span className="text-xs text-gray-400">Coming next:</span>
-                  {catalog.planned.map((p) => (
-                    <span
-                      key={p.id}
-                      className="inline-flex items-center gap-1 text-xs text-gray-400
-                                 border border-surface-300 rounded px-2 py-0.5"
-                    >
-                      <Lock className="w-3 h-3" />
-                      {p.label}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : null}
-        </div>
+      <div className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        {runs === null && <div className="text-sm text-gray-400">Loading…</div>}
 
-        {/* Chat lives to the side until it is needed, then it takes over. */}
-        <aside className="order-1 lg:order-2 flex">
-          <div className="rounded-xl border-2 border-primary-400 bg-white p-4 shadow-sm
-                          flex flex-col w-full">
-            <div className="text-sm font-medium text-gray-900 mb-1">Ask for anything</div>
-            <p className="text-xs text-gray-500 mb-3">
-              Describe what you need and the agent picks the flow — it will ask for
-              your market before spending anything.
+        {empty && (
+          <div className="flex flex-col items-center text-center pt-2 sm:pt-6">
+            {runOk && (
+              <img
+                src="/brand/ostrich-run.png"
+                alt=""
+                aria-hidden
+                onError={() => setRunOk(false)}
+                className="w-40 sm:w-52 h-auto mb-4"
+              />
+            )}
+            <h1 className="font-display text-4xl sm:text-5xl tracking-[0.18em] text-primary-700">
+              GET FOUND
+            </h1>
+            <p className="mt-3 text-gray-500 max-w-md">
+              Tell it what you do and where. It builds the strategy in front of you.
             </p>
-            <div className="relative flex-1 flex min-h-[7rem]">
+            <div className="relative mt-8 w-full max-w-xl">
               <textarea
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
@@ -215,22 +127,66 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
                   }
                 }}
                 rows={3}
-                placeholder="Start here..."
-                className="w-full flex-1 resize-none rounded-lg border border-surface-300
-                           px-3 py-2 pr-10 text-sm focus:outline-none
-                           focus:ring-2 focus:ring-primary-300"
+                placeholder="My business is…"
+                className="w-full resize-none rounded-xl border-2 border-surface-300 bg-white px-4 py-3 pr-12 text-base focus:outline-none focus:border-action-400"
               />
               <button
                 onClick={() => onStartChat(draft)}
-                aria-label="Open chat"
-                className="absolute bottom-2 right-2 p-1.5 rounded-md bg-primary-400 text-white
-                           hover:bg-primary-500 transition"
+                aria-label="Start"
+                className="absolute bottom-3 right-3 p-2 rounded-lg bg-action-400 text-white hover:bg-action-500 transition"
               >
-                <Send className="w-3.5 h-3.5" />
+                <Send className="w-4 h-4" />
               </button>
             </div>
           </div>
-        </aside>
+        )}
+
+        {runs && runs.length > 0 && (
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:pl-24 lg:pl-56">
+            {runs.map((run) => {
+              const live = run.status === 'running';
+              return (
+                <button
+                  key={run.id}
+                  onClick={() => onOpenRun(run.id)}
+                  className="group text-left rounded-xl border border-surface-300 bg-white/95 backdrop-blur p-4
+                             hover:border-gray-400 hover:shadow-sm transition"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-display text-base text-primary-700 truncate">{nameOf(run)}</span>
+                    <span className="flex items-center gap-1 shrink-0">
+                      {live && (
+                        <span className="flex items-center gap-1 text-[11px] text-action-500">
+                          <span className="w-1.5 h-1.5 rounded-full bg-action-400 animate-pulse" />
+                          live
+                        </span>
+                      )}
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        aria-label={run.pinned ? 'Unpin' : 'Pin'}
+                        title={run.pinned ? 'Pinned — always first' : 'Pin so it is always first'}
+                        onClick={(e) => { e.stopPropagation(); togglePin(run); }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); togglePin(run); }
+                        }}
+                        className={`p-1 rounded hover:bg-surface-100 ${run.pinned ? 'text-primary-400' : 'text-gray-300 hover:text-gray-600'}`}
+                      >
+                        {run.pinned ? <Pin className="w-3.5 h-3.5" /> : <PinOff className="w-3.5 h-3.5" />}
+                      </span>
+                    </span>
+                  </div>
+                  {subtitleOf(run) && (
+                    <div className="text-sm text-gray-500 mt-1 line-clamp-2">{subtitleOf(run)}</div>
+                  )}
+                  <div className="text-xs text-gray-400 mt-2">
+                    {run.stages} stage{run.stages === 1 ? '' : 's'}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

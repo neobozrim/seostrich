@@ -37,8 +37,8 @@ export function LoginForm({ onLoggedIn }: LoginFormProps) {
           alt="SEOstrich"
           className="h-32 w-auto mx-auto mb-3"
         />
-        <p className="text-sm text-gray-500 mb-6 text-center">
-          Get discovered.
+        <p className="font-display text-sm tracking-[0.18em] text-primary-700 mb-6 text-center">
+          GET FOUND
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
