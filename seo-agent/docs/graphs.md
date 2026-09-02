@@ -10,7 +10,7 @@ calls are marked 🤖; everything else is arithmetic.
 ```mermaid
 flowchart LR
   U([You]) --> UI[SEOstrich<br/>artefact-first UI]
-  A([Your own assistant<br/>ChatGPT · Chrome]) -- "WebMCP · 22 tools" --> UI
+  A([Your own assistant<br/>ChatGPT · Chrome]) -- "WebMCP · 23 tools" --> UI
   UI --> O[Orchestrator<br/>routes the request<br/>never edits a result]
   O --> SEO[SEO agent<br/>runs the enforced graphs<br/>then reads and reports]
   O --> BR[Brand agent<br/>identity · voice · naming]

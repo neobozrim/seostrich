@@ -53,6 +53,19 @@ def _run_path(run_id: str) -> Path:
     return _runs_dir() / f"{run_id}.json"
 
 
+def _flow_of(run: dict) -> str:
+    """What kind of report this is, from the stages it holds (the same rule
+    the report view uses for its tag)."""
+    ids = {s.get("id") for s in run.get("stages", []) if isinstance(s, dict)}
+    if "ai_citability" in ids and not ({"clusters", "seeds"} & ids):
+        return "AI visibility"
+    if {"pillars", "clusters", "keywords", "seeds"} & ids:
+        return "SEO content strategy"
+    if "audit" in ids:
+        return "Technical audit"
+    return ""
+
+
 def list_runs() -> list[dict]:
     """Return summaries for every stored run, newest first."""
     summaries = []
@@ -67,6 +80,7 @@ def list_runs() -> list[dict]:
                     "created": run.get("created"),
                     "status": run.get("status"),
                     "stages": len(run.get("stages", [])),
+                    "flow": _flow_of(run),
                     "modified": path.stat().st_mtime,
                     # Pinned runs lead the home canvas regardless of recency,
                     # so a curated run stays the first thing anyone sees.

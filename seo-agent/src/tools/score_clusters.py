@@ -50,7 +50,10 @@ def _rows(cluster: dict, universe: dict[str, dict]) -> list[dict]:
 def _metrics(rows: list[dict]) -> dict:
     """Aggregates over real keyword data. Every field is measured, not modelled."""
     vols = [r.get("volume") or 0 for r in rows]
-    kds = [r.get("difficulty") or 0 for r in rows]
+    # Difficulty is averaged over the keywords that HAVE one. A keyword
+    # DataForSEO did not score is unknown, not zero: five unmeasured terms
+    # used to average to "0.0", which reads as "trivially easy".
+    kds = [r["difficulty"] for r in rows if isinstance(r.get("difficulty"), (int, float))]
     cpcs = [r.get("cpc") or 0 for r in rows]
     intents = [str(r.get("intent") or "").lower() for r in rows]
     commercial = sum(1 for i in intents if i in _COMMERCIAL)
@@ -60,8 +63,9 @@ def _metrics(rows: list[dict]) -> dict:
         "total_volume": sum(vols),
         "max_volume": max(vols) if vols else 0,
         "median_volume": int(median(vols)) if vols else 0,
-        "avg_difficulty": round(sum(kds) / len(kds), 1) if kds else 0.0,
-        "max_difficulty": max(kds) if kds else 0,
+        "avg_difficulty": round(sum(kds) / len(kds), 1) if kds else None,
+        "max_difficulty": max(kds) if kds else None,
+        "difficulty_measured_for": len(kds),
         "avg_cpc": round(sum(cpcs) / len(cpcs), 2) if cpcs else 0.0,
         "max_cpc": round(max(cpcs), 2) if cpcs else 0.0,
         "commercial_keywords": commercial,
@@ -82,6 +86,8 @@ def _opportunity(m: dict) -> dict:
     relevance to the business decides selection, not this.
     """
     volume, difficulty = m["total_volume"], m["avg_difficulty"]
+    if difficulty is None:
+        difficulty = 101  # unknown is not "easy"
     if volume >= 1000 and difficulty <= 30:
         label, why = "high", "1000+ total volume at difficulty 30 or below"
     elif volume >= 300:
@@ -116,6 +122,13 @@ def score_clusters(clusters: dict, keywords: list[dict] | None = None) -> dict:
             continue
         metrics = _metrics(_rows(cluster, universe))
         entry = dict(cluster)
+        # The clustering model guesses a total_volume while grouping; the
+        # measured figure replaces it on the record so no reader sees two
+        # numbers for one cluster (observed 2026-09-03: 6,822 shown, 5,840 real).
+        if cluster.get("total_volume") not in (None, metrics["total_volume"]):
+            entry["estimated_total_volume"] = cluster.get("total_volume")
+        entry["total_volume"] = metrics["total_volume"]
+        entry["avg_difficulty"] = metrics["avg_difficulty"]
         entry.update({
             "cluster_id": cluster.get("cluster_id", i),
             "cluster_name": cluster.get("cluster_name") or cluster.get("name") or f"Cluster {i}",

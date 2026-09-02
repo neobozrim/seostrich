@@ -69,6 +69,7 @@ export interface RunSummary {
   prompt?: string;
   status?: string;
   stages: number;
+  flow?: string;
   modified?: number;
   pinned?: boolean;
   pin_note?: string;

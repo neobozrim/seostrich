@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from urllib.parse import urlparse
 
 from . import dataforseo as dfs
@@ -17,7 +19,8 @@ THIN_THRESHOLD = 15
 # remaining slots. Each queried domain costs one ranked_keywords call, plus
 # one domain_intersection call IF the site itself has rankings to intersect.
 MAX_COMPETITOR_URLS = 10
-MAX_COMPETITORS_QUERIED = 5
+MAX_COMPETITORS_QUERIED = 5      # discovery fills up to this many when the user names fewer
+MAX_USER_COMPETITORS = 10       # every domain the user names is checked, up to this
 COMPETITOR_KEYWORDS_PER_DOMAIN = 100
 # Cap direct seed expansion to keep the DataForSEO budget sane on wide briefs.
 MAX_EXPAND_SEEDS = 5
@@ -75,6 +78,12 @@ def pull_universe(
     all_keywords.extend(_seeds_as_keywords(seeds))
 
     unique = _dedupe(all_keywords)
+    # A US-English run has no use for Cyrillic rows, however much volume a
+    # Bulgarian competitor brings (observed 2026-09-03: 13 Cyrillic terms
+    # were 77% of raw volume). Script is decided by the market's language.
+    unique, script_dropped = _script_filter(unique, language_code)
+    if script_dropped and isinstance(competitor_map, dict):
+        competitor_map["script_dropped"] = script_dropped
 
     # ---- Ladder 3: thin market -> competitor discovery ----
     if len(unique) < THIN_THRESHOLD and dfs.budget_remaining() > 0 and not competitor_map.get("queried"):
@@ -341,15 +350,26 @@ def _competitor_universe(
         except Exception as e:
             print(f"  [WARN] competitors_domain failed for '{site_domain}': {e}")
             found = []
+        own_brand = _brand_tokens(site_domain)
         for d in found:
             if len(domains) >= MAX_COMPETITORS_QUERIED:
                 break
+            # A discovered domain that carries the site's own brand word is a
+            # namesake, not a competitor (braintrust.dev found usebraintrust.com,
+            # the freelance marketplace the brief said to ignore).
+            label = (d or "").lower().removeprefix("www.").split(".")[0]
+            if own_brand and any(t in label for t in own_brand if len(t) >= 5):
+                result.setdefault("skipped_namesakes", []).append(d)
+                continue
             before = len(domains)
             _add(d)
             if len(domains) > before:
                 result["discovered"].append(domains[-1])
 
-    queried = domains[:MAX_COMPETITORS_QUERIED]
+    # The user named them; they get checked. Observed 2026-09-02: six named,
+    # five checked, the sixth listed in red as "not checked" for no reason a
+    # reader could act on. Discovery only ever fills up to five in total.
+    queried = domains[:max(MAX_COMPETITORS_QUERIED, min(len(user), MAX_USER_COMPETITORS))]
     result["queried"] = queried
     if not queried:
         return result
@@ -436,6 +456,24 @@ def _competitor_universe(
     return result
 
 
+_CYRILLIC_LANGS = {"bg", "ru", "uk", "sr", "mk", "be", "kk"}
+_NON_LATIN = re.compile(r"[Ѐ-ӿͰ-Ͽ֐-׿؀-ۿ฀-๿぀-ヿ一-鿿가-힯]")
+_CYRILLIC = re.compile(r"[Ѐ-ӿ]")
+
+
+def _script_filter(rows: list[dict], language_code: str | None) -> tuple[list[dict], int]:
+    """Keep keywords written in the market language's script. Latin-script
+    markets drop Cyrillic/Greek/Hebrew/Arabic/Thai/CJK/Hangul rows; Cyrillic
+    markets keep Cyrillic and Latin (brand names are Latin everywhere)."""
+    lang = (language_code or "en").lower()[:2]
+    if lang in _CYRILLIC_LANGS:
+        bad = lambda k: bool(_NON_LATIN.search(k)) and not _CYRILLIC.search(k)  # noqa: E731
+    else:
+        bad = lambda k: bool(_NON_LATIN.search(k))  # noqa: E731
+    kept = [r for r in rows if not bad(str(r.get("keyword") or ""))]
+    return kept, len(rows) - len(kept)
+
+
 _GENERIC = {
     "product", "products", "ai", "the", "school", "news", "newsletter", "blog", "app",
     "apps", "hq", "web", "dev", "tech", "data", "cloud", "lab", "labs", "media", "digital",
@@ -449,8 +487,10 @@ RELEVANCE_SYSTEM = """You are an SEO strategist. You are given a business and a 
 keywords that its COMPETITORS rank for. Keep only the keywords a reader of this
 business would plausibly be searching for — topics this business could
 legitimately write about. Drop keywords about the competitor itself (its name,
-products, people, jobs, pricing), unrelated industries, and generic phrases
-with no connection to the business.
+products, people, jobs, pricing), keywords that are a named third-party product,
+platform, vendor, course provider or model (n8n, Zapier, Coursera, Pendo, GPT-4...)
+unless the business is about that product, unrelated industries, and generic
+phrases with no connection to the business.
 
 Answer with JSON only:
 {"keep": [numbers], "dropped_because": "one short sentence on what you removed"}"""
@@ -503,7 +543,21 @@ def _brand_tokens(domain: str) -> set[str]:
     """Words that mean the competitor itself. From lennysnewsletter.com:
     lennysnewsletter, lennys, lenny. From productschool.com: only
     productschool — "product" is a topic word, not a brand."""
-    label = (domain or "").lower().removeprefix("www.").split(".")[0]
+    # Every label that names the brand, not only the first: ai.softuni.bg is
+    # softuni's, and "ai" is a topic word. Public-suffix parts are dropped.
+    parts = [x for x in (domain or "").lower().removeprefix("www.").split(".") if x]
+    if len(parts) >= 2:
+        parts = parts[:-2] if (len(parts) >= 3 and parts[-2] in _SLD) else parts[:-1]
+    out: set[str] = set()
+    for label in parts:
+        out |= _label_tokens(label)
+    return out
+
+
+_SLD = {"co", "com", "org", "net", "ac", "gov", "edu", "ne", "or"}
+
+
+def _label_tokens(label: str) -> set[str]:
     if not label:
         return set()
     cands = {label, label + "s"}

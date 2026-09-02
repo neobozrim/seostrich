@@ -72,7 +72,13 @@ for m, expect in [
 
 print("4. degrades safely")
 chk("no keywords -> zeros", _metrics([])["total_volume"] == 0)
-chk("no division by zero", _metrics([])["avg_difficulty"] == 0.0)
+chk("no division by zero: unmeasured difficulty is None, not 0", _metrics([])["avg_difficulty"] is None)
+m5 = _metrics([{"keyword": "a", "volume": 10, "difficulty": None}, {"keyword": "b", "volume": 20, "difficulty": 30}])
+chk("difficulty averages only the measured keywords", m5["avg_difficulty"] == 30.0 and m5["difficulty_measured_for"] == 1)
+m6 = _metrics([{"keyword": "a", "volume": 5000, "difficulty": None}])
+chk("unknown difficulty never reads as an easy win", _opportunity(m6)["opportunity"] != "high")
+sc = score_clusters({"clusters": [{"name": "x", "total_volume": 6822, "keywords": ["a", "b"]}]}, keywords=[{"keyword": "a", "volume": 40, "difficulty": 10}, {"keyword": "b", "volume": 60, "difficulty": 20}])["scored_clusters"][0]
+chk("the measured total replaces the model's estimate on the record", sc["total_volume"] == 100 and sc["estimated_total_volume"] == 6822 and sc["avg_difficulty"] == 15.0)
 chk("missing universe still works",
     score_clusters(CLUSTERS)["scored_clusters"][0]["metrics"]["keyword_count"] == 2)
 chk("clusters holding dicts work",

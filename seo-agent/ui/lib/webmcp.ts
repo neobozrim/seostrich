@@ -33,6 +33,7 @@ import {
   getRunChanges,
   resetRun,
   regenerateBrief,
+  fetchCompetitorKeywords,
 } from './api';
 
 interface ModelContextLike {
@@ -47,19 +48,40 @@ function getModelContext(): ModelContextLike | null {
   return doc?.modelContext || nav?.modelContext || null;
 }
 
+// "The most recent run" must be one worth reading: the pinned one first,
+// else the newest that has stages. A chat that produced no report (an
+// abandoned prompt, a question) is never the default an assistant lands on.
 async function currentRun() {
+  // The report on screen is what the person and their assistant are both
+  // looking at; that is "the run" unless one is named.
+  const onScreen = typeof window !== 'undefined' ? (window as any).__seostrichOpenRun : null;
+  if (onScreen) {
+    try {
+      return await getRun(onScreen);
+    } catch {
+      /* fall through to the summaries */
+    }
+  }
   const summaries = await getRuns();
   if (!summaries.length) return null;
-  return getRun(summaries[0].id);
+  const pick =
+    summaries.find((s: any) => s.pinned && !s.archived) ||
+    summaries.find((s: any) => (s.stages || 0) > 0 && !s.archived && !/^(test|diag)-/.test(s.id)) ||
+    summaries[0];
+  return getRun(pick.id);
 }
 
-// Resolve a run by explicit id, else fall back to the most recent run.
+// Resolve a run by explicit id, else the run on screen / pinned / newest.
+// An id that does not exist falls back too: tool inspectors send schema
+// placeholders ("example_string"), and an agent may retry with a stale id;
+// answering "no run found" to either helped nobody. Every result carries
+// the run_id actually used.
 async function resolveRun(runId?: string) {
   if (runId) {
     try {
       return await getRun(runId);
     } catch {
-      return null;
+      /* unknown id: use the default run */
     }
   }
   return currentRun();
@@ -126,16 +148,26 @@ export function buildTools() {
     },
     {
       name: 'seo_get_content_calendar',
-      title: 'SEO content calendar',
+      title: 'Publishing order from the brief',
       description:
-        'The week-by-week publishing plan built from the selected pillars, if one was generated. Use this to check sequencing and cadence, or to see whether a calendar exists at all — it is an optional step the user has to confirm, so it is often absent. Read-only, no cost.',
-      inputSchema: { type: 'object', properties: {} },
+        'What to write, in order: the six pieces the brief commits to, each with a title, the exact question it answers, the cluster it serves and the keywords it targets, plus which pillar to build first and why. Use this to check sequencing. Absent until the brief has been written (seo_regenerate_brief writes it). Read-only, no cost.',
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
-      execute: async () => {
-        const run = await currentRun();
-        const stage = run?.stages?.find((s: any) => s.id === 'mix');
-        if (!stage) return 'No calendar stage found.';
-        return stage.artifact?.calendar || [];
+      execute: async (input: { run_id?: string }) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        const stage = run.stages?.find((s: any) => s.id === 'brief');
+        const brief = stage?.artifact;
+        if (!brief?.pieces) return 'No brief yet for this run — seo_regenerate_brief writes one from the selected clusters.';
+        return {
+          run_id: run.id,
+          build_first: brief.the_call,
+          order: (brief.pieces || []).map((p: any, i: number) => ({ position: i + 1, ...p })),
+          stale: !!brief.stale,
+          note: brief.stale
+            ? 'The selection changed after this brief was written; seo_regenerate_brief rebuilds it.'
+            : 'Written from the selected clusters as they stand.',
+        };
       },
     },
     {
@@ -450,6 +482,27 @@ export function buildTools() {
       },
     },
     {
+      name: 'seo_research_competitor',
+      title: 'Add or refresh a competitor',
+      description:
+        'Put a competitor domain on the competitor map of a run and pull the keywords it ranks for (one DataForSEO call, brand terms removed). Use it when the user names a competitor the run did not check, or wants the full ranked list for a domain. A domain already on the map is refreshed in place; a new public domain is added and the change is logged with who asked. Writes to the run and costs one paid lookup; nothing else in the run changes.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...RUN_ID_PROP,
+          domain: { type: 'string', description: 'The competitor domain, e.g. lennysnewsletter.com' },
+        },
+        required: ['domain'],
+      },
+      annotations: READ_WRITE,
+      execute: async (input: { run_id?: string; domain: string }) => {
+        const run = await resolveRun(input?.run_id);
+        if (!run) return 'No pipeline run found.';
+        if (!input?.domain) return 'A domain is required.';
+        return fetchCompetitorKeywords(run.id, input.domain, 'webmcp');
+      },
+    },
+    {
       name: 'seo_analyze_run',
       title: 'Analyze pipeline run',
       description:
@@ -481,17 +534,18 @@ function analyzeRun(run: any) {
     findings.push('Run is still in progress.');
   }
 
-  // Core pipeline order expectations
-  const core: Array<[string, string, string]> = [
-    ['seeds', 'No seed keywords extracted.', 'Run extract_seeds.'],
-    ['keywords', 'No keyword discovery stage.', 'Run keyword research (pull_universe / keyword_suggestions).'],
-    ['clusters', 'No clustering stage.', 'Cluster the discovered keywords.'],
-    ['pillars', 'No content pillars yet.', 'Recommend pillars from the selected clusters.'],
+  // The graph writes these in order; a missing one means the run stopped
+  // there. There is no tool to run a single node — the retry is the run.
+  const core: Array<[string, string]> = [
+    ['seeds', 'No seeds — the run stopped before reading the brief.'],
+    ['keywords', 'No keyword universe — the run stopped before DataForSEO.'],
+    ['clusters', 'No themes — the run stopped before clustering.'],
+    ['pillars', 'No content pillars — the run stopped before the selection was written up.'],
   ];
-  for (const [id, problem, fix] of core) {
+  for (const [id, problem] of core) {
     if (!stageIds.has(id)) {
       findings.push(problem);
-      nextSteps.push(fix);
+      nextSteps.push('Retry the run from the artefact; nothing invented so far is lost.');
     }
   }
 
@@ -500,29 +554,29 @@ function analyzeRun(run: any) {
     const clusterStage = run.stages.find((s: any) => s.id === 'clusters');
     const art = clusterStage?.artifact || {};
     if (!art.selected) {
-      findings.push('Clusters were never selected/curated (no selected vs discarded split).');
-      nextSteps.push('Run select_clusters to pick the top 3-4 and park the rest with reasons.');
+      findings.push('Clusters were never selected (no selected vs discarded split).');
+      nextSteps.push('Retry the run; selection is a graph node, not a tool.');
     } else {
       const sel = (art.clusters || []).length;
       const disc = (art.discarded || []).length;
       findings.push(`Cluster selection made: ${sel} selected, ${disc} discarded.`);
       if (sel > 5) {
         findings.push('More than 5 clusters are still selected — the strategy may be unfocused.');
-        nextSteps.push('Consider discarding weaker clusters to focus on 3-4 pillars.');
+        nextSteps.push('Discard the weaker ones (seo_discard_cluster) to focus on 3-4 pillars.');
       }
     }
   }
+  const changes = (run.governance?.log || run.governance?.changes || []).length;
+  if (changes) findings.push(`${changes} change(s) to the selection since the graph produced it — seo_get_governance_history says who and why; seo_reset_run puts it back.`);
 
-  // Optional/enrichment stages — informational only
-  const enrichment: Array<[string, string]> = [
-    ['ai_citability', 'AI-citability brief not generated (run ai_citability_brief on the selected head terms).'],
-    ['mix', 'No content calendar yet (offer plan_calendar if the user wants a schedule).'],
-    ['audit', 'No technical audit run (on-demand only).'],
-  ];
+  // Stages a run can legitimately lack — informational only
+  const briefStage = run.stages?.find((s: any) => s.id === 'brief');
   const missingEnrichment: string[] = [];
-  for (const [id, note] of enrichment) {
-    if (!stageIds.has(id)) missingEnrichment.push(note);
-  }
+  if (!stageIds.has('competitors')) missingEnrichment.push('No competitor map — this run predates it, or no competitor URLs were given.');
+  if (!briefStage) missingEnrichment.push('No brief yet — seo_regenerate_brief writes one from the selected clusters.');
+  else if (briefStage.artifact?.stale) missingEnrichment.push('The brief is stale: the selection changed after it was written. seo_regenerate_brief rebuilds it.');
+  const separate: string[] = [];
+  if (!stageIds.has('ai_citability') && !stageIds.has('geo_rank')) separate.push('AI visibility (GEO) is a separate report, not a layer of this one: it measures which questions AI answers already cover and who they cite. Mention it only if the user asks about AI search; it is not something this strategy lacks.');
 
   return {
     run_id: run.id,
@@ -530,6 +584,7 @@ function analyzeRun(run: any) {
     stages_present: Array.from(stageIds),
     findings,
     missing_enrichment: missingEnrichment,
+    separate_reports: separate,
     next_steps: nextSteps,
   };
 }
@@ -541,6 +596,11 @@ let abortController: AbortController | null = null;
  * Register the pipeline tools with the browser's ModelContext.
  * Idempotent: repeated calls return the same in-flight/last result.
  */
+// Testing without a WebMCP-enabled browser: `__webmcpTools()` in the console
+// returns the same tool objects the browser would register, so each
+// `execute` can be called by hand. Read-only; no different from an agent.
+if (typeof window !== 'undefined') (window as any).__webmcpTools = () => buildTools();
+
 export function registerWebMcpTools(): Promise<boolean> {
   if (registerPromise) return registerPromise;
   registerPromise = (async () => {

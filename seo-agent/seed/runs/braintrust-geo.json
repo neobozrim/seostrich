@@ -1,0 +1,1982 @@
+{
+ "id": "braintrust-geo",
+ "project": "braintrust.dev · AI visibility · US-EN",
+ "title": "Braintrust",
+ "prompt": "Run the AI visibility (GEO) report for Braintrust (braintrust.dev), the LLM evaluation and observability platform (not the freelance marketplace). Market: United States, English.\nResearch how AI engines already answer questions about LLM evaluation and observability, and who they cite.\nTopics: llm evaluation, llm observability, llm as a judge, rag evaluation, ai agent evaluation, llm tracing, prompt versioning, llm evaluation framework, evals for llm applications.\nThen check which AI answers already cite braintrust.dev.\n",
+ "created": "2026-09-02T22:08:33.590956+00:00",
+ "status": "done",
+ "stages": [
+  {
+   "id": "intake",
+   "label": "Intake",
+   "status": "done",
+   "artifact": {
+    "locale": {
+     "location_code": 2840,
+     "language_code": "en"
+    },
+    "market": "US-EN"
+   }
+  },
+  {
+   "id": "keywords",
+   "label": "Keyword discovery",
+   "status": "done",
+   "artifact": {
+    "count": 9,
+    "keywords": [
+     {
+      "keyword": "llm evaluation",
+      "volume": 1000,
+      "difficulty": 14,
+      "cpc": 23.45,
+      "competition": 0.35,
+      "intent": "informational"
+     },
+     {
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "",
+      "keyword": "llm observability"
+     },
+     {
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "",
+      "keyword": "llm as a judge"
+     },
+     {
+      "keyword": "rag evaluation",
+      "volume": 210,
+      "difficulty": 21,
+      "cpc": 10.79,
+      "competition": 0.44,
+      "intent": "informational"
+     },
+     {
+      "keyword": "ai agent evaluation",
+      "volume": 260,
+      "difficulty": 28,
+      "cpc": 19.94,
+      "competition": 0.48,
+      "intent": "informational"
+     },
+     {
+      "keyword": "llm tracing",
+      "volume": 140,
+      "difficulty": 13,
+      "cpc": 27.41,
+      "competition": 0.49,
+      "intent": "informational"
+     },
+     {
+      "keyword": "prompt versioning",
+      "volume": 170,
+      "difficulty": 8,
+      "cpc": 13.53,
+      "competition": 0.08,
+      "intent": "informational"
+     },
+     {
+      "keyword": "llm evaluation framework",
+      "volume": 390,
+      "difficulty": 17,
+      "cpc": 22.91,
+      "competition": 0.39,
+      "intent": "informational"
+     },
+     {
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "",
+      "keyword": "evals for llm applications"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ai_citability",
+   "label": "AI visibility",
+   "status": "done",
+   "artifact": {
+    "success": true,
+    "market": "US-EN",
+    "topics_examined": [
+     "llm evaluation",
+     "llm observability",
+     "llm as a judge",
+     "rag evaluation",
+     "ai agent evaluation",
+     "llm tracing",
+     "prompt versioning",
+     "llm evaluation framework",
+     "evals for llm applications"
+    ],
+    "ranked": [
+     {
+      "topic": "llm evaluation",
+      "search_volume": 1000,
+      "difficulty": 14,
+      "cpc": 23.45,
+      "intent": "informational",
+      "ai_questions_found": 29,
+      "ai_search_volume": 2962,
+      "answered_share": 1.0,
+      "open_share": 0.53,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 90,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "github.com",
+        "citations": 20,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 867
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 34,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "arxiv.org",
+        "citations": 15,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 692
+       },
+       {
+        "domain": "huggingface.co",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 614
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 10,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "www.coursera.org",
+        "citations": 13,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "www.databricks.com",
+        "citations": 13,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 450
+       },
+       {
+        "domain": "mlflow.org",
+        "citations": 15,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 377
+       },
+       {
+        "domain": "arize.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 374
+       },
+       {
+        "domain": "www.braintrust.dev",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 333
+       },
+       {
+        "domain": "www.superannotate.com",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 301
+       },
+       {
+        "domain": "deepeval.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       },
+       {
+        "domain": "www.evidentlyai.com",
+        "citations": 14,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 288
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "www.braintrust.dev",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 333
+       },
+       {
+        "domain": "www.superannotate.com",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 301
+       },
+       {
+        "domain": "deepeval.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       },
+       {
+        "domain": "www.evidentlyai.com",
+        "citations": 14,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 288
+       }
+      ],
+      "weakest_cited_authority": 288,
+      "strongest_cited_authority": 1000,
+      "displaceability": "winnable: 4 niche site(s) are cited on questions that name this topic (weakest 288), so it does not require a global brand to be quoted",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "rag evaluation",
+      "search_volume": 210,
+      "difficulty": 21,
+      "cpc": 10.79,
+      "intent": "informational",
+      "ai_questions_found": 7,
+      "ai_search_volume": 570,
+      "answered_share": 1.0,
+      "open_share": 0.6,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 43,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.ncbi.nlm.nih.gov",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 739
+       },
+       {
+        "domain": "aws.amazon.com",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.cdc.gov",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 635
+       },
+       {
+        "domain": "medlineplus.gov",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 587
+       },
+       {
+        "domain": "www.mayoclinic.org",
+        "citations": 21,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 584
+       },
+       {
+        "domain": "azure.microsoft.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "my.clevelandclinic.org",
+        "citations": 30,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 546
+       },
+       {
+        "domain": "www.cancer.org",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 541
+       },
+       {
+        "domain": "www.medicalnewstoday.com",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 537
+       },
+       {
+        "domain": "www.aad.org",
+        "citations": 14,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 491
+       },
+       {
+        "domain": "www.mdanderson.org",
+        "citations": 16,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 439
+       },
+       {
+        "domain": "int.livhospital.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 333
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "int.livhospital.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 333
+       }
+      ],
+      "weakest_cited_authority": 333,
+      "strongest_cited_authority": 1000,
+      "displaceability": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "ai agent evaluation",
+      "search_volume": 260,
+      "difficulty": 28,
+      "cpc": 19.94,
+      "intent": "informational",
+      "ai_questions_found": 6,
+      "ai_search_volume": 790,
+      "answered_share": 1.0,
+      "open_share": 0.33,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 55,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "github.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 867
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 24,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "medium.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 744
+       },
+       {
+        "domain": "aws.amazon.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.anthropic.com",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 615
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "pmc.ncbi.nlm.nih.gov",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 603
+       },
+       {
+        "domain": "www.mayoclinic.org",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 584
+       },
+       {
+        "domain": "azure.microsoft.com",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "scale.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 414
+       },
+       {
+        "domain": "ai.azure.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 381
+       },
+       {
+        "domain": "ubiehealth.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 309
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "ubiehealth.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 309
+       }
+      ],
+      "weakest_cited_authority": 309,
+      "strongest_cited_authority": 1000,
+      "displaceability": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "llm evaluation framework",
+      "search_volume": 390,
+      "difficulty": 17,
+      "cpc": 22.91,
+      "intent": "informational",
+      "ai_questions_found": 3,
+      "ai_search_volume": 540,
+      "answered_share": 1.0,
+      "open_share": 0.4,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 76,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "github.com",
+        "citations": 31,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 867
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 20,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "medium.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 744
+       },
+       {
+        "domain": "www.indeed.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 717
+       },
+       {
+        "domain": "arxiv.org",
+        "citations": 27,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 692
+       },
+       {
+        "domain": "cloud.google.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 680
+       },
+       {
+        "domain": "huggingface.co",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 614
+       },
+       {
+        "domain": "www.ziprecruiter.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 542
+       },
+       {
+        "domain": "www.geeksforgeeks.org",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 534
+       },
+       {
+        "domain": "www.databricks.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 450
+       },
+       {
+        "domain": "www.langchain.com",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 412
+       },
+       {
+        "domain": "langfuse.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 408
+       },
+       {
+        "domain": "deepeval.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "deepeval.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       }
+      ],
+      "weakest_cited_authority": 296,
+      "strongest_cited_authority": 1000,
+      "displaceability": "winnable: 1 niche site(s) are cited on questions that name this topic (weakest 296), so it does not require a global brand to be quoted",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "prompt versioning",
+      "search_volume": 170,
+      "difficulty": 8,
+      "cpc": 13.53,
+      "intent": "informational",
+      "ai_questions_found": 1,
+      "ai_search_volume": 210,
+      "answered_share": 1.0,
+      "open_share": 0.4,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 132,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "apps.apple.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 978
+       },
+       {
+        "domain": "www.google.com",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 915
+       },
+       {
+        "domain": "www.amazon.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 850
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 28,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 29,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 813
+       },
+       {
+        "domain": "support.apple.com",
+        "citations": 18,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 729
+       },
+       {
+        "domain": "www.nytimes.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 681
+       },
+       {
+        "domain": "boardgamegeek.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 603
+       },
+       {
+        "domain": "zapier.com",
+        "citations": 13,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 553
+       },
+       {
+        "domain": "balsamiq.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 526
+       },
+       {
+        "domain": "quizlet.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 503
+       },
+       {
+        "domain": "support.lenovo.com",
+        "citations": 15,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 495
+       },
+       {
+        "domain": "pcsupport.lenovo.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 422
+       },
+       {
+        "domain": "www.cardsagainstformality.io",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 86
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "www.cardsagainstformality.io",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 86
+       }
+      ],
+      "weakest_cited_authority": 86,
+      "strongest_cited_authority": 1000,
+      "displaceability": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "llm tracing",
+      "search_volume": 140,
+      "difficulty": 13,
+      "cpc": 27.41,
+      "intent": "informational",
+      "ai_questions_found": 1,
+      "ai_search_volume": 140,
+      "answered_share": 1.0,
+      "open_share": 0.33,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 76,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.google.com",
+        "citations": 21,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 915
+       },
+       {
+        "domain": "github.com",
+        "citations": 18,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 867
+       },
+       {
+        "domain": "www.amazon.com",
+        "citations": 16,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 850
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 45,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.apple.com",
+        "citations": 20,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 732
+       },
+       {
+        "domain": "support.apple.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 729
+       },
+       {
+        "domain": "developer.chrome.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 696
+       },
+       {
+        "domain": "www.intel.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 602
+       },
+       {
+        "domain": "www.nvidia.com",
+        "citations": 21,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 596
+       },
+       {
+        "domain": "www.newegg.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 567
+       },
+       {
+        "domain": "www.techpowerup.com",
+        "citations": 15,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 506
+       },
+       {
+        "domain": "www.pny.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 445
+       },
+       {
+        "domain": "www.runpod.io",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 357
+       }
+      ],
+      "niche_sites_cited": [],
+      "weakest_cited_authority": 357,
+      "strongest_cited_authority": 1000,
+      "displaceability": "hard: every cited source is a high-authority site (top 1000), so expect to be quoted only alongside them, not instead of them",
+      "evidence": "AI engines answer this AND it has search volume"
+     }
+    ],
+    "brief": [
+     {
+      "topic": "llm evaluation",
+      "why_this_topic": "AI engines answer this AND it has search volume",
+      "metrics": {
+       "search_volume": 1000,
+       "difficulty": 14,
+       "cpc": 23.45,
+       "intent": "informational",
+       "ai_questions_found": 29,
+       "ai_search_volume": 2962,
+       "answered_share": 1.0,
+       "open_share": 0.53,
+       "weakest_cited_authority": 288,
+       "strongest_cited_authority": 1000
+      },
+      "currently_cited": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 90,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "github.com",
+        "citations": 20,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 867
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 34,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "arxiv.org",
+        "citations": 15,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 692
+       },
+       {
+        "domain": "huggingface.co",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 614
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 10,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "www.coursera.org",
+        "citations": 13,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "www.databricks.com",
+        "citations": 13,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 450
+       },
+       {
+        "domain": "mlflow.org",
+        "citations": 15,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 377
+       },
+       {
+        "domain": "arize.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 374
+       },
+       {
+        "domain": "www.braintrust.dev",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 333
+       },
+       {
+        "domain": "www.superannotate.com",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 301
+       },
+       {
+        "domain": "deepeval.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       },
+       {
+        "domain": "www.evidentlyai.com",
+        "citations": 14,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 288
+       }
+      ],
+      "can_you_displace_them": "winnable: 4 niche site(s) are cited on questions that name this topic (weakest 288), so it does not require a global brand to be quoted",
+      "niche_sites_already_cited": [
+       {
+        "domain": "www.braintrust.dev",
+        "authority_rank": 333
+       },
+       {
+        "domain": "www.superannotate.com",
+        "authority_rank": 301
+       },
+       {
+        "domain": "deepeval.com",
+        "authority_rank": 296
+       },
+       {
+        "domain": "www.evidentlyai.com",
+        "authority_rank": 288
+       }
+      ],
+      "questions_people_ask": [
+       "How to evaluate LLM model performance?",
+       "What are the best LLM evaluation tools?",
+       "What are rubrics in LLM evaluation?",
+       "How to evaluate LLM generated text?"
+      ],
+      "questions_ai_answers": [
+       "llm evaluation",
+       "llm evaluation framework",
+       "llm evaluation metrics",
+       "evaluation llm",
+       "llm evaluation tools",
+       "llm as a judge evaluation",
+       "llm-as a judge evaluation",
+       "survey on evaluation of llm based agents",
+       "llm evaluation platform",
+       "llm model evaluation"
+      ],
+      "content_plan": [
+       {
+        "heading": "How to evaluate LLM model performance?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How to evaluate LLM model performance?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are the best LLM evaluation tools?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are the best LLM evaluation tools?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are rubrics in LLM evaluation?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are rubrics in LLM evaluation?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "How to evaluate LLM generated text?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How to evaluate LLM generated text?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "llm evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.superannotate.com",
+         "magazine.sebastianraschka.com",
+         "arize.com"
+        ]
+       },
+       {
+        "heading": "llm evaluation framework",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation framework\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.datadoghq.com",
+         "github.com"
+        ]
+       },
+       {
+        "heading": "llm evaluation metrics",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation metrics\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.evidentlyai.com",
+         "www.superannotate.com",
+         "www.braintrust.dev"
+        ]
+       },
+       {
+        "heading": "evaluation llm",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"evaluation llm\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.superannotate.com",
+         "www.ibm.com",
+         "www.databricks.com"
+        ]
+       },
+       {
+        "heading": "llm evaluation tools",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation tools\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.superannotate.com",
+         "medium.com"
+        ]
+       },
+       {
+        "heading": "llm as a judge evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm as a judge evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "langfuse.com",
+         "www.evidentlyai.com",
+         "huggingface.co"
+        ]
+       },
+       {
+        "heading": "llm-as a judge evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm-as a judge evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "langfuse.com",
+         "www.evidentlyai.com",
+         "huggingface.co"
+        ]
+       },
+       {
+        "heading": "survey on evaluation of llm based agents",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"survey on evaluation of llm based agents\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "arxiv.org",
+         "huggingface.co",
+         "arxiv.org"
+        ]
+       }
+      ],
+      "how_to_use_this": "Each content_plan entry is one page section: the question is the heading, and the first two sentences under it must BE the answer. That is what a generative engine can lift and cite. Depth, opinion and story go after it, not before."
+     },
+     {
+      "topic": "rag evaluation",
+      "why_this_topic": "AI engines answer this AND it has search volume",
+      "metrics": {
+       "search_volume": 210,
+       "difficulty": 21,
+       "cpc": 10.79,
+       "intent": "informational",
+       "ai_questions_found": 7,
+       "ai_search_volume": 570,
+       "answered_share": 1.0,
+       "open_share": 0.6,
+       "weakest_cited_authority": 333,
+       "strongest_cited_authority": 1000
+      },
+      "currently_cited": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 43,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.ncbi.nlm.nih.gov",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 739
+       },
+       {
+        "domain": "aws.amazon.com",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.cdc.gov",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 635
+       },
+       {
+        "domain": "medlineplus.gov",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 587
+       },
+       {
+        "domain": "www.mayoclinic.org",
+        "citations": 21,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 584
+       },
+       {
+        "domain": "azure.microsoft.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "my.clevelandclinic.org",
+        "citations": 30,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 546
+       },
+       {
+        "domain": "www.cancer.org",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 541
+       },
+       {
+        "domain": "www.medicalnewstoday.com",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 537
+       },
+       {
+        "domain": "www.aad.org",
+        "citations": 14,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 491
+       },
+       {
+        "domain": "www.mdanderson.org",
+        "citations": 16,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 439
+       },
+       {
+        "domain": "int.livhospital.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 333
+       }
+      ],
+      "can_you_displace_them": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "niche_sites_already_cited": [
+       {
+        "domain": "int.livhospital.com",
+        "authority_rank": 333
+       }
+      ],
+      "questions_people_ask": [
+       "Is ChatGPT a RAG model?",
+       "How do I test my RAG?",
+       "What are some evaluation tools for RAG methods?",
+       "Can you explain RAG in a simple way?"
+      ],
+      "questions_ai_answers": [
+       "rag evaluation",
+       "rag evaluation metrics",
+       "ragas rag evaluation",
+       "ragas for rag evaluation",
+       "rag evaluation framework",
+       "ragas rag evaluation framework",
+       "rag evaluation frameworks"
+      ],
+      "content_plan": [
+       {
+        "heading": "Is ChatGPT a RAG model?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"Is ChatGPT a RAG model?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "How do I test my RAG?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How do I test my RAG?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are some evaluation tools for RAG methods?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are some evaluation tools for RAG methods?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "Can you explain RAG in a simple way?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"Can you explain RAG in a simple way?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "rag evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"rag evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "docs.langchain.com",
+         "www.evidentlyai.com",
+         "qdrant.tech"
+        ]
+       },
+       {
+        "heading": "rag evaluation metrics",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"rag evaluation metrics\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.evidentlyai.com",
+         "docs.langchain.com",
+         "qdrant.tech"
+        ]
+       },
+       {
+        "heading": "ragas rag evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ragas rag evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "langfuse.com",
+         "www.vectara.com",
+         "docs.ragas.io"
+        ]
+       },
+       {
+        "heading": "ragas for rag evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ragas for rag evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "langfuse.com",
+         "www.vectara.com",
+         "docs.ragas.io"
+        ]
+       },
+       {
+        "heading": "rag evaluation framework",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"rag evaluation framework\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "docs.langchain.com",
+         "www.patronus.ai",
+         "www.evidentlyai.com"
+        ]
+       },
+       {
+        "heading": "ragas rag evaluation framework",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ragas rag evaluation framework\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "docs.ragas.io",
+         "arxiv.org",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "heading": "rag evaluation frameworks",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"rag evaluation frameworks\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "deepeval.com",
+         "www.reddit.com",
+         "docs.langchain.com"
+        ]
+       }
+      ],
+      "how_to_use_this": "Each content_plan entry is one page section: the question is the heading, and the first two sentences under it must BE the answer. That is what a generative engine can lift and cite. Depth, opinion and story go after it, not before."
+     },
+     {
+      "topic": "ai agent evaluation",
+      "why_this_topic": "AI engines answer this AND it has search volume",
+      "metrics": {
+       "search_volume": 260,
+       "difficulty": 28,
+       "cpc": 19.94,
+       "intent": "informational",
+       "ai_questions_found": 6,
+       "ai_search_volume": 790,
+       "answered_share": 1.0,
+       "open_share": 0.33,
+       "weakest_cited_authority": 309,
+       "strongest_cited_authority": 1000
+      },
+      "currently_cited": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 55,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "github.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 867
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 24,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "medium.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 744
+       },
+       {
+        "domain": "aws.amazon.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.anthropic.com",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 615
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "pmc.ncbi.nlm.nih.gov",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 603
+       },
+       {
+        "domain": "www.mayoclinic.org",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 584
+       },
+       {
+        "domain": "azure.microsoft.com",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "scale.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 414
+       },
+       {
+        "domain": "ai.azure.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 381
+       },
+       {
+        "domain": "ubiehealth.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 309
+       }
+      ],
+      "can_you_displace_them": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "niche_sites_already_cited": [
+       {
+        "domain": "ubiehealth.com",
+        "authority_rank": 309
+       }
+      ],
+      "questions_people_ask": [
+       "What is the best evaluation framework for AI agents?",
+       "How to measure the performance of an agent in AI?",
+       "How to write evals for AI agents?",
+       "What are the 7 types of AI agents?"
+      ],
+      "questions_ai_answers": [
+       "ai agent evaluation",
+       "ai agents evaluation",
+       "ai agent evaluation framework",
+       "ai agent evaluation frameworks",
+       "ai agent evaluation tools",
+       "ai agent evaluation metrics"
+      ],
+      "content_plan": [
+       {
+        "heading": "What is the best evaluation framework for AI agents?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What is the best evaluation framework for AI agents?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "How to measure the performance of an agent in AI?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How to measure the performance of an agent in AI?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "How to write evals for AI agents?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How to write evals for AI agents?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are the 7 types of AI agents?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are the 7 types of AI agents?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "ai agent evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai agent evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "developer.nvidia.com",
+         "medium.com"
+        ]
+       },
+       {
+        "heading": "ai agents evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai agents evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.anthropic.com",
+         "aws.amazon.com"
+        ]
+       },
+       {
+        "heading": "ai agent evaluation framework",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai agent evaluation framework\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.anthropic.com",
+         "arize.com",
+         "aws.amazon.com"
+        ]
+       },
+       {
+        "heading": "ai agent evaluation frameworks",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai agent evaluation frameworks\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.anthropic.com",
+         "arize.com",
+         "aws.amazon.com"
+        ]
+       },
+       {
+        "heading": "ai agent evaluation tools",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai agent evaluation tools\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "deepeval.com",
+         "mlflow.org",
+         "medium.com"
+        ]
+       },
+       {
+        "heading": "ai agent evaluation metrics",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai agent evaluation metrics\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "cloud.google.com",
+         "galileo.ai",
+         "deepeval.com"
+        ]
+       }
+      ],
+      "how_to_use_this": "Each content_plan entry is one page section: the question is the heading, and the first two sentences under it must BE the answer. That is what a generative engine can lift and cite. Depth, opinion and story go after it, not before."
+     },
+     {
+      "topic": "llm evaluation framework",
+      "why_this_topic": "AI engines answer this AND it has search volume",
+      "metrics": {
+       "search_volume": 390,
+       "difficulty": 17,
+       "cpc": 22.91,
+       "intent": "informational",
+       "ai_questions_found": 3,
+       "ai_search_volume": 540,
+       "answered_share": 1.0,
+       "open_share": 0.4,
+       "weakest_cited_authority": 296,
+       "strongest_cited_authority": 1000
+      },
+      "currently_cited": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 76,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "github.com",
+        "citations": 31,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 867
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 20,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "medium.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 744
+       },
+       {
+        "domain": "www.indeed.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 717
+       },
+       {
+        "domain": "arxiv.org",
+        "citations": 27,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 692
+       },
+       {
+        "domain": "cloud.google.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 680
+       },
+       {
+        "domain": "huggingface.co",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 614
+       },
+       {
+        "domain": "www.ziprecruiter.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 542
+       },
+       {
+        "domain": "www.geeksforgeeks.org",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 534
+       },
+       {
+        "domain": "www.databricks.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 450
+       },
+       {
+        "domain": "www.langchain.com",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 412
+       },
+       {
+        "domain": "langfuse.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 408
+       },
+       {
+        "domain": "deepeval.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       }
+      ],
+      "can_you_displace_them": "winnable: 1 niche site(s) are cited on questions that name this topic (weakest 296), so it does not require a global brand to be quoted",
+      "niche_sites_already_cited": [
+       {
+        "domain": "deepeval.com",
+        "authority_rank": 296
+       }
+      ],
+      "questions_people_ask": [
+       "What are the top 5 LLM evaluation tools?",
+       "How do you evaluate LLM performance?",
+       "What are the 6 steps of the evaluation framework?",
+       "What are LLM evaluators?"
+      ],
+      "questions_ai_answers": [
+       "llm evaluation framework",
+       "evaluation framework llm",
+       "open-source llm evaluation framework"
+      ],
+      "content_plan": [
+       {
+        "heading": "What are the top 5 LLM evaluation tools?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are the top 5 LLM evaluation tools?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "How do you evaluate LLM performance?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How do you evaluate LLM performance?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are the 6 steps of the evaluation framework?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are the 6 steps of the evaluation framework?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are LLM evaluators?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are LLM evaluators?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "llm evaluation framework",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation framework\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.datadoghq.com",
+         "github.com"
+        ]
+       },
+       {
+        "heading": "evaluation framework llm",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"evaluation framework llm\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "deepeval.com",
+         "www.langchain.com",
+         "mlflow.org"
+        ]
+       },
+       {
+        "heading": "open-source llm evaluation framework",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"open-source llm evaluation framework\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "github.com",
+         "deepeval.com",
+         "www.datadoghq.com"
+        ]
+       }
+      ],
+      "how_to_use_this": "Each content_plan entry is one page section: the question is the heading, and the first two sentences under it must BE the answer. That is what a generative engine can lift and cite. Depth, opinion and story go after it, not before."
+     }
+    ],
+    "skipped_no_demand": [],
+    "had_demand_but_capped": [
+     {
+      "topic": "prompt versioning",
+      "search_volume": 170,
+      "ai_questions_found": 1
+     },
+     {
+      "topic": "llm tracing",
+      "search_volume": 140,
+      "ai_questions_found": 1
+     }
+    ],
+    "not_sent_to_paid_call": [
+     "llm observability",
+     "llm as a judge",
+     "evals for llm applications"
+    ],
+    "cost_note": "1 keyword_overview call for all 9 candidates, 12 search_mentions calls (the expensive one, ~$0.10 each; two scopes per topic when the wide competitive scan is on) on the shortlist, 1 bulk domain-rank call, and 4 People-also-ask calls.",
+    "steps": [
+     "demand",
+     "shortlist",
+     "citability",
+     "displaceability",
+     "ranked",
+     "questions"
+    ],
+    "method": "Search volume and AI presence are measured from DataForSEO; the ranking is arithmetic over those measurements and publishes its inputs. The expensive per-keyword search_mentions call ran only on the shortlist that the cheap volume check kept, and People-also-ask only on the final winners.",
+    "reading_the_numbers": "ai_search_volume is a SUM across every question matched for the topic, and for Google AI Overviews DataForSEO derives it from Google search volume — so it sizes the question cluster and is NOT a separate AI demand channel. Do not compare it against search_volume for a single head term. answered_share are near-constant because AI Overview answers nearly everything; judge the opportunity on can_you_displace_them.",
+    "platforms_measured": [
+     "google"
+    ],
+    "site_citations": {
+     "domain": "braintrust.dev",
+     "answers_citing": 244,
+     "sampled": 50,
+     "examples": [
+      {
+       "question": "test ai",
+       "platform": "google"
+      },
+      {
+       "question": "eval meaning",
+       "platform": "google"
+      },
+      {
+       "question": "brain trust",
+       "platform": "google"
+      },
+      {
+       "question": "llm as a judge",
+       "platform": "google"
+      },
+      {
+       "question": "manage environments",
+       "platform": "google"
+      },
+      {
+       "question": "llm gateway",
+       "platform": "google"
+      },
+      {
+       "question": "ai evaluation",
+       "platform": "google"
+      },
+      {
+       "question": "llm evaluation",
+       "platform": "google"
+      }
+     ],
+     "cited_alongside": [
+      {
+       "domain": "www.youtube.com",
+       "times": 64
+      },
+      {
+       "domain": "arize.com",
+       "times": 15
+      },
+      {
+       "domain": "galileo.ai",
+       "times": 15
+      },
+      {
+       "domain": "www.ibm.com",
+       "times": 14
+      },
+      {
+       "domain": "medium.com",
+       "times": 14
+      },
+      {
+       "domain": "www.reddit.com",
+       "times": 13
+      },
+      {
+       "domain": "langfuse.com",
+       "times": 11
+      },
+      {
+       "domain": "mlflow.org",
+       "times": 10
+      },
+      {
+       "domain": "www.langchain.com",
+       "times": 8
+      },
+      {
+       "domain": "www.databricks.com",
+       "times": 8
+      }
+     ]
+    },
+    "title": "GEO demand brief",
+    "source": "agent"
+   }
+  }
+ ],
+ "ended": "2026-09-02T22:09:58.997591+00:00",
+ "summary": "The brief prioritizes **LLM evaluation**: 1,000 monthly searches, 29 AI-answer questions, and 53% open opportunity. It is winnable because AI engines already cite specialist sites with authority ranks down to 288—including Braintrust itself—rather than only global brands.\n\nBraintrust already appears in **244 measured Google AI answers**, with examples including “LLM evaluation,” “LLM as a judge,” “AI evaluation,” and “LLM gateway.” Within the LLM-evaluation topic set, braintrust.dev received 8 citations. Its main citation-set competitors include Arize, Galileo, Langfuse, MLflow, LangChain, IBM, and Databricks.\n\nSecondary opportunities are **LLM evaluation framework** (390 searches, 40% open), **AI agent evaluation** (260, 33%), and **RAG evaluation** (210, 60%). The latter two need caution because the apparent low-authority citations came from adjacent-answer text and may be off-topic. Several RAG matches were clearly medical; those domains are unverified competitors, as are Ubie Health and other `needs_review` agent-evaluation matches.\n\nFor every recommended section in the brief, use the exact question as the heading and make the first two sentences the complete answer. Add explanation, examples, and product context afterward. Publish these as dedicated blog or resource pages; do not dilute core site copy to accommodate informational questions.",
+ "pinned": true,
+ "pin_note": "AI visibility (GEO) for braintrust.dev: LLM evaluation, observability, LLM-as-judge, RAG and agent evaluation - who AI engines cite today, what is open, and whether braintrust.dev is cited yet.",
+ "archived": false
+}

@@ -104,6 +104,9 @@ def extract_urls(text: str) -> list[str]:
     return out
 
 
+_NEG_CUES = re.compile(r"\b(not|isn'?t|is not|ignore|exclude|excluding|unlike|different from|confused? with|nothing to do with|rather than)\b[^.\n]{0,30}$", re.I)
+
+
 def classify_urls(text: str, site_url: str = "") -> dict:
     """Split the URLs in a brief into the user's own pages and competitors,
     from the words around each one. Unclear ones count as competitors —
@@ -112,6 +115,7 @@ def classify_urls(text: str, site_url: str = "") -> dict:
     site = domain_of(site_url) if site_url else ""
     own: list[str] = []
     comp: list[str] = []
+    ignored: list[str] = []
     for m in URL_RE.finditer(text or ""):
         raw = m.group(0)
         u = normalize(raw)
@@ -119,6 +123,11 @@ def classify_urls(text: str, site_url: str = "") -> dict:
         if not d or "@" in raw or (not _TLD_OK.search(raw + "/") and not raw.lower().startswith("http")):
             continue
         before = (text[max(0, m.start() - 60): m.start()] or "")
+        # "It is NOT usebraintrust.com" names a domain to rule OUT. A negation
+        # right before the URL means it is neither a competitor nor ours.
+        if _NEG_CUES.search(before[-40:]):
+            ignored.append(u)
+            continue
         if site and (d == site or d.endswith("." + site)):
             own.append(u)
         elif _COMP_CUES.search(before):
@@ -138,7 +147,7 @@ def classify_urls(text: str, site_url: str = "") -> dict:
     own = dedupe(own)
     own_domains = {domain_of(x) for x in own}
     comp = [c for c in dedupe(comp) if domain_of(c) not in own_domains]
-    return {"own": own, "competitors": comp}
+    return {"own": own, "competitors": comp, "ignored": dedupe(ignored)}
 
 
 def fetch_page(url: str) -> dict:

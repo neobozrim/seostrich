@@ -76,7 +76,7 @@ app.add_middleware(
 # disabled, no /api/flows) silently served the UI for a whole session: every
 # browser test validated the wrong process, and the missing endpoints looked
 # like frontend bugs.
-API_VERSION = "2026-09-02.brief"
+API_VERSION = "2026-09-03.launch"
 
 
 @app.get("/api/health")
@@ -341,7 +341,7 @@ async def rerun_run_cluster(
     from src import cluster_governance
 
     result = await asyncio.to_thread(
-        cluster_governance.rerun_cluster_research, run_id, body.cluster_name
+        cluster_governance.rerun_cluster_research, run_id, body.cluster_name, "webmcp"
     )
     if not result.get("ok") and result.get("error") == "run not found":
         raise HTTPException(status_code=404, detail="Run not found")
@@ -402,6 +402,7 @@ async def rename_run(run_id: str, body: RenameIn, _auth: None = Depends(require_
 
 class CompetitorFetchIn(BaseModel):
     domain: str
+    by: str | None = None
 
 
 @app.post("/api/runs/{run_id}/competitors/fetch")
@@ -421,10 +422,18 @@ async def fetch_competitor_keywords(run_id: str, body: CompetitorFetchIn, _auth:
     stage = next((s for s in run.get("stages", []) if s.get("id") == "competitors"), None)
     if stage is None:
         raise HTTPException(status_code=400, detail="This run has no competitor map")
-    domain = (body.domain or "").strip().lower().removeprefix("www.")
+    from src.tools import site_fetch
+    from src.cluster_governance import _log_change
+
+    domain = site_fetch.domain_of(body.domain or "") or (body.domain or "").strip().lower().removeprefix("www.")
     per = stage["artifact"].setdefault("per_domain", {})
-    if domain not in per and domain not in (stage["artifact"].get("competitors") or []):
-        raise HTTPException(status_code=400, detail="That domain is not on this run's map")
+    on_map = domain in per or domain in (stage["artifact"].get("competitors") or [])
+    if not on_map:
+        # A sixth competitor, or one the person thought of afterwards: it
+        # joins the map the same way the named ones did. Same guard as the
+        # page fetch — a public host only, never something on our network.
+        if not domain or site_fetch.safe_url(domain) is None:
+            raise HTTPException(status_code=400, detail="That is not a public web domain")
     try:
         kws = await asyncio.to_thread(dfs.keywords_for_site, domain, 100)
     except Exception as e:
@@ -439,8 +448,15 @@ async def fetch_competitor_keywords(run_id: str, body: CompetitorFetchIn, _auth:
     entry["keywords"] = len(rows)
     entry["brand_terms_skipped"] = len(kws) - len(rows)
     entry["fetched_later"] = True
+    if not on_map:
+        entry["added_later"] = True
+        stage["artifact"]["competitors"] = list(stage["artifact"].get("competitors") or []) + [domain]
+        if domain not in (stage["artifact"].get("user_supplied") or []):
+            stage["artifact"]["user_supplied"] = list(stage["artifact"].get("user_supplied") or []) + [domain]
+        _log_change(run, "add_competitor", domain, reason="added to the competitor map after the run", by=body.by or "user",
+                    keywords_found=len(rows))
     runs.save_run(run_id, run)
-    return {"ok": True, "domain": domain, "keywords": len(rows), "brand_terms_skipped": len(kws) - len(rows), "rows": rows}
+    return {"ok": True, "domain": domain, "added": not on_map, "keywords": len(rows), "brand_terms_skipped": len(kws) - len(rows), "rows": rows}
 
 
 @app.post("/api/runs/{run_id}/brief/regenerate")

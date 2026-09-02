@@ -1,0 +1,2012 @@
+{
+ "id": "productpirates-geo",
+ "project": "productpirates.club · AI visibility · US-EN",
+ "title": "Product Pirates Club",
+ "prompt": "Run the AI visibility (GEO) report for Product Pirates Club (productpirates.club). Market: United States, English.\nProduct Pirates Club is an AI community of practice for product people (PMs and product engineers) who learn by building: shipping small AI tools, evaluating LLM outputs, wiring agents to real systems, building knowledge graphs.\nTopics to measure: ai product manager course, ai for product management, building ai agents, how to build ai agents, llm evaluation, eval systems, ai prototyping, ai prototyping for product managers, knowledge graph engineering, ai workflow automation.\nAlso check which AI answers already cite productpirates.club.\n",
+ "created": "2026-09-02T22:08:31.121851+00:00",
+ "status": "done",
+ "stages": [
+  {
+   "id": "intake",
+   "label": "Intake",
+   "status": "done",
+   "artifact": {
+    "locale": {
+     "location_code": 2840,
+     "language_code": "en"
+    },
+    "market": "US-EN"
+   }
+  },
+  {
+   "id": "keywords",
+   "label": "Keyword discovery",
+   "status": "done",
+   "artifact": {
+    "count": 10,
+    "keywords": [
+     {
+      "keyword": "ai product manager course",
+      "volume": 320,
+      "difficulty": 30,
+      "cpc": 13.99,
+      "competition": 0.64,
+      "intent": "informational"
+     },
+     {
+      "keyword": "ai for product management",
+      "volume": 3600,
+      "difficulty": 9,
+      "cpc": 11.88,
+      "competition": 0.55,
+      "intent": "informational"
+     },
+     {
+      "keyword": "building ai agents",
+      "volume": 2400,
+      "difficulty": 24,
+      "cpc": 25.74,
+      "competition": 0.28,
+      "intent": "informational"
+     },
+     {
+      "keyword": "how to build ai agents",
+      "volume": 1600,
+      "difficulty": 41,
+      "cpc": 17.72,
+      "competition": 0.51,
+      "intent": "informational"
+     },
+     {
+      "keyword": "llm evaluation",
+      "volume": 1000,
+      "difficulty": 14,
+      "cpc": 23.45,
+      "competition": 0.35,
+      "intent": "informational"
+     },
+     {
+      "keyword": "eval systems",
+      "volume": 210,
+      "difficulty": 21,
+      "cpc": null,
+      "competition": 0.04,
+      "intent": "informational"
+     },
+     {
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "",
+      "keyword": "ai prototyping"
+     },
+     {
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "",
+      "keyword": "ai prototyping for product managers"
+     },
+     {
+      "keyword": "knowledge graph engineering",
+      "volume": 40,
+      "difficulty": 0,
+      "cpc": 10.04,
+      "competition": 0.18,
+      "intent": "informational"
+     },
+     {
+      "keyword": "ai workflow automation",
+      "volume": 1000,
+      "difficulty": 26,
+      "cpc": 43.35,
+      "competition": 0.29,
+      "intent": "informational"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ai_citability",
+   "label": "AI visibility",
+   "status": "done",
+   "artifact": {
+    "success": true,
+    "market": "US-EN",
+    "topics_examined": [
+     "ai product manager course",
+     "ai for product management",
+     "building ai agents",
+     "how to build ai agents",
+     "llm evaluation",
+     "eval systems",
+     "ai prototyping",
+     "ai prototyping for product managers",
+     "knowledge graph engineering",
+     "ai workflow automation"
+    ],
+    "ranked": [
+     {
+      "topic": "ai workflow automation",
+      "search_volume": 1000,
+      "difficulty": 26,
+      "cpc": 43.35,
+      "intent": "informational",
+      "ai_questions_found": 31,
+      "ai_search_volume": 3896,
+      "answered_share": 1.0,
+      "open_share": 0.47,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 97,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 11,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 21,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 30,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.oracle.com",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 751
+       },
+       {
+        "domain": "www.microsoft.com",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 745
+       },
+       {
+        "domain": "www.salesforce.com",
+        "citations": 29,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 22,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "www.pcmag.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 555
+       },
+       {
+        "domain": "www.zendesk.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 549
+       },
+       {
+        "domain": "n8n.io",
+        "citations": 10,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 500
+       },
+       {
+        "domain": "www.gumloop.com",
+        "citations": 21,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 330
+       },
+       {
+        "domain": "www.moveworks.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 320
+       },
+       {
+        "domain": "www.shootproof.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 314
+       },
+       {
+        "domain": "themframes.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 180
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "www.gumloop.com",
+        "citations": 21,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 330
+       },
+       {
+        "domain": "www.moveworks.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 320
+       },
+       {
+        "domain": "www.shootproof.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 314
+       },
+       {
+        "domain": "themframes.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 180
+       }
+      ],
+      "weakest_cited_authority": 180,
+      "strongest_cited_authority": 1000,
+      "displaceability": "winnable: 2 niche site(s) are cited on questions that name this topic (weakest 320), so it does not require a global brand to be quoted",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "llm evaluation",
+      "search_volume": 1000,
+      "difficulty": 14,
+      "cpc": 23.45,
+      "intent": "informational",
+      "ai_questions_found": 29,
+      "ai_search_volume": 2962,
+      "answered_share": 1.0,
+      "open_share": 0.53,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 90,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "github.com",
+        "citations": 20,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 867
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 34,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "arxiv.org",
+        "citations": 15,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 692
+       },
+       {
+        "domain": "huggingface.co",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 614
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 10,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "www.coursera.org",
+        "citations": 13,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "www.databricks.com",
+        "citations": 13,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 450
+       },
+       {
+        "domain": "mlflow.org",
+        "citations": 15,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 377
+       },
+       {
+        "domain": "arize.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 374
+       },
+       {
+        "domain": "www.braintrust.dev",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 333
+       },
+       {
+        "domain": "www.superannotate.com",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 301
+       },
+       {
+        "domain": "deepeval.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       },
+       {
+        "domain": "www.evidentlyai.com",
+        "citations": 14,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 288
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "www.braintrust.dev",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 333
+       },
+       {
+        "domain": "www.superannotate.com",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 301
+       },
+       {
+        "domain": "deepeval.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       },
+       {
+        "domain": "www.evidentlyai.com",
+        "citations": 14,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 288
+       }
+      ],
+      "weakest_cited_authority": 288,
+      "strongest_cited_authority": 1000,
+      "displaceability": "winnable: 4 niche site(s) are cited on questions that name this topic (weakest 288), so it does not require a global brand to be quoted",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "ai product manager course",
+      "search_volume": 320,
+      "difficulty": 30,
+      "cpc": 13.99,
+      "intent": "informational",
+      "ai_questions_found": 7,
+      "ai_search_volume": 930,
+      "answered_share": 1.0,
+      "open_share": 0.73,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 43,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 28,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.indeed.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 717
+       },
+       {
+        "domain": "www.coursera.org",
+        "citations": 42,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 580
+       },
+       {
+        "domain": "business.adobe.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 549
+       },
+       {
+        "domain": "www.edx.org",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 497
+       },
+       {
+        "domain": "online.stanford.edu",
+        "citations": 10,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 376
+       },
+       {
+        "domain": "cpoclub.com",
+        "citations": 6,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 371
+       },
+       {
+        "domain": "www.pragmaticinstitute.com",
+        "citations": 7,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 364
+       },
+       {
+        "domain": "ecornell.cornell.edu",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 364
+       },
+       {
+        "domain": "www.ascm.org",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 359
+       },
+       {
+        "domain": "www.productplan.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 353
+       },
+       {
+        "domain": "productschool.com",
+        "citations": 18,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 337
+       },
+       {
+        "domain": "edworking.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 249
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "productschool.com",
+        "citations": 18,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 337
+       },
+       {
+        "domain": "edworking.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 249
+       }
+      ],
+      "weakest_cited_authority": 249,
+      "strongest_cited_authority": 1000,
+      "displaceability": "winnable: 1 niche site(s) are cited on questions that name this topic (weakest 337), so it does not require a global brand to be quoted",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "ai for product management",
+      "search_volume": 3600,
+      "difficulty": 9,
+      "cpc": 11.88,
+      "intent": "informational",
+      "ai_questions_found": 6,
+      "ai_search_volume": 940,
+      "answered_share": 1.0,
+      "open_share": 0.47,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 69,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 18,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 977
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 27,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 16,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.indeed.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 717
+       },
+       {
+        "domain": "cloud.google.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 680
+       },
+       {
+        "domain": "www.salesforce.com",
+        "citations": 11,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.redhat.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 603
+       },
+       {
+        "domain": "www.inc.com",
+        "citations": 4,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 591
+       },
+       {
+        "domain": "www.entrepreneur.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 556
+       },
+       {
+        "domain": "quickbooks.intuit.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 540
+       },
+       {
+        "domain": "www.fortinet.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 518
+       },
+       {
+        "domain": "www.yardi.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 466
+       },
+       {
+        "domain": "www.pendo.io",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 367
+       },
+       {
+        "domain": "online.edgewood.edu",
+        "citations": 4,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 164
+       }
+      ],
+      "niche_sites_cited": [
+       {
+        "domain": "online.edgewood.edu",
+        "citations": 4,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 164
+       }
+      ],
+      "weakest_cited_authority": 164,
+      "strongest_cited_authority": 1000,
+      "displaceability": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "how to build ai agents",
+      "search_volume": 1600,
+      "difficulty": 41,
+      "cpc": 17.72,
+      "intent": "informational",
+      "ai_questions_found": 41,
+      "ai_search_volume": 8197,
+      "answered_share": 1.0,
+      "open_share": 0.13,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 212,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 13,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 977
+       },
+       {
+        "domain": "github.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 867
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 19,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 43,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.microsoft.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 745
+       },
+       {
+        "domain": "medium.com",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 744
+       },
+       {
+        "domain": "openai.com",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 711
+       },
+       {
+        "domain": "cloud.google.com",
+        "citations": 19,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 680
+       },
+       {
+        "domain": "learn.microsoft.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 674
+       },
+       {
+        "domain": "www.salesforce.com",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "aws.amazon.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 21,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "azure.microsoft.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "replit.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 529
+       }
+      ],
+      "niche_sites_cited": [],
+      "weakest_cited_authority": 529,
+      "strongest_cited_authority": 1000,
+      "displaceability": "hard: every cited source is a high-authority site (top 1000), so expect to be quoted only alongside them, not instead of them",
+      "evidence": "AI engines answer this AND it has search volume"
+     },
+     {
+      "topic": "building ai agents",
+      "search_volume": 2400,
+      "difficulty": 24,
+      "cpc": 25.74,
+      "intent": "informational",
+      "ai_questions_found": 2,
+      "ai_search_volume": 2440,
+      "answered_share": 1.0,
+      "open_share": 0.27,
+      "cited_sources": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 70,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "github.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 867
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 19,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 18,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.microsoft.com",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 745
+       },
+       {
+        "domain": "cloud.google.com",
+        "citations": 16,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 680
+       },
+       {
+        "domain": "aws.amazon.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.salesforce.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 11,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 607
+       },
+       {
+        "domain": "www.redhat.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 603
+       },
+       {
+        "domain": "azure.microsoft.com",
+        "citations": 4,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "www.chatbot.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 516
+       },
+       {
+        "domain": "realestate.usnews.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 408
+       },
+       {
+        "domain": "www.safehome.org",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 399
+       }
+      ],
+      "niche_sites_cited": [],
+      "weakest_cited_authority": 399,
+      "strongest_cited_authority": 1000,
+      "displaceability": "hard: every cited source is a high-authority site (top 1000), so expect to be quoted only alongside them, not instead of them",
+      "evidence": "AI engines answer this AND it has search volume"
+     }
+    ],
+    "brief": [
+     {
+      "topic": "ai workflow automation",
+      "why_this_topic": "AI engines answer this AND it has search volume",
+      "metrics": {
+       "search_volume": 1000,
+       "difficulty": 26,
+       "cpc": 43.35,
+       "intent": "informational",
+       "ai_questions_found": 31,
+       "ai_search_volume": 3896,
+       "answered_share": 1.0,
+       "open_share": 0.47,
+       "weakest_cited_authority": 180,
+       "strongest_cited_authority": 1000
+      },
+      "currently_cited": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 97,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 11,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 21,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 30,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.oracle.com",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 751
+       },
+       {
+        "domain": "www.microsoft.com",
+        "citations": 10,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 745
+       },
+       {
+        "domain": "www.salesforce.com",
+        "citations": 29,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 22,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "www.pcmag.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 555
+       },
+       {
+        "domain": "www.zendesk.com",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 549
+       },
+       {
+        "domain": "n8n.io",
+        "citations": 10,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 500
+       },
+       {
+        "domain": "www.gumloop.com",
+        "citations": 21,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 330
+       },
+       {
+        "domain": "www.moveworks.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 320
+       },
+       {
+        "domain": "www.shootproof.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 314
+       },
+       {
+        "domain": "themframes.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 180
+       }
+      ],
+      "can_you_displace_them": "winnable: 2 niche site(s) are cited on questions that name this topic (weakest 320), so it does not require a global brand to be quoted",
+      "niche_sites_already_cited": [
+       {
+        "domain": "www.gumloop.com",
+        "authority_rank": 330
+       },
+       {
+        "domain": "www.moveworks.com",
+        "authority_rank": 320
+       },
+       {
+        "domain": "www.shootproof.com",
+        "authority_rank": 314
+       },
+       {
+        "domain": "themframes.com",
+        "authority_rank": 180
+       }
+      ],
+      "questions_people_ask": [
+       "How can I automate my workflows using AI?",
+       "What is the best AI workflow automation tool?",
+       "Can ChatGPT create workflows?",
+       "What AI tool can I use to generate workflows?"
+      ],
+      "questions_ai_answers": [
+       "ai workflow automation",
+       "ai workflow automation tools",
+       "ai powered workflow automation platform",
+       "ai automation workflow",
+       "ai workflow automation platforms",
+       "ai workflow automation software",
+       "ai agent workflow automation",
+       "ai powered workflow automation",
+       "ai agents workflow automation",
+       "best ai workflow automation tools"
+      ],
+      "content_plan": [
+       {
+        "heading": "How can I automate my workflows using AI?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How can I automate my workflows using AI?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What is the best AI workflow automation tool?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What is the best AI workflow automation tool?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "Can ChatGPT create workflows?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"Can ChatGPT create workflows?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What AI tool can I use to generate workflows?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What AI tool can I use to generate workflows?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "ai workflow automation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai workflow automation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "stepper.io",
+         "n8n.io",
+         "www.gumloop.com"
+        ]
+       },
+       {
+        "heading": "ai workflow automation tools",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai workflow automation tools\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.gumloop.com",
+         "stepper.io"
+        ]
+       },
+       {
+        "heading": "ai powered workflow automation platform",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai powered workflow automation platform\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.youtube.com",
+         "blog.n8n.io",
+         "n8n.io"
+        ]
+       },
+       {
+        "heading": "ai automation workflow",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai automation workflow\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "n8n.io",
+         "www.gumloop.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "heading": "ai workflow automation platforms",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai workflow automation platforms\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.gumloop.com",
+         "www.vellum.ai",
+         "www.nice.com"
+        ]
+       },
+       {
+        "heading": "ai workflow automation software",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai workflow automation software\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.gumloop.com",
+         "blog.n8n.io",
+         "www.vellum.ai"
+        ]
+       },
+       {
+        "heading": "ai agent workflow automation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai agent workflow automation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.gooddata.ai",
+         "n8n.io",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "heading": "ai powered workflow automation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai powered workflow automation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.gumloop.com",
+         "www.youtube.com",
+         "www.moveworks.com"
+        ]
+       }
+      ],
+      "how_to_use_this": "Each content_plan entry is one page section: the question is the heading, and the first two sentences under it must BE the answer. That is what a generative engine can lift and cite. Depth, opinion and story go after it, not before."
+     },
+     {
+      "topic": "llm evaluation",
+      "why_this_topic": "AI engines answer this AND it has search volume",
+      "metrics": {
+       "search_volume": 1000,
+       "difficulty": 14,
+       "cpc": 23.45,
+       "intent": "informational",
+       "ai_questions_found": 29,
+       "ai_search_volume": 2962,
+       "answered_share": 1.0,
+       "open_share": 0.53,
+       "weakest_cited_authority": 288,
+       "strongest_cited_authority": 1000
+      },
+      "currently_cited": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 90,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "github.com",
+        "citations": 20,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 867
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 12,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 34,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "arxiv.org",
+        "citations": 15,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 692
+       },
+       {
+        "domain": "huggingface.co",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 614
+       },
+       {
+        "domain": "www.ibm.com",
+        "citations": 10,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 607
+       },
+       {
+        "domain": "www.coursera.org",
+        "citations": 13,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 580
+       },
+       {
+        "domain": "www.databricks.com",
+        "citations": 13,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 450
+       },
+       {
+        "domain": "mlflow.org",
+        "citations": 15,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 377
+       },
+       {
+        "domain": "arize.com",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 374
+       },
+       {
+        "domain": "www.braintrust.dev",
+        "citations": 8,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 333
+       },
+       {
+        "domain": "www.superannotate.com",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 301
+       },
+       {
+        "domain": "deepeval.com",
+        "citations": 11,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 296
+       },
+       {
+        "domain": "www.evidentlyai.com",
+        "citations": 14,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 288
+       }
+      ],
+      "can_you_displace_them": "winnable: 4 niche site(s) are cited on questions that name this topic (weakest 288), so it does not require a global brand to be quoted",
+      "niche_sites_already_cited": [
+       {
+        "domain": "www.braintrust.dev",
+        "authority_rank": 333
+       },
+       {
+        "domain": "www.superannotate.com",
+        "authority_rank": 301
+       },
+       {
+        "domain": "deepeval.com",
+        "authority_rank": 296
+       },
+       {
+        "domain": "www.evidentlyai.com",
+        "authority_rank": 288
+       }
+      ],
+      "questions_people_ask": [
+       "How to evaluate LLM model performance?",
+       "What are the best LLM evaluation tools?",
+       "What are rubrics in LLM evaluation?",
+       "How to evaluate LLM generated text?"
+      ],
+      "questions_ai_answers": [
+       "llm evaluation",
+       "llm evaluation framework",
+       "llm evaluation metrics",
+       "evaluation llm",
+       "llm evaluation tools",
+       "llm as a judge evaluation",
+       "llm-as a judge evaluation",
+       "survey on evaluation of llm based agents",
+       "llm evaluation platform",
+       "llm model evaluation"
+      ],
+      "content_plan": [
+       {
+        "heading": "How to evaluate LLM model performance?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How to evaluate LLM model performance?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are the best LLM evaluation tools?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are the best LLM evaluation tools?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are rubrics in LLM evaluation?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are rubrics in LLM evaluation?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "How to evaluate LLM generated text?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How to evaluate LLM generated text?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "llm evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.superannotate.com",
+         "magazine.sebastianraschka.com",
+         "arize.com"
+        ]
+       },
+       {
+        "heading": "llm evaluation framework",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation framework\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.datadoghq.com",
+         "github.com"
+        ]
+       },
+       {
+        "heading": "llm evaluation metrics",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation metrics\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.evidentlyai.com",
+         "www.superannotate.com",
+         "www.braintrust.dev"
+        ]
+       },
+       {
+        "heading": "evaluation llm",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"evaluation llm\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.superannotate.com",
+         "www.ibm.com",
+         "www.databricks.com"
+        ]
+       },
+       {
+        "heading": "llm evaluation tools",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm evaluation tools\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.superannotate.com",
+         "medium.com"
+        ]
+       },
+       {
+        "heading": "llm as a judge evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm as a judge evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "langfuse.com",
+         "www.evidentlyai.com",
+         "huggingface.co"
+        ]
+       },
+       {
+        "heading": "llm-as a judge evaluation",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"llm-as a judge evaluation\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "langfuse.com",
+         "www.evidentlyai.com",
+         "huggingface.co"
+        ]
+       },
+       {
+        "heading": "survey on evaluation of llm based agents",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"survey on evaluation of llm based agents\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "arxiv.org",
+         "huggingface.co",
+         "arxiv.org"
+        ]
+       }
+      ],
+      "how_to_use_this": "Each content_plan entry is one page section: the question is the heading, and the first two sentences under it must BE the answer. That is what a generative engine can lift and cite. Depth, opinion and story go after it, not before."
+     },
+     {
+      "topic": "ai product manager course",
+      "why_this_topic": "AI engines answer this AND it has search volume",
+      "metrics": {
+       "search_volume": 320,
+       "difficulty": 30,
+       "cpc": 13.99,
+       "intent": "informational",
+       "ai_questions_found": 7,
+       "ai_search_volume": 930,
+       "answered_share": 1.0,
+       "open_share": 0.73,
+       "weakest_cited_authority": 249,
+       "strongest_cited_authority": 1000
+      },
+      "currently_cited": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 43,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 977
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 28,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.indeed.com",
+        "citations": 8,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 717
+       },
+       {
+        "domain": "www.coursera.org",
+        "citations": 42,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 580
+       },
+       {
+        "domain": "business.adobe.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 549
+       },
+       {
+        "domain": "www.edx.org",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 497
+       },
+       {
+        "domain": "online.stanford.edu",
+        "citations": 10,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 376
+       },
+       {
+        "domain": "cpoclub.com",
+        "citations": 6,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 371
+       },
+       {
+        "domain": "www.pragmaticinstitute.com",
+        "citations": 7,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 364
+       },
+       {
+        "domain": "ecornell.cornell.edu",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 364
+       },
+       {
+        "domain": "www.ascm.org",
+        "citations": 7,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 359
+       },
+       {
+        "domain": "www.productplan.com",
+        "citations": 9,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 353
+       },
+       {
+        "domain": "productschool.com",
+        "citations": 18,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 337
+       },
+       {
+        "domain": "edworking.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 249
+       }
+      ],
+      "can_you_displace_them": "winnable: 1 niche site(s) are cited on questions that name this topic (weakest 337), so it does not require a global brand to be quoted",
+      "niche_sites_already_cited": [
+       {
+        "domain": "productschool.com",
+        "authority_rank": 337
+       },
+       {
+        "domain": "edworking.com",
+        "authority_rank": 249
+       }
+      ],
+      "questions_people_ask": [
+       "How do I become an AI product manager?",
+       "Which AI course is best for product managers?",
+       "What qualifications are required for AI product manager?",
+       "How much does an AI product manager make?"
+      ],
+      "questions_ai_answers": [
+       "ai product manager course",
+       "ai courses for product managers",
+       "ai for product managers course",
+       "best ai courses for product managers",
+       "best ai course for product managers",
+       "ai product manager course free",
+       "best ai product manager course"
+      ],
+      "content_plan": [
+       {
+        "heading": "How do I become an AI product manager?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How do I become an AI product manager?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "Which AI course is best for product managers?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"Which AI course is best for product managers?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What qualifications are required for AI product manager?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What qualifications are required for AI product manager?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "How much does an AI product manager make?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How much does an AI product manager make?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "ai product manager course",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai product manager course\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.udacity.com",
+         "www.coursera.org",
+         "www.pce.uw.edu"
+        ]
+       },
+       {
+        "heading": "ai courses for product managers",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai courses for product managers\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "maven.com",
+         "www.pendo.io",
+         "productside.com"
+        ]
+       },
+       {
+        "heading": "ai for product managers course",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai for product managers course\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.coursera.org",
+         "maven.com"
+        ]
+       },
+       {
+        "heading": "best ai courses for product managers",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"best ai courses for product managers\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "online.stanford.edu",
+         "www.coursera.org"
+        ]
+       },
+       {
+        "heading": "best ai course for product managers",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"best ai course for product managers\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "online.stanford.edu",
+         "www.coursera.org"
+        ]
+       },
+       {
+        "heading": "ai product manager course free",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai product manager course free\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.pendo.io",
+         "www.youtube.com",
+         "www.coursera.org"
+        ]
+       },
+       {
+        "heading": "best ai product manager course",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"best ai product manager course\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.coursera.org",
+         "www.pendo.io",
+         "maven.com"
+        ]
+       }
+      ],
+      "how_to_use_this": "Each content_plan entry is one page section: the question is the heading, and the first two sentences under it must BE the answer. That is what a generative engine can lift and cite. Depth, opinion and story go after it, not before."
+     },
+     {
+      "topic": "ai for product management",
+      "why_this_topic": "AI engines answer this AND it has search volume",
+      "metrics": {
+       "search_volume": 3600,
+       "difficulty": 9,
+       "cpc": 11.88,
+       "intent": "informational",
+       "ai_questions_found": 6,
+       "ai_search_volume": 940,
+       "answered_share": 1.0,
+       "open_share": 0.47,
+       "weakest_cited_authority": 164,
+       "strongest_cited_authority": 1000
+      },
+      "currently_cited": [
+       {
+        "domain": "www.youtube.com",
+        "citations": 69,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 1000
+       },
+       {
+        "domain": "www.linkedin.com",
+        "citations": 18,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 977
+       },
+       {
+        "domain": "en.wikipedia.org",
+        "citations": 27,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 816
+       },
+       {
+        "domain": "www.reddit.com",
+        "citations": 16,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 813
+       },
+       {
+        "domain": "www.indeed.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 717
+       },
+       {
+        "domain": "cloud.google.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 680
+       },
+       {
+        "domain": "www.salesforce.com",
+        "citations": 11,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 673
+       },
+       {
+        "domain": "www.redhat.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 603
+       },
+       {
+        "domain": "www.inc.com",
+        "citations": 4,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 591
+       },
+       {
+        "domain": "www.entrepreneur.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 556
+       },
+       {
+        "domain": "quickbooks.intuit.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 540
+       },
+       {
+        "domain": "www.fortinet.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 518
+       },
+       {
+        "domain": "www.yardi.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 466
+       },
+       {
+        "domain": "www.pendo.io",
+        "citations": 9,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 367
+       },
+       {
+        "domain": "online.edgewood.edu",
+        "citations": 4,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 164
+       }
+      ],
+      "can_you_displace_them": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "niche_sites_already_cited": [
+       {
+        "domain": "online.edgewood.edu",
+        "authority_rank": 164
+       }
+      ],
+      "questions_people_ask": [
+       "How can AI be used in product management?",
+       "Which AI is best for product managers?",
+       "Can AI do a product manager job?",
+       "What are top 3 skills for a product manager?"
+      ],
+      "questions_ai_answers": [
+       "ai tools for product management",
+       "ai agent for product management",
+       "best ai tools for product management",
+       "ai for product management course",
+       "pendo ai for product management exam answers",
+       "ai for product management pendo"
+      ],
+      "content_plan": [
+       {
+        "heading": "How can AI be used in product management?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"How can AI be used in product management?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "Which AI is best for product managers?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"Which AI is best for product managers?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "Can AI do a product manager job?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"Can AI do a product manager job?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What are top 3 skills for a product manager?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What are top 3 skills for a product manager?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "ai tools for product management",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai tools for product management\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "productschool.com",
+         "www.airtable.com",
+         "www.usemotion.com"
+        ]
+       },
+       {
+        "heading": "ai agent for product management",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai agent for product management\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.reddit.com",
+         "www.lennysnewsletter.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "heading": "best ai tools for product management",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"best ai tools for product management\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "aakashgupta.medium.com",
+         "www.linkedin.com",
+         "www.builder.io"
+        ]
+       },
+       {
+        "heading": "ai for product management course",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai for product management course\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "productschool.com",
+         "aiandproduct.com",
+         "logicmojo.com"
+        ]
+       },
+       {
+        "heading": "pendo ai for product management exam answers",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"pendo ai for product management exam answers\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.pendo.io",
+         "www.pendo.io",
+         "www.pendo.io"
+        ]
+       },
+       {
+        "heading": "ai for product management pendo",
+        "source": "ai_engine_answered_this",
+        "answer_first_brief": "An AI engine already answers \"ai for product management pendo\". Give a better, more specific answer in the first two sentences.",
+        "currently_cited": [
+         "www.pendo.io",
+         "www.pendo.io",
+         "www.pendo.io"
+        ]
+       }
+      ],
+      "how_to_use_this": "Each content_plan entry is one page section: the question is the heading, and the first two sentences under it must BE the answer. That is what a generative engine can lift and cite. Depth, opinion and story go after it, not before."
+     }
+    ],
+    "skipped_no_demand": [],
+    "had_demand_but_capped": [
+     {
+      "topic": "how to build ai agents",
+      "search_volume": 1600,
+      "ai_questions_found": 41
+     },
+     {
+      "topic": "building ai agents",
+      "search_volume": 2400,
+      "ai_questions_found": 2
+     }
+    ],
+    "not_sent_to_paid_call": [
+     "eval systems",
+     "knowledge graph engineering",
+     "ai prototyping",
+     "ai prototyping for product managers"
+    ],
+    "cost_note": "1 keyword_overview call for all 10 candidates, 12 search_mentions calls (the expensive one, ~$0.10 each; two scopes per topic when the wide competitive scan is on) on the shortlist, 1 bulk domain-rank call, and 4 People-also-ask calls.",
+    "steps": [
+     "demand",
+     "shortlist",
+     "citability",
+     "displaceability",
+     "ranked",
+     "questions"
+    ],
+    "method": "Search volume and AI presence are measured from DataForSEO; the ranking is arithmetic over those measurements and publishes its inputs. The expensive per-keyword search_mentions call ran only on the shortlist that the cheap volume check kept, and People-also-ask only on the final winners.",
+    "reading_the_numbers": "ai_search_volume is a SUM across every question matched for the topic, and for Google AI Overviews DataForSEO derives it from Google search volume — so it sizes the question cluster and is NOT a separate AI demand channel. Do not compare it against search_volume for a single head term. answered_share are near-constant because AI Overview answers nearly everything; judge the opportunity on can_you_displace_them.",
+    "platforms_measured": [
+     "google"
+    ],
+    "site_citations": {
+     "domain": "productpirates.club",
+     "answers_citing": 0,
+     "sampled": 0,
+     "examples": [],
+     "cited_alongside": []
+    },
+    "title": "GEO demand brief",
+    "source": "agent"
+   }
+  }
+ ],
+ "ended": "2026-09-02T22:09:51.192825+00:00",
+ "summary": "The brief prioritizes **AI workflow automation** and **LLM evaluation** over the larger **AI for product management** term. The first two each have 1,000 searches, but already cite attainable niche competitors: Gumloop and Moveworks for workflow automation; Braintrust, SuperAnnotate, DeepEval, and Evidently AI for evaluation. By contrast, the 3,600-search product-management topic is only provisionally winnable because its lowest-authority candidate, Edgewood, came from adjacent-answer matching and remains unverified.\n\nBuild dedicated answer-first pages rather than rewriting general site copy. Use every question in the brief as an exact heading, and make the first two sentences the direct answer—context, story, examples, and Product Pirates’ build-by-doing perspective come afterward. This gives engines a passage they can lift and cite.\n\nThe check measured Google AI answers. It found **zero answers currently citing productpirates.club**, establishing the baseline.",
+ "pinned": true,
+ "pin_note": "AI visibility (GEO) for the same business: what AI engines already answer on its topics, who they cite, which of that is displaceable, and where productpirates.club stands today.",
+ "archived": false
+}

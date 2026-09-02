@@ -125,10 +125,23 @@ ok(m2["per_domain"]["lennysnewsletter.com"]["shared_with_site"] == 1, "shared co
 ok(next(r for r in m2["_rows"] if r["keyword"] == "product strategy").get("site_ranks_too") is True,
    "shared keyword is flagged on the row")
 
+print("3b. a discovered namesake of the site is not a competitor")
+def fake_discover_namesake(site, limit=10):
+    calls.append(("discover", site, limit)); return ["usebraintrust.com", "langfuse.com"]
+ps = [patch.object(pu.dfs, "keywords_for_site", fake_keywords_for_site), patch.object(pu.dfs, "competitors_domain", fake_discover_namesake),
+      patch.object(pu.dfs, "domain_intersection", fake_intersection), patch.object(pu.dfs, "budget_remaining", fake_budget)]
+for p_ in ps: p_.start()
+try:
+    mn = pu._competitor_universe([], "https://www.braintrust.dev/", 2840, "en")
+finally:
+    for p_ in ps: p_.stop()
+ok("usebraintrust.com" not in mn["queried"] and "langfuse.com" in mn["queried"], f"namesake skipped, real competitor kept: {mn['queried']}")
+ok(mn.get("skipped_namesakes") == ["usebraintrust.com"], "and the skip is recorded on the map")
+
 print("4. caps and edges")
 m3 = run(urls=[f"https://c{i}.com" for i in range(12)], site="")
 ok(len(m3["user"]) == 12 or len(m3["user"]) <= pu.MAX_COMPETITOR_URLS, "pull_universe caps at 10 before this point")
-ok(len(m3["queried"]) == 5, "at most 5 queried")
+ok(len(m3["queried"]) == 10, "every named competitor is checked, up to ten")
 ok(not any(c[0] == "discover" for c in calls), "no discovery without a site")
 m4 = run(urls=[], site="")
 ok(m4["queried"] == [] and m4["_rows"] == [], "nothing to do with no competitors and no site")

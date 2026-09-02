@@ -43,7 +43,9 @@ function nameOf(run: RunSummary): string {
 }
 function subtitleOf(run: RunSummary): string {
   const t = (run.title || '').trim();
-  const p = (run.project || '').trim();
+  // The report type is its own chip on the card; keep the line to the
+  // domain and the market.
+  const p = (run.project || '').replace(/\s*\u00b7\s*(SEO content strategy|Content strategy|AI visibility)/i, '').replace(/^(SEO content strategy|Content strategy|AI visibility)\s*\u00b7\s*/i, '').trim();
   const name = nameOf(run);
   const internal = p.toLowerCase() === 'chat pipeline';
   if (name === t) return p && p !== t && !internal ? p : '';
@@ -59,6 +61,12 @@ function isFixture(run: RunSummary): boolean {
 interface Props {
   onOpenRun: (runId: string) => void;
   onStartChat: (prompt?: string) => void;
+}
+
+function whenCreated(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
 }
 
 export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
@@ -229,8 +237,12 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
                   {subtitleOf(run) && (
                     <div className="text-sm text-gray-500 mt-1 line-clamp-2">{subtitleOf(run)}</div>
                   )}
-                  <div className="text-xs text-gray-400 mt-2">
-                    {run.stages} stage{run.stages === 1 ? '' : 's'}
+                  <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-400">
+                    {run.flow && (
+                      <span className="px-2 py-0.5 rounded bg-accent-50 text-accent-600 border border-accent-100 font-semibold">{run.flow}</span>
+                    )}
+                    {run.created && <span>{whenCreated(run.created)}</span>}
+                    <span>{run.stages} stage{run.stages === 1 ? '' : 's'}</span>
                   </div>
                 </button>
               );

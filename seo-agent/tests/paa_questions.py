@@ -89,9 +89,15 @@ ok(pcs[1]["question_source"] == "written" and "currently_answered_by" not in pcs
 
 print("4. write_brief records the observation on the artefact; a lookup failure fails open")
 answers = [dict(good)]
-with patch.object(sb.dfs, "serp_paa", fake_paa), patch.object(sb.llm, "chat", lambda *a, **k: "x"), patch.object(sb.llm, "parse_json_response", lambda r: answers.pop(0)):
+serp_calls = []
+def fake_serp(q, location_code=2840, language_code="en", depth=10):
+    serp_calls.append(q)
+    return [{"domain": "www.productschool.com", "url": "https://www.productschool.com/x", "rank": 1}]
+with patch.object(sb.dfs, "serp_paa", fake_paa), patch.object(sb.dfs, "serp_organic", fake_serp), patch.object(sb.llm, "chat", lambda *a, **k: "x"), patch.object(sb.llm, "parse_json_response", lambda r: answers.pop(0)):
     res = sb.write_brief(RID)
 ok(res["ok"] is True, f"brief written: {res.get('error')}")
+ok(serp_calls == ["what is an eval system"], f"one SERP per piece that lacks an answerer (the PAA one already had maven.com): {serp_calls}")
+ok(res["brief"]["pieces"][1]["currently_answered_by"] == "productschool.com" and res["brief"]["pieces"][1]["answered_by_source"] == "serp", "the top organic result is who answers it today")
 art = next(s["artifact"] for s in runs.get_run(RID)["stages"] if s["id"] == "brief")
 ok(art["based_on"]["questions_observed"] == {"Core PM learning": 2, "Eval practice": 0}, f"observation recorded: {art['based_on']}")
 ok(art["pieces"][0]["question_source"] == "people_also_ask" and art["pieces"][1]["question_source"] == "written", "pieces carry their source")
@@ -99,7 +105,7 @@ ok(art["pieces"][0]["question_source"] == "people_also_ask" and art["pieces"][1]
 def boom(*a, **k):
     raise RuntimeError("budget exhausted")
 answers = [dict(base, pieces=[piece("Anything the model likes?")])]
-with patch.object(sb.dfs, "serp_paa", boom), patch.object(sb.llm, "chat", lambda *a, **k: "x"), patch.object(sb.llm, "parse_json_response", lambda r: answers.pop(0)):
+with patch.object(sb.dfs, "serp_paa", boom), patch.object(sb.dfs, "serp_organic", boom), patch.object(sb.llm, "chat", lambda *a, **k: "x"), patch.object(sb.llm, "parse_json_response", lambda r: answers.pop(0)):
     res = sb.write_brief(RID)
 ok(res["ok"] is True and res["brief"]["pieces"][0]["question_source"] == "written", "no lookup → the brief is still written, questions tagged written")
 

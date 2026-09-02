@@ -23,8 +23,11 @@ from __future__ import annotations
 import threading
 from datetime import datetime, timezone
 
+from ..pipeline_recorder import use_run
+
 from .. import llm, runs
 from ..config import settings
+from . import dataforseo as dfs
 
 PIECES = 6
 
@@ -45,7 +48,8 @@ Output JSON only, exactly this shape:
   "pieces": [
     {
       "title": "a working title a writer could start from",
-      "question": "the exact question this piece answers, as a person would type it",
+      "question": "the question this piece answers — VERBATIM from the cluster's observed_questions when it has any",
+      "question_source": "people_also_ask | written",
       "cluster": "the cluster it serves (exact name)",
       "target_keyword": "the one keyword it targets (from the input)",
       "format": "guide | comparison | how-to | list | explainer"
@@ -57,10 +61,18 @@ Output JSON only, exactly this shape:
 }
 
 Rules:
-- Exactly 6 pieces, spread across the selected clusters in proportion to their volume;
+- Exactly 6 pieces. Every selected cluster gets at least one; no cluster gets more than 3,
+  however large it is — a strategy is not six articles about one tool;
   every piece's target_keyword must be a keyword from the input.
+- Each selected cluster lists observed_questions: the questions Google itself shows
+  under that cluster's head term (People also ask), with the domain currently answering
+  each. When a cluster has any, every piece for that cluster takes its question VERBATIM
+  from that list and sets question_source to "people_also_ask". Only when the list is
+  empty may you write the question yourself; then set question_source to "written".
+  Never paraphrase an observed question.
+- No two pieces answer the same question. Six pieces, six different questions.
 - The question is the heading a reader searches for; the first two sentences under it
-  must be able to answer it, so make it concrete.
+  must be able to answer it.
 - out_answer names domains from the input only. If none own anything here, say so with
   an empty list.
 - parked lists EVERY parked cluster, with the reason given.
@@ -126,6 +138,80 @@ def build_input(run: dict, business_description: str = "") -> dict:
     }
 
 
+def _norm_q(q: str) -> str:
+    return " ".join(str(q or "").lower().replace("?", "").split())
+
+
+def observe_questions(inp: dict, run_id: str, location_code: int, language_code: str) -> dict:
+    """Ask Google what people ask. One SERP call per selected cluster, on its
+    head term (the top keyword when the head term shows nothing). The result
+    goes into the input the model sees, so a piece's question can be a
+    question people actually search for rather than one the model made up.
+    Fails open: no questions means the model writes them and says so."""
+    observed: dict[str, int] = {}
+    for c in inp["selected_clusters"]:
+        terms = []
+        if c.get("head_term"):
+            terms.append(c["head_term"])
+        top = next((k["keyword"] for k in c["keywords"] if k.get("keyword")), None)
+        if top and top not in terms:
+            terms.append(top)
+        qs: list[dict] = []
+        for term in terms[:2]:
+            try:
+                with use_run(run_id):
+                    rows = dfs.serp_paa(term, location_code=location_code, language_code=language_code)
+            except Exception as e:  # budget, network, parsing — the brief still gets written
+                print(f"[brief] people-also-ask for {term!r} skipped: {str(e)[:120]}")
+                rows = []
+            for r in rows or []:
+                q = (r.get("question") or "").strip()
+                if q and _norm_q(q) not in {_norm_q(x["question"]) for x in qs}:
+                    qs.append({"question": q, "asked_under": term, "answered_by": r.get("domain") or ""})
+            if qs:
+                break
+        c["observed_questions"] = qs[:10]
+        observed[c["cluster"]] = len(c["observed_questions"])
+    return observed
+
+
+def _tag_questions(pieces: list[dict], inp: dict) -> None:
+    """Deterministic provenance on every piece: observed or written. The
+    model's own question_source is not trusted; the match decides."""
+    by_cluster = {c["cluster"]: c.get("observed_questions") or [] for c in inp["selected_clusters"]}
+    for pc in pieces:
+        hit = next((q for q in by_cluster.get(pc.get("cluster"), []) if _norm_q(q["question"]) == _norm_q(pc.get("question"))), None)
+        if hit:
+            pc["question_source"] = "people_also_ask"
+            pc["asked_under"] = hit["asked_under"]
+            pc["currently_answered_by"] = str(hit.get("answered_by") or "").removeprefix("www.")
+        else:
+            pc["question_source"] = "written"
+            pc.pop("asked_under", None)
+            pc.pop("currently_answered_by", None)
+
+
+def _who_answers(pieces: list[dict], run_id: str, location_code: int, language_code: str) -> None:
+    """The page that answers each question today, from a live SERP on the
+    question itself: one call per piece, top organic result. People-also-ask
+    stopped carrying sources (its expansion is an AI overview now), and a
+    brief that says "answer this better than X" needs a real X. Fails open."""
+    for pc in pieces:
+        if pc.get("currently_answered_by") or not pc.get("question"):
+            continue
+        try:
+            with use_run(run_id):
+                rows = dfs.serp_organic(pc["question"], location_code=location_code, language_code=language_code, depth=3)
+        except Exception as e:
+            print(f"[brief] who-answers for {pc['question'][:50]!r} skipped: {str(e)[:100]}")
+            continue
+        top = next((r for r in rows or [] if r.get("domain")), None)
+        if top:
+            pc["currently_answered_by"] = str(top["domain"]).removeprefix("www.")
+            pc["answered_by_url"] = top.get("url") or ""
+            pc["answered_by_source"] = "serp"
+
+
 def _valid(brief: dict, inp: dict) -> tuple[bool, str]:
     if not isinstance(brief, dict):
         return False, "not an object"
@@ -136,12 +222,33 @@ def _valid(brief: dict, inp: dict) -> tuple[bool, str]:
     if not isinstance(pieces, list) or len(pieces) < 1:
         return False, "no pieces"
     known = {k["keyword"].lower() for c in inp["selected_clusters"] for k in c["keywords"] if k.get("keyword")}
+    seen_q: set[str] = set()
     for p in pieces:
         if not (isinstance(p, dict) and p.get("title") and p.get("question")):
             return False, "a piece lacks title or question"
+        if _norm_q(p["question"]) in seen_q:
+            return False, f"two pieces answer the same question: {p['question'][:80]!r}"
+        seen_q.add(_norm_q(p["question"]))
         tk = str(p.get("target_keyword") or "").lower()
         if known and tk and tk not in known:
             return False, f"target_keyword not in input: {tk}"
+        observed = next((c.get("observed_questions") or [] for c in inp["selected_clusters"] if c["cluster"] == p.get("cluster")), [])
+        if observed and _norm_q(p["question"]) not in {_norm_q(q["question"]) for q in observed}:
+            return False, f"the question for {p.get('cluster')!r} is not one of its observed_questions (use one verbatim): {p['question'][:80]!r}"
+    # Spread: a strategy is not six articles about one tool. Every selected
+    # cluster gets a piece and none gets more than three.
+    per_cluster: dict[str, int] = {}
+    for p in pieces:
+        if p.get("cluster"):
+            per_cluster[p["cluster"]] = per_cluster.get(p["cluster"], 0) + 1
+    selected_names = [c["cluster"] for c in inp["selected_clusters"] if c.get("cluster")]
+    if len(selected_names) >= 2 and len(pieces) >= len(selected_names):
+        missing = [n for n in selected_names if n not in per_cluster]
+        if missing:
+            return False, f"every selected cluster gets at least one piece; none for {missing[0]!r}"
+        heavy = [n for n, k in per_cluster.items() if k > 3]
+        if heavy:
+            return False, f"no cluster gets more than 3 of the pieces; {heavy[0]!r} has {per_cluster[heavy[0]]}"
     if not isinstance(brief.get("parked"), list):
         return False, "parked missing"
     if not isinstance(brief.get("out_answer"), list):
@@ -157,6 +264,8 @@ def write_brief(run_id: str, business_description: str = "") -> dict:
     inp = build_input(run, business_description)
     if not inp["selected_clusters"]:
         return {"ok": False, "error": "no selected clusters to brief"}
+    locale = next((s.get("artifact", {}).get("locale") or {} for s in run.get("stages", []) if s.get("id") == "intake"), {})
+    questions_observed = observe_questions(inp, run_id, locale.get("location_code") or 2840, locale.get("language_code") or "en")
 
     user_msg = f"Write the brief.\n\n{llm.format_json(inp)}"
     last_err = ""
@@ -177,6 +286,8 @@ def write_brief(run_id: str, business_description: str = "") -> dict:
         return {"ok": False, "error": f"brief not produced: {last_err}"}
 
     pieces = brief["pieces"][:PIECES]
+    _tag_questions(pieces, inp)
+    _who_answers(pieces, run_id, locale.get("location_code") or 2840, locale.get("language_code") or "en")
     artifact = {
         "the_call": brief["the_call"],
         "out_answer": brief.get("out_answer") or [],
@@ -187,6 +298,7 @@ def write_brief(run_id: str, business_description: str = "") -> dict:
         "based_on": {
             "selected": [c["cluster"] for c in inp["selected_clusters"]],
             "parked": [p["cluster"] for p in inp["parked"]],
+            "questions_observed": questions_observed,
         },
     }
     run = runs.get_run(run_id) or run

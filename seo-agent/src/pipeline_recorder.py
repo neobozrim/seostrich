@@ -71,7 +71,7 @@ STAGE_LABELS = {
     "audit": "Technical audit",
     "competitors": "Competitor map",
     "onpage": "On-page recommendations",
-    "ai_citability": "AI citability",
+    "ai_citability": "AI visibility",
     "brief": "The brief",
 }
 
@@ -138,7 +138,13 @@ def name_run(run_id: str, name: str, subtitle: str = "") -> None:
     seeds step has read the brief it knows the business's name; that becomes
     the title, and a short line (domain · flow · market) becomes the project.
     """
-    name = " ".join((name or "").split())[:48]
+    # The name, not a description of it: "Braintrust — LLM evaluation and
+    # observability platform" is a sentence, the report is called Braintrust.
+    name = " ".join((name or "").split())
+    for sep in (" — ", " – ", " - ", ": ", " ("):
+        if sep in name and len(name.split(sep)[0]) >= 3:
+            name = name.split(sep)[0]
+    name = name.strip()[:48]
     if not name:
         return
     run = runs.get_run(run_id)
@@ -392,7 +398,9 @@ def _record_scores(run: dict, result: dict) -> None:
         # `metrics` is measured from the keyword rows; opportunity is a stated
         # rule. The old seo/geo/combined scores were model estimates and are
         # gone — they are still merged when present so older runs keep rendering.
-        for field in ("metrics", "opportunity", "opportunity_rule", "rationale",
+        # total_volume/avg_difficulty travel too: the clustering model guessed
+        # them and the measured ones must win on the record.
+        for field in ("metrics", "total_volume", "avg_difficulty", "estimated_total_volume", "opportunity", "opportunity_rule", "rationale",
                       "seo_score", "geo_score", "combined_score",
                       "seo_rationale", "geo_rationale"):
             if s.get(field) is not None:

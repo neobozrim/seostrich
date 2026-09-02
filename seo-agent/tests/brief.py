@@ -16,7 +16,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # seo-agent/
 from src import runs  # noqa: E402
 from src import cluster_governance as g  # noqa: E402
-from src.tools import strategy_brief as sb  # noqa: E402
+from src.tools import strategy_brief as sb
+sb.dfs.serp_paa = lambda *a, **k: []  # no network in the suite
+sb.dfs.serp_organic = lambda *a, **k: []  # noqa: E402
 
 PASS = 0
 

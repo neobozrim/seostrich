@@ -8,7 +8,7 @@ the outcome. It builds keyword strategies and AI-visibility (GEO) briefs from
 measured DataForSEO data — never a number a model made up — and exposes
 **23 tools** on `document.modelContext` to read, audit, edit and reset them.
 
-- **Live app:** https://agent-memory-virid.vercel.app/ — credentials are on the submission form
+- **Live app:** https://www.seostrich.works/ — credentials are on the submission form
 - **The tools, explained:** open the app and press **WebMCP** in the header (lists all 23 from the live registry, with twelve worked prompts)
 - **Registration code:** [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts)
 - **How the pipeline works:** [`seo-agent/docs/graphs.md`](seo-agent/docs/graphs.md) — the system, strategy and GEO graphs, with diagrams
@@ -157,6 +157,12 @@ Complete diff: [`f9b3f10` → `main`](https://github.com/neobozrim/seostrich/com
 | [`d297774`](https://github.com/neobozrim/seostrich/commit/d297774), [`2a53fed`](https://github.com/neobozrim/seostrich/commit/2a53fed), [`85e6f69`](https://github.com/neobozrim/seostrich/commit/85e6f69) | 2026-09-01 | Measured cluster metrics replace model-estimated scores; reasoning on both sides of every cut; SERP-overlap cluster verification |
 | [`e957f8d`](https://github.com/neobozrim/seostrich/commit/e957f8d), [`fec78c0`](https://github.com/neobozrim/seostrich/commit/fec78c0), [`c7e5e40`](https://github.com/neobozrim/seostrich/commit/c7e5e40) | 2026-09-01 | Governance: per-run locking, append-only change history, "edited" badge, reset-to-as-produced, `seo_check_if_edited` / `seo_reset_run` for shared multi-judge use |
 | [`01ddb2a`](https://github.com/neobozrim/seostrich/commit/01ddb2a), [`b6066f6`](https://github.com/neobozrim/seostrich/commit/b6066f6), [`419e0c6`](https://github.com/neobozrim/seostrich/commit/419e0c6) | 2026-09-01 | Judge experience: in-app WebMCP guide rendered from the live registry, pinned featured reports on the home canvas, sortable keyword table, mobile layout |
+| [`1e32b5c`](https://github.com/neobozrim/seostrich/commit/1e32b5c), [`5992886`](https://github.com/neobozrim/seostrich/commit/5992886), [`b5ebf5c`](https://github.com/neobozrim/seostrich/commit/b5ebf5c) | 2026-09-01 → 02 | Pre-submission review (run-id traversal closed, upload cap, honest guide), repo renamed to SEOstrich, bundled reports install themselves when they change |
+| [`b8b0cbd`](https://github.com/neobozrim/seostrich/commit/b8b0cbd), [`645bae2`](https://github.com/neobozrim/seostrich/commit/645bae2), [`4194a34`](https://github.com/neobozrim/seostrich/commit/4194a34) | 2026-09-02 | Competitors on every run: ranked keywords per competitor, brand filter, a relevance gate ("is this YOUR topic?"), the "who ranks for what" map with owner tags |
+| [`15e853f`](https://github.com/neobozrim/seostrich/commit/15e853f), [`2845060`](https://github.com/neobozrim/seostrich/commit/2845060), [`c5ad588`](https://github.com/neobozrim/seostrich/commit/c5ad588), [`b4ffa20`](https://github.com/neobozrim/seostrich/commit/b4ffa20) | 2026-09-02 | The report is the product: home is your artefacts, one shared header, live artefact that fills in as the graph runs, editable heading, the orchestrator routes and never edits a result |
+| [`c22e2bd`](https://github.com/neobozrim/seostrich/commit/c22e2bd), [`d71b4fd`](https://github.com/neobozrim/seostrich/commit/d71b4fd), [`d89a158`](https://github.com/neobozrim/seostrich/commit/d89a158), [`9b33205`](https://github.com/neobozrim/seostrich/commit/9b33205) | 2026-09-02 | The brief as a stage (rebuilt on demand), archive, OpenAI models with thinking control, the user's own pages read for seeds, every URL in the brief used, the three graphs drawn |
+| [`f7c366c`](https://github.com/neobozrim/seostrich/commit/f7c366c), [`4d55ef2`](https://github.com/neobozrim/seostrich/commit/4d55ef2), [`e281438`](https://github.com/neobozrim/seostrich/commit/e281438) | 2026-09-02 | Language names accepted at the market gate, no internal error text ever reaches a chat bubble, repo cleaned for launch |
+| [`e281438` → `main`](https://github.com/neobozrim/seostrich/compare/e281438...main) | 2026-09-03 | Launch: every question in the brief is one Google shows (People also ask) with who answers it today; the validation gate parks incoherent themes on its own scores; product-led themes are never pillars; every named competitor checked, competitors addable after the run (`seo_research_competitor`, tool 23); GEO reports check the site's own citations; collapsible steps, three type sizes, scroll anchoring, launch animation; 23 tools verified through Chrome's `document.modelContext.executeTool` and an LLM agent loop over them |
 
 ---
 
@@ -170,7 +176,7 @@ seo-agent/
 ├── src/                 — orchestrator, agents, flow graphs, 40+ tools
 ├── ui/                  — Next.js app; ui/lib/webmcp.ts registers the 23 WebMCP tools
 ├── docs/graphs.md       — the system, strategy and GEO graphs, with diagrams
-├── seed/runs/           — the bundled Product Pirates run shown on the home canvas
+├── seed/runs/           — four bundled reports (Product Pirates + Braintrust, strategy + AI visibility), pinned on the home canvas
 ├── tests/               — standalone test scripts, one concern each
 └── requirements.txt, railway.toml, .python-version, .env.example
 ```

@@ -1,1176 +1,5450 @@
 {
-  "id": "productpirates",
-  "project": "productpirates.club",
-  "title": "Product Pirates Club",
-  "created": "2026-09-01T17:51:27.146412+00:00",
-  "status": "done",
-  "stages": [
-    {
-      "id": "seeds",
-      "label": "Seeds",
-      "status": "done",
-      "artifact": {
-        "business_seeds": [
-          "AI building community",
-          "hands-on AI for product managers",
-          "AI native product manager",
-          "agentic commerce building blocks"
-        ],
-        "site_seeds": [
-          "AI community events",
-          "product manager AI blog",
-          "knowledge graph guide",
-          "AI evals for builders"
-        ],
-        "competitor_seeds": [
-          "AI product manager course",
-          "product management newsletter",
-          "hands-on AI course",
-          "AI PM community"
-        ],
-        "notes": "Seeds target product managers looking for practical AI building experience, community-led events, and deep technical practitioner topics. Competitor seeds reflect adjacent search intent for AI product education and PM newsletters without relying on brand names."
-      }
+ "id": "productpirates",
+ "project": "productpirates.club · Content strategy · US-EN",
+ "title": "Product Pirates Club",
+ "prompt": "Product Pirates Club (productpirates.club) is an AI community of practice for\r\r\nproduct people — PMs and product engineers who learn by building, not by\r\r\nwatching. Based in Bulgaria, global English-speaking audience. Members run\r\r\nhands-on sessions: shipping small AI tools, evaluating LLM outputs, wiring\r\r\nagents to real systems, building knowledge graphs from their own data.\r\r\n\r\r\nThe blog, Unblocked (temporary URL: https://blog.yavorpopov.com/), is where some of those sessions become written\r\r\nguides: practitioner-level, code-adjacent, for people who already build with\r\r\nthese models. It is just starting and needs a content plan that brings it back. You can see that I have written 6 very short posts - those are like commentary on what is happening in the tech sector around the adoption of ai for product purposes.\r\r\n\r\r\nTopics we want to own: building ai agents/getting hands on with ai, LLM evaluation and evals for product teams - practicle examples, agent loops/graph engineering/remote control ai agents doing work while you are away, reverse-engineering new features of popular products, where the job market is going - detailed disseection of job ads by leading ai companies to understand where the market is going.\r\r\n\r\r\nEventually I will launch an online course, but not now - fist need to build a bit of content and visibility. I'm okay with the language of the blog to be provocative and bold.\r\r\n\r\r\nCompetitors: at the moment I think I'll be fighting for attention with international creators like: \r\r\nhttps://www.lennysnewsletter.com/\r\r\nhttps://www.aiproduct.com/\r\r\nhttps://maven.com/parlance-labs/evals\r\r\nhttps://maven.com/aishwarya-kiriti/evals-problem-first\r\r\nhttps://maven.com/aishwarya-kiriti/genai-system-design\r\r\nhttps://maven.com/aishwarya-kiriti/harness-engineering\r\r\nAnd locally with the much-less exciting but still locally recognised: \r\r\nhttps://www.telerikacademy.com/upskill/product-management\r\r\nhttps://softuni.bg/opencourses/product-management\r\r\nhttps://ai.softuni.bg/events/220/how-to-become-a-product-manager-and-should-you-in-the-era-of-ai\r\r\n\r\r\nNOT going after: prompt engineering, \"what is an LLM\" explainers, product frameworks, etc, AI news.\r\r\nMarket: United States, English. Global reach, US and Western Europe as the target market, but english-speaking.\r\r\n",
+ "created": "2026-09-02T21:56:47.724255+00:00",
+ "status": "done",
+ "stages": [
+  {
+   "id": "seeds",
+   "label": "Seeds",
+   "status": "done",
+   "artifact": {
+    "business_name": "Product Pirates Club",
+    "business_seeds": [
+     "AI product prototyping",
+     "LLM evaluation workflows",
+     "AI agent systems",
+     "product manager AI tools"
+    ],
+    "site_seeds": [
+     "AI automation workflows",
+     "multi-step AI workflows",
+     "product management prototyping",
+     "AI data analysis"
+    ],
+    "competitor_seeds": [
+     "AI product management",
+     "LLM evaluation course",
+     "AI agent engineering",
+     "product management course"
+    ],
+    "notes": "Business seeds target practitioner-level implementation needs: prototyping AI products, testing model outputs, and building agentic workflows. Site seeds are directly traceable to the owned community page language, including AI/automation workflows, data analysis, multi-step workflows, and prototyping. Competitor seeds reflect adjacent course and publication demand without using competitor brand names."
+   }
+  },
+  {
+   "id": "intake",
+   "label": "Intake",
+   "status": "done",
+   "artifact": {
+    "locale": {
+     "location_code": 2840,
+     "language_code": "en"
     },
-    {
-      "id": "intake",
-      "label": "Intake",
-      "status": "done",
-      "artifact": {
-        "locale": {
-          "location_code": 2840,
-          "language_code": "en"
+    "market": "US-EN"
+   }
+  },
+  {
+   "id": "keywords",
+   "label": "Keyword discovery",
+   "status": "done",
+   "artifact": {
+    "count": 108,
+    "keywords": [
+     {
+      "keyword": "n8n",
+      "volume": 201000,
+      "difficulty": 47,
+      "cpc": 2.3,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "ai for product management",
+      "volume": 3600,
+      "difficulty": 9,
+      "cpc": 11.88,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai workflows",
+      "volume": 2900,
+      "difficulty": 23,
+      "cpc": 32.42,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "apis web",
+      "volume": 2400,
+      "difficulty": 74,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 30,
+      "ranking_url": "https://ai.softuni.bg/trainings/resources/video/3723/http-apis-external-integrations-20-min-smart-business-automations-march-2026",
+      "estimated_traffic": 5.039999961853027,
+      "source": "competitor",
+      "owned_by": [
+       "ai.softuni.bg"
+      ]
+     },
+     {
+      "keyword": "ai workflows automation",
+      "volume": 1000,
+      "difficulty": null,
+      "cpc": 43.35,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "lm-evaluation-harness",
+      "volume": 880,
+      "difficulty": 7,
+      "cpc": 17.479999542236328,
+      "intent": "informational",
+      "rank": 47,
+      "ranking_url": "https://parlance-labs.com/education/evals/schoelkopf.html",
+      "estimated_traffic": 1.8480000495910645,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "ai interview",
+      "volume": 720,
+      "difficulty": 29,
+      "cpc": 7.480000019073486,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://www.lennysnewsletter.com/p/how-to-use-ai-in-your-next-job-interview",
+      "estimated_traffic": 218.8800048828125,
+      "source": "competitor",
+      "owned_by": [
+       "lennysnewsletter.com"
+      ]
+     },
+     {
+      "keyword": "decimo ai",
+      "volume": 720,
+      "difficulty": 0,
+      "cpc": 0.05999999865889549,
+      "intent": "informational",
+      "rank": 24,
+      "ranking_url": "https://ai.softuni.bg/",
+      "estimated_traffic": 1.656000018119812,
+      "source": "competitor",
+      "owned_by": [
+       "ai.softuni.bg"
+      ]
+     },
+     {
+      "keyword": "ai for interview",
+      "volume": 590,
+      "difficulty": 53,
+      "cpc": 6.510000228881836,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://www.lennysnewsletter.com/p/how-to-use-ai-in-your-next-job-interview",
+      "estimated_traffic": 179.36000061035156,
+      "source": "competitor",
+      "owned_by": [
+       "lennysnewsletter.com"
+      ]
+     },
+     {
+      "keyword": "ai for interviews",
+      "volume": 590,
+      "difficulty": 54,
+      "cpc": 8.640000343322754,
+      "intent": "informational",
+      "rank": 1,
+      "ranking_url": "https://www.lennysnewsletter.com/p/how-to-use-ai-in-your-next-job-interview",
+      "estimated_traffic": 179.36000061035156,
+      "source": "competitor",
+      "owned_by": [
+       "lennysnewsletter.com"
+      ]
+     },
+     {
+      "keyword": "ai workflow automation tool",
+      "volume": 480,
+      "difficulty": 32,
+      "cpc": 41.59,
+      "intent": "commercial",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "ai product management",
+      "volume": 480,
+      "difficulty": 10,
+      "cpc": 17.07,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "flask",
+      "volume": 480,
+      "difficulty": 50,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 7,
+      "ranking_url": "https://softuni.bg/blog/what-is-flask-and-its-applications",
+      "estimated_traffic": 31.631999969482422,
+      "source": "competitor",
+      "owned_by": [
+       "softuni.bg"
+      ]
+     },
+     {
+      "keyword": "ai product management courses",
+      "volume": 390,
+      "difficulty": 20,
+      "cpc": 15.17,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management course",
+      "volume": 390,
+      "difficulty": 20,
+      "cpc": 15.17,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai tools for product management",
+      "volume": 390,
+      "difficulty": 0,
+      "cpc": 14.31,
+      "intent": "commercial",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai job interview",
+      "volume": 390,
+      "difficulty": 29,
+      "cpc": 6.079999923706055,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://www.lennysnewsletter.com/p/how-to-use-ai-in-your-next-job-interview",
+      "estimated_traffic": 118.55999755859375,
+      "source": "competitor",
+      "owned_by": [
+       "lennysnewsletter.com"
+      ]
+     },
+     {
+      "keyword": "ai workflow builder",
+      "volume": 320,
+      "difficulty": 29,
+      "cpc": 45.66,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "ai product management certification",
+      "volume": 320,
+      "difficulty": 36,
+      "cpc": 17.03,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management certificate",
+      "volume": 320,
+      "difficulty": 24,
+      "cpc": 17.03,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "c/f",
+      "volume": 320,
+      "difficulty": 10,
+      "cpc": 0.019999999552965164,
+      "intent": "informational",
+      "rank": 5,
+      "ranking_url": "https://softuni.bg/forum/24929/konzolen-konvertor-ot-gradusi-c-kym-gradusi-f",
+      "estimated_traffic": 21.08799934387207,
+      "source": "competitor",
+      "owned_by": [
+       "softuni.bg"
+      ]
+     },
+     {
+      "keyword": "ai automation workflows",
+      "volume": 260,
+      "difficulty": 26,
+      "cpc": 33.57,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "ai prototyping",
+      "volume": 260,
+      "difficulty": 0,
+      "cpc": 27.579999923706055,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://www.lennysnewsletter.com/p/a-guide-to-ai-prototyping-for-product",
+      "estimated_traffic": 79.04000091552734,
+      "source": "competitor",
+      "owned_by": [
+       "lennysnewsletter.com"
+      ]
+     },
+     {
+      "keyword": "eval systems",
+      "volume": 210,
+      "difficulty": 21,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://www.lennysnewsletter.com/p/building-eval-systems-that-improve",
+      "estimated_traffic": 63.84000015258789,
+      "source": "competitor",
+      "owned_by": [
+       "lennysnewsletter.com"
+      ]
+     },
+     {
+      "keyword": "llm cli",
+      "volume": 210,
+      "difficulty": 23,
+      "cpc": 27.170000076293945,
+      "intent": "informational",
+      "rank": 22,
+      "ranking_url": "https://parlance-labs.com/education/applications/simon_llm_cli/",
+      "estimated_traffic": 0.6930000185966492,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "alpha judge",
+      "volume": 170,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 5,
+      "ranking_url": "https://softuni.bg/downloads/svn/softuniada/Jan-2019/SoftUni-Judge-System-Guidelines.pdf",
+      "estimated_traffic": 11.20300006866455,
+      "source": "competitor",
+      "owned_by": [
+       "softuni.bg"
+      ]
+     },
+     {
+      "keyword": "coursera ai product management",
+      "volume": 140,
+      "difficulty": 35,
+      "cpc": 6.17,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai agent for product management",
+      "volume": 140,
+      "difficulty": 0,
+      "cpc": 36.1,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai evals for engineers & pms",
+      "volume": 140,
+      "difficulty": 17,
+      "cpc": 7.529999732971191,
+      "intent": "informational",
+      "rank": 29,
+      "ranking_url": "https://parlance-labs.com/",
+      "estimated_traffic": 0.2939999997615814,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com",
+       "maven.com"
+      ],
+      "consensus": 2
+     },
+     {
+      "keyword": "vibe coding bootcamp",
+      "volume": 140,
+      "difficulty": 0,
+      "cpc": 5.179999828338623,
+      "intent": "informational",
+      "rank": 1,
+      "ranking_url": "https://maven.com/no-code-ai/vibe-coding-bootcamp",
+      "estimated_traffic": 42.560001373291016,
+      "source": "competitor",
+      "owned_by": [
+       "maven.com"
+      ]
+     },
+     {
+      "keyword": "web apis bg",
+      "volume": 140,
+      "difficulty": 1,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 10,
+      "ranking_url": "https://ai.softuni.bg/trainings/resources/video/4224/http-apis-external-integrations-20-min-smart-business-automations-may-2026",
+      "estimated_traffic": 2.0999999046325684,
+      "source": "competitor",
+      "owned_by": [
+       "ai.softuni.bg"
+      ]
+     },
+     {
+      "keyword": "ai automation examples",
+      "volume": 110,
+      "difficulty": 0,
+      "cpc": 16.93,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "maven ai product management",
+      "volume": 110,
+      "difficulty": 7,
+      "cpc": 16.07,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "will product management be replaced by ai",
+      "volume": 110,
+      "difficulty": 4,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai for product management courses",
+      "volume": 110,
+      "difficulty": 20,
+      "cpc": 19.24,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai for product management course",
+      "volume": 110,
+      "difficulty": 22,
+      "cpc": 19.24,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai in product management",
+      "volume": 90,
+      "difficulty": 17,
+      "cpc": 20.36,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management tools",
+      "volume": 90,
+      "difficulty": 4,
+      "cpc": 14.09,
+      "intent": "commercial",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management tool",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 14.09,
+      "intent": "commercial",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai interview prep",
+      "volume": 90,
+      "difficulty": 33,
+      "cpc": 3.049999952316284,
+      "intent": "informational",
+      "rank": 1,
+      "ranking_url": "https://www.lennysnewsletter.com/p/how-to-use-ai-in-your-next-job-interview",
+      "estimated_traffic": 27.360000610351562,
+      "source": "competitor",
+      "owned_by": [
+       "lennysnewsletter.com"
+      ]
+     },
+     {
+      "keyword": "evaluation harness",
+      "volume": 90,
+      "difficulty": 9,
+      "cpc": 50.369998931884766,
+      "intent": "informational",
+      "rank": 58,
+      "ranking_url": "https://parlance-labs.com/education/evals/schoelkopf.html",
+      "estimated_traffic": 0.1889999955892563,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "best ai workflow automation tools",
+      "volume": 70,
+      "difficulty": 37,
+      "cpc": 6.87,
+      "intent": "commercial",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "ai product management jobs",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 6.42,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "best ai product management courses",
+      "volume": 70,
+      "difficulty": 23,
+      "cpc": 11.17,
+      "intent": "commercial",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "product management ai",
+      "volume": 70,
+      "difficulty": 20,
+      "cpc": 19.86,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "pendo ai for product management",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 20.77,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "lm harness",
+      "volume": 70,
+      "difficulty": 3,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 52,
+      "ranking_url": "https://parlance-labs.com/education/evals/schoelkopf.html",
+      "estimated_traffic": 0.1469999998807907,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "building agentic ai applications with a problem-first approach",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 42.09000015258789,
+      "intent": "navigational",
+      "rank": 1,
+      "ranking_url": "https://maven.com/aishwarya-kiriti/genai-system-design",
+      "estimated_traffic": 21.280000686645508,
+      "source": "competitor",
+      "owned_by": [
+       "maven.com"
+      ]
+     },
+     {
+      "keyword": "evals for ai engineers",
+      "volume": 70,
+      "difficulty": 12,
+      "cpc": 10.529999732971191,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://maven.com/parlance-labs/evals",
+      "estimated_traffic": 11.34000015258789,
+      "source": "competitor",
+      "owned_by": [
+       "maven.com"
+      ]
+     },
+     {
+      "keyword": "product management ai tools",
+      "volume": 50,
+      "difficulty": 7,
+      "cpc": 30.34,
+      "intent": "commercial",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "what is ai product management",
+      "volume": 50,
+      "difficulty": 10,
+      "cpc": 9.04,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management bootcamp",
+      "volume": 50,
+      "difficulty": 14,
+      "cpc": 12.07,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management specialization",
+      "volume": 50,
+      "difficulty": 7,
+      "cpc": 12.68,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "product management ai tool",
+      "volume": 50,
+      "difficulty": 0,
+      "cpc": 30.34,
+      "intent": "commercial",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "generative ai for product management",
+      "volume": 50,
+      "difficulty": 2,
+      "cpc": 12.62,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai startup product management andrew ng",
+      "volume": 50,
+      "difficulty": 14,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "interview preparation ai",
+      "volume": 50,
+      "difficulty": 28,
+      "cpc": 3.190000057220459,
+      "intent": "informational",
+      "rank": 1,
+      "ranking_url": "https://www.lennysnewsletter.com/p/how-to-use-ai-in-your-next-job-interview",
+      "estimated_traffic": 15.199999809265137,
+      "source": "competitor",
+      "owned_by": [
+       "lennysnewsletter.com"
+      ]
+     },
+     {
+      "keyword": "building ai-powered products",
+      "volume": 50,
+      "difficulty": 9,
+      "cpc": 2.5799999237060547,
+      "intent": "informational",
+      "rank": 44,
+      "ranking_url": "https://www.aiproduct.com/",
+      "estimated_traffic": 0.10499999672174454,
+      "source": "competitor",
+      "owned_by": [
+       "aiproduct.com"
+      ]
+     },
+     {
+      "keyword": "llm evaluation harness",
+      "volume": 50,
+      "difficulty": 5,
+      "cpc": 11.449999809265137,
+      "intent": "informational",
+      "rank": 34,
+      "ranking_url": "https://parlance-labs.com/education/evals/schoelkopf.html",
+      "estimated_traffic": 0.10499999672174454,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "ai evals course",
+      "volume": 50,
+      "difficulty": 8,
+      "cpc": 10.949999809265137,
+      "intent": "informational",
+      "rank": 1,
+      "ranking_url": "https://maven.com/parlance-labs/evals",
+      "estimated_traffic": 15.199999809265137,
+      "source": "competitor",
+      "owned_by": [
+       "maven.com"
+      ]
+     },
+     {
+      "keyword": "ai product management book",
+      "volume": 40,
+      "difficulty": 0,
+      "cpc": 3.33,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "duke ai product management",
+      "volume": 40,
+      "difficulty": 1,
+      "cpc": 9.72,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai and product management",
+      "volume": 40,
+      "difficulty": 27,
+      "cpc": 12.1,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "coursera ai product management courses",
+      "volume": 40,
+      "difficulty": 36,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "maven ai product management certification",
+      "volume": 40,
+      "difficulty": 9,
+      "cpc": 8.51,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management training",
+      "volume": 40,
+      "difficulty": 30,
+      "cpc": 10.84,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "pendo ai for product management exam answers",
+      "volume": 40,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management books",
+      "volume": 40,
+      "difficulty": 0,
+      "cpc": 3.33,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "agentic ai product management certification",
+      "volume": 40,
+      "difficulty": 19,
+      "cpc": 21.29,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "pendo ai for product management course",
+      "volume": 40,
+      "difficulty": 0,
+      "cpc": 13.04,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "cli llm",
+      "volume": 40,
+      "difficulty": 18,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 19,
+      "ranking_url": "https://parlance-labs.com/education/applications/simon_llm_cli/",
+      "estimated_traffic": 0.1720000058412552,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "ai prototyping tools for product managers",
+      "volume": 30,
+      "difficulty": 1,
+      "cpc": 40.13,
+      "intent": "commercial",
+      "source_seed": "AI product prototyping"
+     },
+     {
+      "keyword": "ai prototyping for product managers",
+      "volume": 30,
+      "difficulty": 7,
+      "cpc": 14.2,
+      "intent": "informational",
+      "source_seed": "AI product prototyping"
+     },
+     {
+      "keyword": "product management and ai",
+      "volume": 30,
+      "difficulty": 13,
+      "cpc": 44.62,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "how to use ai in product management",
+      "volume": 30,
+      "difficulty": 3,
+      "cpc": 10.58,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai for product management pendo",
+      "volume": 30,
+      "difficulty": 2,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "duke ai product management specialization",
+      "volume": 30,
+      "difficulty": 5,
+      "cpc": 15.27,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "reforge ai product management",
+      "volume": 30,
+      "difficulty": 2,
+      "cpc": 4.66,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "product management ai certification",
+      "volume": 30,
+      "difficulty": 29,
+      "cpc": 16.53,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "product management ai courses",
+      "volume": 30,
+      "difficulty": 21,
+      "cpc": 29.91,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management specialization duke university coursera",
+      "volume": 30,
+      "difficulty": 39,
+      "cpc": 24,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "product management ai course",
+      "volume": 30,
+      "difficulty": 20,
+      "cpc": 29.91,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management certifications",
+      "volume": 30,
+      "difficulty": 30,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "best ai product management certification",
+      "volume": 30,
+      "difficulty": 28,
+      "cpc": 14.12,
+      "intent": "commercial",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "stanford ai product management",
+      "volume": 30,
+      "difficulty": 7,
+      "cpc": 16.05,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management specialization duke university",
+      "volume": 30,
+      "difficulty": 0,
+      "cpc": 15.37,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "llm cli tool",
+      "volume": 30,
+      "difficulty": 20,
+      "cpc": null,
+      "intent": "commercial",
+      "rank": 20,
+      "ranking_url": "https://parlance-labs.com/education/applications/simon_llm_cli/",
+      "estimated_traffic": 0.1289999932050705,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "best ai prototyping tools for product managers",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 36.47,
+      "intent": "commercial",
+      "source_seed": "AI product prototyping"
+     },
+     {
+      "keyword": "ai product management salary",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "free ai product management courses",
+      "volume": 20,
+      "difficulty": 20,
+      "cpc": 12.08,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "sql eval",
+      "volume": 20,
+      "difficulty": 12,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 24,
+      "ranking_url": "https://parlance-labs.com/education/evals/ankur.html",
+      "estimated_traffic": 0.05400000140070915,
+      "source": "competitor",
+      "owned_by": [
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "alloy ai prototyping for product management",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 14.13,
+      "intent": "informational",
+      "source_seed": "AI product prototyping"
+     },
+     {
+      "keyword": "ai prototyping for product managers maven",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 4.64,
+      "intent": "informational",
+      "source_seed": "AI product prototyping"
+     },
+     {
+      "keyword": "n8n ai automation workflows",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "gumloop ai automation workflows",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "free ai automation workflows",
+      "volume": 10,
+      "difficulty": 24,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI automation workflows"
+     },
+     {
+      "keyword": "ai product management reddit",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "ai product management degree",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 9.76,
+      "intent": "informational",
+      "source_seed": "AI product management"
+     },
+     {
+      "keyword": "AI product prototyping",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "LLM evaluation workflows",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "multi-step AI workflows",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "LLM evaluation course",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "AI agent systems",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "product management prototyping",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "AI agent engineering",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "product manager AI tools",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "AI data analysis",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "product management course",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     }
+    ]
+   }
+  },
+  {
+   "id": "competitors",
+   "label": "Competitor map",
+   "status": "done",
+   "artifact": {
+    "competitors": [
+     "lennysnewsletter.com",
+     "aiproduct.com",
+     "parlance-labs.com",
+     "maven.com",
+     "telerikacademy.com",
+     "softuni.bg",
+     "ai.softuni.bg"
+    ],
+    "user_supplied": [
+     "lennysnewsletter.com",
+     "aiproduct.com",
+     "parlance-labs.com",
+     "maven.com",
+     "telerikacademy.com",
+     "softuni.bg",
+     "ai.softuni.bg"
+    ],
+    "discovered": [],
+    "site_has_rankings": false,
+    "per_domain": {
+     "lennysnewsletter.com": {
+      "keywords": 64,
+      "brand_terms_skipped": 36,
+      "shared_with_site": 0,
+      "top": [
+       "ai for interview",
+       "ai for interviews",
+       "ai interview",
+       "ai interview prep",
+       "ai job interview"
+      ],
+      "rows": [
+       {
+        "keyword": "ai for interview",
+        "volume": 590,
+        "difficulty": 53,
+        "cpc": 6.510000228881836,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai for interviews",
+        "volume": 590,
+        "difficulty": 54,
+        "cpc": 8.640000343322754,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ai interview",
+        "volume": 720,
+        "difficulty": 29,
+        "cpc": 7.480000019073486,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai interview prep",
+        "volume": 90,
+        "difficulty": 33,
+        "cpc": 3.049999952316284,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ai job interview",
+        "volume": 390,
+        "difficulty": 29,
+        "cpc": 6.079999923706055,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai prototyping",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 27.579999923706055,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "analytical interview",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "anger at work",
+        "volume": 70,
+        "difficulty": 10,
+        "cpc": 0.7099999785423279,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "anger at work",
+        "volume": 210,
+        "difficulty": 7,
+        "cpc": 1.1200000047683716,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "anger workplace",
+        "volume": 70,
+        "difficulty": 10,
+        "cpc": 0.7099999785423279,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "angry about work",
+        "volume": 210,
+        "difficulty": 8,
+        "cpc": 1.1200000047683716,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "angry at work",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.7099999785423279,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "b2b ideas",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "base44 ceo",
+        "volume": 110,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "ben erez analytical thinking",
+        "volume": 40,
+        "difficulty": 9,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ben erez product sense",
+        "volume": 90,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "best angel investors",
+        "volume": 30,
+        "difficulty": 29,
+        "cpc": 9.449999809265137,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "best companies for product development",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": 18.1200008392334,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "best company for product management",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 33.040000915527344,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "best company for product managers",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "best product companies",
+        "volume": 480,
+        "difficulty": 1,
+        "cpc": 0.8399999737739563,
+        "intent": "commercial",
+        "rank": 1
+       },
+       {
+        "keyword": "comp negotiation",
+        "volume": 70,
+        "difficulty": 26,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "couch to 5k ai",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "cursor for designers",
+        "volume": 140,
+        "difficulty": 3,
+        "cpc": 20.270000457763672,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "decision framework",
+        "volume": 210,
+        "difficulty": 4,
+        "cpc": 5.300000190734863,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision framework",
+        "volume": 390,
+        "difficulty": 8,
+        "cpc": 8.260000228881836,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making framework",
+        "volume": 1300,
+        "difficulty": 9,
+        "cpc": 7.409999847412109,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making framework",
+        "volume": 210,
+        "difficulty": 4,
+        "cpc": 5.300000190734863,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making framework",
+        "volume": 70,
+        "difficulty": 2,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making framework",
+        "volume": 390,
+        "difficulty": 7,
+        "cpc": 3.630000114440918,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making framework",
+        "volume": 90,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making framework template",
+        "volume": 40,
+        "difficulty": 5,
+        "cpc": 5.590000152587891,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making frameworks",
+        "volume": 1300,
+        "difficulty": 2,
+        "cpc": 10.15999984741211,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making frameworks",
+        "volume": 90,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision making frameworks",
+        "volume": 390,
+        "difficulty": 1,
+        "cpc": 8.260000228881836,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "decision-making framework",
+        "volume": 320,
+        "difficulty": 5,
+        "cpc": 0.23999999463558197,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "demand constrained",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "demand constraint",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "duolingo growth",
+        "volume": 30,
+        "difficulty": 13,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "eval systems",
+        "volume": 210,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "foundation sprint",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "framework for decision making",
+        "volume": 480,
+        "difficulty": 3,
+        "cpc": 4.050000190734863,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "framework for decision making",
+        "volume": 260,
+        "difficulty": 7,
+        "cpc": 1.2400000095367432,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "framework for making decisions",
+        "volume": 390,
+        "difficulty": 5,
+        "cpc": 3.630000114440918,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "frustrated at work",
+        "volume": 210,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "frustration at work",
+        "volume": 210,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "frustration at workplace",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "frustration at workplace",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "frustrations at work",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "holiday gift guide tech",
+        "volume": 50,
+        "difficulty": 13,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "holiday tech gift guide",
+        "volume": 50,
+        "difficulty": 28,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "how long has facebook marketplace been around",
+        "volume": 70,
+        "difficulty": 17,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "how to manage a manager",
+        "volume": 720,
+        "difficulty": 13,
+        "cpc": 1.5799999237060547,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "how to manage managers",
+        "volume": 720,
+        "difficulty": 1,
+        "cpc": 0.27000001072883606,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "how to manage managers",
+        "volume": 390,
+        "difficulty": 3,
+        "cpc": 3.3899998664855957,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "how to manage managers",
+        "volume": 170,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "how to manage managers",
+        "volume": 210,
+        "difficulty": 2,
+        "cpc": 5.019999980926514,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "how to raise a seed round",
+        "volume": 70,
+        "difficulty": 25,
+        "cpc": 11.949999809265137,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "i have gotten upset at work",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "icp customer",
+        "volume": 70,
+        "difficulty": 33,
+        "cpc": 11.199999809265137,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "icp users",
+        "volume": 30,
+        "difficulty": 15,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "interview preparation ai",
+        "volume": 50,
+        "difficulty": 28,
+        "cpc": 3.190000057220459,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "job anger",
+        "volume": 20,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "job interview ai",
+        "volume": 110,
+        "difficulty": 41,
+        "cpc": 5.840000152587891,
+        "intent": "informational",
+        "rank": 1
+       }
+      ]
+     },
+     "aiproduct.com": {
+      "keywords": 20,
+      "brand_terms_skipped": 4,
+      "shared_with_site": 0,
+      "top": [
+       "ai product academy",
+       "the ai product playbook",
+       "ai product",
+       "ai product management books",
+       "pm diego"
+      ],
+      "rows": [
+       {
+        "keyword": "ai product academy",
+        "volume": 50,
+        "difficulty": 26,
+        "cpc": 12.789999961853027,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "the ai product playbook",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": 4.699999809265137,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "ai product management books",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": 3.3299999237060547,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "pm diego",
+        "volume": 30,
+        "difficulty": 7,
+        "cpc": 12.220000267028809,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "ai product management book",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": 3.3299999237060547,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "dr marily nika",
+        "volume": 70,
+        "difficulty": 17,
+        "cpc": 9.720000267028809,
+        "intent": "informational",
+        "rank": 18
+       },
+       {
+        "keyword": "ai first academy",
+        "volume": 50,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 31
+       },
+       {
+        "keyword": "ai-first academy",
+        "volume": 50,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 32
+       },
+       {
+        "keyword": "iproduct",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "building ai-powered products",
+        "volume": 50,
+        "difficulty": 9,
+        "cpc": 2.5799999237060547,
+        "intent": "informational",
+        "rank": 44
+       },
+       {
+        "keyword": "google ai product manager certification",
+        "volume": 50,
+        "difficulty": 37,
+        "cpc": 8.470000267028809,
+        "intent": "informational",
+        "rank": 43
+       },
+       {
+        "keyword": "mr product",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.3499999940395355,
+        "intent": "informational",
+        "rank": 46
+       },
+       {
+        "keyword": "product faculty",
+        "volume": 70,
+        "difficulty": 11,
+        "cpc": 0.9399999976158142,
+        "intent": "informational",
+        "rank": 48
+       },
+       {
+        "keyword": "product faculty",
+        "volume": 110,
+        "difficulty": 9,
+        "cpc": 3.3299999237060547,
+        "intent": "informational",
+        "rank": 49
+       },
+       {
+        "keyword": "product inc",
+        "volume": 170,
+        "difficulty": 23,
+        "cpc": 109.94000244140625,
+        "intent": "informational",
+        "rank": 50
+       },
+       {
+        "keyword": "ml product",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 54
+       },
+       {
+        "keyword": "the ai product manager's handbook",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": 4.860000133514404,
+        "intent": "informational",
+        "rank": 56
+       },
+       {
+        "keyword": "the ai playbook",
+        "volume": 110,
+        "difficulty": 5,
+        "cpc": 8.850000381469727,
+        "intent": "informational",
+        "rank": 57
+       },
+       {
+        "keyword": "successful ai product creation: a 9-step framework",
+        "volume": 20,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 62
+       },
+       {
+        "keyword": "ml product",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 71
+       }
+      ]
+     },
+     "parlance-labs.com": {
+      "keywords": 73,
+      "brand_terms_skipped": 0,
+      "shared_with_site": 0,
+      "top": [
+       "parlance labs",
+       "hugging face autotrain",
+       "parlance",
+       "huggingface autotrain",
+       "hamel husain"
+      ],
+      "rows": [
+       {
+        "keyword": "parlance labs",
+        "volume": 90,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "hugging face autotrain",
+        "volume": 90,
+        "difficulty": 9,
+        "cpc": 14.470000267028809,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "parlance",
+        "volume": 2900,
+        "difficulty": 30,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "huggingface autotrain",
+        "volume": 50,
+        "difficulty": 13,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "hamel husain",
+        "volume": 390,
+        "difficulty": 23,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "parlance",
+        "volume": 12100,
+        "difficulty": 29,
+        "cpc": 5.699999809265137,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "fsdp vs deepspeed",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 13
+       },
+       {
+        "keyword": "modal volume",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "parlance",
+        "volume": 1000,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "axolotl fine tuning",
+        "volume": 90,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "axolotl fine-tuning",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "inspect evals",
+        "volume": 110,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "modal concurrent",
+        "volume": 20,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "parlance",
+        "volume": 1000,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "modal volumes",
+        "volume": 110,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "autoevals",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 22.790000915527344,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "deepspeed vs fsdp",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 15
+       },
+       {
+        "keyword": "inspect evals",
+        "volume": 70,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "inspect eval",
+        "volume": 40,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "llm datasette",
+        "volume": 20,
+        "difficulty": 11,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 16
+       },
+       {
+        "keyword": "cli llm",
+        "volume": 40,
+        "difficulty": 18,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 19
+       },
+       {
+        "keyword": "llm cli tool",
+        "volume": 30,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 20
+       },
+       {
+        "keyword": "autotrain",
+        "volume": 90,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 20
+       },
+       {
+        "keyword": "inspect ai evals",
+        "volume": 30,
+        "difficulty": 22,
+        "cpc": 13.550000190734863,
+        "intent": "informational",
+        "rank": 19
+       },
+       {
+        "keyword": "llm cli",
+        "volume": 210,
+        "difficulty": 23,
+        "cpc": 27.170000076293945,
+        "intent": "informational",
+        "rank": 22
+       },
+       {
+        "keyword": "sql eval",
+        "volume": 20,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 24
+       },
+       {
+        "keyword": "axolotl llm",
+        "volume": 90,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 26
+       },
+       {
+        "keyword": "inspect ai",
+        "volume": 210,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 23
+       },
+       {
+        "keyword": "inspect ai",
+        "volume": 720,
+        "difficulty": 46,
+        "cpc": 18.40999984741211,
+        "intent": "informational",
+        "rank": 24
+       },
+       {
+        "keyword": "axolotl training",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 27
+       },
+       {
+        "keyword": "prompt engineering for llms pdf",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 26
+       },
+       {
+        "keyword": "ai evals for engineers & pms",
+        "volume": 140,
+        "difficulty": 17,
+        "cpc": 7.529999732971191,
+        "intent": "informational",
+        "rank": 29
+       },
+       {
+        "keyword": "shreya shankar",
+        "volume": 880,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 32
+       },
+       {
+        "keyword": "fine tune openai",
+        "volume": 110,
+        "difficulty": 17,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 31
+       },
+       {
+        "keyword": "inspect ai",
+        "volume": 70,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 31
+       },
+       {
+        "keyword": "llm evaluation harness",
+        "volume": 50,
+        "difficulty": 5,
+        "cpc": 11.449999809265137,
+        "intent": "informational",
+        "rank": 34
+       },
+       {
+        "keyword": "eleutherai lm evaluation harness",
+        "volume": 70,
+        "difficulty": 9,
+        "cpc": 29.68000030517578,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "fine tuning openai",
+        "volume": 110,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "fine-tuning openai",
+        "volume": 140,
+        "difficulty": 12,
+        "cpc": 57.779998779296875,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "hamel husain evals",
+        "volume": 90,
+        "difficulty": 28,
+        "cpc": 22.770000457763672,
+        "intent": "informational",
+        "rank": 34
+       },
+       {
+        "keyword": "langfun",
+        "volume": 20,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "openai fine tuning",
+        "volume": 70,
+        "difficulty": 18,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "openai fine tuning guide",
+        "volume": 140,
+        "difficulty": 15,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "openai finetuning",
+        "volume": 110,
+        "difficulty": 17,
+        "cpc": 7.389999866485596,
+        "intent": "informational",
+        "rank": 32
+       },
+       {
+        "keyword": "finetune openai",
+        "volume": 110,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 35
+       },
+       {
+        "keyword": "langsmith free",
+        "volume": 30,
+        "difficulty": 17,
+        "cpc": 3.5899999141693115,
+        "intent": "informational",
+        "rank": 35
+       },
+       {
+        "keyword": "openai fine-tuning",
+        "volume": 70,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 35
+       },
+       {
+        "keyword": "openai finetune",
+        "volume": 70,
+        "difficulty": 24,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 35
+       },
+       {
+        "keyword": "prompt engineering books pdf",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": 8.180000305175781,
+        "intent": "informational",
+        "rank": 36
+       },
+       {
+        "keyword": "axolotl-ai",
+        "volume": 390,
+        "difficulty": 8,
+        "cpc": 20.059999465942383,
+        "intent": "informational",
+        "rank": 39
+       },
+       {
+        "keyword": "openai fine-tuning models",
+        "volume": 40,
+        "difficulty": 13,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 38
+       },
+       {
+        "keyword": "prompt engineering book pdf",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 37
+       },
+       {
+        "keyword": "langkit",
+        "volume": 40,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 43
+       },
+       {
+        "keyword": "openai fine tuning model",
+        "volume": 40,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 39
+       },
+       {
+        "keyword": "openai fine tuning",
+        "volume": 90,
+        "difficulty": 24,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 40
+       },
+       {
+        "keyword": "openai fine-tuning",
+        "volume": 170,
+        "difficulty": 23,
+        "cpc": 13.949999809265137,
+        "intent": "informational",
+        "rank": 40
+       },
+       {
+        "keyword": "openai fine-tuning",
+        "volume": 90,
+        "difficulty": 24,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 40
+       },
+       {
+        "keyword": "langfair",
+        "volume": 90,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 39
+       },
+       {
+        "keyword": "fine-tuning gpt",
+        "volume": 70,
+        "difficulty": 17,
+        "cpc": 11.539999961853027,
+        "intent": "informational",
+        "rank": 43
+       },
+       {
+        "keyword": "openai fine-tuning guide",
+        "volume": 140,
+        "difficulty": 15,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 42
+       },
+       {
+        "keyword": "lm-evaluation-harness",
+        "volume": 880,
+        "difficulty": 7,
+        "cpc": 17.479999542236328,
+        "intent": "informational",
+        "rank": 47
+       },
+       {
+        "keyword": "openai fine tuning",
+        "volume": 590,
+        "difficulty": 19,
+        "cpc": 51.18000030517578,
+        "intent": "informational",
+        "rank": 45
+       },
+       {
+        "keyword": "fmeval",
+        "volume": 40,
+        "difficulty": 8,
+        "cpc": 25.1299991607666,
+        "intent": "informational",
+        "rank": 47
+       },
+       {
+        "keyword": "proseable",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 1.3799999952316284,
+        "intent": "informational",
+        "rank": 46
+       },
+       {
+        "keyword": "langkit",
+        "volume": 590,
+        "difficulty": 1,
+        "cpc": 0.20999999344348907,
+        "intent": "informational",
+        "rank": 53
+       },
+       {
+        "keyword": "lm harness",
+        "volume": 70,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 52
+       },
+       {
+        "keyword": "evaluation harness",
+        "volume": 90,
+        "difficulty": 9,
+        "cpc": 50.369998931884766,
+        "intent": "informational",
+        "rank": 58
+       },
+       {
+        "keyword": "mistral fine-tuning",
+        "volume": 70,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 60
+       },
+       {
+        "keyword": "marvely ai",
+        "volume": 210,
+        "difficulty": 10,
+        "cpc": 7.320000171661377,
+        "intent": "informational",
+        "rank": 65
+       },
+       {
+        "keyword": "vals ai fellowship",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 68
+       },
+       {
+        "keyword": "prolance",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 74
+       },
+       {
+        "keyword": "lance ai",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 11.680000305175781,
+        "intent": "informational",
+        "rank": 77
+       },
+       {
+        "keyword": "toolace: winning the points of llm function calling",
+        "volume": 20,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 75
+       }
+      ]
+     },
+     "maven.com": {
+      "keywords": 56,
+      "brand_terms_skipped": 44,
+      "shared_with_site": 0,
+      "top": [
+       "agentic ai product management certification",
+       "ai evals course",
+       "ai evals for engineers & pms",
+       "ai product management bootcamp",
+       "ai prototyping for product managers"
+      ],
+      "rows": [
+       {
+        "keyword": "agentic ai product management certification",
+        "volume": 40,
+        "difficulty": 19,
+        "cpc": 17.280000686645508,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ai evals course",
+        "volume": 50,
+        "difficulty": 8,
+        "cpc": 10.949999809265137,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ai evals for engineers & pms",
+        "volume": 140,
+        "difficulty": 17,
+        "cpc": 7.529999732971191,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ai product management bootcamp",
+        "volume": 50,
+        "difficulty": 14,
+        "cpc": 13.220000267028809,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ai prototyping for product managers",
+        "volume": 30,
+        "difficulty": 7,
+        "cpc": 14.199999809265137,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "apa perbedaan utama antara mesin cerdas dan mesin non cerdas",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "apa perbedaan utama antara mesin cerdas dan mesin non-cerdas",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "building agentic ai applications with a problem-first approach",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 42.09000015258789,
+        "intent": "navigational",
+        "rank": 1
+       },
+       {
+        "keyword": "cohort based courses",
+        "volume": 50,
+        "difficulty": 7,
+        "cpc": 10.130000114440918,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "cohort courses",
+        "volume": 40,
+        "difficulty": 6,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "end to end engineering",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "implementation agency",
+        "volume": 20,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "launch event",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "launch event ideas",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "launch party planning",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "lenny's list",
+        "volume": 70,
+        "difficulty": 38,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "management conversations",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "personal branding masterclass",
+        "volume": 20,
+        "difficulty": 9,
+        "cpc": 1.9300000667572021,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "planning a product launch event",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "product bootcamp",
+        "volume": 30,
+        "difficulty": 1,
+        "cpc": 16.18000030517578,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "product launch event plan",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "product launch event planning",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "product sense course",
+        "volume": 30,
+        "difficulty": 3,
+        "cpc": 10.020000457763672,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "product sense shreyas doshi",
+        "volume": 50,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "s09g",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "shreyas doshi course",
+        "volume": 20,
+        "difficulty": 5,
+        "cpc": 31.010000228881836,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "shreyas doshi product sense",
+        "volume": 110,
+        "difficulty": 5,
+        "cpc": 7.5,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "shreyas doshi product sense course",
+        "volume": 40,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "social media announcement",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "strategic localization",
+        "volume": 210,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "supermanager",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "vibe coding bootcamp",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 5.179999828338623,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "workshop agendas",
+        "volume": 140,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "advanced figma course",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": 6.880000114440918,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agenda workshop",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 10.949999809265137,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "ai product management certification",
+        "volume": 320,
+        "difficulty": 36,
+        "cpc": 17.030000686645508,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "aishwarya naresh reganti",
+        "volume": 210,
+        "difficulty": 5,
+        "cpc": 6.869999885559082,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "code masterclass",
+        "volume": 40,
+        "difficulty": 20,
+        "cpc": 8.699999809265137,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "cohort course",
+        "volume": 40,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "cohort-based courses",
+        "volume": 50,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "course name",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "cybersecurity product",
+        "volume": 1000,
+        "difficulty": 4,
+        "cpc": 21.709999084472656,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "deep academy",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.800000011920929,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "dr marily nika",
+        "volume": 70,
+        "difficulty": 17,
+        "cpc": 9.720000267028809,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "evals for ai engineers",
+        "volume": 70,
+        "difficulty": 12,
+        "cpc": 10.529999732971191,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "event launching ideas",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": 4.599999904632568,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "gen academy",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 9.680000305175781,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "hamel husain evals",
+        "volume": 90,
+        "difficulty": 28,
+        "cpc": 22.770000457763672,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "haris khurshid",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "intro to agentic ai",
+        "volume": 50,
+        "difficulty": 27,
+        "cpc": 13.140000343322754,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "launch an event",
+        "volume": 30,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "launch event",
+        "volume": 260,
+        "difficulty": 35,
+        "cpc": 20,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "launching an event",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "launching event ideas",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": 4.599999904632568,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "launching product event",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "mahesh yadav",
+        "volume": 170,
+        "difficulty": 6,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       }
+      ]
+     },
+     "telerikacademy.com": {
+      "keywords": 51,
+      "brand_terms_skipped": 0,
+      "shared_with_site": 0,
+      "top": [
+       "правила за безопасна работа в интернет",
+       "telerik",
+       "мисловни карти",
+       "5/7",
+       "buki"
+      ],
+      "rows": [
+       {
+        "keyword": "правила за безопасна работа в интернет",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "telerik",
+        "volume": 590,
+        "difficulty": 45,
+        "cpc": 5.610000133514404,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "мисловни карти",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 0.6399999856948853,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "5/7",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "buki",
+        "volume": 590,
+        "difficulty": 23,
+        "cpc": 0.20999999344348907,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "буки",
+        "volume": 720,
+        "difficulty": 21,
+        "cpc": 0.4099999964237213,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "telerik",
+        "volume": 90,
+        "difficulty": 32,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "телериг",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "telerik login",
+        "volume": 140,
+        "difficulty": 42,
+        "cpc": null,
+        "intent": "navigational",
+        "rank": 8
+       },
+       {
+        "keyword": "умение",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 0.5099999904632568,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "entain bulgaria",
+        "volume": 170,
+        "difficulty": 4,
+        "cpc": 0.38999998569488525,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "telerik company",
+        "volume": 70,
+        "difficulty": 6,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "учите",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "python roadmap for beginners",
+        "volume": 20,
+        "difficulty": 17,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 18
+       },
+       {
+        "keyword": "меки умения",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 20
+       },
+       {
+        "keyword": "mentormate",
+        "volume": 260,
+        "difficulty": 5,
+        "cpc": 102.38999938964844,
+        "intent": "informational",
+        "rank": 22
+       },
+       {
+        "keyword": "what are the basics of python",
+        "volume": 40,
+        "difficulty": 59,
+        "cpc": 3.1700000762939453,
+        "intent": "informational",
+        "rank": 23
+       },
+       {
+        "keyword": "entain",
+        "volume": 390,
+        "difficulty": 21,
+        "cpc": 0.27000001072883606,
+        "intent": "informational",
+        "rank": 22
+       },
+       {
+        "keyword": "what do i need to learn python",
+        "volume": 30,
+        "difficulty": 11,
+        "cpc": 11.239999771118164,
+        "intent": "informational",
+        "rank": 25
+       },
+       {
+        "keyword": "безопасен интернет",
+        "volume": 320,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 21
+       },
+       {
+        "keyword": "dalilk platform login",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 23
+       },
+       {
+        "keyword": "telerik company",
+        "volume": 90,
+        "difficulty": 6,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 25
+       },
+       {
+        "keyword": "mentormate",
+        "volume": 140,
+        "difficulty": 6,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 26
+       },
+       {
+        "keyword": "school",
+        "volume": 8100,
+        "difficulty": 31,
+        "cpc": 1.149999976158142,
+        "intent": "informational",
+        "rank": 42
+       },
+       {
+        "keyword": "codeku devops academy",
+        "volume": 140,
+        "difficulty": 2,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 28
+       },
+       {
+        "keyword": "minitech mba",
+        "volume": 260,
+        "difficulty": 3,
+        "cpc": 2.7100000381469727,
+        "intent": "informational",
+        "rank": 29
+       },
+       {
+        "keyword": "learn algoritmika az login",
+        "volume": 5400,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "navigational",
+        "rank": 30
+       },
+       {
+        "keyword": "python programming basics",
+        "volume": 590,
+        "difficulty": 40,
+        "cpc": 0.8399999737739563,
+        "intent": "informational",
+        "rank": 34
+       },
+       {
+        "keyword": "tritek login",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "navigational",
+        "rank": 30
+       },
+       {
+        "keyword": "tritek digital library",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 32
+       },
+       {
+        "keyword": "азбуки училище",
+        "volume": 170,
+        "difficulty": 7,
+        "cpc": 0.46000000834465027,
+        "intent": "informational",
+        "rank": 39
+       },
+       {
+        "keyword": "html academy",
+        "volume": 90,
+        "difficulty": 29,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 37
+       },
+       {
+        "keyword": "minik academy",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 34
+       },
+       {
+        "keyword": "използваме",
+        "volume": 480,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 37
+       },
+       {
+        "keyword": "тетрика вход",
+        "volume": 260,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 39
+       },
+       {
+        "keyword": "tritek academy",
+        "volume": 720,
+        "difficulty": 8,
+        "cpc": 8.4399995803833,
+        "intent": "informational",
+        "rank": 45
+       },
+       {
+        "keyword": "tecky academy",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 44
+       },
+       {
+        "keyword": "mission education",
+        "volume": 390,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 51
+       },
+       {
+        "keyword": "digital marketing kursu",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 1.0700000524520874,
+        "intent": "informational",
+        "rank": 51
+       },
+       {
+        "keyword": "krish naik academy login",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "navigational",
+        "rank": 48
+       },
+       {
+        "keyword": "nanosonics academy login",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.4199999570846558,
+        "intent": "navigational",
+        "rank": 49
+       },
+       {
+        "keyword": "умения",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 0.5099999904632568,
+        "intent": "informational",
+        "rank": 50
+       },
+       {
+        "keyword": "безопасна",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 54
+       },
+       {
+        "keyword": "професия",
+        "volume": 1900,
+        "difficulty": 6,
+        "cpc": 0.3100000023841858,
+        "intent": "informational",
+        "rank": 57
+       },
+       {
+        "keyword": "krish naik academy login",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "navigational",
+        "rank": 58
+       },
+       {
+        "keyword": "crek neltq",
+        "volume": 9900,
+        "difficulty": 30,
+        "cpc": 0.6399999856948853,
+        "intent": "informational",
+        "rank": 59
+       },
+       {
+        "keyword": "upskill",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 68
+       },
+       {
+        "keyword": "fundamentals of python first programs",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.3799999952316284,
+        "intent": "informational",
+        "rank": 69
+       },
+       {
+        "keyword": "learnwise quiz answers",
+        "volume": 480,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 65
+       },
+       {
+        "keyword": "upskill",
+        "volume": 1300,
+        "difficulty": 25,
+        "cpc": 0.10999999940395355,
+        "intent": "informational",
+        "rank": 73
+       },
+       {
+        "keyword": "правила поведения в интернете",
+        "volume": 20,
+        "difficulty": 14,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 103
+       }
+      ]
+     },
+     "softuni.bg": {
+      "keywords": 83,
+      "brand_terms_skipped": 17,
+      "shared_with_site": 0,
+      "top": [
+       "ai softuni",
+       "branding",
+       "ci/cd",
+       "crm система",
+       "digital softuni"
+      ],
+      "rows": [
+       {
+        "keyword": "branding",
+        "volume": 170,
+        "difficulty": 39,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ci/cd",
+        "volume": 320,
+        "difficulty": 27,
+        "cpc": 0.019999999552965164,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "crm система",
+        "volume": 480,
+        "difficulty": 3,
+        "cpc": 4.409999847412109,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "marketing fundamentals",
+        "volume": 2900,
+        "difficulty": 22,
+        "cpc": 0.3799999952316284,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "rpa",
+        "volume": 140,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "seo значение",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": 1.5499999523162842,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "soft skills",
+        "volume": 260,
+        "difficulty": 40,
+        "cpc": 0.4399999976158142,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ugc",
+        "volume": 880,
+        "difficulty": 21,
+        "cpc": 1.7400000095367432,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ux",
+        "volume": 210,
+        "difficulty": 24,
+        "cpc": 1.1800000667572021,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ux design",
+        "volume": 170,
+        "difficulty": 35,
+        "cpc": 0.9800000190734863,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "vba",
+        "volume": 170,
+        "difficulty": 15,
+        "cpc": 0.7699999809265137,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "дигитален маркетинг",
+        "volume": 1600,
+        "difficulty": 19,
+        "cpc": 0.9599999785423279,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "дискретна математика",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "интериорен дизайн обучение",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": 0.6700000166893005,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "какво е операционна система",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "какво е ос",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "пивот",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "продуктова фотография",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 1.1200000047683716,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "промпт",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 0.5400000214576721,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "сео",
+        "volume": 210,
+        "difficulty": 35,
+        "cpc": 0.550000011920929,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "системен администратор",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": 0.6299999952316284,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "софт",
+        "volume": 210,
+        "difficulty": 21,
+        "cpc": 0.15000000596046448,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "софтуерен инженер",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 0.3700000047683716,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "софтуни",
+        "volume": 5400,
+        "difficulty": 37,
+        "cpc": 0.029999999329447746,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "софтуни будител гимназия за дигитални умения",
+        "volume": 260,
+        "difficulty": 1,
+        "cpc": 0.10999999940395355,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "софтуни дигитал",
+        "volume": 210,
+        "difficulty": 44,
+        "cpc": 0.1899999976158142,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "софтуни креатив",
+        "volume": 210,
+        "difficulty": 21,
+        "cpc": 0.1899999976158142,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "софтуни криейтив",
+        "volume": 210,
+        "difficulty": 22,
+        "cpc": 0.1899999976158142,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "формули в ексел",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "b2b значение",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "cpo",
+        "volume": 140,
+        "difficulty": 14,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "cyber security",
+        "volume": 2400,
+        "difficulty": 58,
+        "cpc": 2.2799999713897705,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "dev ops",
+        "volume": 590,
+        "difficulty": 70,
+        "cpc": 0.6200000047683716,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "dns",
+        "volume": 3600,
+        "difficulty": 30,
+        "cpc": 0.3799999952316284,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "e-commerce",
+        "volume": 1300,
+        "difficulty": 39,
+        "cpc": 2.9100000858306885,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "ecommerce",
+        "volume": 1300,
+        "difficulty": 44,
+        "cpc": 2.9100000858306885,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "etl",
+        "volume": 210,
+        "difficulty": 37,
+        "cpc": 0.14000000059604645,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "framework",
+        "volume": 880,
+        "difficulty": 37,
+        "cpc": 0.3199999928474426,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "fundamentals",
+        "volume": 170,
+        "difficulty": 35,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "https olpair com pair",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "hyper-v",
+        "volume": 260,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "it специалист",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.4199999570846558,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "prompt превод",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "qa engineer",
+        "volume": 110,
+        "difficulty": 6,
+        "cpc": 0.9700000286102295,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "sbtech",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "smm",
+        "volume": 210,
+        "difficulty": 8,
+        "cpc": 2.1500000953674316,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "ugc creator",
+        "volume": 390,
+        "difficulty": 5,
+        "cpc": 1.5899999141693115,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "афилиейт маркетинг",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 0.9399999976158142,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "векторна графика",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "графичен дизайн",
+        "volume": 1600,
+        "difficulty": 2,
+        "cpc": 1.0700000524520874,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "ергономия",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "етси",
+        "volume": 2400,
+        "difficulty": 11,
+        "cpc": 1.409999966621399,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "операционни системи",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "програмиране",
+        "volume": 480,
+        "difficulty": 13,
+        "cpc": 0.7799999713897705,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "програмист",
+        "volume": 480,
+        "difficulty": 0,
+        "cpc": 1.5299999713897705,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "сео оптимизация",
+        "volume": 140,
+        "difficulty": 36,
+        "cpc": 2.4700000286102295,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "топология",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "тормоза",
+        "volume": 590,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "basics",
+        "volume": 480,
+        "difficulty": 7,
+        "cpc": 0.33000001311302185,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "https //olpair com /pair",
+        "volume": 70,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "in design",
+        "volume": 480,
+        "difficulty": 19,
+        "cpc": 1.9500000476837158,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "iot",
+        "volume": 480,
+        "difficulty": 20,
+        "cpc": 1.3300000429153442,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "prompts превод",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "seo",
+        "volume": 1900,
+        "difficulty": 62,
+        "cpc": 2.440000057220459,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "дизайнер",
+        "volume": 1900,
+        "difficulty": 20,
+        "cpc": 0.8199999928474426,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "е преподавател",
+        "volume": 140,
+        "difficulty": 66,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "е-преподавател",
+        "volume": 140,
+        "difficulty": 66,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "интерфейс",
+        "volume": 480,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "как се кандидатства след 7 клас",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 0.46000000834465027,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "как се подреждат желанията за кандидатстване след 7 клас",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "компютърна мрежа",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "маркетинг",
+        "volume": 1600,
+        "difficulty": 9,
+        "cpc": 0.8799999952316284,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "нели ифандиева",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "оптимизация",
+        "volume": 390,
+        "difficulty": 15,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "откриване на млади таланти",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "преподавател",
+        "volume": 320,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "слот анализ",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "състезателна математика",
+        "volume": 170,
+        "difficulty": 7,
+        "cpc": 0.5799999833106995,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "факториел",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "црм",
+        "volume": 140,
+        "difficulty": 1,
+        "cpc": 4.420000076293945,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "alpha judge",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "c/f",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 0.019999999552965164,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "flask",
+        "volume": 480,
+        "difficulty": 50,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       }
+      ]
+     },
+     "ai.softuni.bg": {
+      "keywords": 21,
+      "brand_terms_skipped": 3,
+      "shared_with_site": 0,
+      "top": [
+       "ai softuni",
+       "softuni ai",
+       "softuni ai",
+       "basics",
+       "е преподавател"
+      ],
+      "rows": [
+       {
+        "keyword": "basics",
+        "volume": 480,
+        "difficulty": 7,
+        "cpc": 0.33000001311302185,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "е преподавател",
+        "volume": 140,
+        "difficulty": 66,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "е-преподавател",
+        "volume": 140,
+        "difficulty": 66,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "преподавател",
+        "volume": 320,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "аi",
+        "volume": 720,
+        "difficulty": 16,
+        "cpc": 0.4099999964237213,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "аи",
+        "volume": 6600,
+        "difficulty": 15,
+        "cpc": 0.6100000143051147,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "изкуствен интелект",
+        "volume": 49500,
+        "difficulty": 9,
+        "cpc": 0.11999999731779099,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "изкуствен интелект ai",
+        "volume": 170,
+        "difficulty": 15,
+        "cpc": 0.20000000298023224,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "web apis bg",
+        "volume": 140,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "ai изкуствен интелект",
+        "volume": 590,
+        "difficulty": 9,
+        "cpc": 0.33000001311302185,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "apis вход",
+        "volume": 3600,
+        "difficulty": 13,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "апис вход",
+        "volume": 3600,
+        "difficulty": 23,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 17
+       },
+       {
+        "keyword": "decimo ai",
+        "volume": 720,
+        "difficulty": 0,
+        "cpc": 0.05999999865889549,
+        "intent": "informational",
+        "rank": 24
+       },
+       {
+        "keyword": "апис 7 вход",
+        "volume": 260,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 23
+       },
+       {
+        "keyword": "видове изкуствен интелект",
+        "volume": 480,
+        "difficulty": 0,
+        "cpc": 0.5699999928474426,
+        "intent": "informational",
+        "rank": 27
+       },
+       {
+        "keyword": "какво е ai",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 1.6700000762939453,
+        "intent": "informational",
+        "rank": 31
+       },
+       {
+        "keyword": "apis web",
+        "volume": 2400,
+        "difficulty": 74,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 30
+       },
+       {
+        "keyword": "изкуствен интелект на български",
+        "volume": 3600,
+        "difficulty": 7,
+        "cpc": 0.07000000029802322,
+        "intent": "informational",
+        "rank": 36
+       },
+       {
+        "keyword": "примери за изкуствен интелект",
+        "volume": 170,
+        "difficulty": 5,
+        "cpc": 0.6200000047683716,
+        "intent": "informational",
+        "rank": 53
+       },
+       {
+        "keyword": "правен интелект",
+        "volume": 4400,
+        "difficulty": 0,
+        "cpc": 1.4600000381469727,
+        "intent": "informational",
+        "rank": 66
+       },
+       {
+        "keyword": "vibe coding τι ειναι",
+        "volume": 110,
+        "difficulty": 15,
+        "cpc": 1.4700000286102295,
+        "intent": "informational",
+        "rank": 80
+       }
+      ]
+     }
+    },
+    "consensus": [
+     {
+      "keyword": "basics",
+      "volume": 480,
+      "owned_by": [
+       "ai.softuni.bg",
+       "softuni.bg"
+      ]
+     },
+     {
+      "keyword": "преподавател",
+      "volume": 320,
+      "owned_by": [
+       "ai.softuni.bg",
+       "softuni.bg"
+      ]
+     },
+     {
+      "keyword": "ai evals for engineers & pms",
+      "volume": 140,
+      "owned_by": [
+       "maven.com",
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "е преподавател",
+      "volume": 140,
+      "owned_by": [
+       "ai.softuni.bg",
+       "softuni.bg"
+      ]
+     },
+     {
+      "keyword": "е-преподавател",
+      "volume": 140,
+      "owned_by": [
+       "ai.softuni.bg",
+       "softuni.bg"
+      ]
+     },
+     {
+      "keyword": "hamel husain evals",
+      "volume": 90,
+      "owned_by": [
+       "maven.com",
+       "parlance-labs.com"
+      ]
+     },
+     {
+      "keyword": "dr marily nika",
+      "volume": 70,
+      "owned_by": [
+       "aiproduct.com",
+       "maven.com"
+      ]
+     }
+    ],
+    "keywords_contributed": 329,
+    "relevance": {
+     "ran": true,
+     "kept": 54,
+     "dropped": 275,
+     "dropped_because": "Removed competitor-, vendor-, course-, and model-specific terms, unrelated education and workplace topics, generic product frameworks, and broad technical keywords without a clear AI product-building ",
+     "dropped_examples": [
+      "crek neltq",
+      "school",
+      "learn algoritmika az login",
+      "софтуни",
+      "dns",
+      "parlance",
+      "marketing fundamentals",
+      "cyber security"
+     ]
+    },
+    "kept_in_universe": 28,
+    "seed_derived_in_universe": 80
+   }
+  },
+  {
+   "id": "clusters",
+   "label": "Clusters",
+   "status": "done",
+   "artifact": {
+    "count": 3,
+    "clusters": [
+     {
+      "cluster_id": 4,
+      "cluster_name": "Product leader tool selection",
+      "head_term": "ai tools for product management",
+      "keywords": [
+       "ai tools for product management",
+       "ai product management tools",
+       "ai product management tool",
+       "product management ai tools",
+       "product management ai tool",
+       "ai prototyping tools for product managers",
+       "best ai prototyping tools for product managers",
+       "product manager AI tools"
+      ],
+      "intent": "commercial",
+      "avg_volume": 90,
+      "avg_difficulty": 1.7,
+      "rationale": "Queries evaluate software options for product work and prototyping.",
+      "name": "Product leader tool selection",
+      "total_volume": 720,
+      "market": "US-EN",
+      "keyword_stats": {
+       "ai tools for product management": {
+        "volume": 390,
+        "intent": "commercial",
+        "cpc": 14.31
+       },
+       "ai product management tools": {
+        "volume": 90,
+        "difficulty": 4,
+        "intent": "commercial",
+        "cpc": 14.09
+       },
+       "ai product management tool": {
+        "volume": 90,
+        "intent": "commercial",
+        "cpc": 14.09
+       },
+       "product management ai tools": {
+        "volume": 50,
+        "difficulty": 7,
+        "intent": "commercial",
+        "cpc": 30.34
+       },
+       "product management ai tool": {
+        "volume": 50,
+        "intent": "commercial",
+        "cpc": 30.34
+       },
+       "ai prototyping tools for product managers": {
+        "volume": 30,
+        "difficulty": 1,
+        "intent": "commercial",
+        "cpc": 40.13
+       },
+       "best ai prototyping tools for product managers": {
+        "volume": 20,
+        "intent": "commercial",
+        "cpc": 36.47
+       },
+       "product manager AI tools": {
+        "intent": "informational"
+       }
+      },
+      "metrics": {
+       "keyword_count": 8,
+       "total_volume": 720,
+       "max_volume": 390,
+       "median_volume": 50,
+       "avg_difficulty": 1.7,
+       "max_difficulty": 7,
+       "difficulty_measured_for": 7,
+       "avg_cpc": 22.47,
+       "max_cpc": 40.13,
+       "commercial_keywords": 7,
+       "commercial_share": 0.88,
+       "top_keywords": [
+        {
+         "keyword": "ai tools for product management",
+         "volume": 390,
+         "difficulty": 0,
+         "cpc": 14.31,
+         "intent": "commercial"
         },
-        "market": "US-EN"
-      }
-    },
-    {
-      "id": "keywords",
-      "label": "Keyword discovery",
-      "status": "done",
-      "artifact": {
-        "count": 44,
-        "keywords": [
-          {
-            "keyword": "ai product manager certification",
-            "volume": 720,
-            "difficulty": 24,
-            "cpc": 16.65,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course",
-            "volume": 320,
-            "difficulty": 30,
-            "cpc": 13.99,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course free",
-            "volume": 50,
-            "difficulty": 20,
-            "cpc": 5.61,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "best ai product manager course",
-            "volume": 30,
-            "difficulty": 44,
-            "cpc": 14.46,
-            "intent": "commercial",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager coursera",
-            "volume": 30,
-            "difficulty": 25,
-            "cpc": 7.41,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "product manager ai course",
-            "volume": 30,
-            "difficulty": 22,
-            "cpc": 26.91,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ibm ai product manager course",
-            "volume": 20,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "building the epistemic community of ai safety",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI building community"
-          },
-          {
-            "keyword": "hugging face the ai community building the future",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI building community"
-          },
-          {
-            "keyword": "ai community building the future",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI building community"
-          },
-          {
-            "keyword": "the ai community building the future",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": 4.68,
-            "intent": "informational",
-            "source_seed": "AI building community"
-          },
-          {
-            "keyword": "ai product manager course free with certificate",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": 7.31,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course google",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course udemy",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course in india",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "best course for ai product manager",
-            "volume": 10,
-            "difficulty": 31,
-            "cpc": null,
-            "intent": "commercial",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "course for ai product manager",
-            "volume": 10,
-            "difficulty": 20,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course microsoft",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "gen ai product manager course",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course with placement",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai ml product manager course",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai for product manager course",
-            "volume": 10,
-            "difficulty": 20,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course coursera",
-            "volume": 10,
-            "difficulty": 36,
-            "cpc": 1.68,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager full course",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "microsoft ai product manager course",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": 5.54,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai/ml product manager course",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "free ai product manager course",
-            "volume": 10,
-            "difficulty": 20,
-            "cpc": 8.1,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager free course",
-            "volume": 10,
-            "difficulty": 20,
-            "cpc": 8.77,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course fees",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": 7.25,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "google ai product manager course",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager microsoft course",
-            "volume": 10,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager course review",
-            "volume": null,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "commercial",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "ai product manager online course",
-            "volume": null,
-            "difficulty": null,
-            "cpc": null,
-            "intent": "informational",
-            "source_seed": "AI product manager course"
-          },
-          {
-            "keyword": "AI building community",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "AI community events",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "hands-on AI for product managers",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "product manager AI blog",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "product management newsletter",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "AI native product manager",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "knowledge graph guide",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "hands-on AI course",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "agentic commerce building blocks",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "AI evals for builders",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          },
-          {
-            "keyword": "AI PM community",
-            "volume": 0,
-            "difficulty": 0,
-            "cpc": 0,
-            "intent": "informational",
-            "source": "seed"
-          }
+        {
+         "keyword": "ai product management tools",
+         "volume": 90,
+         "difficulty": 4,
+         "cpc": 14.09,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "ai product management tool",
+         "volume": 90,
+         "difficulty": 0,
+         "cpc": 14.09,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "product management ai tools",
+         "volume": 50,
+         "difficulty": 7,
+         "cpc": 30.34,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "product management ai tool",
+         "volume": 50,
+         "difficulty": 0,
+         "cpc": 30.34,
+         "intent": "commercial"
+        }
+       ]
+      },
+      "opportunity": "medium",
+      "opportunity_rule": "300+ total volume",
+      "selection_reason": "This cluster captures product managers actively choosing tools for AI prototyping and product work, with 720 total volume, an average difficulty of 1.7, and a commercial share of 0.88.",
+      "what_it_is": "Tool-selection guidance for product managers comparing software used to prototype, test, and ship AI-enabled product experiences.",
+      "how_to_use_it": "Publish a technically credible, test-driven tools pillar organized by jobs such as prototyping, evaluation, agent orchestration, and knowledge-graph construction rather than a generic roundup."
+     },
+     {
+      "cluster_id": 5,
+      "cluster_name": "Product leadership learning programs",
+      "head_term": "ai product management course",
+      "keywords": [
+       "ai product management courses",
+       "ai product management course",
+       "ai for product management courses",
+       "ai for product management course",
+       "ai product management bootcamp",
+       "ai product management specialization",
+       "ai product management training",
+       "product management ai courses",
+       "product management ai course",
+       "free ai product management courses",
+       "product management course",
+       "ai product management certification",
+       "ai product management certificate",
+       "maven ai product management certification",
+       "agentic ai product management certification",
+       "product management ai certification",
+       "ai product management certifications",
+       "best ai product management certification"
+      ],
+      "intent": "informational",
+      "avg_volume": 111,
+      "avg_difficulty": 20.5,
+      "rationale": "Queries seek structured learning paths and educational program options.",
+      "name": "Product leadership learning programs",
+      "merged_from": [
+       "Product leadership learning programs",
+       "Professional credential paths"
+      ],
+      "merge_reason": "Google returns 62% of the same results for both, so one page can serve them",
+      "total_volume": 2030,
+      "market": "US-EN",
+      "keyword_stats": {
+       "ai product management courses": {
+        "volume": 390,
+        "difficulty": 20,
+        "intent": "informational",
+        "cpc": 15.17
+       },
+       "ai product management course": {
+        "volume": 390,
+        "difficulty": 20,
+        "intent": "informational",
+        "cpc": 15.17
+       },
+       "ai for product management courses": {
+        "volume": 110,
+        "difficulty": 20,
+        "intent": "informational",
+        "cpc": 19.24
+       },
+       "ai for product management course": {
+        "volume": 110,
+        "difficulty": 22,
+        "intent": "informational",
+        "cpc": 19.24
+       },
+       "ai product management bootcamp": {
+        "volume": 50,
+        "difficulty": 14,
+        "intent": "informational",
+        "cpc": 12.07
+       },
+       "ai product management specialization": {
+        "volume": 50,
+        "difficulty": 7,
+        "intent": "informational",
+        "cpc": 12.68
+       },
+       "ai product management training": {
+        "volume": 40,
+        "difficulty": 30,
+        "intent": "informational",
+        "cpc": 10.84
+       },
+       "product management ai courses": {
+        "volume": 30,
+        "difficulty": 21,
+        "intent": "informational",
+        "cpc": 29.91
+       },
+       "product management ai course": {
+        "volume": 30,
+        "difficulty": 20,
+        "intent": "informational",
+        "cpc": 29.91
+       },
+       "free ai product management courses": {
+        "volume": 20,
+        "difficulty": 20,
+        "intent": "informational",
+        "cpc": 12.08
+       },
+       "product management course": {
+        "intent": "informational"
+       },
+       "ai product management certification": {
+        "volume": 320,
+        "difficulty": 36,
+        "intent": "informational",
+        "cpc": 17.03
+       },
+       "ai product management certificate": {
+        "volume": 320,
+        "difficulty": 24,
+        "intent": "informational",
+        "cpc": 17.03
+       },
+       "maven ai product management certification": {
+        "volume": 40,
+        "difficulty": 9,
+        "intent": "informational",
+        "cpc": 8.51
+       },
+       "agentic ai product management certification": {
+        "volume": 40,
+        "difficulty": 19,
+        "intent": "informational",
+        "cpc": 21.29
+       },
+       "product management ai certification": {
+        "volume": 30,
+        "difficulty": 29,
+        "intent": "informational",
+        "cpc": 16.53
+       },
+       "ai product management certifications": {
+        "volume": 30,
+        "difficulty": 30,
+        "intent": "informational"
+       },
+       "best ai product management certification": {
+        "volume": 30,
+        "difficulty": 28,
+        "intent": "commercial",
+        "cpc": 14.12
+       }
+      },
+      "metrics": {
+       "keyword_count": 18,
+       "total_volume": 2030,
+       "max_volume": 390,
+       "median_volume": 40,
+       "avg_difficulty": 20.5,
+       "max_difficulty": 36,
+       "difficulty_measured_for": 18,
+       "avg_cpc": 15.05,
+       "max_cpc": 29.91,
+       "commercial_keywords": 1,
+       "commercial_share": 0.06,
+       "top_keywords": [
+        {
+         "keyword": "ai product management courses",
+         "volume": 390,
+         "difficulty": 20,
+         "cpc": 15.17,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai product management course",
+         "volume": 390,
+         "difficulty": 20,
+         "cpc": 15.17,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai product management certification",
+         "volume": 320,
+         "difficulty": 36,
+         "cpc": 17.03,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai product management certificate",
+         "volume": 320,
+         "difficulty": 24,
+         "cpc": 17.03,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai for product management courses",
+         "volume": 110,
+         "difficulty": 20,
+         "cpc": 19.24,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "high",
+      "opportunity_rule": "1000+ total volume at difficulty 30 or below",
+      "selection_reason": "This cluster reaches the business’s exact professional audience at structured-learning intent and supports its future course model, with 2,030 total volume and an average CPC of $15.05.",
+      "what_it_is": "Learning paths, courses, bootcamps, and practical training sought by product managers who want to become capable AI product builders.",
+      "how_to_use_it": "Create a definitive build-first AI product management curriculum page that contrasts hands-on systems work with superficial prompt-engineering and beginner programs.",
+      "estimated_total_volume": 1998
+     },
+     {
+      "cluster_id": 10,
+      "cluster_name": "Model evaluation engineering",
+      "head_term": "lm-evaluation-harness",
+      "keywords": [
+       "lm-evaluation-harness",
+       "eval systems",
+       "alpha judge",
+       "ai evals for engineers & pms",
+       "evaluation harness",
+       "lm harness",
+       "evals for ai engineers",
+       "llm evaluation harness",
+       "ai evals course",
+       "sql eval",
+       "LLM evaluation workflows",
+       "LLM evaluation course"
+      ],
+      "intent": "informational",
+      "avg_volume": 146,
+      "avg_difficulty": 7.8,
+      "rationale": "Queries cover model testing frameworks, evaluation workflows, and training.",
+      "name": "Model evaluation engineering",
+      "total_volume": 1750,
+      "market": "US-EN",
+      "keyword_stats": {
+       "lm-evaluation-harness": {
+        "volume": 880,
+        "difficulty": 7,
+        "intent": "informational",
+        "cpc": 17.479999542236328,
+        "owned_by": [
+         "parlance-labs.com"
         ]
-      }
-    },
-    {
-      "id": "clusters",
-      "label": "Clusters",
-      "status": "done",
-      "artifact": {
-        "count": 3,
-        "clusters": [
-          {
-            "cluster_id": 1,
-            "cluster_name": "Core PM learning",
-            "head_term": "ai product manager course",
-            "keywords": [
-              "ai product manager course",
-              "product manager ai course",
-              "course for ai product manager",
-              "ai product manager full course",
-              "ai product manager online course",
-              "ai product manager course free",
-              "ai product manager course free with certificate",
-              "free ai product manager course",
-              "ai product manager free course",
-              "ai product manager certification",
-              "ai product manager course in india",
-              "ai product manager course with placement",
-              "ai product manager course fees",
-              "best ai product manager course",
-              "best course for ai product manager",
-              "ai product manager course review",
-              "gen ai product manager course",
-              "ai ml product manager course",
-              "ai for product manager course",
-              "ai/ml product manager course",
-              "AI native product manager"
-            ],
-            "intent": "informational",
-            "avg_volume": 74,
-            "avg_difficulty": 14,
-            "rationale": "General PM learning intent.",
-            "name": "Core PM learning",
-            "merged_from": [
-              "Core PM learning",
-              "Free PM learning",
-              "Cert career",
-              "Best reviews",
-              "AI ML GenAI PM"
-            ],
-            "merge_reason": "Google returns 38% of the same results for both, so one page can serve them",
-            "total_volume": 1554,
-            "market": "US-EN",
-            "keyword_stats": {
-              "ai product manager course": {
-                "volume": 320,
-                "difficulty": 30,
-                "intent": "informational",
-                "cpc": 13.99
-              },
-              "product manager ai course": {
-                "volume": 30,
-                "difficulty": 22,
-                "intent": "informational",
-                "cpc": 26.91
-              },
-              "course for ai product manager": {
-                "volume": 10,
-                "difficulty": 20,
-                "intent": "informational"
-              },
-              "ai product manager full course": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai product manager online course": {
-                "intent": "informational"
-              },
-              "ai product manager course free": {
-                "volume": 50,
-                "difficulty": 20,
-                "intent": "informational",
-                "cpc": 5.61
-              },
-              "ai product manager course free with certificate": {
-                "volume": 10,
-                "intent": "informational",
-                "cpc": 7.31
-              },
-              "free ai product manager course": {
-                "volume": 10,
-                "difficulty": 20,
-                "intent": "informational",
-                "cpc": 8.1
-              },
-              "ai product manager free course": {
-                "volume": 10,
-                "difficulty": 20,
-                "intent": "informational",
-                "cpc": 8.77
-              },
-              "ai product manager certification": {
-                "volume": 720,
-                "difficulty": 24,
-                "intent": "informational",
-                "cpc": 16.65
-              },
-              "ai product manager course in india": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai product manager course with placement": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai product manager course fees": {
-                "volume": 10,
-                "intent": "informational",
-                "cpc": 7.25
-              },
-              "best ai product manager course": {
-                "volume": 30,
-                "difficulty": 44,
-                "intent": "commercial",
-                "cpc": 14.46
-              },
-              "best course for ai product manager": {
-                "volume": 10,
-                "difficulty": 31,
-                "intent": "commercial"
-              },
-              "ai product manager course review": {
-                "intent": "commercial"
-              },
-              "gen ai product manager course": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai ml product manager course": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai for product manager course": {
-                "volume": 10,
-                "difficulty": 20,
-                "intent": "informational"
-              },
-              "ai/ml product manager course": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "AI native product manager": {
-                "intent": "informational"
-              }
-            },
-            "metrics": {
-              "keyword_count": 21,
-              "total_volume": 1280,
-              "max_volume": 720,
-              "median_volume": 10,
-              "avg_difficulty": 12.0,
-              "max_difficulty": 44,
-              "avg_cpc": 5.19,
-              "max_cpc": 26.91,
-              "commercial_keywords": 3,
-              "commercial_share": 0.14,
-              "top_keywords": [
-                {
-                  "keyword": "ai product manager certification",
-                  "volume": 720,
-                  "difficulty": 24,
-                  "cpc": 16.65,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "ai product manager course",
-                  "volume": 320,
-                  "difficulty": 30,
-                  "cpc": 13.99,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "ai product manager course free",
-                  "volume": 50,
-                  "difficulty": 20,
-                  "cpc": 5.61,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "product manager ai course",
-                  "volume": 30,
-                  "difficulty": 22,
-                  "cpc": 26.91,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "best ai product manager course",
-                  "volume": 30,
-                  "difficulty": 44,
-                  "cpc": 14.46,
-                  "intent": "commercial"
-                }
-              ]
-            },
-            "opportunity": "high",
-            "opportunity_rule": "1000+ total volume at difficulty 30 or below",
-            "selection_reason": "It reaches product managers actively searching for AI PM education (total_volume 1280, avg_difficulty 12.0) and gives Product Pirates a course-seeking entry point to convert generic learners into its hands-on building community and future course."
-          },
-          {
-            "cluster_id": 8,
-            "cluster_name": "Community future",
-            "head_term": "hugging face the ai community building the future",
-            "keywords": [
-              "building the epistemic community of ai safety",
-              "hugging face the ai community building the future",
-              "ai community building the future",
-              "the ai community building the future",
-              "AI building community",
-              "AI community events",
-              "AI PM community"
-            ],
-            "intent": "informational",
-            "avg_volume": 6,
-            "avg_difficulty": null,
-            "rationale": "Community building events.",
-            "name": "Community future",
-            "total_volume": 42,
-            "market": "US-EN",
-            "keyword_stats": {
-              "building the epistemic community of ai safety": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "hugging face the ai community building the future": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai community building the future": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "the ai community building the future": {
-                "volume": 10,
-                "intent": "informational",
-                "cpc": 4.68
-              },
-              "AI building community": {
-                "intent": "informational"
-              },
-              "AI community events": {
-                "intent": "informational"
-              },
-              "AI PM community": {
-                "intent": "informational"
-              }
-            },
-            "metrics": {
-              "keyword_count": 7,
-              "total_volume": 40,
-              "max_volume": 10,
-              "median_volume": 10,
-              "avg_difficulty": 0.0,
-              "max_difficulty": 0,
-              "avg_cpc": 0.67,
-              "max_cpc": 4.68,
-              "commercial_keywords": 0,
-              "commercial_share": 0.0,
-              "top_keywords": [
-                {
-                  "keyword": "building the epistemic community of ai safety",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": null,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "hugging face the ai community building the future",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": null,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "ai community building the future",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": null,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "the ai community building the future",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": 4.68,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "AI building community",
-                  "volume": 0,
-                  "difficulty": 0,
-                  "cpc": 0,
-                  "intent": "informational"
-                }
-              ]
-            },
-            "opportunity": "low",
-            "opportunity_rule": "under 300 total volume",
-            "selection_reason": "It directly serves the community-of-practice and event-format mission with terms like AI PM community and AI community events, making it a tightly relevant pillar despite total_volume 40."
-          },
-          {
-            "cluster_id": 10,
-            "cluster_name": "Builder hands-on",
-            "head_term": "hands-on AI course",
-            "keywords": [
-              "knowledge graph guide",
-              "hands-on AI course",
-              "agentic commerce building blocks",
-              "AI evals for builders"
-            ],
-            "intent": "informational",
-            "avg_volume": 0,
-            "avg_difficulty": null,
-            "rationale": "Hands-on builder topics intent.",
-            "name": "Builder hands-on",
-            "market": "US-EN",
-            "keyword_stats": {
-              "knowledge graph guide": {
-                "intent": "informational"
-              },
-              "hands-on AI course": {
-                "intent": "informational"
-              },
-              "agentic commerce building blocks": {
-                "intent": "informational"
-              },
-              "AI evals for builders": {
-                "intent": "informational"
-              }
-            },
-            "metrics": {
-              "keyword_count": 4,
-              "total_volume": 0,
-              "max_volume": 0,
-              "median_volume": 0,
-              "avg_difficulty": 0.0,
-              "max_difficulty": 0,
-              "avg_cpc": 0.0,
-              "max_cpc": 0,
-              "commercial_keywords": 0,
-              "commercial_share": 0.0,
-              "top_keywords": [
-                {
-                  "keyword": "knowledge graph guide",
-                  "volume": 0,
-                  "difficulty": 0,
-                  "cpc": 0,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "hands-on AI course",
-                  "volume": 0,
-                  "difficulty": 0,
-                  "cpc": 0,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "agentic commerce building blocks",
-                  "volume": 0,
-                  "difficulty": 0,
-                  "cpc": 0,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "AI evals for builders",
-                  "volume": 0,
-                  "difficulty": 0,
-                  "cpc": 0,
-                  "intent": "informational"
-                }
-              ]
-            },
-            "opportunity": "no volume data",
-            "opportunity_rule": "no measurable search volume for these terms",
-            "selection_reason": "It owns the differentiated technical-practitioner topics Product Pirates wants to be known for—knowledge graphs, evals, and agentic commerce—so it supports authority even though the cluster shows no volume data."
-          }
-        ],
-        "discarded": [
-          {
-            "cluster_id": 5,
-            "cluster_name": "Provider Coursera IBM",
-            "head_term": "ai product manager coursera",
-            "keywords": [
-              "ai product manager coursera",
-              "ibm ai product manager course",
-              "ai product manager course coursera"
-            ],
-            "intent": "informational",
-            "avg_volume": 20,
-            "avg_difficulty": 20,
-            "rationale": "Coursera IBM provider intent.",
-            "name": "Provider Coursera IBM",
-            "total_volume": 60,
-            "market": "US-EN",
-            "keyword_stats": {
-              "ai product manager coursera": {
-                "volume": 30,
-                "difficulty": 25,
-                "intent": "informational",
-                "cpc": 7.41
-              },
-              "ibm ai product manager course": {
-                "volume": 20,
-                "intent": "informational"
-              },
-              "ai product manager course coursera": {
-                "volume": 10,
-                "difficulty": 36,
-                "intent": "informational",
-                "cpc": 1.68
-              }
-            },
-            "metrics": {
-              "keyword_count": 3,
-              "total_volume": 60,
-              "max_volume": 30,
-              "median_volume": 20,
-              "avg_difficulty": 20.3,
-              "max_difficulty": 36,
-              "avg_cpc": 3.03,
-              "max_cpc": 7.41,
-              "commercial_keywords": 0,
-              "commercial_share": 0.0,
-              "top_keywords": [
-                {
-                  "keyword": "ai product manager coursera",
-                  "volume": 30,
-                  "difficulty": 25,
-                  "cpc": 7.41,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "ibm ai product manager course",
-                  "volume": 20,
-                  "difficulty": null,
-                  "cpc": null,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "ai product manager course coursera",
-                  "volume": 10,
-                  "difficulty": 36,
-                  "cpc": 1.68,
-                  "intent": "informational"
-                }
-              ]
-            },
-            "opportunity": "low",
-            "opportunity_rule": "under 300 total volume",
-            "discard_reason": "It is provider-specific competitor intent for Coursera/IBM credentials rather than Product Pirates' hands-on builder community, and it only has total_volume 60."
-          },
-          {
-            "cluster_id": 6,
-            "cluster_name": "Provider Google MS",
-            "head_term": "ai product manager course google",
-            "keywords": [
-              "ai product manager course google",
-              "ai product manager course udemy",
-              "ai product manager course microsoft",
-              "microsoft ai product manager course",
-              "google ai product manager course",
-              "ai product manager microsoft course"
-            ],
-            "intent": "informational",
-            "avg_volume": 10,
-            "avg_difficulty": null,
-            "rationale": "Other provider course intent.",
-            "name": "Provider Google MS",
-            "total_volume": 60,
-            "market": "US-EN",
-            "keyword_stats": {
-              "ai product manager course google": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai product manager course udemy": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai product manager course microsoft": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "microsoft ai product manager course": {
-                "volume": 10,
-                "intent": "informational",
-                "cpc": 5.54
-              },
-              "google ai product manager course": {
-                "volume": 10,
-                "intent": "informational"
-              },
-              "ai product manager microsoft course": {
-                "volume": 10,
-                "intent": "informational"
-              }
-            },
-            "metrics": {
-              "keyword_count": 6,
-              "total_volume": 60,
-              "max_volume": 10,
-              "median_volume": 10,
-              "avg_difficulty": 0.0,
-              "max_difficulty": 0,
-              "avg_cpc": 0.92,
-              "max_cpc": 5.54,
-              "commercial_keywords": 0,
-              "commercial_share": 0.0,
-              "top_keywords": [
-                {
-                  "keyword": "ai product manager course google",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": null,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "ai product manager course udemy",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": null,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "ai product manager course microsoft",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": null,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "microsoft ai product manager course",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": 5.54,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "google ai product manager course",
-                  "volume": 10,
-                  "difficulty": null,
-                  "cpc": null,
-                  "intent": "informational"
-                }
-              ]
-            },
-            "opportunity": "low",
-            "opportunity_rule": "under 300 total volume",
-            "discard_reason": "It targets Google/Microsoft/Udemy course seekers, which is not the business's community-first, build-by-doing positioning, and it has total_volume 60 with commercial_share 0.0."
-          },
-          {
-            "cluster_id": 9,
-            "cluster_name": "PM content",
-            "head_term": "product manager AI blog",
-            "keywords": [
-              "hands-on AI for product managers",
-              "product manager AI blog",
-              "product management newsletter"
-            ],
-            "intent": "informational",
-            "avg_volume": 0,
-            "avg_difficulty": null,
-            "rationale": "PM content newsletter intent.",
-            "name": "PM content",
-            "market": "US-EN",
-            "keyword_stats": {
-              "hands-on AI for product managers": {
-                "intent": "informational"
-              },
-              "product manager AI blog": {
-                "intent": "informational"
-              },
-              "product management newsletter": {
-                "intent": "informational"
-              }
-            },
-            "metrics": {
-              "keyword_count": 3,
-              "total_volume": 0,
-              "max_volume": 0,
-              "median_volume": 0,
-              "avg_difficulty": 0.0,
-              "max_difficulty": 0,
-              "avg_cpc": 0.0,
-              "max_cpc": 0,
-              "commercial_keywords": 0,
-              "commercial_share": 0.0,
-              "top_keywords": [
-                {
-                  "keyword": "hands-on AI for product managers",
-                  "volume": 0,
-                  "difficulty": 0,
-                  "cpc": 0,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "product manager AI blog",
-                  "volume": 0,
-                  "difficulty": 0,
-                  "cpc": 0,
-                  "intent": "informational"
-                },
-                {
-                  "keyword": "product management newsletter",
-                  "volume": 0,
-                  "difficulty": 0,
-                  "cpc": 0,
-                  "intent": "informational"
-                }
-              ]
-            },
-            "opportunity": "no volume data",
-            "opportunity_rule": "no measurable search volume for these terms",
-            "discard_reason": "It is too weak and overlapping: total_volume 0 and its blog/newsletter intent is already better covered by the Builder hands-on pillar with more specific technical topics."
-          }
-        ],
-        "selected": true
-      }
-    },
-    {
-      "id": "ai_citability",
-      "label": "AI citability",
-      "status": "done",
-      "artifact": {
-        "market": "2840-en",
-        "generated_at": "2026-09-01T17:57:59.550756+00:00",
-        "head_terms": [
-          {
-            "head_term": "ai product manager course",
-            "questions_asked": 7,
-            "ai_search_volume": 930,
-            "answer_share": 1.0,
-            "top_questions": [
-              "ai product manager course",
-              "ai courses for product managers",
-              "ai for product managers course",
-              "best ai courses for product managers",
-              "best ai course for product managers",
-              "ai product manager course free",
-              "best ai product manager course"
-            ],
-            "top_cited_sources": [
-              "www.coursera.org",
-              "maven.com",
-              "www.pendo.io",
-              "www.reddit.com",
-              "cpoclub.com"
-            ],
-            "paa": [
-              "How do I become an AI product manager?",
-              "Which AI course is best for product managers?",
-              "What qualifications are required for AI product manager?",
-              "How much does an AI product manager make?"
-            ]
-          },
-          {
-            "head_term": "hugging face the ai community building the future",
-            "questions_asked": 0,
-            "ai_search_volume": 0,
-            "answer_share": 0,
-            "top_questions": [],
-            "top_cited_sources": [],
-            "paa": []
-          },
-          {
-            "head_term": "hands-on AI course",
-            "questions_asked": 0,
-            "ai_search_volume": 0,
-            "answer_share": 0,
-            "top_questions": [],
-            "top_cited_sources": [],
-            "paa": [
-              "What is the 30% rule in AI?",
-              "What's the best AI course for beginners?",
-              "Can I learn AI in 3 months?",
-              "Can I learn AI for free?"
-            ]
-          }
-        ],
-        "questions_captured": 7,
-        "overall_answer_share": 1.0,
-        "top_cited_sources": [
-          {
-            "domain": "www.coursera.org",
-            "mentions": 6
-          },
-          {
-            "domain": "maven.com",
-            "mentions": 3
-          },
-          {
-            "domain": "www.pendo.io",
-            "mentions": 3
-          },
-          {
-            "domain": "www.reddit.com",
-            "mentions": 3
-          },
-          {
-            "domain": "cpoclub.com",
-            "mentions": 3
-          },
-          {
-            "domain": "www.youtube.com",
-            "mentions": 3
-          },
-          {
-            "domain": "productschool.com",
-            "mentions": 2
-          },
-          {
-            "domain": "online.stanford.edu",
-            "mentions": 2
-          },
-          {
-            "domain": "community.deeplearning.ai",
-            "mentions": 2
-          },
-          {
-            "domain": "www.udacity.com",
-            "mentions": 1
-          }
+       },
+       "eval systems": {
+        "volume": 210,
+        "difficulty": 21,
+        "intent": "informational",
+        "owned_by": [
+         "lennysnewsletter.com"
         ]
-      }
+       },
+       "alpha judge": {
+        "volume": 170,
+        "intent": "informational",
+        "owned_by": [
+         "softuni.bg"
+        ]
+       },
+       "ai evals for engineers & pms": {
+        "volume": 140,
+        "difficulty": 17,
+        "intent": "informational",
+        "cpc": 7.529999732971191,
+        "owned_by": [
+         "parlance-labs.com",
+         "maven.com"
+        ]
+       },
+       "evaluation harness": {
+        "volume": 90,
+        "difficulty": 9,
+        "intent": "informational",
+        "cpc": 50.369998931884766,
+        "owned_by": [
+         "parlance-labs.com"
+        ]
+       },
+       "lm harness": {
+        "volume": 70,
+        "difficulty": 3,
+        "intent": "informational",
+        "owned_by": [
+         "parlance-labs.com"
+        ]
+       },
+       "evals for ai engineers": {
+        "volume": 70,
+        "difficulty": 12,
+        "intent": "informational",
+        "cpc": 10.529999732971191,
+        "owned_by": [
+         "maven.com"
+        ]
+       },
+       "llm evaluation harness": {
+        "volume": 50,
+        "difficulty": 5,
+        "intent": "informational",
+        "cpc": 11.449999809265137,
+        "owned_by": [
+         "parlance-labs.com"
+        ]
+       },
+       "ai evals course": {
+        "volume": 50,
+        "difficulty": 8,
+        "intent": "informational",
+        "cpc": 10.949999809265137,
+        "owned_by": [
+         "maven.com"
+        ]
+       },
+       "sql eval": {
+        "volume": 20,
+        "difficulty": 12,
+        "intent": "informational",
+        "owned_by": [
+         "parlance-labs.com"
+        ]
+       },
+       "LLM evaluation workflows": {
+        "intent": "informational"
+       },
+       "LLM evaluation course": {
+        "intent": "informational"
+       }
+      },
+      "metrics": {
+       "keyword_count": 12,
+       "total_volume": 1750,
+       "max_volume": 880,
+       "median_volume": 70,
+       "avg_difficulty": 7.8,
+       "max_difficulty": 21,
+       "difficulty_measured_for": 12,
+       "avg_cpc": 9.03,
+       "max_cpc": 50.37,
+       "commercial_keywords": 0,
+       "commercial_share": 0.0,
+       "top_keywords": [
+        {
+         "keyword": "lm-evaluation-harness",
+         "volume": 880,
+         "difficulty": 7,
+         "cpc": 17.479999542236328,
+         "intent": "informational"
+        },
+        {
+         "keyword": "eval systems",
+         "volume": 210,
+         "difficulty": 21,
+         "cpc": null,
+         "intent": "informational"
+        },
+        {
+         "keyword": "alpha judge",
+         "volume": 170,
+         "difficulty": 0,
+         "cpc": null,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai evals for engineers & pms",
+         "volume": 140,
+         "difficulty": 17,
+         "cpc": 7.529999732971191,
+         "intent": "informational"
+        },
+        {
+         "keyword": "evaluation harness",
+         "volume": 90,
+         "difficulty": 9,
+         "cpc": 50.369998931884766,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "high",
+      "opportunity_rule": "1000+ total volume at difficulty 30 or below",
+      "selection_reason": "This is the strongest practitioner fit because it captures engineers and PMs building evaluation systems, with 1,750 total volume and an average difficulty of 7.8.",
+      "what_it_is": "Technical guidance for AI product managers and engineers designing evaluation harnesses, judges, test datasets, and repeatable LLM evaluation workflows.",
+      "how_to_use_it": "Build a pillar guide supported by code-adjacent session write-ups that show how to create, run, debug, and operationalize eval systems against real product scenarios.",
+      "estimated_total_volume": 1752
+     }
+    ],
+    "discarded": [
+     {
+      "cluster_id": 1,
+      "cluster_name": "Workflow automation concepts",
+      "head_term": "ai workflows",
+      "keywords": [
+       "ai workflows",
+       "ai workflows automation",
+       "ai automation workflows",
+       "ai automation examples",
+       "n8n ai automation workflows",
+       "gumloop ai automation workflows",
+       "free ai automation workflows",
+       "multi-step AI workflows"
+      ],
+      "intent": "informational",
+      "avg_volume": 538,
+      "avg_difficulty": 9,
+      "rationale": "Queries seek automation patterns, examples, and workflow implementation guidance.",
+      "name": "Workflow automation concepts",
+      "total_volume": 4304,
+      "market": "US-EN",
+      "keyword_stats": {
+       "ai workflows": {
+        "volume": 2900,
+        "difficulty": 23,
+        "intent": "informational",
+        "cpc": 32.42
+       },
+       "ai workflows automation": {
+        "volume": 1000,
+        "intent": "informational",
+        "cpc": 43.35
+       },
+       "ai automation workflows": {
+        "volume": 260,
+        "difficulty": 26,
+        "intent": "informational",
+        "cpc": 33.57
+       },
+       "ai automation examples": {
+        "volume": 110,
+        "intent": "informational",
+        "cpc": 16.93
+       },
+       "n8n ai automation workflows": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "gumloop ai automation workflows": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "free ai automation workflows": {
+        "volume": 10,
+        "difficulty": 24,
+        "intent": "informational"
+       },
+       "multi-step AI workflows": {
+        "intent": "informational"
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 58/100 - Implementation, examples, pricing, and vendor-navigation intents are mixed.. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 2,
+      "cluster_name": "Automation platform selection",
+      "head_term": "n8n",
+      "keywords": [
+       "n8n",
+       "ai workflow automation tool",
+       "ai workflow builder",
+       "best ai workflow automation tools"
+      ],
+      "intent": "commercial",
+      "avg_volume": 50468,
+      "avg_difficulty": 36,
+      "rationale": "Queries compare platforms and tools for building automated workflows.",
+      "name": "Automation platform selection",
+      "total_volume": 201872,
+      "market": "US-EN",
+      "keyword_stats": {
+       "n8n": {
+        "volume": 201000,
+        "difficulty": 47,
+        "intent": "informational",
+        "cpc": 2.3
+       },
+       "ai workflow automation tool": {
+        "volume": 480,
+        "difficulty": 32,
+        "intent": "commercial",
+        "cpc": 41.59
+       },
+       "ai workflow builder": {
+        "volume": 320,
+        "difficulty": 29,
+        "intent": "informational",
+        "cpc": 45.66
+       },
+       "best ai workflow automation tools": {
+        "volume": 70,
+        "difficulty": 37,
+        "intent": "commercial",
+        "cpc": 6.87
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 54/100 - Generic platform comparison is diluted by a dominant third-party navigational term.. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 3,
+      "cluster_name": "Product leadership and AI foundations",
+      "head_term": "ai for product management",
+      "keywords": [
+       "ai for product management",
+       "ai product management",
+       "will product management be replaced by ai",
+       "ai in product management",
+       "ai product management jobs",
+       "product management ai",
+       "what is ai product management",
+       "generative ai for product management",
+       "ai product management book",
+       "ai and product management",
+       "ai product management books",
+       "product management and ai",
+       "how to use ai in product management",
+       "ai product management salary",
+       "ai product management reddit"
+      ],
+      "intent": "informational",
+      "avg_volume": 315,
+      "avg_difficulty": 8,
+      "rationale": "Queries explore AI's role, impact, and careers in product leadership.",
+      "name": "Product leadership and AI foundations",
+      "total_volume": 4725,
+      "market": "US-EN",
+      "keyword_stats": {
+       "ai for product management": {
+        "volume": 3600,
+        "difficulty": 9,
+        "intent": "informational",
+        "cpc": 11.88
+       },
+       "ai product management": {
+        "volume": 480,
+        "difficulty": 10,
+        "intent": "informational",
+        "cpc": 17.07
+       },
+       "will product management be replaced by ai": {
+        "volume": 110,
+        "difficulty": 4,
+        "intent": "informational"
+       },
+       "ai in product management": {
+        "volume": 90,
+        "difficulty": 17,
+        "intent": "informational",
+        "cpc": 20.36
+       },
+       "ai product management jobs": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 6.42
+       },
+       "product management ai": {
+        "volume": 70,
+        "difficulty": 20,
+        "intent": "informational",
+        "cpc": 19.86
+       },
+       "what is ai product management": {
+        "volume": 50,
+        "difficulty": 10,
+        "intent": "informational",
+        "cpc": 9.04
+       },
+       "generative ai for product management": {
+        "volume": 50,
+        "difficulty": 2,
+        "intent": "informational",
+        "cpc": 12.62
+       },
+       "ai product management book": {
+        "volume": 40,
+        "intent": "informational",
+        "cpc": 3.33
+       },
+       "ai and product management": {
+        "volume": 40,
+        "difficulty": 27,
+        "intent": "informational",
+        "cpc": 12.1
+       },
+       "ai product management books": {
+        "volume": 40,
+        "intent": "informational",
+        "cpc": 3.33
+       },
+       "product management and ai": {
+        "volume": 30,
+        "difficulty": 13,
+        "intent": "informational",
+        "cpc": 44.62
+       },
+       "how to use ai in product management": {
+        "volume": 30,
+        "difficulty": 3,
+        "intent": "informational",
+        "cpc": 10.58
+       },
+       "ai product management salary": {
+        "volume": 20,
+        "intent": "informational"
+       },
+       "ai product management reddit": {
+        "volume": 10,
+        "intent": "informational"
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 34/100 - Catch-all mixing foundations, careers, displacement anxiety, and books; much is explicitly out of scope.. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 7,
+      "cluster_name": "Named education providers",
+      "head_term": "coursera ai product management",
+      "keywords": [
+       "coursera ai product management",
+       "maven ai product management",
+       "pendo ai for product management",
+       "ai startup product management andrew ng",
+       "duke ai product management",
+       "coursera ai product management courses",
+       "pendo ai for product management exam answers",
+       "pendo ai for product management course",
+       "ai for product management pendo",
+       "duke ai product management specialization",
+       "reforge ai product management",
+       "ai product management specialization duke university coursera",
+       "stanford ai product management",
+       "ai product management specialization duke university"
+      ],
+      "intent": "informational",
+      "avg_volume": 51,
+      "avg_difficulty": 11,
+      "rationale": "Queries target specific schools, platforms, instructors, and provider offerings.",
+      "name": "Named education providers",
+      "total_volume": 714,
+      "market": "US-EN",
+      "keyword_stats": {
+       "coursera ai product management": {
+        "volume": 140,
+        "difficulty": 35,
+        "intent": "informational",
+        "cpc": 6.17
+       },
+       "maven ai product management": {
+        "volume": 110,
+        "difficulty": 7,
+        "intent": "informational",
+        "cpc": 16.07
+       },
+       "pendo ai for product management": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 20.77
+       },
+       "ai startup product management andrew ng": {
+        "volume": 50,
+        "difficulty": 14,
+        "intent": "informational"
+       },
+       "duke ai product management": {
+        "volume": 40,
+        "difficulty": 1,
+        "intent": "informational",
+        "cpc": 9.72
+       },
+       "coursera ai product management courses": {
+        "volume": 40,
+        "difficulty": 36,
+        "intent": "informational"
+       },
+       "pendo ai for product management exam answers": {
+        "volume": 40,
+        "intent": "informational"
+       },
+       "pendo ai for product management course": {
+        "volume": 40,
+        "intent": "informational",
+        "cpc": 13.04
+       },
+       "ai for product management pendo": {
+        "volume": 30,
+        "difficulty": 2,
+        "intent": "informational"
+       },
+       "duke ai product management specialization": {
+        "volume": 30,
+        "difficulty": 5,
+        "intent": "informational",
+        "cpc": 15.27
+       },
+       "reforge ai product management": {
+        "volume": 30,
+        "difficulty": 2,
+        "intent": "informational",
+        "cpc": 4.66
+       },
+       "ai product management specialization duke university coursera": {
+        "volume": 30,
+        "difficulty": 39,
+        "intent": "informational",
+        "cpc": 24
+       },
+       "stanford ai product management": {
+        "volume": 30,
+        "difficulty": 7,
+        "intent": "informational",
+        "cpc": 16.05
+       },
+       "ai product management specialization duke university": {
+        "volume": 30,
+        "intent": "informational",
+        "cpc": 15.37
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 12/100 - Third-party provider navigation and answer-seeking cannot become an owned content pillar.. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 8,
+      "cluster_name": "Product prototyping methods",
+      "head_term": "ai prototyping",
+      "keywords": [
+       "ai prototyping",
+       "ai prototyping for product managers",
+       "alloy ai prototyping for product management",
+       "ai prototyping for product managers maven",
+       "AI product prototyping",
+       "product management prototyping"
+      ],
+      "intent": "informational",
+      "avg_volume": 52,
+      "avg_difficulty": 1,
+      "rationale": "Queries seek methods and examples for rapid product concept creation.",
+      "name": "Product prototyping methods",
+      "total_volume": 312,
+      "market": "US-EN",
+      "keyword_stats": {
+       "ai prototyping": {
+        "volume": 260,
+        "intent": "informational",
+        "cpc": 27.579999923706055,
+        "owned_by": [
+         "lennysnewsletter.com"
+        ]
+       },
+       "ai prototyping for product managers": {
+        "volume": 30,
+        "difficulty": 7,
+        "intent": "informational",
+        "cpc": 14.2
+       },
+       "alloy ai prototyping for product management": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 14.13
+       },
+       "ai prototyping for product managers maven": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 4.64
+       },
+       "AI product prototyping": {
+        "intent": "informational"
+       },
+       "product management prototyping": {
+        "intent": "informational"
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 57/100 - Strong core theme contaminated by named-course navigation and overly broad prototyping intent.. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 9,
+      "cluster_name": "Interview preparation assistance",
+      "head_term": "ai interview",
+      "keywords": [
+       "ai interview",
+       "ai for interview",
+       "ai for interviews",
+       "ai job interview",
+       "ai interview prep",
+       "interview preparation ai"
+      ],
+      "intent": "informational",
+      "avg_volume": 405,
+      "avg_difficulty": 37.7,
+      "rationale": "Queries seek preparation support for job interview processes.",
+      "name": "Interview preparation assistance",
+      "total_volume": 2430,
+      "market": "US-EN",
+      "keyword_stats": {
+       "ai interview": {
+        "volume": 720,
+        "difficulty": 29,
+        "intent": "informational",
+        "cpc": 7.480000019073486,
+        "owned_by": [
+         "lennysnewsletter.com"
+        ]
+       },
+       "ai for interview": {
+        "volume": 590,
+        "difficulty": 53,
+        "intent": "informational",
+        "cpc": 6.510000228881836,
+        "owned_by": [
+         "lennysnewsletter.com"
+        ]
+       },
+       "ai for interviews": {
+        "volume": 590,
+        "difficulty": 54,
+        "intent": "informational",
+        "cpc": 8.640000343322754,
+        "owned_by": [
+         "lennysnewsletter.com"
+        ]
+       },
+       "ai job interview": {
+        "volume": 390,
+        "difficulty": 29,
+        "intent": "informational",
+        "cpc": 6.079999923706055,
+        "owned_by": [
+         "lennysnewsletter.com"
+        ]
+       },
+       "ai interview prep": {
+        "volume": 90,
+        "difficulty": 33,
+        "intent": "informational",
+        "cpc": 3.049999952316284,
+        "owned_by": [
+         "lennysnewsletter.com"
+        ]
+       },
+       "interview preparation ai": {
+        "volume": 50,
+        "difficulty": 28,
+        "intent": "informational",
+        "cpc": 3.190000057220459,
+        "owned_by": [
+         "lennysnewsletter.com"
+        ]
+       }
+      },
+      "metrics": {
+       "keyword_count": 6,
+       "total_volume": 2430,
+       "max_volume": 720,
+       "median_volume": 490,
+       "avg_difficulty": 37.7,
+       "max_difficulty": 54,
+       "difficulty_measured_for": 6,
+       "avg_cpc": 5.83,
+       "max_cpc": 8.64,
+       "commercial_keywords": 0,
+       "commercial_share": 0.0,
+       "top_keywords": [
+        {
+         "keyword": "ai interview",
+         "volume": 720,
+         "difficulty": 29,
+         "cpc": 7.480000019073486,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai for interview",
+         "volume": 590,
+         "difficulty": 53,
+         "cpc": 6.510000228881836,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai for interviews",
+         "volume": 590,
+         "difficulty": 54,
+         "cpc": 8.640000343322754,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai job interview",
+         "volume": 390,
+         "difficulty": 29,
+         "cpc": 6.079999923706055,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai interview prep",
+         "volume": 90,
+         "difficulty": 33,
+         "cpc": 3.049999952316284,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "medium",
+      "opportunity_rule": "300+ total volume",
+      "discard_reason": "Off-topic: AI-assisted interview preparation is not relevant to this builder community’s focus on shipping and evaluating AI systems, while its job-ad analysis concerns labor-market signals rather than candidate coaching."
+     }
+    ],
+    "selected": true
+   }
+  },
+  {
+   "id": "pillars",
+   "label": "Content pillars",
+   "status": "done",
+   "artifact": {
+    "pillars": [
+     {
+      "cluster_id": 5,
+      "cluster_name": "Product leadership learning programs",
+      "pillar_title": "The Complete Guide to AI Product Management Courses and Certifications",
+      "pillar_type": "guide",
+      "priority": 1,
+      "rationale": "Selected for the largest demand opportunity: 2,030 total volume at 20.5 average difficulty. The $15.05 average CPC further indicates meaningful value around course and certification searches."
+     },
+     {
+      "cluster_id": 10,
+      "cluster_name": "Model evaluation engineering",
+      "pillar_title": "LLM Evaluation Engineering: Harnesses, Workflows, and Evals for AI Teams",
+      "pillar_type": "hub",
+      "priority": 2,
+      "rationale": "Selected for its combination of 1,750 total volume and just 7.8 average difficulty. Its leading keyword reaches 880 volume at difficulty 7, making this a strong informational authority-building opportunity."
+     },
+     {
+      "cluster_id": 4,
+      "cluster_name": "Product leader tool selection",
+      "pillar_title": "Best AI Tools for Product Managers: A Practical Comparison",
+      "pillar_type": "comparison",
+      "priority": 3,
+      "rationale": "Selected for high conversion potential despite lower aggregate demand: 0.88 commercial share, $22.47 average CPC, and 720 total volume at only 1.7 average difficulty. These metrics support a comparison pillar aimed at tool-selection searches."
+     }
+    ],
+    "skipped": []
+   }
+  },
+  {
+   "id": "brief",
+   "label": "The brief",
+   "status": "done",
+   "artifact": {
+    "the_call": {
+     "pillar": "LLM Evaluation Engineering: Harnesses, Workflows, and Evals for AI Teams",
+     "why": "Build this first because it is the strongest practitioner fit for a community shipping and evaluating AI systems, with 1,750 total volume and 7.8 average difficulty. Its leading keyword, \"lm-evaluation-harness,\" has 880 volume at difficulty 7. The course pillar is larger at 2,030 total volume, but its 20.5 average difficulty makes it a less efficient authority-building starting point."
     },
-    {
-      "id": "pillars",
-      "label": "Content pillars",
-      "status": "done",
-      "artifact": {
-        "pillars": [
-          {
-            "cluster_id": 1,
-            "cluster_name": "Core PM learning",
-            "pillar_title": "AI Product Manager Courses and Certifications: Complete Learning and Buying Hub",
-            "pillar_type": "hub",
-            "priority": 1,
-            "rationale": "Selected because total_volume is 1280 while avg_difficulty is only 12.0, making this the strongest measured opportunity. The max_volume keyword 'ai product manager certification' has 720 searches, and avg_cpc of 5.19 with max_cpc of 26.91 indicates commercial value. A hub can cover courses, certifications, free options, fees, and best-course comparisons."
-          },
-          {
-            "cluster_id": 8,
-            "cluster_name": "Community future",
-            "pillar_title": "AI Communities Building the Future: Events, Safety Groups, and PM Networks",
-            "pillar_type": "hub",
-            "priority": 2,
-            "rationale": "Selected despite low demand because total_volume is 40 and avg_difficulty is 0.0, meaning it can be targeted with very little competition. The max_volume of 10 and avg_cpc of 0.67 show limited direct value, but the cluster supports topical depth around AI communities, events, and safety networks."
-          },
-          {
-            "cluster_id": 10,
-            "cluster_name": "Builder hands-on",
-            "pillar_title": "Hands-On AI Builder Guide: Knowledge Graphs, Agents, Evals, and Commerce Building Blocks",
-            "pillar_type": "guide",
-            "priority": 3,
-            "rationale": "Selected as a strategic experimental pillar because total_volume is 0, avg_difficulty is 0.0, and avg_cpc is 0.0, so it has no measured demand but also no measured competition. It can establish early coverage of hands-on builder topics if the content is promoted or validated internally."
-          }
-        ],
-        "skipped": []
-      }
+    "out_answer": [
+     {
+      "who": "parlance-labs.com",
+      "for_what": "evaluation-harness and LM-harness terms, including SQL eval"
+     },
+     {
+      "who": "lennysnewsletter.com",
+      "for_what": "the \"eval systems\" keyword"
+     },
+     {
+      "who": "softuni.bg",
+      "for_what": "the \"alpha judge\" keyword"
+     },
+     {
+      "who": "maven.com",
+      "for_what": "AI evals course and evals-for-engineers terms"
+     }
+    ],
+    "pieces": [
+     {
+      "title": "LM Evaluation Harness Benchmarks: What to Run Before You Trust a Model",
+      "question": "What are the benchmarks for LM Harness?",
+      "question_source": "people_also_ask",
+      "cluster": "Model evaluation engineering",
+      "target_keyword": "lm-evaluation-harness",
+      "format": "guide",
+      "asked_under": "lm-evaluation-harness",
+      "currently_answered_by": "eleuther.ai",
+      "answered_by_url": "https://www.eleuther.ai/projects/large-language-model-evaluation",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "How to Evaluate Language Models With Task-Specific Evals",
+      "question": "How do you evaluate language models?",
+      "question_source": "people_also_ask",
+      "cluster": "Model evaluation engineering",
+      "target_keyword": "LLM evaluation workflows",
+      "format": "how-to",
+      "asked_under": "lm-evaluation-harness",
+      "currently_answered_by": "medium.com",
+      "answered_by_url": "https://medium.com/data-science-at-microsoft/evaluating-llm-systems-metrics-challenges-and-best-practices-664ac25be7e5",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "Which AI Is Best for Product Managers Building, Not Just Planning?",
+      "question": "Which AI is best for product managers?",
+      "question_source": "people_also_ask",
+      "cluster": "Product leader tool selection",
+      "target_keyword": "ai tools for product management",
+      "format": "comparison",
+      "asked_under": "ai tools for product management",
+      "currently_answered_by": "reddit.com",
+      "answered_by_url": "https://www.reddit.com/r/ProductManagement/comments/1gec4ne/ai_for_product_management/",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "How Product Managers Can Use AI to Ship Better Product Decisions",
+      "question": "How can AI be used in product management?",
+      "question_source": "people_also_ask",
+      "cluster": "Product leader tool selection",
+      "target_keyword": "ai product management tools",
+      "format": "guide",
+      "asked_under": "ai tools for product management",
+      "currently_answered_by": "sachinrekhi.com",
+      "answered_by_url": "https://www.sachinrekhi.com/p/how-i-use-ai-as-a-product-manager",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "How to Become an AI Product Manager by Building Real Systems",
+      "question": "How do I become an AI product manager?",
+      "question_source": "people_also_ask",
+      "cluster": "Product leadership learning programs",
+      "target_keyword": "ai product management course",
+      "format": "guide",
+      "asked_under": "ai product management course",
+      "currently_answered_by": "reddit.com",
+      "answered_by_url": "https://www.reddit.com/r/ProductManagement/comments/1ppowkf/how_to_become_an_ai_product_manager_practical/",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "AI Product Manager Qualifications: The Technical Evidence That Matters",
+      "question": "What qualifications are required for AI product manager?",
+      "question_source": "people_also_ask",
+      "cluster": "Product leadership learning programs",
+      "target_keyword": "ai product management certification",
+      "format": "explainer",
+      "asked_under": "ai product management course",
+      "currently_answered_by": "reddit.com",
+      "answered_by_url": "https://www.reddit.com/r/ProductManagement/comments/1ppowkf/how_to_become_an_ai_product_manager_practical/",
+      "answered_by_source": "serp"
+     }
+    ],
+    "parked": [
+     {
+      "cluster": "Workflow automation concepts",
+      "why": "Parked by the validation gate because implementation, examples, pricing, and vendor-navigation intents are mixed."
+     },
+     {
+      "cluster": "Automation platform selection",
+      "why": "Parked by the validation gate because generic platform comparison is diluted by a dominant third-party navigational term."
+     },
+     {
+      "cluster": "Product leadership and AI foundations",
+      "why": "Parked by the validation gate because it mixes foundations, careers, displacement anxiety, and books, much of which is out of scope."
+     },
+     {
+      "cluster": "Named education providers",
+      "why": "Parked by the validation gate because third-party provider navigation and answer-seeking cannot become an owned content pillar."
+     },
+     {
+      "cluster": "Product prototyping methods",
+      "why": "Parked by the validation gate because a strong core theme is contaminated by named-course navigation and overly broad prototyping intent."
+     },
+     {
+      "cluster": "Interview preparation assistance",
+      "why": "Off-topic because AI-assisted interview preparation is not relevant to the builder community’s focus on shipping and evaluating AI systems."
+     }
+    ],
+    "written_at": "2026-09-02T21:59:06.086661+00:00",
+    "stale": false,
+    "based_on": {
+     "selected": [
+      "Product leader tool selection",
+      "Product leadership learning programs",
+      "Model evaluation engineering"
+     ],
+     "parked": [
+      "Workflow automation concepts",
+      "Automation platform selection",
+      "Product leadership and AI foundations",
+      "Named education providers",
+      "Product prototyping methods",
+      "Interview preparation assistance"
+     ],
+     "questions_observed": {
+      "Product leader tool selection": 4,
+      "Product leadership learning programs": 4,
+      "Model evaluation engineering": 4
+     }
     }
-  ],
-  "ended": "2026-09-01T18:02:56.032865+00:00",
-  "pinned": true,
-  "pin_note": "AI community of practice for product people. Global English audience, US market. The brief excluded prompt engineering — check whether the selection respected that."
+   }
+  }
+ ],
+ "ended": "2026-09-02T21:59:13.199492+00:00",
+ "summary": "The clustering did **not** pass its coherence gate. Five clusters were parked, and the remaining selection overweights course-shopping and tool-comparison demand while missing core agent engineering. Treat the brief as a starting point—not a finished strategy.\n\nThe strongest validated priority is **LLM Evaluation Engineering**: 1,750 aggregate US searches at 7.8 average difficulty. Build this first, ahead of the larger course cluster (2,030; difficulty 20.5). Initial pieces should answer evaluation-harness benchmarks and task-specific model evaluation directly. You must out-answer EleutherAI, Parlance Labs, Lenny’s Newsletter, Maven, and Microsoft’s Medium publication.\n\nSecondary pillars are hands-on AI product-tool comparisons and, later, build-based AI product-management education supporting course intent. The six short posts should remain commentary but link into deeper, code-adjacent guides.\n\nSERP verification surfaced distinct questions rather than justification for merging separate pages. Agent loops, graph engineering, remote agents, feature teardown, and job-ad analysis need corrected clustering before investment.",
+ "pinned": true,
+ "pin_note": "SEO content strategy for an AI community of practice (US, English). Six competitors checked, the gate parked five themes with its reasons, every question in the brief is one Google shows under People also ask, with who answers it today. Discard, promote, propose - then reset.",
+ "archived": false
 }

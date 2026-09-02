@@ -1,0 +1,5280 @@
+{
+ "id": "braintrust",
+ "project": "braintrust.dev · Content strategy · US-EN",
+ "title": "Braintrust",
+ "prompt": "Build the SEO content strategy for Braintrust.\n\nBraintrust (braintrust.dev) is an LLM evaluation and observability platform for teams shipping AI products. Three jobs: Observe - trace prompts, responses and tool calls in production; Evaluate - run experiments against versioned datasets and score outputs with code, LLM judges or humans; Discover - cluster traces to find failure patterns and gate bad releases before they ship.\n\nThe buyer is a software engineer, AI/ML engineer or engineering manager at a company with an LLM feature already in production, who currently checks quality by eyeballing outputs and cannot tell whether a prompt or model change made things better or worse. Named customers include Notion, Vercel, Replit, Cloudflare, Coursera and Box.\n\nIMPORTANT - this is braintrust.dev, the LLM eval platform. It is NOT usebraintrust.com, the freelance talent marketplace. Ignore anything about hiring, freelancers, talent networks or recruiting.\n\nWebsite: https://www.braintrust.dev/\nOur blog: https://www.braintrust.dev/blog\nDocs: https://www.braintrust.dev/docs\n\nCompetitors:\n- https://langfuse.com/\n- https://www.langchain.com/langsmith\n- https://wandb.ai/site/weave\n- https://arize.com/\n- https://humanloop.com/\n- https://www.galileo.ai/\n- https://www.confident-ai.com/\n- https://www.helicone.ai/\n\nMarket: United States, English.\n\nNot going after: \"what is an LLM\" explainers, prompt-engineering tips, or generic AI-news content. This audience already builds with these models. Focus on evaluation, observability, and the decisions engineers make when shipping and debugging AI features.\n",
+ "created": "2026-09-02T22:13:47.017604+00:00",
+ "status": "done",
+ "stages": [
+  {
+   "id": "seeds",
+   "label": "Seeds",
+   "status": "done",
+   "artifact": {
+    "business_name": "Braintrust",
+    "business_seeds": [
+     "LLM evaluation platform",
+     "agent observability platform",
+     "production AI tracing",
+     "LLM regression testing"
+    ],
+    "site_seeds": [
+     "trace agent tool calls",
+     "versioned evaluation datasets",
+     "online scoring regressions",
+     "AI release quality gates"
+    ],
+    "competitor_seeds": [
+     "Langfuse alternative",
+     "LangSmith alternative",
+     "LLM observability tools",
+     "agent evaluation platforms"
+    ],
+    "notes": "Seeds target advanced teams shipping production AI agents: tracing complex executions, testing prompt/model changes, detecting quality failures, and preventing regressions. Site seeds are directly grounded in on-page language around traces, datasets, scoring, regressions, and quality gates."
+   }
+  },
+  {
+   "id": "intake",
+   "label": "Intake",
+   "status": "done",
+   "artifact": {
+    "locale": {
+     "location_code": 2840,
+     "language_code": "en"
+    },
+    "market": "US-EN"
+   }
+  },
+  {
+   "id": "keywords",
+   "label": "Keyword discovery",
+   "status": "done",
+   "artifact": {
+    "count": 44,
+    "keywords": [
+     {
+      "keyword": "mcp",
+      "volume": 74000,
+      "difficulty": 53,
+      "cpc": 9.020000457763672,
+      "intent": "informational",
+      "rank": 12,
+      "ranking_url": "https://humanloop.com/blog/mcp",
+      "estimated_traffic": 1457.800048828125,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "human in loop",
+      "volume": 6600,
+      "difficulty": 55,
+      "cpc": 43.060001373291016,
+      "intent": "informational",
+      "rank": 13,
+      "ranking_url": "https://humanloop.com/",
+      "estimated_traffic": 130.02000427246094,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "manus report analysis modes comparison",
+      "volume": 6600,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 6,
+      "ranking_url": "https://www.helicone.ai/blog/manus-benchmark-operator-comparison",
+      "estimated_traffic": 434.94000244140625,
+      "source": "competitor",
+      "owned_by": [
+       "helicone.ai"
+      ]
+     },
+     {
+      "keyword": "rag architectures",
+      "volume": 1600,
+      "difficulty": 35,
+      "cpc": 24.75,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://humanloop.com/blog/rag-architectures",
+      "estimated_traffic": 486.3999938964844,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "llm evaluations",
+      "volume": 1000,
+      "difficulty": 23,
+      "cpc": 23.450000762939453,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://www.confident-ai.com/blog/llm-evaluation-metrics-everything-you-need-for-llm-evaluation",
+      "estimated_traffic": 162,
+      "source": "competitor",
+      "owned_by": [
+       "confident-ai.com"
+      ]
+     },
+     {
+      "keyword": "agent state",
+      "volume": 880,
+      "difficulty": 2,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://reference.langchain.com/python/langchain/agents/middleware/types/AgentState",
+      "estimated_traffic": 267.5199890136719,
+      "source": "competitor",
+      "owned_by": [
+       "langchain.com"
+      ]
+     },
+     {
+      "keyword": "agent loop",
+      "volume": 720,
+      "difficulty": 18,
+      "cpc": 12.050000190734863,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://www.langchain.com/blog/the-art-of-loop-engineering",
+      "estimated_traffic": 218.8800048828125,
+      "source": "competitor",
+      "owned_by": [
+       "langchain.com"
+      ]
+     },
+     {
+      "keyword": "types of rag",
+      "volume": 720,
+      "difficulty": 45,
+      "cpc": 0.7200000286102295,
+      "intent": "informational",
+      "rank": 10,
+      "ranking_url": "https://humanloop.com/blog/rag-architectures",
+      "estimated_traffic": 14.184000015258789,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "agent architecture",
+      "volume": 590,
+      "difficulty": 20,
+      "cpc": 1.190000057220459,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://www.langchain.com/blog/choosing-the-right-multi-agent-architecture",
+      "estimated_traffic": 179.36000061035156,
+      "source": "competitor",
+      "owned_by": [
+       "langchain.com",
+       "langchain.com",
+       "langchain.com",
+       "langchain.com"
+      ]
+     },
+     {
+      "keyword": "agent architectures",
+      "volume": 590,
+      "difficulty": 24,
+      "cpc": 15.529999732971191,
+      "intent": "informational",
+      "rank": 1,
+      "ranking_url": "https://www.langchain.com/blog/choosing-the-right-multi-agent-architecture",
+      "estimated_traffic": 179.36000061035156,
+      "source": "competitor",
+      "owned_by": [
+       "langchain.com",
+       "langchain.com"
+      ]
+     },
+     {
+      "keyword": "mcp protocol",
+      "volume": 590,
+      "difficulty": 60,
+      "cpc": 6.670000076293945,
+      "intent": "informational",
+      "rank": 9,
+      "ranking_url": "https://humanloop.com/blog/mcp",
+      "estimated_traffic": 11.623000144958496,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com",
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "what is mcp",
+      "volume": 590,
+      "difficulty": 54,
+      "cpc": 1.1399999856948853,
+      "intent": "informational",
+      "rank": 10,
+      "ranking_url": "https://humanloop.com/blog/mcp",
+      "estimated_traffic": 11.623000144958496,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "how does mcp work",
+      "volume": 590,
+      "difficulty": 24,
+      "cpc": 2.059999942779541,
+      "intent": "informational",
+      "rank": 13,
+      "ranking_url": "https://humanloop.com/blog/mcp",
+      "estimated_traffic": 8.850000381469727,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "ai observability platform",
+      "volume": 480,
+      "difficulty": 41,
+      "cpc": 66.77999877929688,
+      "intent": "commercial",
+      "rank": 2,
+      "ranking_url": "https://arize.com/",
+      "estimated_traffic": 145.9199981689453,
+      "source": "competitor",
+      "owned_by": [
+       "arize.com"
+      ]
+     },
+     {
+      "keyword": "structured outputs",
+      "volume": 480,
+      "difficulty": 31,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 6,
+      "ranking_url": "https://humanloop.com/blog/structured-outputs",
+      "estimated_traffic": 31.631999969482422,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com",
+       "humanloop.com",
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "structure output",
+      "volume": 480,
+      "difficulty": 31,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 6,
+      "ranking_url": "https://humanloop.com/blog/structured-outputs",
+      "estimated_traffic": 22.511999130249023,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com",
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "structured output",
+      "volume": 480,
+      "difficulty": 31,
+      "cpc": 36.4900016784668,
+      "intent": "informational",
+      "rank": 7,
+      "ranking_url": "https://humanloop.com/blog/structured-outputs",
+      "estimated_traffic": 22.511999130249023,
+      "source": "competitor",
+      "owned_by": [
+       "humanloop.com",
+       "humanloop.com",
+       "humanloop.com"
+      ]
+     },
+     {
+      "keyword": "ai evaluation",
+      "volume": 480,
+      "difficulty": 12,
+      "cpc": 1.8199999332427979,
+      "intent": "informational",
+      "rank": 5,
+      "ranking_url": "https://www.confident-ai.com/knowledge-base/compare/best-ai-evaluation-tools-2026",
+      "estimated_traffic": 46.70399856567383,
+      "source": "competitor",
+      "owned_by": [
+       "confident-ai.com",
+       "confident-ai.com",
+       "confident-ai.com"
+      ]
+     },
+     {
+      "keyword": "ai observability and evaluation platform",
+      "volume": 390,
+      "difficulty": 30,
+      "cpc": null,
+      "intent": "commercial",
+      "rank": 2,
+      "ranking_url": "https://galileo.ai/",
+      "estimated_traffic": 118.55999755859375,
+      "source": "competitor",
+      "owned_by": [
+       "galileo.ai"
+      ]
+     },
+     {
+      "keyword": "evaluation ai",
+      "volume": 390,
+      "difficulty": 10,
+      "cpc": 0.4000000059604645,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://www.confident-ai.com/knowledge-base/compare/best-ai-evaluation-tools-2026",
+      "estimated_traffic": 63.18000030517578,
+      "source": "competitor",
+      "owned_by": [
+       "confident-ai.com"
+      ]
+     },
+     {
+      "keyword": "llm as a judge",
+      "volume": 390,
+      "difficulty": 20,
+      "cpc": 6.650000095367432,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://www.confident-ai.com/blog/why-llm-as-a-judge-is-the-best-llm-evaluation-method",
+      "estimated_traffic": 63.18000030517578,
+      "source": "competitor",
+      "owned_by": [
+       "confident-ai.com"
+      ]
+     },
+     {
+      "keyword": "rag evaluation metrics",
+      "volume": 390,
+      "difficulty": 21,
+      "cpc": 0.550000011920929,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://www.confident-ai.com/blog/rag-evaluation-metrics-answer-relevancy-faithfulness-and-more",
+      "estimated_traffic": 63.18000030517578,
+      "source": "competitor",
+      "owned_by": [
+       "confident-ai.com",
+       "confident-ai.com",
+       "confident-ai.com"
+      ]
+     },
+     {
+      "keyword": "llm evaluation metrics",
+      "volume": 260,
+      "difficulty": 16,
+      "cpc": 11.51,
+      "intent": "informational",
+      "source_seed": "LLM evaluation platform"
+     },
+     {
+      "keyword": "llm evaluation tools",
+      "volume": 110,
+      "difficulty": 22,
+      "cpc": 24.07,
+      "intent": "commercial",
+      "source_seed": "LLM evaluation platform"
+     },
+     {
+      "keyword": "ai agent observability tools",
+      "volume": 110,
+      "difficulty": 15,
+      "cpc": 32.49,
+      "intent": "commercial",
+      "source_seed": "agent observability platform"
+     },
+     {
+      "keyword": "llm evaluation platform",
+      "volume": 50,
+      "difficulty": 17,
+      "cpc": 28.41,
+      "intent": "commercial",
+      "source_seed": "LLM evaluation platform"
+     },
+     {
+      "keyword": "alternative to langfuse",
+      "volume": 40,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "commercial",
+      "source_seed": "Langfuse alternative"
+     },
+     {
+      "keyword": "agent observability platform",
+      "volume": 30,
+      "difficulty": 48,
+      "cpc": 31.97,
+      "intent": "commercial",
+      "source_seed": "agent observability platform"
+     },
+     {
+      "keyword": "ai agent observability platform",
+      "volume": 30,
+      "difficulty": 32,
+      "cpc": 43.84,
+      "intent": "commercial",
+      "source_seed": "agent observability platform"
+     },
+     {
+      "keyword": "best llm evaluation platform",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "commercial",
+      "source_seed": "LLM evaluation platform"
+     },
+     {
+      "keyword": "llm evaluation framework open-source",
+      "volume": 10,
+      "difficulty": 23,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "LLM evaluation platform"
+     },
+     {
+      "keyword": "llm evaluation framework github",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 18.82,
+      "intent": "informational",
+      "source_seed": "LLM evaluation platform"
+     },
+     {
+      "keyword": "langsmith evaluation metrics",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 25.86,
+      "intent": "informational",
+      "source_seed": "LLM evaluation platform"
+     },
+     {
+      "keyword": "langfuse clickhouse alternative",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "commercial",
+      "source_seed": "Langfuse alternative"
+     },
+     {
+      "keyword": "agent observability github",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "agent observability platform"
+     },
+     {
+      "keyword": "trace agent tool calls",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "Langfuse alternative",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "versioned evaluation datasets",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "LangSmith alternative",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "production AI tracing",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "online scoring regressions",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "LLM regression testing",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "AI release quality gates",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "agent evaluation platforms",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     }
+    ]
+   }
+  },
+  {
+   "id": "competitors",
+   "label": "Competitor map",
+   "status": "done",
+   "artifact": {
+    "competitors": [
+     "langfuse.com",
+     "langchain.com",
+     "wandb.ai",
+     "arize.com",
+     "humanloop.com",
+     "galileo.ai",
+     "confident-ai.com",
+     "helicone.ai"
+    ],
+    "user_supplied": [
+     "langfuse.com",
+     "langchain.com",
+     "wandb.ai",
+     "arize.com",
+     "humanloop.com",
+     "galileo.ai",
+     "confident-ai.com",
+     "helicone.ai"
+    ],
+    "discovered": [],
+    "site_has_rankings": true,
+    "per_domain": {
+     "langfuse.com": {
+      "keywords": 5,
+      "brand_terms_skipped": 95,
+      "shared_with_site": 0,
+      "top": [
+       "ai agent framework comparison",
+       "alternatives to langfuse",
+       "best agent frameworks",
+       "is langfuse free",
+       "is langsmith open source"
+      ],
+      "rows": [
+       {
+        "keyword": "ai agent framework comparison",
+        "volume": 70,
+        "difficulty": 25,
+        "cpc": 19.829999923706055,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "best agent frameworks",
+        "volume": 140,
+        "difficulty": 6,
+        "cpc": 9.149999618530273,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "is langsmith open source",
+        "volume": 110,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "langfuse란",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "langsmith alternative",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 27.190000534057617,
+        "intent": "commercial",
+        "rank": 2
+       }
+      ]
+     },
+     "langchain.com": {
+      "keywords": 79,
+      "brand_terms_skipped": 21,
+      "shared_with_site": 0,
+      "top": [
+       "a2a langgraph",
+       "a2a-langgraph",
+       "agent architecture",
+       "agent architecture",
+       "agent architecture"
+      ],
+      "rows": [
+       {
+        "keyword": "a2a langgraph",
+        "volume": 40,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "a2a-langgraph",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "agent architecture",
+        "volume": 590,
+        "difficulty": 20,
+        "cpc": 1.190000057220459,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent architecture",
+        "volume": 590,
+        "difficulty": 11,
+        "cpc": 1.190000057220459,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent architecture",
+        "volume": 110,
+        "difficulty": 21,
+        "cpc": 6.400000095367432,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent architecture",
+        "volume": 590,
+        "difficulty": 19,
+        "cpc": 18.59000015258789,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent architectures",
+        "volume": 590,
+        "difficulty": 24,
+        "cpc": 15.529999732971191,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "agent architectures",
+        "volume": 90,
+        "difficulty": 37,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "agent deployment",
+        "volume": 90,
+        "difficulty": 3,
+        "cpc": 28.15999984741211,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent development life cycle",
+        "volume": 90,
+        "difficulty": 7,
+        "cpc": 15.470000267028809,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent engineering",
+        "volume": 260,
+        "difficulty": 3,
+        "cpc": 8.399999618530273,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent guardrails",
+        "volume": 70,
+        "difficulty": 34,
+        "cpc": 17.889999389648438,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent harness",
+        "volume": 260,
+        "difficulty": 37,
+        "cpc": 1.7599999904632568,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent harness",
+        "volume": 260,
+        "difficulty": 46,
+        "cpc": 9.880000114440918,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "agent harness",
+        "volume": 1900,
+        "difficulty": 21,
+        "cpc": 12.680000305175781,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "agent loop",
+        "volume": 720,
+        "difficulty": 18,
+        "cpc": 12.050000190734863,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent report",
+        "volume": 170,
+        "difficulty": 13,
+        "cpc": 20.780000686645508,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "agent server",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent state",
+        "volume": 880,
+        "difficulty": 2,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agent streaming",
+        "volume": 210,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agentic ai open source",
+        "volume": 40,
+        "difficulty": 22,
+        "cpc": 6.789999961853027,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "agentic harness",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 6.25,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai agent framework",
+        "volume": 30,
+        "difficulty": 29,
+        "cpc": 8.449999809265137,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai agent framework",
+        "volume": 90,
+        "difficulty": 15,
+        "cpc": 6.559999942779541,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai agent frameworks",
+        "volume": 140,
+        "difficulty": 26,
+        "cpc": 7.210000038146973,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai agent frameworks",
+        "volume": 30,
+        "difficulty": 20,
+        "cpc": 21.1200008392334,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai agent guardrails",
+        "volume": 70,
+        "difficulty": 9,
+        "cpc": 28.559999465942383,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai chain",
+        "volume": 50,
+        "difficulty": 36,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ainvoke",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ambient agent",
+        "volume": 320,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ambient agents",
+        "volume": 390,
+        "difficulty": 9,
+        "cpc": 12.460000038146973,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ambient agents",
+        "volume": 90,
+        "difficulty": 14,
+        "cpc": 6.690000057220459,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "astream",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "astream",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "astream",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "asyncpostgressaver",
+        "volume": 50,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "azurechatopenai",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "azurechatopenai",
+        "volume": 170,
+        "difficulty": 2,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "azureopenaiembeddings",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "basestore",
+        "volume": 1000,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "best ai framework",
+        "volume": 30,
+        "difficulty": 9,
+        "cpc": 10.239999771118164,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "best ai frameworks",
+        "volume": 40,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "chat model",
+        "volume": 140,
+        "difficulty": 42,
+        "cpc": 4.529999732971191,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "chat models",
+        "volume": 140,
+        "difficulty": 21,
+        "cpc": 3.880000114440918,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "chatbedrock",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "chatbedrockconverse",
+        "volume": 140,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "chatlitellm",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "chatollama",
+        "volume": 110,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "chatollama",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "chatopenai",
+        "volume": 590,
+        "difficulty": 23,
+        "cpc": 0.12999999523162842,
+        "intent": "commercial",
+        "rank": 1
+       },
+       {
+        "keyword": "chatprompttemplate",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "checkpointer",
+        "volume": 30,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "checkpointer langgraph",
+        "volume": 40,
+        "difficulty": 15,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "conversationalretrievalchain",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "conversationbuffermemory",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "create agent",
+        "volume": 210,
+        "difficulty": 27,
+        "cpc": 16.989999771118164,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "create react agent langgraph",
+        "volume": 50,
+        "difficulty": 16,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "csv loader",
+        "volume": 90,
+        "difficulty": 7,
+        "cpc": 16.989999771118164,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "csv-loader",
+        "volume": 90,
+        "difficulty": 1,
+        "cpc": 12.119999885559082,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "dasdsa",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "dasdsa",
+        "volume": 590,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "dasdsa",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "dasdsa",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "dasdsa",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "dasdsa",
+        "volume": 320,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "dasdsa",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "dasdsa",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "data analysis agents",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 20.139999389648438,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "deep agent",
+        "volume": 320,
+        "difficulty": 38,
+        "cpc": 5.510000228881836,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "deep agent",
+        "volume": 260,
+        "difficulty": 19,
+        "cpc": 4.019999980926514,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "deep agent",
+        "volume": 70,
+        "difficulty": 25,
+        "cpc": 0.6200000047683716,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "deep agent",
+        "volume": 260,
+        "difficulty": 22,
+        "cpc": 5.380000114440918,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "deep agent",
+        "volume": 1900,
+        "difficulty": 22,
+        "cpc": 17.90999984741211,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "deep agent",
+        "volume": 170,
+        "difficulty": 35,
+        "cpc": 4.75,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "deep agent",
+        "volume": 170,
+        "difficulty": 37,
+        "cpc": 10.329999923706055,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "deep agents",
+        "volume": 260,
+        "difficulty": 19,
+        "cpc": 5.380000114440918,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "deep agents",
+        "volume": 1900,
+        "difficulty": 15,
+        "cpc": 18.889999389648438,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "deep agents",
+        "volume": 1900,
+        "difficulty": 23,
+        "cpc": 18.889999389648438,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "deep agents cli",
+        "volume": 50,
+        "difficulty": 17,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       }
+      ]
+     },
+     "wandb.ai": {
+      "keywords": 49,
+      "brand_terms_skipped": 51,
+      "shared_with_site": 0,
+      "top": [
+       "2d cnn",
+       "2d convolutional neural network",
+       "bert example",
+       "bias weave",
+       "chain of thought vs tree of thought"
+      ],
+      "rows": [
+       {
+        "keyword": "2d cnn",
+        "volume": 40,
+        "difficulty": 6,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "2d convolutional neural network",
+        "volume": 50,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "bert example",
+        "volume": 140,
+        "difficulty": 28,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "bias weave",
+        "volume": 40,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "chain of thought vs tree of thought",
+        "volume": 50,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "chain of-thought vs tree of-thought",
+        "volume": 50,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "chain-of-thought vs tree of-thought",
+        "volume": 50,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "experiment tracker",
+        "volume": 90,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "experiment tracking",
+        "volume": 90,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "gan vae",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "horangi",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "inpainting",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 4.409999847412109,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "is weights and biases free",
+        "volume": 30,
+        "difficulty": 11,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "lecun initialization",
+        "volume": 20,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "lyft level 5 logo",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "machine learning model versioning",
+        "volume": 40,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ml model versioning",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "model versioning",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 14.319999694824219,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "questions about autonomous vehicles",
+        "volume": 30,
+        "difficulty": 5,
+        "cpc": 8.140000343322754,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "questions about self driving cars",
+        "volume": 30,
+        "difficulty": 2,
+        "cpc": 8.140000343322754,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "questions on autonomous vehicles",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": 8.140000343322754,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "qweqwe",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "qweqwe",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "sweeps",
+        "volume": 2400,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "tensor examples",
+        "volume": 90,
+        "difficulty": 16,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "tree of thought vs chain of thought",
+        "volume": 30,
+        "difficulty": 13,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "w&b",
+        "volume": 50,
+        "difficulty": 32,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "w&b",
+        "volume": 10,
+        "difficulty": 18,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 30,
+        "difficulty": 48,
+        "cpc": 0.029999999329447746,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 50,
+        "difficulty": 14,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 1300,
+        "difficulty": 63,
+        "cpc": 4.380000114440918,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 90,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 50,
+        "difficulty": 46,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 210,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 260,
+        "difficulty": 14,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 40,
+        "difficulty": 27,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 1300,
+        "difficulty": 25,
+        "cpc": 2.0299999713897705,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 20,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b",
+        "volume": 40,
+        "difficulty": 54,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "w&b",
+        "volume": 20,
+        "difficulty": 16,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b account",
+        "volume": 30,
+        "difficulty": 29,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w&b logo",
+        "volume": 8100,
+        "difficulty": 0,
+        "cpc": 0.20000000298023224,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "w&b logo",
+        "volume": 590,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "w&b logo",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "w&b logo",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "w&b logo",
+        "volume": 90,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "w&b weave",
+        "volume": 90,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "wanb",
+        "volume": 70,
+        "difficulty": 9,
+        "cpc": 0.09000000357627869,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "wanb",
+        "volume": 880,
+        "difficulty": 4,
+        "cpc": 0.05000000074505806,
+        "intent": "informational",
+        "rank": 1
+       }
+      ]
+     },
+     "arize.com": {
+      "keywords": 46,
+      "brand_terms_skipped": 54,
+      "shared_with_site": 0,
+      "top": [
+       "ai observability platform",
+       "alyx ai",
+       "arise ai",
+       "arize",
+       "arize"
+      ],
+      "rows": [
+       {
+        "keyword": "ai observability platform",
+        "volume": 480,
+        "difficulty": 41,
+        "cpc": 66.77999877929688,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "alyx ai",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "arise ai",
+        "volume": 480,
+        "difficulty": 10,
+        "cpc": 34.91999816894531,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "arize:observe",
+        "volume": 50,
+        "difficulty": 9,
+        "cpc": 17.350000381469727,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "arized",
+        "volume": 320,
+        "difficulty": 30,
+        "cpc": 3.380000114440918,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "azure phoenix",
+        "volume": 90,
+        "difficulty": 1,
+        "cpc": 0.4300000071525574,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "calculate mape",
+        "volume": 260,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "evaluators",
+        "volume": 260,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "f score",
+        "volume": 70,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "formula for mape",
+        "volume": 880,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "good mape",
+        "volume": 50,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "how to calculate mape",
+        "volume": 210,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "langsmith langgraph",
+        "volume": 20,
+        "difficulty": 14,
+        "cpc": 15.199999809265137,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "mape calculation",
+        "volume": 260,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "mape calculation formula",
+        "volume": 70,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "mape definition",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "mape formula",
+        "volume": 880,
+        "difficulty": 14,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "mape formula",
+        "volume": 1000,
+        "difficulty": 15,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "mape formula",
+        "volume": 1000,
+        "difficulty": 13,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ml monitoring",
+        "volume": 30,
+        "difficulty": 18,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "model drift detection",
+        "volume": 50,
+        "difficulty": 15,
+        "cpc": 8.970000267028809,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "p r auc",
+        "volume": 50,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "p r auc",
+        "volume": 880,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "p r auc",
+        "volume": 170,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "p r auc",
+        "volume": 90,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "p r auc",
+        "volume": 110,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "phoenix agent",
+        "volume": 50,
+        "difficulty": 33,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "phoenix ai",
+        "volume": 50,
+        "difficulty": 45,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "phoenix ai",
+        "volume": 70,
+        "difficulty": 33,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "phoenix azure",
+        "volume": 880,
+        "difficulty": 0,
+        "cpc": 12.390000343322754,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "phoenix demo",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "phoenix llm",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 43.18000030517578,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "phoenix llm observability",
+        "volume": 30,
+        "difficulty": 22,
+        "cpc": 27.940000534057617,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "phoenix observability",
+        "volume": 70,
+        "difficulty": 23,
+        "cpc": 19.469999313354492,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "phoenix tracing",
+        "volume": 90,
+        "difficulty": 10,
+        "cpc": 11.609999656677246,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "pr auc",
+        "volume": 70,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "pr auc",
+        "volume": 70,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "pr auc",
+        "volume": 90,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "pr auc",
+        "volume": 880,
+        "difficulty": 11,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "pr auc",
+        "volume": 170,
+        "difficulty": 14,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "pr auc",
+        "volume": 140,
+        "difficulty": 9,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "pr-auc",
+        "volume": 90,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "pr-auc",
+        "volume": 140,
+        "difficulty": 9,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "pr-auc",
+        "volume": 880,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "pr-auc",
+        "volume": 170,
+        "difficulty": 14,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "prompt learning",
+        "volume": 140,
+        "difficulty": 17,
+        "cpc": 6.809999942779541,
+        "intent": "informational",
+        "rank": 2
+       }
+      ]
+     },
+     "humanloop.com": {
+      "keywords": 92,
+      "brand_terms_skipped": 8,
+      "shared_with_site": 0,
+      "top": [
+       "human loop",
+       "human loop",
+       "humanloop",
+       "humanloop",
+       "humanloop"
+      ],
+      "rows": [
+       {
+        "keyword": "rag architectures",
+        "volume": 1600,
+        "difficulty": 35,
+        "cpc": 24.75,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "high agency podcast",
+        "volume": 40,
+        "difficulty": 26,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "rag architecture diagram",
+        "volume": 50,
+        "difficulty": 7,
+        "cpc": 9.859999656677246,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "structured outputs",
+        "volume": 480,
+        "difficulty": 31,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "top ai podcast",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 2.130000114440918,
+        "intent": "commercial",
+        "rank": 5
+       },
+       {
+        "keyword": "best artificial intelligence podcasts",
+        "volume": 170,
+        "difficulty": 10,
+        "cpc": 0.17000000178813934,
+        "intent": "commercial",
+        "rank": 7
+       },
+       {
+        "keyword": "best podcast on artificial intelligence",
+        "volume": 110,
+        "difficulty": 14,
+        "cpc": 23.219999313354492,
+        "intent": "commercial",
+        "rank": 7
+       },
+       {
+        "keyword": "mcp primitives",
+        "volume": 70,
+        "difficulty": 42,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "prompt file",
+        "volume": 70,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "structure output",
+        "volume": 480,
+        "difficulty": 31,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "structured output",
+        "volume": 480,
+        "difficulty": 31,
+        "cpc": 36.4900016784668,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "structured outputs",
+        "volume": 90,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "what is replicate ai",
+        "volume": 40,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "best ai podcasts 2025",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 8
+       },
+       {
+        "keyword": "best ai podcasts on spotify",
+        "volume": 50,
+        "difficulty": 27,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 8
+       },
+       {
+        "keyword": "best artificial intelligence podcasts",
+        "volume": 170,
+        "difficulty": 3,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 8
+       },
+       {
+        "keyword": "best podcast about ai",
+        "volume": 70,
+        "difficulty": 12,
+        "cpc": 2.8499999046325684,
+        "intent": "commercial",
+        "rank": 9
+       },
+       {
+        "keyword": "best podcasts about ai",
+        "volume": 70,
+        "difficulty": 4,
+        "cpc": 2.4700000286102295,
+        "intent": "commercial",
+        "rank": 7
+       },
+       {
+        "keyword": "chatgpt structured output",
+        "volume": 40,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "podcasts on ai",
+        "volume": 260,
+        "difficulty": 31,
+        "cpc": 1.809999942779541,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "rag based architecture",
+        "volume": 20,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "replicate software",
+        "volume": 90,
+        "difficulty": 17,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 8
+       },
+       {
+        "keyword": "responses api structured output",
+        "volume": 30,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "structured output openai",
+        "volume": 40,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "top ai podcasts 2025",
+        "volume": 40,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 8
+       },
+       {
+        "keyword": "best ai podcasts",
+        "volume": 390,
+        "difficulty": 2,
+        "cpc": 7.159999847412109,
+        "intent": "commercial",
+        "rank": 9
+       },
+       {
+        "keyword": "best podcast on ai",
+        "volume": 110,
+        "difficulty": 17,
+        "cpc": 23.219999313354492,
+        "intent": "commercial",
+        "rank": 9
+       },
+       {
+        "keyword": "best podcast on artificial intelligence",
+        "volume": 260,
+        "difficulty": 21,
+        "cpc": 10.520000457763672,
+        "intent": "commercial",
+        "rank": 9
+       },
+       {
+        "keyword": "fmg ai",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "gus ai",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "human in the loop testing",
+        "volume": 20,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "human on the loop",
+        "volume": 90,
+        "difficulty": 46,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "podcasts artificial intelligence",
+        "volume": 590,
+        "difficulty": 18,
+        "cpc": 3.809999942779541,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "prompt loop",
+        "volume": 30,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "rag architecture",
+        "volume": 320,
+        "difficulty": 24,
+        "cpc": 7.019999980926514,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "rag types",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "raza habib",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "retrieval augmented generation architecture",
+        "volume": 50,
+        "difficulty": 48,
+        "cpc": 14.079999923706055,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "retrieval-augmented generation architecture",
+        "volume": 70,
+        "difficulty": 48,
+        "cpc": 6.550000190734863,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "structured outputs openai",
+        "volume": 50,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "structured outputs openai",
+        "volume": 90,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "type rag",
+        "volume": 70,
+        "difficulty": 6,
+        "cpc": 2.690000057220459,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "ai podcasts",
+        "volume": 170,
+        "difficulty": 30,
+        "cpc": 1.9300000667572021,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "ai replicate",
+        "volume": 70,
+        "difficulty": 27,
+        "cpc": 7.050000190734863,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "best artificial intelligence podcast",
+        "volume": 170,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 11
+       },
+       {
+        "keyword": "gemini structured output",
+        "volume": 70,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "how do mcps work",
+        "volume": 90,
+        "difficulty": 41,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "human in loop",
+        "volume": 6600,
+        "difficulty": 55,
+        "cpc": 43.060001373291016,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "mcp",
+        "volume": 74000,
+        "difficulty": 53,
+        "cpc": 9.020000457763672,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "mcp interface",
+        "volume": 140,
+        "difficulty": 37,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "mcp protocol",
+        "volume": 590,
+        "difficulty": 60,
+        "cpc": 6.670000076293945,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "prompt 2ui",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 1.0299999713897705,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "rag architecture",
+        "volume": 1600,
+        "difficulty": 21,
+        "cpc": 24.75,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "rag system architecture",
+        "volume": 50,
+        "difficulty": 25,
+        "cpc": 15.180000305175781,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "replicate ai",
+        "volume": 170,
+        "difficulty": 9,
+        "cpc": 4.360000133514404,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "retrieval augmented generation architecture diagram",
+        "volume": 140,
+        "difficulty": 41,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "retrieval-augmented generation architecture diagram",
+        "volume": 110,
+        "difficulty": 41,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "structure output",
+        "volume": 90,
+        "difficulty": 39,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "structured output",
+        "volume": 90,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "top ai podcasts",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 9.899999618530273,
+        "intent": "commercial",
+        "rank": 9
+       },
+       {
+        "keyword": "types of rag",
+        "volume": 720,
+        "difficulty": 0,
+        "cpc": 0.7200000286102295,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "what is mcp",
+        "volume": 590,
+        "difficulty": 54,
+        "cpc": 1.1399999856948853,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "why are gpt4 and llama called foundational models",
+        "volume": 50,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "gusto ai",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 12.460000038146973,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "how does mcp work",
+        "volume": 590,
+        "difficulty": 24,
+        "cpc": 2.059999942779541,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "mcp echo",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "mcp explained",
+        "volume": 40,
+        "difficulty": 26,
+        "cpc": 0.029999999329447746,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "mcp protocol",
+        "volume": 90,
+        "difficulty": 49,
+        "cpc": 2.6700000762939453,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "model distillation llm",
+        "volume": 50,
+        "difficulty": 17,
+        "cpc": 0.3799999952316284,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "openai model distillation",
+        "volume": 90,
+        "difficulty": 12,
+        "cpc": 30.610000610351562,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "prompt management",
+        "volume": 170,
+        "difficulty": 3,
+        "cpc": 18.65999984741211,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "prompt manager",
+        "volume": 140,
+        "difficulty": 4,
+        "cpc": 12.180000305175781,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "rag architecture explained",
+        "volume": 70,
+        "difficulty": 30,
+        "cpc": 8.619999885559082,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "rag design",
+        "volume": 70,
+        "difficulty": 41,
+        "cpc": 2.5899999141693115,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "structured output",
+        "volume": 170,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "structured output llm",
+        "volume": 50,
+        "difficulty": 4,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "structured outputs",
+        "volume": 70,
+        "difficulty": 27,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "structured outputs gemini",
+        "volume": 30,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "structured outputs openai",
+        "volume": 70,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "best ai podcast",
+        "volume": 110,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 13
+       },
+       {
+        "keyword": "best ai podcasts",
+        "volume": 170,
+        "difficulty": 6,
+        "cpc": 0.17000000178813934,
+        "intent": "commercial",
+        "rank": 14
+       },
+       {
+        "keyword": "best ai podcasts",
+        "volume": 1600,
+        "difficulty": 5,
+        "cpc": 15.880000114440918,
+        "intent": "commercial",
+        "rank": 12
+       },
+       {
+        "keyword": "best ai podcasts",
+        "volume": 110,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 12
+       },
+       {
+        "keyword": "best artificial intelligence podcast",
+        "volume": 170,
+        "difficulty": 13,
+        "cpc": 0.17000000178813934,
+        "intent": "commercial",
+        "rank": 14
+       },
+       {
+        "keyword": "gemini structured output",
+        "volume": 70,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 11
+       },
+       {
+        "keyword": "gemini structured output",
+        "volume": 390,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "gemini structured outputs",
+        "volume": 40,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "good ai podcasts",
+        "volume": 50,
+        "difficulty": 5,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "how does model distillation work",
+        "volume": 90,
+        "difficulty": 32,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "human in loop ai",
+        "volume": 30,
+        "difficulty": 48,
+        "cpc": 3.0799999237060547,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "learn ai podcast",
+        "volume": 30,
+        "difficulty": 20,
+        "cpc": 4.309999942779541,
+        "intent": "informational",
+        "rank": 13
+       },
+       {
+        "keyword": "llm podcasts",
+        "volume": 50,
+        "difficulty": 12,
+        "cpc": 7.389999866485596,
+        "intent": "informational",
+        "rank": 13
+       }
+      ]
+     },
+     "galileo.ai": {
+      "keywords": 4,
+      "brand_terms_skipped": 96,
+      "shared_with_site": 0,
+      "top": [
+       "ai agent evaluation metrics",
+       "ai observability and evaluation platform",
+       "conversation quality",
+       "conversational quality",
+       "galileo a i"
+      ],
+      "rows": [
+       {
+        "keyword": "ai agent evaluation metrics",
+        "volume": 30,
+        "difficulty": 14,
+        "cpc": 14.770000457763672,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai observability and evaluation platform",
+        "volume": 390,
+        "difficulty": 30,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "conversation quality",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "conversational quality",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       }
+      ]
+     },
+     "confident-ai.com": {
+      "keywords": 100,
+      "brand_terms_skipped": 0,
+      "shared_with_site": 0,
+      "top": [
+       "ai evaluation metrics",
+       "ai observability tool",
+       "arize competitors",
+       "best llm observability tools",
+       "confident ai"
+      ],
+      "rows": [
+       {
+        "keyword": "ai evaluation metrics",
+        "volume": 40,
+        "difficulty": 5,
+        "cpc": 34.38999938964844,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "ai observability tool",
+        "volume": 320,
+        "difficulty": 10,
+        "cpc": 59.880001068115234,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "arize competitors",
+        "volume": 40,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "best llm observability tools",
+        "volume": 40,
+        "difficulty": 8,
+        "cpc": 36.630001068115234,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "confident ai",
+        "volume": 70,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "confident ai",
+        "volume": 140,
+        "difficulty": 68,
+        "cpc": 6.360000133514404,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "confident ai",
+        "volume": 390,
+        "difficulty": 21,
+        "cpc": 8.979999542236328,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "confident ai",
+        "volume": 110,
+        "difficulty": 26,
+        "cpc": 17.889999389648438,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "confident ai",
+        "volume": 590,
+        "difficulty": 19,
+        "cpc": 23.270000457763672,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "eval metrics",
+        "volume": 320,
+        "difficulty": 9,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "evaluation llm",
+        "volume": 140,
+        "difficulty": 14,
+        "cpc": 14.779999732971191,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "evaluation platform",
+        "volume": 40,
+        "difficulty": 59,
+        "cpc": 22.309999465942383,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "llm accuracy",
+        "volume": 30,
+        "difficulty": 13,
+        "cpc": 7.610000133514404,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm accuracy metrics",
+        "volume": 30,
+        "difficulty": 17,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm eval tools",
+        "volume": 110,
+        "difficulty": 17,
+        "cpc": 24.06999969482422,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation",
+        "volume": 90,
+        "difficulty": 29,
+        "cpc": 3.3899998664855957,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation",
+        "volume": 140,
+        "difficulty": 12,
+        "cpc": 8.020000457763672,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation",
+        "volume": 140,
+        "difficulty": 18,
+        "cpc": 6.529999732971191,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation",
+        "volume": 50,
+        "difficulty": 22,
+        "cpc": 1.690000057220459,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation metrics",
+        "volume": 390,
+        "difficulty": 20,
+        "cpc": 0.41999998688697815,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation metrics",
+        "volume": 260,
+        "difficulty": 16,
+        "cpc": 9.84000015258789,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation platform",
+        "volume": 50,
+        "difficulty": 17,
+        "cpc": 27.040000915527344,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation tools",
+        "volume": 110,
+        "difficulty": 22,
+        "cpc": 24.06999969482422,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluator",
+        "volume": 90,
+        "difficulty": 14,
+        "cpc": 3.7899999618530273,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluators",
+        "volume": 50,
+        "difficulty": 39,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm guardrails",
+        "volume": 90,
+        "difficulty": 23,
+        "cpc": 2.9100000858306885,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm guardrails",
+        "volume": 320,
+        "difficulty": 30,
+        "cpc": 0.07000000029802322,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm metrics",
+        "volume": 110,
+        "difficulty": 18,
+        "cpc": 10.449999809265137,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm monitoring tools",
+        "volume": 90,
+        "difficulty": 8,
+        "cpc": 12.539999961853027,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "llm observability",
+        "volume": 70,
+        "difficulty": 6,
+        "cpc": 54.720001220703125,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "llm observability",
+        "volume": 70,
+        "difficulty": 15,
+        "cpc": 13.239999771118164,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm observability",
+        "volume": 70,
+        "difficulty": 16,
+        "cpc": 37.060001373291016,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm observability platform",
+        "volume": 70,
+        "difficulty": 16,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 1
+       },
+       {
+        "keyword": "llm observability tools",
+        "volume": 210,
+        "difficulty": 6,
+        "cpc": 23.899999618530273,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "llm performance metrics",
+        "volume": 70,
+        "difficulty": 18,
+        "cpc": 8.289999961853027,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm responses",
+        "volume": 110,
+        "difficulty": 3,
+        "cpc": 20.579999923706055,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm test",
+        "volume": 70,
+        "difficulty": 15,
+        "cpc": 5.510000228881836,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm testing",
+        "volume": 70,
+        "difficulty": 4,
+        "cpc": 5.510000228881836,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm testing",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 6.579999923706055,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm testing tools",
+        "volume": 30,
+        "difficulty": 10,
+        "cpc": 25.020000457763672,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "llm tracking tools",
+        "volume": 70,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "rag metrics",
+        "volume": 90,
+        "difficulty": 17,
+        "cpc": 9.680000305175781,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "what is llm-as a judge",
+        "volume": 140,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "braintrust competitors",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 60.040000915527344,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "eval metrics",
+        "volume": 720,
+        "difficulty": 21,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "evaluation ai",
+        "volume": 390,
+        "difficulty": 10,
+        "cpc": 0.4000000059604645,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "g-eval",
+        "volume": 90,
+        "difficulty": 24,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "geval",
+        "volume": 210,
+        "difficulty": 15,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "guardrails in llm",
+        "volume": 260,
+        "difficulty": 29,
+        "cpc": 0.8700000047683716,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "how to evaluate llm",
+        "volume": 90,
+        "difficulty": 22,
+        "cpc": 20.1200008392334,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "how to test llms",
+        "volume": 20,
+        "difficulty": 16,
+        "cpc": 10.760000228881836,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "judge llm",
+        "volume": 40,
+        "difficulty": 34,
+        "cpc": 0.6399999856948853,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm as a judge",
+        "volume": 390,
+        "difficulty": 20,
+        "cpc": 6.650000095367432,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm as a judge evaluation",
+        "volume": 70,
+        "difficulty": 33,
+        "cpc": 7.829999923706055,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm as a judge framework",
+        "volume": 70,
+        "difficulty": 34,
+        "cpc": 19.690000534057617,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm as a judge prompt",
+        "volume": 30,
+        "difficulty": 31,
+        "cpc": 0.11999999731779099,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm evaluation",
+        "volume": 140,
+        "difficulty": 23,
+        "cpc": 9.920000076293945,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "llm evaluations",
+        "volume": 1000,
+        "difficulty": 23,
+        "cpc": 23.450000762939453,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm guardrails",
+        "volume": 320,
+        "difficulty": 26,
+        "cpc": 16.770000457763672,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm observability",
+        "volume": 590,
+        "difficulty": 19,
+        "cpc": 31.110000610351562,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm outputs",
+        "volume": 110,
+        "difficulty": 8,
+        "cpc": 6.110000133514404,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "llm testing",
+        "volume": 480,
+        "difficulty": 4,
+        "cpc": 0.8600000143051147,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm validation",
+        "volume": 20,
+        "difficulty": 0,
+        "cpc": 4.489999771118164,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llm-as a judge evaluation",
+        "volume": 70,
+        "difficulty": 33,
+        "cpc": 7.829999923706055,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm-as a judge prompt",
+        "volume": 30,
+        "difficulty": 24,
+        "cpc": 0.11999999731779099,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm-as judge evaluation",
+        "volume": 50,
+        "difficulty": 36,
+        "cpc": 14.529999732971191,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm-eval",
+        "volume": 50,
+        "difficulty": 24,
+        "cpc": 1.690000057220459,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "mcp evals",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "pgvector vs pinecone",
+        "volume": 110,
+        "difficulty": 7,
+        "cpc": 1.7699999809265137,
+        "intent": "commercial",
+        "rank": 3
+       },
+       {
+        "keyword": "pinecone vs pgvector",
+        "volume": 50,
+        "difficulty": 7,
+        "cpc": 19.43000030517578,
+        "intent": "commercial",
+        "rank": 3
+       },
+       {
+        "keyword": "rag assessment",
+        "volume": 30,
+        "difficulty": 19,
+        "cpc": 9.949999809265137,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "rag evaluation metrics",
+        "volume": 390,
+        "difficulty": 21,
+        "cpc": 0.550000011920929,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "rag evaluation metrics",
+        "volume": 390,
+        "difficulty": 13,
+        "cpc": 0.550000011920929,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "rag evaluation metrics",
+        "volume": 140,
+        "difficulty": 19,
+        "cpc": 9.229999542236328,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "red teaming llm",
+        "volume": 140,
+        "difficulty": 34,
+        "cpc": 26.489999771118164,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "synthetic data generation llm",
+        "volume": 40,
+        "difficulty": 24,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "testing llms",
+        "volume": 40,
+        "difficulty": 15,
+        "cpc": 19.3799991607666,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "what is llm as a judge",
+        "volume": 140,
+        "difficulty": 33,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "agent testing",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 14.510000228881836,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "ai agent testing",
+        "volume": 90,
+        "difficulty": 1,
+        "cpc": 25.170000076293945,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "ai evaluation",
+        "volume": 480,
+        "difficulty": 12,
+        "cpc": 1.8199999332427979,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "ai evaluation",
+        "volume": 590,
+        "difficulty": 10,
+        "cpc": 3.8600001335144043,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "ai evaluation",
+        "volume": 140,
+        "difficulty": 15,
+        "cpc": 7.210000038146973,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "ai evaluation tools",
+        "volume": 140,
+        "difficulty": 12,
+        "cpc": 26.690000534057617,
+        "intent": "commercial",
+        "rank": 4
+       },
+       {
+        "keyword": "braintrust alternatives",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 49.189998626708984,
+        "intent": "commercial",
+        "rank": 4
+       },
+       {
+        "keyword": "contextual recall",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "deepeval",
+        "volume": 390,
+        "difficulty": 16,
+        "cpc": 9.529999732971191,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "deepeval",
+        "volume": 170,
+        "difficulty": 16,
+        "cpc": 4.690000057220459,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "deepeval",
+        "volume": 260,
+        "difficulty": 7,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "eval framework",
+        "volume": 90,
+        "difficulty": 25,
+        "cpc": 19.719999313354492,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "evaluating llms",
+        "volume": 140,
+        "difficulty": 24,
+        "cpc": 19.81999969482422,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "evaluation agents",
+        "volume": 70,
+        "difficulty": 20,
+        "cpc": 7.239999771118164,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "g-eval",
+        "volume": 260,
+        "difficulty": 19,
+        "cpc": 17.56999969482422,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "how to evaluate llms",
+        "volume": 90,
+        "difficulty": 18,
+        "cpc": 20.1200008392334,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "jailbreak llm",
+        "volume": 50,
+        "difficulty": 14,
+        "cpc": 0.8199999928474426,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "judging llm-as a judge",
+        "volume": 30,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "langsmith alternative",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 27.190000534057617,
+        "intent": "commercial",
+        "rank": 4
+       },
+       {
+        "keyword": "llama 3 fine tuning",
+        "volume": 30,
+        "difficulty": 24,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llama 3 fine-tuning",
+        "volume": 30,
+        "difficulty": 24,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "llama fine tune",
+        "volume": 50,
+        "difficulty": 17,
+        "cpc": 35.470001220703125,
+        "intent": "informational",
+        "rank": 4
+       }
+      ]
+     },
+     "helicone.ai": {
+      "keywords": 83,
+      "brand_terms_skipped": 17,
+      "shared_with_site": 0,
+      "top": [
+       "claude opus-4-5-20251101 thinking 32k",
+       "helicone",
+       "helicone",
+       "helicone",
+       "helicone"
+      ],
+      "rows": [
+       {
+        "keyword": "claude opus-4-5-20251101 thinking 32k",
+        "volume": 40,
+        "difficulty": 11,
+        "cpc": 6.889999866485596,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "ai api costs",
+        "volume": 50,
+        "difficulty": 34,
+        "cpc": 4.769999980926514,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "azure gpt-5 pricing",
+        "volume": 40,
+        "difficulty": 25,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "llm cost calculator",
+        "volume": 70,
+        "difficulty": 6,
+        "cpc": 8.960000038146973,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "manus ai benchmark",
+        "volume": 20,
+        "difficulty": 30,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "chatgpt o1 pro mode",
+        "volume": 20,
+        "difficulty": 15,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "claude 3.5 haiku api pricing",
+        "volume": 40,
+        "difficulty": 30,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "claude opus 4 vs sonnet 4",
+        "volume": 170,
+        "difficulty": 2,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 6
+       },
+       {
+        "keyword": "context augmented generation",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "gemini 1.5 flash pricing",
+        "volume": 90,
+        "difficulty": 30,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 1.5 pro pricing",
+        "volume": 70,
+        "difficulty": 67,
+        "cpc": 6.449999809265137,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "gemini flash price",
+        "volume": 10,
+        "difficulty": 22,
+        "cpc": 0.6600000262260437,
+        "intent": "transactional",
+        "rank": 6
+       },
+       {
+        "keyword": "gpt 4 0613",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "gpt-3.5-turbo pricing",
+        "volume": 70,
+        "difficulty": 8,
+        "cpc": 12.3100004196167,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "gpt-4 0613",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "gpt-4-0613",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "groq pricing",
+        "volume": 110,
+        "difficulty": 10,
+        "cpc": 6.699999809265137,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "helicon",
+        "volume": 480,
+        "difficulty": 40,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "is openrouter down",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "openrouter status",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "ai api pricing",
+        "volume": 90,
+        "difficulty": 45,
+        "cpc": 11.920000076293945,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "ai cost calculator",
+        "volume": 50,
+        "difficulty": 11,
+        "cpc": 11.020000457763672,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "azure openai gpt 5 pricing",
+        "volume": 40,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "azure openai gpt-5 pricing",
+        "volume": 40,
+        "difficulty": 20,
+        "cpc": 5.630000114440918,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "dify agent",
+        "volume": 70,
+        "difficulty": 24,
+        "cpc": 25.290000915527344,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 1.5 flash price",
+        "volume": 10,
+        "difficulty": 35,
+        "cpc": null,
+        "intent": "transactional",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.0 flash cost",
+        "volume": 40,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.0 flash price",
+        "volume": 170,
+        "difficulty": 23,
+        "cpc": null,
+        "intent": "transactional",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini 2.0 flash pricing",
+        "volume": 140,
+        "difficulty": 28,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash price",
+        "volume": 140,
+        "difficulty": 50,
+        "cpc": 3.7699999809265137,
+        "intent": "transactional",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash price",
+        "volume": 140,
+        "difficulty": 32,
+        "cpc": null,
+        "intent": "transactional",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash pricing",
+        "volume": 110,
+        "difficulty": 28,
+        "cpc": 1,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash pricing",
+        "volume": 140,
+        "difficulty": 30,
+        "cpc": 3.4600000381469727,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash pricing",
+        "volume": 140,
+        "difficulty": 39,
+        "cpc": 0.699999988079071,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash pricing",
+        "volume": 70,
+        "difficulty": 29,
+        "cpc": 1.3199999332427979,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash pricing",
+        "volume": 110,
+        "difficulty": 18,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash pricing",
+        "volume": 70,
+        "difficulty": 20,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini 2.5 flash pricing",
+        "volume": 140,
+        "difficulty": 29,
+        "cpc": 3.7699999809265137,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini flash pricing",
+        "volume": 70,
+        "difficulty": 59,
+        "cpc": 1.3300000429153442,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gpt 3.5 turbo pricing",
+        "volume": 70,
+        "difficulty": 10,
+        "cpc": 12.3100004196167,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "gpt 3.5turbo pricing",
+        "volume": 90,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gpt 4 pricing",
+        "volume": 140,
+        "difficulty": 29,
+        "cpc": 10.800000190734863,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gpt 4o token cost",
+        "volume": 30,
+        "difficulty": 14,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "gpt-3.5 turbo pricing",
+        "volume": 70,
+        "difficulty": 8,
+        "cpc": 12.3100004196167,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gpt-4.1 nano vs gpt-4o mini",
+        "volume": 30,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 5
+       },
+       {
+        "keyword": "gpt-5.2 api pricing",
+        "volume": 90,
+        "difficulty": 13,
+        "cpc": 21.799999237060547,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "grok 3 benchmarks",
+        "volume": 10,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "groq pricing",
+        "volume": 110,
+        "difficulty": 26,
+        "cpc": 16.889999389648438,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "groq status",
+        "volume": 50,
+        "difficulty": 26,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "haiku api pricing",
+        "volume": 50,
+        "difficulty": 22,
+        "cpc": 4.900000095367432,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "llm api pricing",
+        "volume": 170,
+        "difficulty": 8,
+        "cpc": 7.460000038146973,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "llm api pricing comparison",
+        "volume": 140,
+        "difficulty": 20,
+        "cpc": 7.139999866485596,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "llm pricing calculator",
+        "volume": 40,
+        "difficulty": 14,
+        "cpc": 5.239999771118164,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "manus benchmark",
+        "volume": 50,
+        "difficulty": 30,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "manus report analysis modes comparison",
+        "volume": 6600,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "o3 pro pricing",
+        "volume": 50,
+        "difficulty": 22,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "o3-pro pricing",
+        "volume": 50,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "open router down",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "open router status",
+        "volume": 40,
+        "difficulty": 1,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "openai embeddings pricing",
+        "volume": 140,
+        "difficulty": 27,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "openrouter status",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "openwebui alternative",
+        "volume": 320,
+        "difficulty": 21,
+        "cpc": 9.649999618530273,
+        "intent": "commercial",
+        "rank": 5
+       },
+       {
+        "keyword": "opus 4.1 vs sonnet 4",
+        "volume": 70,
+        "difficulty": 6,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 8
+       },
+       {
+        "keyword": "text embedding-3-small pricing",
+        "volume": 70,
+        "difficulty": 9,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "text-embedding-3-large pricing",
+        "volume": 40,
+        "difficulty": 6,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "thread of thoughts",
+        "volume": 40,
+        "difficulty": 3,
+        "cpc": 0.75,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "4o mini pricing",
+        "volume": 50,
+        "difficulty": 20,
+        "cpc": 18.8700008392334,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "api cost",
+        "volume": 390,
+        "difficulty": 33,
+        "cpc": 28.31999969482422,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "azure gpt pricing",
+        "volume": 70,
+        "difficulty": 12,
+        "cpc": 10.760000228881836,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "azure openai pricing calculator",
+        "volume": 210,
+        "difficulty": 14,
+        "cpc": 3.559999942779541,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "claude 3-7-sonnet-20250219",
+        "volume": 50,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "claude haiku pricing",
+        "volume": 260,
+        "difficulty": 30,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "claude opus vs sonnet 4",
+        "volume": 40,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 9
+       },
+       {
+        "keyword": "deepseek chat pricing",
+        "volume": 50,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini 1.5pro pricing",
+        "volume": 70,
+        "difficulty": 67,
+        "cpc": 6.449999809265137,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini 2.5 flash cost",
+        "volume": 260,
+        "difficulty": 19,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini 2.5 flash price",
+        "volume": 880,
+        "difficulty": 25,
+        "cpc": 0.47999998927116394,
+        "intent": "transactional",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini 2.5 flash price",
+        "volume": 90,
+        "difficulty": 20,
+        "cpc": 0.7699999809265137,
+        "intent": "transactional",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini 2.5 flash price",
+        "volume": 70,
+        "difficulty": 29,
+        "cpc": 1.600000023841858,
+        "intent": "transactional",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini 2.5 flash pricing",
+        "volume": 40,
+        "difficulty": 35,
+        "cpc": 1.0299999713897705,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini experimental 1206",
+        "volume": 50,
+        "difficulty": 10,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "gemini flash 2.0 pricing",
+        "volume": 30,
+        "difficulty": 28,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "gemini flash price",
+        "volume": 90,
+        "difficulty": 36,
+        "cpc": 1.100000023841858,
+        "intent": "transactional",
+        "rank": 8
+       }
+      ]
+     }
+    },
+    "consensus": [
+     {
+      "keyword": "langsmith alternative",
+      "volume": 140,
+      "owned_by": [
+       "confident-ai.com",
+       "langfuse.com"
+      ]
+     }
+    ],
+    "keywords_contributed": 340,
+    "relevance": {
+     "ran": true,
+     "kept": 172,
+     "dropped": 168,
+     "dropped_because": "Removed competitor and third-party product terms, model-specific pricing queries, unrelated ML and automotive topics, podcasts, beginner explainers, and vague or non-engineering searches.",
+     "dropped_examples": [
+      "w&b logo",
+      "sweeps",
+      "basestore",
+      "formula for mape",
+      "mape formula",
+      "phoenix azure",
+      "chatopenai",
+      "podcasts artificial intelligence"
+     ]
+    },
+    "kept_in_universe": 22,
+    "seed_derived_in_universe": 22
+   }
+  },
+  {
+   "id": "clusters",
+   "label": "Clusters",
+   "status": "done",
+   "artifact": {
+    "count": 4,
+    "clusters": [
+     {
+      "cluster_id": 5,
+      "cluster_name": "Evaluation methods",
+      "head_term": "llm evaluations",
+      "keywords": [
+       "llm evaluations",
+       "ai evaluation",
+       "evaluation ai",
+       "llm as a judge"
+      ],
+      "intent": "informational",
+      "avg_volume": 565,
+      "avg_difficulty": 16.2,
+      "rationale": "Covers evaluation concepts and judge-based assessment.",
+      "name": "Evaluation methods",
+      "total_volume": 2260,
+      "market": "US-EN",
+      "keyword_stats": {
+       "llm evaluations": {
+        "volume": 1000,
+        "difficulty": 23,
+        "intent": "informational",
+        "cpc": 23.450000762939453,
+        "owned_by": [
+         "confident-ai.com"
+        ]
+       },
+       "ai evaluation": {
+        "volume": 480,
+        "difficulty": 12,
+        "intent": "informational",
+        "cpc": 1.8199999332427979,
+        "owned_by": [
+         "confident-ai.com",
+         "confident-ai.com",
+         "confident-ai.com"
+        ]
+       },
+       "evaluation ai": {
+        "volume": 390,
+        "difficulty": 10,
+        "intent": "informational",
+        "cpc": 0.4000000059604645,
+        "owned_by": [
+         "confident-ai.com"
+        ]
+       },
+       "llm as a judge": {
+        "volume": 390,
+        "difficulty": 20,
+        "intent": "informational",
+        "cpc": 6.650000095367432,
+        "owned_by": [
+         "confident-ai.com"
+        ]
+       }
+      },
+      "metrics": {
+       "keyword_count": 4,
+       "total_volume": 2260,
+       "max_volume": 1000,
+       "median_volume": 435,
+       "avg_difficulty": 16.2,
+       "max_difficulty": 23,
+       "difficulty_measured_for": 4,
+       "avg_cpc": 8.08,
+       "max_cpc": 23.45,
+       "commercial_keywords": 0,
+       "commercial_share": 0.0,
+       "top_keywords": [
+        {
+         "keyword": "llm evaluations",
+         "volume": 1000,
+         "difficulty": 23,
+         "cpc": 23.450000762939453,
+         "intent": "informational"
+        },
+        {
+         "keyword": "ai evaluation",
+         "volume": 480,
+         "difficulty": 12,
+         "cpc": 1.8199999332427979,
+         "intent": "informational"
+        },
+        {
+         "keyword": "evaluation ai",
+         "volume": 390,
+         "difficulty": 10,
+         "cpc": 0.4000000059604645,
+         "intent": "informational"
+        },
+        {
+         "keyword": "llm as a judge",
+         "volume": 390,
+         "difficulty": 20,
+         "cpc": 6.650000095367432,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "high",
+      "opportunity_rule": "1000+ total volume at difficulty 30 or below",
+      "selection_reason": "This pillar directly addresses Braintrust’s core evaluation job and offers the strongest informational opportunity, with 2,260 total volume and 16.2 average difficulty.",
+      "what_it_is": "A technical guide to LLM evaluation methods, including code-based scoring, LLM-as-a-judge, human review, and experiment design for engineers shipping AI features.",
+      "how_to_use_it": "Build a definitive engineering guide that shows how to choose evaluators, run repeatable experiments on versioned datasets, and determine whether a model or prompt change improved quality."
+     },
+     {
+      "cluster_id": 6,
+      "cluster_name": "Quality measurement",
+      "head_term": "rag evaluation metrics",
+      "keywords": [
+       "rag evaluation metrics",
+       "llm evaluation metrics",
+       "langsmith evaluation metrics"
+      ],
+      "intent": "informational",
+      "avg_volume": 220,
+      "avg_difficulty": 18.5,
+      "rationale": "Focuses on metrics for model and retrieval quality.",
+      "name": "Quality measurement",
+      "total_volume": 660,
+      "market": "US-EN",
+      "keyword_stats": {
+       "rag evaluation metrics": {
+        "volume": 390,
+        "difficulty": 21,
+        "intent": "informational",
+        "cpc": 0.550000011920929,
+        "owned_by": [
+         "confident-ai.com",
+         "confident-ai.com",
+         "confident-ai.com"
+        ]
+       },
+       "llm evaluation metrics": {
+        "volume": 260,
+        "difficulty": 16,
+        "intent": "informational",
+        "cpc": 11.51
+       },
+       "langsmith evaluation metrics": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 25.86
+       }
+      },
+      "metrics": {
+       "keyword_count": 3,
+       "total_volume": 660,
+       "max_volume": 390,
+       "median_volume": 260,
+       "avg_difficulty": 18.5,
+       "max_difficulty": 21,
+       "difficulty_measured_for": 2,
+       "avg_cpc": 12.64,
+       "max_cpc": 25.86,
+       "commercial_keywords": 0,
+       "commercial_share": 0.0,
+       "top_keywords": [
+        {
+         "keyword": "rag evaluation metrics",
+         "volume": 390,
+         "difficulty": 21,
+         "cpc": 0.550000011920929,
+         "intent": "informational"
+        },
+        {
+         "keyword": "llm evaluation metrics",
+         "volume": 260,
+         "difficulty": 16,
+         "cpc": 11.51,
+         "intent": "informational"
+        },
+        {
+         "keyword": "langsmith evaluation metrics",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": 25.86,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "medium",
+      "opportunity_rule": "300+ total volume",
+      "selection_reason": "This pillar owns the distinct technical question of what to measure in LLM and RAG systems, with 660 total volume and 18.5 average difficulty.",
+      "what_it_is": "A metrics-focused resource for AI engineers choosing measures for retrieval quality, generation quality, groundedness, correctness, and production regressions.",
+      "how_to_use_it": "Publish a practical measurement framework that maps metrics to failure modes and demonstrates how teams implement them with code, LLM judges, human review, and production trace datasets."
+     },
+     {
+      "cluster_id": 7,
+      "cluster_name": "Observability software",
+      "head_term": "ai observability platform",
+      "keywords": [
+       "ai observability platform",
+       "ai observability and evaluation platform",
+       "ai agent observability tools",
+       "agent observability platform",
+       "ai agent observability platform",
+       "agent evaluation platforms"
+      ],
+      "intent": "commercial",
+      "avg_volume": 173,
+      "avg_difficulty": 27.7,
+      "rationale": "Targets platforms for monitoring deployed AI systems.",
+      "name": "Observability software",
+      "total_volume": 1040,
+      "market": "US-EN",
+      "keyword_stats": {
+       "ai observability platform": {
+        "volume": 480,
+        "difficulty": 41,
+        "intent": "commercial",
+        "cpc": 66.77999877929688,
+        "owned_by": [
+         "arize.com"
+        ]
+       },
+       "ai observability and evaluation platform": {
+        "volume": 390,
+        "difficulty": 30,
+        "intent": "commercial",
+        "owned_by": [
+         "galileo.ai"
+        ]
+       },
+       "ai agent observability tools": {
+        "volume": 110,
+        "difficulty": 15,
+        "intent": "commercial",
+        "cpc": 32.49
+       },
+       "agent observability platform": {
+        "volume": 30,
+        "difficulty": 48,
+        "intent": "commercial",
+        "cpc": 31.97
+       },
+       "ai agent observability platform": {
+        "volume": 30,
+        "difficulty": 32,
+        "intent": "commercial",
+        "cpc": 43.84
+       },
+       "agent evaluation platforms": {
+        "intent": "informational"
+       }
+      },
+      "metrics": {
+       "keyword_count": 6,
+       "total_volume": 1040,
+       "max_volume": 480,
+       "median_volume": 70,
+       "avg_difficulty": 27.7,
+       "max_difficulty": 48,
+       "difficulty_measured_for": 6,
+       "avg_cpc": 29.18,
+       "max_cpc": 66.78,
+       "commercial_keywords": 5,
+       "commercial_share": 0.83,
+       "top_keywords": [
+        {
+         "keyword": "ai observability platform",
+         "volume": 480,
+         "difficulty": 41,
+         "cpc": 66.77999877929688,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "ai observability and evaluation platform",
+         "volume": 390,
+         "difficulty": 30,
+         "cpc": null,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "ai agent observability tools",
+         "volume": 110,
+         "difficulty": 15,
+         "cpc": 32.49,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "agent observability platform",
+         "volume": 30,
+         "difficulty": 48,
+         "cpc": 31.97,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "ai agent observability platform",
+         "volume": 30,
+         "difficulty": 32,
+         "cpc": 43.84,
+         "intent": "commercial"
+        }
+       ]
+      },
+      "opportunity": "high",
+      "opportunity_rule": "1000+ total volume at difficulty 30 or below",
+      "selection_reason": "This pillar captures engineers actively evaluating platforms for tracing and monitoring production AI systems, with 1,040 total volume, $29.18 average CPC, and 0.83 commercial share.",
+      "what_it_is": "A commercial topic for engineering teams comparing observability platforms for production LLM and agent traces, responses, tool calls, failures, and evaluations.",
+      "how_to_use_it": "Create a platform-category page and supporting technical comparison content centered on debugging production behavior, discovering failure patterns, and connecting traces to release decisions."
+     },
+     {
+      "cluster_id": 8,
+      "cluster_name": "Evaluation software",
+      "head_term": "llm evaluation tools",
+      "keywords": [
+       "llm evaluation tools",
+       "llm evaluation platform",
+       "best llm evaluation platform"
+      ],
+      "intent": "commercial",
+      "avg_volume": 57,
+      "avg_difficulty": 19.5,
+      "rationale": "Targets buyers comparing evaluation platform capabilities.",
+      "name": "Evaluation software",
+      "total_volume": 170,
+      "market": "US-EN",
+      "keyword_stats": {
+       "llm evaluation tools": {
+        "volume": 110,
+        "difficulty": 22,
+        "intent": "commercial",
+        "cpc": 24.07
+       },
+       "llm evaluation platform": {
+        "volume": 50,
+        "difficulty": 17,
+        "intent": "commercial",
+        "cpc": 28.41
+       },
+       "best llm evaluation platform": {
+        "volume": 10,
+        "intent": "commercial"
+       }
+      },
+      "metrics": {
+       "keyword_count": 3,
+       "total_volume": 170,
+       "max_volume": 110,
+       "median_volume": 50,
+       "avg_difficulty": 19.5,
+       "max_difficulty": 22,
+       "difficulty_measured_for": 2,
+       "avg_cpc": 17.49,
+       "max_cpc": 28.41,
+       "commercial_keywords": 3,
+       "commercial_share": 1.0,
+       "top_keywords": [
+        {
+         "keyword": "llm evaluation tools",
+         "volume": 110,
+         "difficulty": 22,
+         "cpc": 24.07,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "llm evaluation platform",
+         "volume": 50,
+         "difficulty": 17,
+         "cpc": 28.41,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "best llm evaluation platform",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "commercial"
+        }
+       ]
+      },
+      "opportunity": "low",
+      "opportunity_rule": "under 300 total volume",
+      "selection_reason": "This tightly relevant pillar reaches buyers comparing the exact category Braintrust sells, and its 1.0 commercial share outweighs its lower 170 total volume.",
+      "what_it_is": "A buyer-oriented evaluation of LLM evaluation tools and platforms for technical teams replacing manual output review with systematic experiments and release gates.",
+      "how_to_use_it": "Build a transparent category and comparison page organized around production-grade requirements such as versioned datasets, custom scorers, trace integration, experiment comparison, and regression gating."
+     }
+    ],
+    "discarded": [
+     {
+      "cluster_id": 1,
+      "cluster_name": "Protocol foundations",
+      "head_term": "mcp",
+      "keywords": [
+       "mcp",
+       "mcp protocol",
+       "what is mcp",
+       "how does mcp work"
+      ],
+      "intent": "informational",
+      "avg_volume": 18942,
+      "avg_difficulty": 48,
+      "rationale": "Covers protocol definitions, purpose, and mechanics.",
+      "name": "Protocol foundations",
+      "total_volume": 75768,
+      "market": "US-EN",
+      "keyword_stats": {
+       "mcp": {
+        "volume": 74000,
+        "difficulty": 53,
+        "intent": "informational",
+        "cpc": 9.020000457763672,
+        "owned_by": [
+         "humanloop.com"
+        ]
+       },
+       "mcp protocol": {
+        "volume": 590,
+        "difficulty": 60,
+        "intent": "informational",
+        "cpc": 6.670000076293945,
+        "owned_by": [
+         "humanloop.com",
+         "humanloop.com"
+        ]
+       },
+       "what is mcp": {
+        "volume": 590,
+        "difficulty": 54,
+        "intent": "informational",
+        "cpc": 1.1399999856948853,
+        "owned_by": [
+         "humanloop.com"
+        ]
+       },
+       "how does mcp work": {
+        "volume": 590,
+        "difficulty": 24,
+        "intent": "informational",
+        "cpc": 2.059999942779541,
+        "owned_by": [
+         "humanloop.com"
+        ]
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 32/100 - Generic introductory protocol intent outside production evaluation. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 2,
+      "cluster_name": "Agent design patterns",
+      "head_term": "human in loop",
+      "keywords": [
+       "human in loop",
+       "agent state",
+       "agent loop",
+       "agent architecture",
+       "agent architectures"
+      ],
+      "intent": "informational",
+      "avg_volume": 1876,
+      "avg_difficulty": 24,
+      "rationale": "Explains agent control, state, and system design.",
+      "name": "Agent design patterns",
+      "total_volume": 9380,
+      "market": "US-EN",
+      "keyword_stats": {
+       "human in loop": {
+        "volume": 6600,
+        "difficulty": 55,
+        "intent": "informational",
+        "cpc": 43.060001373291016,
+        "owned_by": [
+         "humanloop.com"
+        ]
+       },
+       "agent state": {
+        "volume": 880,
+        "difficulty": 2,
+        "intent": "informational",
+        "owned_by": [
+         "langchain.com"
+        ]
+       },
+       "agent loop": {
+        "volume": 720,
+        "difficulty": 18,
+        "intent": "informational",
+        "cpc": 12.050000190734863,
+        "owned_by": [
+         "langchain.com"
+        ]
+       },
+       "agent architecture": {
+        "volume": 590,
+        "difficulty": 20,
+        "intent": "informational",
+        "cpc": 1.190000057220459,
+        "owned_by": [
+         "langchain.com",
+         "langchain.com",
+         "langchain.com",
+         "langchain.com"
+        ]
+       },
+       "agent architectures": {
+        "volume": 590,
+        "difficulty": 24,
+        "intent": "informational",
+        "cpc": 15.529999732971191,
+        "owned_by": [
+         "langchain.com",
+         "langchain.com"
+        ]
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 43/100 - Broad agent-architecture concepts with weak evaluation focus. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 3,
+      "cluster_name": "Retrieval system design",
+      "head_term": "rag architectures",
+      "keywords": [
+       "rag architectures",
+       "types of rag"
+      ],
+      "intent": "informational",
+      "avg_volume": 1160,
+      "avg_difficulty": 40,
+      "rationale": "Targets retrieval design approaches and variants.",
+      "name": "Retrieval system design",
+      "total_volume": 2320,
+      "market": "US-EN",
+      "keyword_stats": {
+       "rag architectures": {
+        "volume": 1600,
+        "difficulty": 35,
+        "intent": "informational",
+        "cpc": 24.75,
+        "owned_by": [
+         "humanloop.com"
+        ]
+       },
+       "types of rag": {
+        "volume": 720,
+        "difficulty": 45,
+        "intent": "informational",
+        "cpc": 0.7200000286102295,
+        "owned_by": [
+         "humanloop.com"
+        ]
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 28/100 - Too narrow and focused on generic RAG design. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 4,
+      "cluster_name": "Schema-constrained generation",
+      "head_term": "structure output",
+      "keywords": [
+       "structured outputs",
+       "structure output",
+       "structured output"
+      ],
+      "intent": "informational",
+      "avg_volume": 480,
+      "avg_difficulty": 31,
+      "rationale": "Addresses reliably formatted model responses.",
+      "name": "Schema-constrained generation",
+      "total_volume": 1440,
+      "market": "US-EN",
+      "keyword_stats": {
+       "structured outputs": {
+        "volume": 480,
+        "difficulty": 31,
+        "intent": "informational",
+        "owned_by": [
+         "humanloop.com",
+         "humanloop.com",
+         "humanloop.com"
+        ]
+       },
+       "structure output": {
+        "volume": 480,
+        "difficulty": 31,
+        "intent": "informational",
+        "owned_by": [
+         "humanloop.com",
+         "humanloop.com"
+        ]
+       },
+       "structured output": {
+        "volume": 480,
+        "difficulty": 31,
+        "intent": "informational",
+        "cpc": 36.4900016784668,
+        "owned_by": [
+         "humanloop.com",
+         "humanloop.com",
+         "humanloop.com"
+        ]
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 38/100 - Near-duplicate terms targeting implementation rather than evaluation. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 9,
+      "cluster_name": "Platform alternatives",
+      "head_term": "alternative to langfuse",
+      "keywords": [
+       "alternative to langfuse",
+       "langfuse clickhouse alternative",
+       "Langfuse alternative",
+       "LangSmith alternative"
+      ],
+      "intent": "commercial",
+      "avg_volume": 12,
+      "avg_difficulty": null,
+      "rationale": "Captures comparison searches for competing platforms.",
+      "name": "Platform alternatives",
+      "total_volume": 48,
+      "market": "US-EN",
+      "keyword_stats": {
+       "alternative to langfuse": {
+        "volume": 40,
+        "intent": "commercial"
+       },
+       "langfuse clickhouse alternative": {
+        "volume": 10,
+        "intent": "commercial"
+       },
+       "Langfuse alternative": {
+        "intent": "informational"
+       },
+       "LangSmith alternative": {
+        "intent": "informational"
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 55/100 - Third-party-led intent; use isolated comparison pages only if deliberate. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 10,
+      "cluster_name": "Production quality operations",
+      "head_term": "agent observability github",
+      "keywords": [
+       "agent observability github",
+       "llm evaluation framework open-source",
+       "llm evaluation framework github",
+       "trace agent tool calls",
+       "versioned evaluation datasets",
+       "production AI tracing",
+       "online scoring regressions",
+       "LLM regression testing",
+       "AI release quality gates"
+      ],
+      "intent": "informational",
+      "avg_volume": 3,
+      "avg_difficulty": 3,
+      "rationale": "Covers open tooling, tracing, testing, and release controls.",
+      "name": "Production quality operations",
+      "total_volume": 27,
+      "market": "US-EN",
+      "keyword_stats": {
+       "agent observability github": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "llm evaluation framework open-source": {
+        "volume": 10,
+        "difficulty": 23,
+        "intent": "informational"
+       },
+       "llm evaluation framework github": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 18.82
+       },
+       "trace agent tool calls": {
+        "intent": "informational"
+       },
+       "versioned evaluation datasets": {
+        "intent": "informational"
+       },
+       "production AI tracing": {
+        "intent": "informational"
+       },
+       "online scoring regressions": {
+        "intent": "informational"
+       },
+       "LLM regression testing": {
+        "intent": "informational"
+       },
+       "AI release quality gates": {
+        "intent": "informational"
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 44/100 - Catch-all mixing open-source discovery, tracing, datasets, and release controls. The keywords do not hold together as one topic, so it was not put to selection."
+     }
+    ],
+    "selected": true
+   }
+  },
+  {
+   "id": "pillars",
+   "label": "Content pillars",
+   "status": "done",
+   "artifact": {
+    "pillars": [
+     {
+      "cluster_id": 5,
+      "cluster_name": "Evaluation methods",
+      "pillar_title": "The Comprehensive Guide to LLM Evaluation Methods and LLM-as-a-Judge",
+      "pillar_type": "guide",
+      "priority": 1,
+      "rationale": "The strongest organic acquisition opportunity, with 2,260 total volume—the highest of all clusters—at an avg difficulty of 16.2. Its 1,000-volume head keyword supports a broad educational pillar covering AI evaluation frameworks and judge-based assessment."
+     },
+     {
+      "cluster_id": 7,
+      "cluster_name": "Observability software",
+      "pillar_title": "AI Observability Platforms and Tools: A Comprehensive Comparison",
+      "pillar_type": "comparison",
+      "priority": 2,
+      "rationale": "The strongest commercial pillar, combining 1,040 total volume with a 0.83 commercial share, $29.18 avg CPC, and $66.78 max CPC. Although avg difficulty is higher at 27.7, the buyer intent and CPC indicate substantial business value."
+     },
+     {
+      "cluster_id": 6,
+      "cluster_name": "Quality measurement",
+      "pillar_title": "LLM and RAG Evaluation Metrics: The Complete Quality Measurement Hub",
+      "pillar_type": "hub",
+      "priority": 3,
+      "rationale": "A focused informational opportunity with 660 total volume, 260 median volume, and avg difficulty of 18.5. It complements the broader evaluation-methods pillar by providing a dedicated resource for measuring LLM and retrieval quality."
+     }
+    ],
+    "skipped": [
+     {
+      "cluster_id": 8,
+      "reason": "Despite a 1.0 commercial share, $17.49 avg CPC, and relatively accessible avg difficulty of 19.5, the cluster has only 170 total volume and a 50 median volume. It is better developed as a commercial supporting comparison page beneath the Evaluation methods pillar than as a standalone pillar."
+     }
+    ]
+   }
+  },
+  {
+   "id": "brief",
+   "label": "The brief",
+   "status": "done",
+   "artifact": {
+    "the_call": {
+     "pillar": "The Comprehensive Guide to LLM Evaluation Methods and LLM-as-a-Judge",
+     "why": "Build this first because Evaluation methods has the highest total volume at 2,260 and the lowest average difficulty among the major opportunities at 16.2. Its 1,000-volume head term directly matches Braintrust’s core evaluation job, while the commercial observability cluster has lower total volume at 1,040 and higher average difficulty at 27.7."
+    },
+    "out_answer": [
+     {
+      "who": "confident-ai.com",
+      "for_what": "owns evaluation-method keywords including llm evaluations and llm as a judge"
+     },
+     {
+      "who": "arize.com",
+      "for_what": "owns ai observability platform"
+     },
+     {
+      "who": "galileo.ai",
+      "for_what": "owns ai observability and evaluation platform"
+     }
+    ],
+    "pieces": [
+     {
+      "title": "LLM Evaluations: How to Build a Production Evaluation System",
+      "question": "How do you build LLM evaluations for production AI features?",
+      "question_source": "written",
+      "cluster": "Evaluation methods",
+      "target_keyword": "llm evaluations",
+      "format": "guide",
+      "currently_answered_by": "datadoghq.com",
+      "answered_by_url": "https://www.datadoghq.com/blog/llm-evaluation-framework-best-practices/",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "LLM-as-a-Judge: When and How to Use Model-Based Grading",
+      "question": "When should engineering teams use LLM-as-a-judge instead of code or human evaluators?",
+      "question_source": "written",
+      "cluster": "Evaluation methods",
+      "target_keyword": "llm as a judge",
+      "format": "explainer",
+      "currently_answered_by": "dl.acm.org",
+      "answered_by_url": "https://dl.acm.org/doi/10.1145/3728963",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "RAG Evaluation Metrics: What to Measure for Production Retrieval Quality",
+      "question": "What evaluation metrics do you use in RAG?",
+      "question_source": "people_also_ask",
+      "cluster": "Quality measurement",
+      "target_keyword": "rag evaluation metrics",
+      "format": "guide",
+      "asked_under": "rag evaluation metrics",
+      "currently_answered_by": "patronus.ai"
+     },
+     {
+      "title": "How to Evaluate RAG Performance with Trace-Level Evidence",
+      "question": "How do you evaluate RAG performance?",
+      "question_source": "people_also_ask",
+      "cluster": "Quality measurement",
+      "target_keyword": "llm evaluation metrics",
+      "format": "how-to",
+      "asked_under": "rag evaluation metrics",
+      "currently_answered_by": "superannotate.com"
+     },
+     {
+      "title": "AI Observability Platform Comparison for Production LLM Applications",
+      "question": "What's the best tool for AI observability?",
+      "question_source": "people_also_ask",
+      "cluster": "Observability software",
+      "target_keyword": "ai observability platform",
+      "format": "comparison",
+      "asked_under": "ai observability platform",
+      "currently_answered_by": "confident-ai.com",
+      "answered_by_url": "https://www.confident-ai.com/knowledge-base/compare/10-llm-observability-tools-to-evaluate-and-monitor-ai-2026",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "Top LLM Evaluation Tools for Engineering Teams Shipping AI",
+      "question": "What are the top 5 LLM evaluation tools?",
+      "question_source": "people_also_ask",
+      "cluster": "Evaluation software",
+      "target_keyword": "llm evaluation tools",
+      "format": "list",
+      "asked_under": "llm evaluation tools",
+      "currently_answered_by": "reddit.com",
+      "answered_by_url": "https://www.reddit.com/r/LLMDevs/comments/1i6r1h9/top_6_open_source_llm_evaluation_frameworks/",
+      "answered_by_source": "serp"
+     }
+    ],
+    "parked": [
+     {
+      "cluster": "Protocol foundations",
+      "why": "Parked by the validation gate because it has generic introductory protocol intent outside production evaluation and coherence of 32/100."
+     },
+     {
+      "cluster": "Agent design patterns",
+      "why": "Parked by the validation gate because it covers broad agent-architecture concepts with weak evaluation focus and coherence of 43/100."
+     },
+     {
+      "cluster": "Retrieval system design",
+      "why": "Parked by the validation gate because it is too narrow and focused on generic RAG design, with coherence of 28/100."
+     },
+     {
+      "cluster": "Schema-constrained generation",
+      "why": "Parked by the validation gate because it contains near-duplicate implementation terms rather than evaluation intent, with coherence of 38/100."
+     },
+     {
+      "cluster": "Platform alternatives",
+      "why": "Parked by the validation gate because it has third-party-led intent and should be used for isolated comparison pages only if deliberate, with coherence of 55/100."
+     },
+     {
+      "cluster": "Production quality operations",
+      "why": "Parked by the validation gate because it is a catch-all mixing open-source discovery, tracing, datasets, and release controls, with coherence of 44/100."
+     }
+    ],
+    "written_at": "2026-09-02T22:16:34.923950+00:00",
+    "stale": false,
+    "based_on": {
+     "selected": [
+      "Evaluation methods",
+      "Quality measurement",
+      "Observability software",
+      "Evaluation software"
+     ],
+     "parked": [
+      "Protocol foundations",
+      "Agent design patterns",
+      "Retrieval system design",
+      "Schema-constrained generation",
+      "Platform alternatives",
+      "Production quality operations"
+     ],
+     "questions_observed": {
+      "Evaluation methods": 0,
+      "Quality measurement": 4,
+      "Observability software": 4,
+      "Evaluation software": 4
+     }
+    }
+   }
+  }
+ ],
+ "ended": "2026-09-02T22:16:46.957986+00:00",
+ "summary": "The brief is complete for US-English search. The validation gate approved the strategy, and the relevance gate confirmed business fit. Four clusters were selected: evaluation methods, quality measurement, observability software, and evaluation software.\n\nBuild the LLM evaluation methods guide first: it offers 2,260 total monthly searches at 16.2 average difficulty. Prioritize the observability comparison next because 83% of its terms have commercial intent, despite lower demand and higher difficulty. Braintrust must out-answer Confident AI, Arize, Galileo, Datadog, ACM, Patronus AI, SuperAnnotate, and Reddit.\n\nThe recommended pillars are the evaluation-methods guide, AI observability platform comparison, and LLM/RAG metrics hub. Each article should use the specified question as a heading and answer it directly in the first two sentences so search and answer engines can quote it. Use blog posts for technical questions; add dedicated category/comparison pages for commercial searches. Generic MCP, agent architecture, RAG architecture, structured outputs, and recruiting meanings were excluded.",
+ "pinned": true,
+ "pin_note": "SEO content strategy for braintrust.dev, the LLM evaluation and observability platform (US, English), against Langfuse, LangSmith, Weave, Arize, Humanloop, Galileo, Confident AI and Helicone. The brief said it is NOT usebraintrust.com (the talent marketplace), so that domain was ruled out, not researched.",
+ "archived": false
+}

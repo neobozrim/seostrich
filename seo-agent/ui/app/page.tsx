@@ -11,6 +11,7 @@ import { HomeCanvas } from '@/components/HomeCanvas';
 import { ProfileMenu } from '@/components/ProfileMenu';
 import { WebMcpGuide } from '@/components/WebMcpGuide';
 import { LoginForm } from '@/components/LoginForm';
+import { LaunchState } from '@/components/LaunchState';
 import { sendMessage, getMemory, checkAuth, clearToken, getUsername, stopSession, getApiHealth, getApiBase, EXPECTED_API_VERSION, AuthError } from '@/lib/api';
 import { registerWebMcpTools } from '@/lib/webmcp';
 
@@ -51,6 +52,12 @@ export default function Home() {
   // The homepage is a canvas of work; chat only takes over once asked for.
   const [chatOpen, setChatOpen] = useState(false);
   const [openRunId, setOpenRunId] = useState<string | null>(null);
+  // The first send of a chat: stay on the page while the artefact comes to
+  // exist. Cleared when a run opens or the reply ends without one.
+  const [launch, setLaunch] = useState<string | null>(null);
+  // The logo goes home even mid-chat; the chat is kept and comes back on
+  // the next send or "New chat".
+  const [atHome, setAtHome] = useState(false);
   // Which run this chat turn already opened, so a second stage event does
   // not re-open it after the person closed it to read the conversation.
   const openedRunRef = useRef<string | null>(null);
@@ -239,6 +246,8 @@ export default function Home() {
       })),
     };
 
+    setAtHome(false);
+    if (messages.length === 0 && input.trim()) setLaunch(input.trim());
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setAttachments([]);
@@ -346,6 +355,7 @@ export default function Home() {
             openedRunRef.current = chunk.run_id;
             setOpenRunId(chunk.run_id);
             setShowRun(true);
+            setLaunch(null);
           }
           setMessages((prev) =>
             prev.map((msg) =>
@@ -365,6 +375,7 @@ export default function Home() {
             openedRunRef.current = chunk.run_id;
             setOpenRunId(chunk.run_id);
             setShowRun(true);
+            setLaunch(null);
           }
           const ev: ActivityEvent = {
             ts: chunk.ts,
@@ -388,10 +399,12 @@ export default function Home() {
           setMemory(chunk.memory);
         } else if (chunk.type === 'done') {
           setIsStreaming(false);
+          setLaunch(null);
           resolveRunningTools('success');
           setMessages((prev) => prev.map((m) => (m.id === assistantMessage.id ? { ...m, done: true, statusText: undefined } : m)));
         } else if (chunk.type === 'error') {
           setIsStreaming(false);
+          setLaunch(null);
           resolveRunningTools('error', 'Interrupted by error');
           setMessages((prev) => prev.map((m) => (m.id === assistantMessage.id ? { ...m, done: true, statusText: undefined } : m)));
           setMessages((prev) =>
@@ -419,10 +432,12 @@ export default function Home() {
         setAuthed(false);
         setUser(null);
         setIsStreaming(false);
+        setLaunch(null);
         return;
       }
       const aborted = error instanceof Error && error.name === 'AbortError';
       setIsStreaming(false);
+        setLaunch(null);
       resolveRunningTools('error', aborted ? 'Stopped by user' : 'Connection lost');
       if (!aborted) {
         setMessages((prev) =>
@@ -445,6 +460,8 @@ export default function Home() {
 
   // Home = the canvas. The chat is kept, so "home" never destroys work.
   const goHome = () => {
+    setAtHome(true);
+    setLaunch(null);
     setShowRun(false);
     setShowWebMcp(false);
     setChatOpen(false);
@@ -452,6 +469,8 @@ export default function Home() {
 
   const newChat = () => {
     if (isStreaming) handleStop();
+    setAtHome(false);
+    setLaunch(null);
     setMessages([]);
     setSessionId(null);
     setChatOpen(true);
@@ -531,15 +550,21 @@ export default function Home() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto">
-          {messages.length === 0 && !chatOpen ? (
+          {launch ? (
+            <LaunchState prompt={launch} status={[...messages].reverse().find((m) => m.role === 'assistant')?.statusText} answering={!![...messages].reverse().find((m) => m.role === 'assistant')?.content} onSteer={steer} onStop={handleStop} />
+          ) : atHome || (messages.length === 0 && !chatOpen) ? (
             <HomeCanvas
               onOpenRun={(runId) => {
                 setOpenRunId(runId);
                 setShowRun(true);
               }}
               onStartChat={(prompt) => {
+                // "Go" on the home composer sends. Nothing to type twice.
+                if (prompt && prompt.trim()) {
+                  void sendText(prompt.trim());
+                  return;
+                }
                 setChatOpen(true);
-                if (prompt) setInput(prompt);
                 setTimeout(() => textareaRef.current?.focus(), 0);
               }}
             />
@@ -594,7 +619,7 @@ export default function Home() {
               </div>
             )}
 
-            {(chatOpen || messages.length > 0) && (
+            {(chatOpen || messages.length > 0) && !launch && !atHome && (
             <div className="flex gap-2">
               <button
                 onClick={() => fileInputRef.current?.click()}

@@ -771,10 +771,20 @@ def serp_paa(keyword: str, location_code: int = 2840, language_code: str = "en")
             for sub in item.get("items") or []:
                 title = sub.get("title") or ""
                 if title:
+                    # The page answering the question sits in the expanded
+                    # element, not on the question row itself.
+                    # Since 2026 the expansion is usually an AI overview whose
+                    # `references` carry the cited sources; older payloads put
+                    # domain/url on the element itself.
+                    exp = next((e for e in (sub.get("expanded_element") or []) if isinstance(e, dict)), {})
+                    refs = [r for r in (exp.get("references") or []) if isinstance(r, dict)]
+                    inner = [r for r in (exp.get("items") or []) if isinstance(r, dict) and r.get("domain")]
+                    src = next((r for r in refs + inner if r.get("domain")), {})
                     questions.append({
                         "question": title,
-                        "domain": sub.get("domain", ""),
-                        "url": sub.get("url", ""),
+                        "domain": sub.get("domain") or exp.get("domain") or src.get("domain", ""),
+                        "url": sub.get("url") or exp.get("url") or src.get("url", ""),
+                        "cited": [r.get("domain") for r in refs[:5] if r.get("domain")],
                     })
             # some payloads carry the question at top level
             if not item.get("items") and item.get("title"):

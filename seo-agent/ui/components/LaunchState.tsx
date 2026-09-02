@@ -52,7 +52,7 @@ export function LaunchState({
         <div className="launch-prompt max-w-3xl lg:max-w-6xl mx-auto px-6 pt-8">
           <div className="lg:max-w-[48rem]">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2 py-0.5 rounded bg-accent-50 text-accent-600 border border-accent-100">
+              <span className="text-sm font-semibold px-2 py-0.5 rounded bg-accent-50 text-accent-600 border border-accent-100">
                 Starting
               </span>
               <span className="text-xs text-gray-400">
@@ -63,11 +63,11 @@ export function LaunchState({
 
             <details className="mt-4 group bg-surface-100 border border-surface-300 rounded-xl px-4 py-2.5">
               <summary className="cursor-pointer list-none flex items-baseline gap-3 text-sm">
-                <span className="text-[10px] font-semibold tracking-[0.16em] uppercase text-primary-600 shrink-0">Your request</span>
+                <span className="text-sm font-semibold text-primary-600 shrink-0">Your request</span>
                 <span className="text-gray-600 truncate group-open:hidden flex-1 min-w-0">{firstLine}</span>
                 <span className="hidden group-open:block flex-1" />
-                <span className="text-xs text-gray-500 shrink-0 ml-auto group-open:hidden">expand ▾</span>
-                <span className="text-xs text-gray-500 shrink-0 ml-auto hidden group-open:inline">collapse ▴</span>
+                <span className="text-sm text-gray-500 shrink-0 ml-auto group-open:hidden">expand ▾</span>
+                <span className="text-sm text-gray-500 shrink-0 ml-auto hidden group-open:inline">collapse ▴</span>
               </summary>
               <div className="mt-2 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto">{prompt}</div>
             </details>

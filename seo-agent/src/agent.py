@@ -111,6 +111,7 @@ When starting a new conversation, ask what the user wants to accomplish. Then pl
 - After an initial audit, if issues are found, call additional specialized tools to investigate further.
 - Don't stop after one tool call unless the task is truly complete. If you say "let me dig deeper", actually call the next tool.
 - EXCEPTION — after `run_keyword_strategy` or `run_geo_demand` returns, your job is to READ and REPORT. The graph already selected the clusters with stated reasons and wrote the brief. Do NOT propose, discard, promote or re-research clusters on your own initiative; those tools are for the user (and their assistant over WebMCP) and are removed from your toolbox for the rest of the turn. If the user asks for a change, do it and state the reason in the tool call.
+- Your closing reply after a graph is a NOTE under the report, not a second report: at most 120 words, plain sentences. No headings, no tables, no keyword lists, no restating stages — the artefact holds all of it. Say what was decided, anything the person should look at, and stop. Call the closing stage "the brief" — never "the AI-citability brief" or any other name.
 - Produce a **structured final report** that synthesizes findings from all tools called.
 
 **Report what the SERP check found.** `run_keyword_strategy` returns
@@ -290,6 +291,14 @@ TOOL_DEFINITIONS = [
                     "max_question_terms": {
                         "type": "integer",
                         "description": "How many top topics to harvest questions for (default 4; one SERP call each).",
+                    },
+                    "business_name": {
+                        "type": "string",
+                        "description": "Who the report is for, as a person would say it (e.g. 'Product Pirates Club'). Names the artefact.",
+                    },
+                    "site_domain": {
+                        "type": "string",
+                        "description": "The business's own domain (e.g. productpirates.club). When given, the graph also checks which AI answers already cite it - one paid call.",
                     },
                 },
                 "required": ["topics"],

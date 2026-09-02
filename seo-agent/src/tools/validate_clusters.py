@@ -30,6 +30,7 @@ Your job is to evaluate whether the clusters make strategic sense BEFORE they be
 - Clusters that overlap >40% in intent with another cluster — recommend merging
 - Clusters that target mixed intents (e.g., "buy X" + "what is X" in same cluster)
 - Clusters based on keyword volume alone without strategic coherence
+- Clusters led by a named third-party product, platform, vendor, course provider or model the business does not own (n8n, Zapier, Coursera, Pendo, GPT-4...) — navigational for that product, not a topic this business can own; rec "drop" unless the business is about that product
 
 **Output format** — keep it TIGHT. Refer to clusters by their number.
 Never repeat keyword text back; it is already known.

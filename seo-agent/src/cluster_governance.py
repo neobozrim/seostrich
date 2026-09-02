@@ -292,7 +292,7 @@ def _discard_cluster_locked(run_id: str, cluster_name: str, reason: str = "",
     return {"ok": True, "discarded": entry.get("name"), "selected_count": len(clusters)}
 
 
-def rerun_cluster_research(run_id: str, cluster_name: str) -> dict:
+def rerun_cluster_research(run_id: str, cluster_name: str, by: str = "agent") -> dict:
     """Re-run keyword research for ONE existing cluster, in place.
 
     The judge-facing move: "this cluster looks thin/wrong — go get fresh data
@@ -334,7 +334,7 @@ def rerun_cluster_research(run_id: str, cluster_name: str) -> dict:
     if not seed:
         return {"ok": False, "error": "cluster has no head term to re-seed from"}
 
-    fresh = propose_cluster(run_id, str(seed))
+    fresh = propose_cluster(run_id, str(seed), by=by, refresh_existing=True)
     if not fresh.get("ok"):
         return fresh
 
@@ -342,13 +342,22 @@ def rerun_cluster_research(run_id: str, cluster_name: str) -> dict:
     # instead of leaving a near-duplicate beside it.
     run = runs.get_run(run_id)
     stage = _clusters_stage(run)
-    entries = stage["artifact"].get(where) or []
+    # The selected pool lives under `clusters`; `selected` is the bool that
+    # says a selection was made. Reading the pool by its pool name handed
+    # the loop below a bool (observed 2026-09-02: every rerun of a selected
+    # cluster 500'd after the paid call had already been made).
+    key = "clusters" if where == "selected" else "discarded"
+    entries = stage["artifact"].get(key) or []
     proposed = next(
         (e for e in (stage["artifact"].get("clusters") or []) if e.get("proposed")),
         None,
     )
     added = 0
     if proposed is not None:
+        # `entries` IS the selected list when the target is selected, so the
+        # proposal has to leave it here too, or the write-back below puts
+        # the duplicate straight back.
+        entries = [e for e in entries if e is not proposed]
         existing = {
             (k.get("keyword") if isinstance(k, dict) else k) for k in (target.get("keywords") or [])
         }
@@ -367,7 +376,7 @@ def rerun_cluster_research(run_id: str, cluster_name: str) -> dict:
         for i, entry in enumerate(entries):
             if _match(entry, cluster_name):
                 entries[i] = target
-        stage["artifact"][where] = entries
+        stage["artifact"][key] = entries
         runs.save_run(run_id, run)
 
     return {
@@ -386,8 +395,13 @@ def propose_cluster(
     location_code: int | None = None,
     language_code: str | None = None,
     by: str = "agent",
+    refresh_existing: bool = False,
 ) -> dict:
     """Propose a new cluster via a scoped re-seed on one topic.
+
+    `refresh_existing` is for rerun_cluster_research: the topic IS an
+    existing cluster's head term, and the caller folds the fresh rows into
+    it, so the duplicate check must not refuse.
 
     One DataForSEO keyword_suggestions call (budget-accounted to the run),
     then deterministic assembly: top suggestions become cluster members
@@ -475,13 +489,13 @@ def propose_cluster(
         _ensure_baseline(run)
         artifact = stage["artifact"]
         existing = artifact.setdefault("clusters", [])
-        if any(_match(c, topic) for c in existing):
+        if not refresh_existing and any(_match(c, topic) for c in existing):
             return {"ok": False, "error": f"a cluster for '{topic}' already exists"}
         existing.append(entry)
         artifact["count"] = len(existing)
-        _log_change(run, "propose", entry.get("cluster_name") or topic,
-                    reason=f"proposed and researched: {topic}", by=by,
-                    keywords_found=len(members))
+        _log_change(run, "rerun" if refresh_existing else "propose", entry.get("cluster_name") or topic,
+                    reason=(f"re-researched from \"{topic}\"" if refresh_existing else f"proposed and researched: {topic}"),
+                    by=by, keywords_found=len(members))
         _selection_changed(run, run_id, f"proposed {topic}")
         runs.save_run(run_id, run)
     return {"ok": True, "proposed": entry}

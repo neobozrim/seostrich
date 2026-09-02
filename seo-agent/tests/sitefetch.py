@@ -40,6 +40,10 @@ ok([sf.domain_of(u) for u in c2["own"]] == ["myblog.dev"] and [sf.domain_of(u) f
 c3 = sf.classify_urls("check https://unknown.io", "")
 ok(c3["competitors"] and not c3["own"], "an unmarked URL is a competitor (costs a lookup, cannot poison the seeds)")
 
+c4 = sf.classify_urls("This is braintrust.dev, the eval platform. It is NOT usebraintrust.com, the talent marketplace. Competitors: langfuse.com", "https://www.braintrust.dev/")
+ok([sf.domain_of(u) for u in c4["ignored"]] == ["usebraintrust.com"] and [sf.domain_of(u) for u in c4["competitors"]] == ["langfuse.com"],
+   f"a negated domain is ruled out, not queried as a competitor: {c4}")
+
 print("3. the guard")
 for bad in ["http://localhost/", "http://127.0.0.1:8001/api", "http://10.0.0.5/", "http://192.168.1.1/", "http://169.254.169.254/latest/meta-data", "ftp://example.com/", "file:///etc/passwd", "http://[::1]/", "http://metadata.internal/"]:
     ok(sf.safe_url(bad) is None, f"refused: {bad}")

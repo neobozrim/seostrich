@@ -50,3 +50,58 @@ body {
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+/* Launch: the brief rises, the ostrich runs bottom-right → top-left with a trail */
+@keyframes launch-run {
+  0%   { transform: translate(70vw, 75vh) scaleX(-1) rotate(-6deg); opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translate(-70vw, -70vh) scaleX(-1) rotate(-6deg); opacity: 0; }
+}
+@keyframes launch-rise {
+  from { transform: translateY(46vh); opacity: 0.35; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes launch-streak {
+  0%   { opacity: 0; }
+  20%  { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+@keyframes launch-shimmer {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+.launch-runner,
+.launch-ghost {
+  position: fixed;
+  left: calc(50% - 6rem);
+  top: calc(45% - 8rem);
+  width: 12rem;
+  height: auto;
+  animation: launch-run 1.6s cubic-bezier(0.55, 0, 0.35, 1) both;
+  z-index: 30;
+}
+.launch-ghost { z-index: 29; }
+.launch-streak {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 160vmax;
+  height: 3rem;
+  margin-left: -80vmax;
+  margin-top: -1.5rem;
+  transform: rotate(-42deg);
+  background: linear-gradient(90deg, transparent 0%, rgba(227, 163, 173, 0.0) 25%, rgba(227, 163, 173, 0.75) 50%, rgba(227, 163, 173, 0.0) 75%, transparent 100%);
+  filter: blur(10px);
+  animation: launch-streak 1.6s ease-out both;
+  z-index: 28;
+}
+.launch-prompt { animation: launch-rise 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.launch-heading { animation: launch-shimmer 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .launch-runner, .launch-ghost, .launch-streak { display: none; }
+  .launch-prompt { animation: none; }
+}
+@media (max-width: 640px) {
+  .launch-runner, .launch-ghost { width: 8rem; left: calc(50% - 4rem); }
+}

@@ -36,7 +36,7 @@ from .. import pipeline_recorder as rec
 from .run_sections import stage_manifest
 from .dataforseo import (
     ai_mentions_keywords, budget_remaining, bulk_domain_ranks,
-    keyword_overview, serp_paa,
+    keyword_overview, serp_paa, ai_mentions_domain,
 )
 
 # People-also-ask is cheap but still one SERP call per term.
@@ -534,10 +534,13 @@ def run_geo_demand(
     max_question_terms: int = MAX_QUESTION_TERMS,
     max_mention_terms: int = MAX_MENTION_TERMS,
     wide_competitive_scan: bool = True,
+    business_name: str = "",
+    site_domain: str = "",
 ) -> dict:
     """Run the GEO demand graph inside the active pipeline run."""
     if not rec.active_run_id():
         return {"success": False, "error": "run_geo_demand must run inside a pipeline run"}
+    site_domain = (site_domain or "").strip().lower().removeprefix("https://").removeprefix("http://").removeprefix("www.").split("/")[0]
 
     clean = [t.strip() for t in (topics or []) if isinstance(t, str) and t.strip()][:MAX_TERMS]
     if not clean:
@@ -549,6 +552,14 @@ def run_geo_demand(
         return {"success": False, "error": str(exc), "needs": "confirm_market"}
     loc, lang = market["location_code"], market["language_code"]
     rec.log_activity("step", detail=f"market: {market['label']}")
+
+    # The artefact gets the name a person would use for it, as the strategy
+    # graph does after seeds. Without it a GEO report was titled with its prompt.
+    if business_name or site_domain:
+        rec.name_run(
+            rec.active_run_id(), business_name or site_domain,
+            " . ".join(x for x in (site_domain, "AI visibility", market.get("label", "")) if x).replace(" . ", " \u00b7 "),
+        )
 
     # Re-entry guard. Observed 2026-09-01: after the graph completed for three
     # topics the agent called it again for a subset of two, which re-billed the
@@ -738,6 +749,24 @@ def run_geo_demand(
             for q in geo.get("questions", []) if q.get("platform")
         }),
     }
+    # The site's own standing today: which AI answers already cite it, and
+    # who is quoted alongside. One paid call; the brief said whose site it is.
+    if site_domain:
+        rec.log_activity("step", detail=f"node: which AI answers already cite {site_domain}")
+        try:
+            cites = ai_mentions_domain(site_domain, location_code=market["location_code"], language_code=market["language_code"])
+            result["site_citations"] = {
+                "domain": site_domain,
+                "answers_citing": cites.get("answers_citing", 0),
+                "sampled": cites.get("sampled"),
+                "examples": [
+                    {"question": it.get("keyword") or it.get("question") or it.get("query", ""), "platform": it.get("platform", "")}
+                    for it in (cites.get("items") or [])[:8]
+                ],
+                "cited_alongside": (cites.get("cited_alongside") or [])[:10],
+            }
+        except Exception as e:
+            result["site_citations"] = {"domain": site_domain, "error": str(e)[:160]}
     # Full artifact to the stage (UI + WebMCP read this), summary to the model.
     rec.record_deliverable("ai_citability", "GEO demand brief", result)
     rec.log_activity("step", detail="graph complete")

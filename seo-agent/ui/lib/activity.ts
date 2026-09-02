@@ -96,13 +96,18 @@ export function toolPhrase(tool: string): string {
 export function currentActivity(events: ActivityEvent[]): string {
   const open: ActivityEvent[] = [];
   let lastStep: ActivityEvent | null = null;
-  for (const ev of events) {
-    if (ev.kind === 'tool_start') open.push(ev);
+  let lastStepAt = -1;
+  let lastOpenAt = -1;
+  events.forEach((ev, i) => {
+    if (ev.kind === 'tool_start') { open.push(ev); lastOpenAt = i; }
     else if (ev.kind === 'tool_end') {
-      const i = open.map((o) => o.tool).lastIndexOf(ev.tool);
-      if (i >= 0) open.splice(i, 1);
-    } else if (ev.kind === 'step') lastStep = ev;
-  }
+      const j = open.map((o) => o.tool).lastIndexOf(ev.tool);
+      if (j >= 0) open.splice(j, 1);
+    } else if (ev.kind === 'step') { lastStep = ev; lastStepAt = i; }
+  });
+  // A graph run is one long tool call with named steps inside it; the step
+  // is the news, "running the strategy" is not.
+  if (lastStep && lastStepAt > lastOpenAt) return activityLabel(lastStep);
   if (open.length) return activityLabel(open[open.length - 1]);
   if (lastStep) return activityLabel(lastStep);
   const last = events[events.length - 1];

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   ChevronDown,
   ChevronRight,
@@ -86,19 +86,52 @@ function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
+// One line that says what a closed step holds, so the reader can decide
+// whether to open it without scrolling through it.
+function stageSummary(stage: RunStage): string {
+  const a = stage.artifact || {};
+  switch (stage.id) {
+    case 'intake': return a.market || a.locale?.label || (a.location ? `${a.location} · ${a.language}` : '');
+    case 'seeds': {
+      const n = (a.business_seeds?.length || 0) + (a.site_seeds?.length || 0) + (a.competitor_seeds?.length || 0);
+      return n ? `${n} seeds` : '';
+    }
+    case 'keywords': return a.count || a.keywords?.length ? `${a.count ?? a.keywords.length} keywords` : '';
+    case 'competitors': {
+      const n = Object.keys(a.competitors || a.by_domain || {}).length || a.domains?.length || 0;
+      return n ? `${n} competitors` : '';
+    }
+    case 'clusters': {
+      const sel = (a.clusters || []).length;
+      const disc = (a.discarded || []).length;
+      if (!a.selected) return sel ? `${sel} themes · not chosen yet` : '';
+      return sel || disc ? `${sel} selected · ${disc} parked` : '';
+    }
+    case 'pillars': return a.pillars?.length ? `${a.pillars.length} pillars` : '';
+    case 'ai_citability': return a.head_terms?.length ? `${a.head_terms.length} head terms` : a.brief ? 'answer-first plan' : '';
+    case 'mix': return a.calendar?.length ? `${a.calendar.length} weeks` : '';
+    default: return '';
+  }
+}
+
 function StageCard({
   stage,
   index,
   isLast,
+  open,
+  onToggle,
   children,
 }: {
   stage: RunStage;
   index: number;
   isLast: boolean;
+  open: boolean;
+  onToggle: () => void;
   children: React.ReactNode;
 }) {
+  const summary = stageSummary(stage);
   return (
-    <div className="relative flex gap-4">
+    <div className="relative flex gap-4" id={`stage-${stage.id}`}>
       {/* connector rail */}
       <div className="flex flex-col items-center">
         <div
@@ -112,9 +145,13 @@ function StageCard({
         {!isLast && <div className="w-px flex-1 bg-surface-300 my-1" />}
       </div>
 
-      <div className="flex-1 pb-8 min-w-0">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-medium text-gray-400">
+      <div className={`flex-1 min-w-0 ${open ? 'pb-8' : 'pb-4'}`}>
+        <button
+          onClick={onToggle}
+          aria-expanded={open}
+          className="w-full text-left flex items-center gap-2 mb-1 group"
+        >
+          <span className="text-sm text-gray-400">
             Step {index + 1}
           </span>
           <h3 className="text-base font-semibold text-gray-900">{stage.label}</h3>
@@ -123,13 +160,19 @@ function StageCard({
           ) : (
             <Circle className="w-4 h-4 text-gray-300" />
           )}
-        </div>
-        {STAGE_PURPOSE[stage.id] && (
+          {!open && summary && <span className="text-sm text-gray-500 truncate">· {summary}</span>}
+          <span className="ml-auto text-sm text-gray-500 shrink-0 group-hover:text-gray-800">
+            {open ? 'collapse ▴' : 'expand ▾'}
+          </span>
+        </button>
+        {open && STAGE_PURPOSE[stage.id] && (
           <p className="text-sm text-gray-500 mb-3 max-w-prose leading-relaxed">{STAGE_PURPOSE[stage.id]}</p>
         )}
-        <div className="bg-white border border-surface-300 rounded-xl p-4 shadow-sm">
-          {children}
-        </div>
+        {open && (
+          <div className="bg-white border border-surface-300 rounded-xl p-4 shadow-sm">
+            {children}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -155,14 +198,14 @@ function IntakeArtifact({ artifact }: { artifact: Record<string, any> }) {
           .filter(([, v]) => v)
           .map(([k, v]) => (
             <div key={k} className="text-sm">
-              <div className="text-xs text-gray-400">{k}</div>
+              <div className="text-sm text-gray-400">{k}</div>
               <div className="text-gray-800">{v}</div>
             </div>
           ))}
       </div>
       {Array.isArray(artifact.competitors) && artifact.competitors.length > 0 && (
         <div>
-          <div className="text-xs text-gray-400 mb-1">Competitors</div>
+          <div className="text-sm text-gray-400 mb-1">Competitors</div>
           <div>{artifact.competitors.map((c: string) => <Chip key={c}>{c}</Chip>)}</div>
         </div>
       )}
@@ -180,12 +223,12 @@ function SeedsArtifact({ artifact }: { artifact: Record<string, any> }) {
     <div className="space-y-3">
       {groups.map(([label, items]) => (
         <div key={label as string}>
-          <div className="text-xs text-gray-400 mb-1">{label as string}</div>
+          <div className="text-sm text-gray-400 mb-1">{label as string}</div>
           <div>
             {(items as string[] | undefined)?.length ? (
               (items as string[]).map((s) => <Chip key={s}>{s}</Chip>)
             ) : (
-              <span className="text-xs text-gray-400 italic">None</span>
+              <span className="text-sm text-gray-400 italic">None</span>
             )}
           </div>
         </div>
@@ -225,10 +268,47 @@ function artefactName(run: Run): string {
 }
 // The kind of artefact, read from what it contains rather than stored — an
 // old run gets the right tag too.
+// The steps a flow is going to produce, in graph order. While a run is live
+// the rail shows the whole list — done, being built, still to come — so the
+// reader can see how far along it is. A finished run shows what it has.
+const PLAN: Record<string, string[]> = {
+  strategy: ['seeds', 'intake', 'keywords', 'competitors', 'clusters', 'pillars', 'brief'],
+  geo: ['intake', 'keywords', 'ai_citability'],
+};
+const STAGE_NAMES: Record<string, string> = {
+  seeds: 'Seeds', intake: 'Intake', keywords: 'Keyword discovery', competitors: 'Competitor map', clusters: 'Clusters',
+  pillars: 'Content pillars', brief: 'The brief', ai_citability: 'AI visibility', mix: 'Content mix', audit: 'Technical audit',
+};
+type ChecklistItem = { id: string; label: string; state: 'done' | 'building' | 'pending' };
+function checklist(run: Run, running: boolean): ChecklistItem[] {
+  const present = run.stages || [];
+  const has = new Set(present.map((s) => s.id));
+  const geo = has.has('ai_citability') && !has.has('clusters') && !has.has('seeds');
+  const plan = geo ? PLAN.geo : PLAN.strategy;
+  const label = (id: string) => present.find((s) => s.id === id)?.label || STAGE_NAMES[id] || id;
+  if (!running) return present.map((s) => ({ id: s.id, label: s.label || STAGE_NAMES[s.id] || s.id, state: 'done' as const }));
+  const items: ChecklistItem[] = [];
+  let building = false;
+  for (const id of plan) {
+    if (has.has(id)) items.push({ id, label: label(id), state: 'done' });
+    else if (!building) { items.push({ id, label: label(id), state: 'building' }); building = true; }
+    else items.push({ id, label: label(id), state: 'pending' });
+  }
+  for (const s of present) if (!plan.includes(s.id)) items.push({ id: s.id, label: label(s.id), state: 'done' });
+  return items;
+}
+
+// The stage a report exists for stays open: the strategy's brief lives at
+// the top already; the GEO report's product is its AI-visibility stage.
+function isProductStage(run: Run, stage: RunStage): boolean {
+  return stage.id === 'ai_citability' && flowTag(run) === 'AI visibility';
+}
+
 function flowTag(run: Run): string {
   const ids = new Set((run.stages || []).map((s) => s.id));
+  // A GEO run also has intake + keywords; what it lacks is seeds/clusters.
+  if (ids.has('ai_citability') && !ids.has('clusters') && !ids.has('seeds')) return 'AI visibility';
   if (ids.has('pillars') || ids.has('clusters') || ids.has('keywords') || ids.has('seeds')) return 'SEO content strategy';
-  if (ids.has('ai_citability')) return 'AI visibility';
   if (ids.has('audit')) return 'Technical audit';
   return 'Strategy';
 }
@@ -286,7 +366,7 @@ function BriefCard({ brief, onRegenerate, regenerating }: { brief: any; onRegene
   return (
     <div className="mt-5 bg-white border border-surface-300 rounded-xl px-5 py-5 shadow-sm">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <div className="text-[10px] font-semibold tracking-[0.16em] uppercase text-gray-400">The brief</div>
+        <div className="text-sm font-semibold text-gray-400">The brief</div>
         {brief.stale ? (
           <button
             onClick={onRegenerate}
@@ -298,21 +378,23 @@ function BriefCard({ brief, onRegenerate, regenerating }: { brief: any; onRegene
             {regenerating ? 'Rebuilding…' : `Out of date — ${brief.stale_reason || 'the selection changed'} · Rebuild`}
           </button>
         ) : (
-          <button onClick={onRegenerate} disabled={regenerating} className="text-xs text-gray-400 hover:text-gray-700 disabled:opacity-50">
+          <button onClick={onRegenerate} disabled={regenerating} className="text-sm text-gray-400 hover:text-gray-700 disabled:opacity-50">
             {regenerating ? 'Rebuilding…' : 'Rebuild'}
           </button>
         )}
       </div>
 
       <div className="mb-4">
-        <div className="text-xs font-semibold text-gray-500 mb-1">The call</div>
-        <div className="font-display text-lg text-primary-700">{brief.the_call?.pillar}</div>
+        <div className="text-sm font-semibold text-gray-700">Build first</div>
+        <p className="text-sm text-gray-500 mb-1">The pillar to start with, and why. Picked from the selected clusters on measured demand and difficulty — not on taste.</p>
+        <div className="text-base font-semibold text-primary-700">{brief.the_call?.pillar}</div>
         <p className="text-sm text-gray-700 mt-1 leading-relaxed">{brief.the_call?.why}</p>
       </div>
 
       {out.length > 0 && (
         <div className="mb-4">
-          <div className="text-xs font-semibold text-gray-500 mb-1">Who to out-answer</div>
+          <div className="text-sm font-semibold text-gray-700">Who already ranks here</div>
+          <p className="text-sm text-gray-500 mb-1">The domains that hold page-one spots for keywords the pieces target. Each piece has to answer its question better than these pages do; the difficulty column in the keyword tables says how hard that is.</p>
           <ul className="text-sm text-gray-700 space-y-0.5">
             {out.map((o, i) => (
               <li key={i}><span className="font-medium text-gray-800">{o.who}</span> — {o.for_what}</li>
@@ -322,16 +404,27 @@ function BriefCard({ brief, onRegenerate, regenerating }: { brief: any; onRegene
       )}
 
       <div className="mb-4">
-        <div className="text-xs font-semibold text-gray-500 mb-2">{pieces.length} pieces</div>
+        <div className="text-sm font-semibold text-gray-700">{pieces.length} pieces</div>
+        <p className="text-sm text-gray-500 mb-2">A working title, the question the piece answers, the cluster it serves and the keyword it targets. "Asked on Google" questions are taken verbatim from People also ask under the cluster's head term, with who answers them today; "written" means Google showed none and the model phrased it. Every target keyword is one the run measured.</p>
         <ol className="space-y-2">
           {pieces.map((pc, i) => (
             <li key={i} className="border border-surface-200 rounded-lg px-3 py-2">
               <div className="flex items-start gap-2">
-                <span className="text-xs font-semibold text-gray-400 pt-0.5 w-5 shrink-0">{i + 1}.</span>
+                <span className="text-sm font-semibold text-gray-400 pt-0.5 w-5 shrink-0">{i + 1}.</span>
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-gray-900">{pc.title}</div>
-                  <div className="text-sm text-gray-600 mt-0.5">Answers: <span className="italic">{pc.question}</span></div>
-                  <div className="text-[11px] text-gray-400 mt-1">
+                  <div className="text-sm text-gray-600 mt-0.5">
+                    Answers: <span className="italic">{pc.question}</span>
+                    {pc.question_source === 'people_also_ask' ? (
+                      <span className="ml-2 inline-block align-middle text-xs font-semibold px-1.5 py-0.5 rounded bg-green-50 text-green-800 border border-green-200" title={`Google shows this under "${pc.asked_under}" (People also ask)${pc.currently_answered_by ? ' — currently answered by ' + pc.currently_answered_by : ''}`}>asked on Google</span>
+                    ) : pc.question_source === 'written' ? (
+                      <span className="ml-2 inline-block align-middle text-xs font-semibold px-1.5 py-0.5 rounded bg-surface-200 text-gray-500 border border-surface-300" title="Google showed no People-also-ask question for this cluster; the model phrased it">written</span>
+                    ) : null}
+                  </div>
+                  {pc.currently_answered_by && (
+                    <div className="text-sm text-gray-500 mt-0.5">Currently answered by <span className="font-medium text-gray-700">{pc.currently_answered_by}</span></div>
+                  )}
+                  <div className="text-sm text-gray-400 mt-1">
                     {pc.cluster}{pc.target_keyword ? ' · ' + pc.target_keyword : ''}{pc.format ? ' · ' + pc.format : ''}
                   </div>
                 </div>
@@ -343,7 +436,8 @@ function BriefCard({ brief, onRegenerate, regenerating }: { brief: any; onRegene
 
       {parked.length > 0 && (
         <div>
-          <div className="text-xs font-semibold text-gray-500 mb-1">Parked</div>
+          <div className="text-sm font-semibold text-gray-700">Parked</div>
+          <p className="text-sm text-gray-500 mb-1">Clusters the run found and set aside, with the reason. Promote one and the brief marks itself out of date.</p>
           <ul className="text-sm text-gray-600 space-y-0.5">
             {parked.map((pk, i) => (
               <li key={i}><span className="text-gray-800">{pk.cluster}</span> — {pk.why}</li>
@@ -351,6 +445,10 @@ function BriefCard({ brief, onRegenerate, regenerating }: { brief: any; onRegene
           </ul>
         </div>
       )}
+      <p className="mt-4 pt-3 border-t border-surface-200 text-sm text-gray-400 leading-relaxed">
+        Written by the model from this run only: the selected clusters with their keywords, volumes, difficulty and who ranks for them, the pillars, and the parked clusters with their reasons.
+        Questions tagged "asked on Google" come from People also ask (one lookup per selected cluster); titles are the model's wording. The keywords pieces target are checked against the run and the brief is rejected if one is invented. Nothing here comes from the AI-search (GEO) graph.
+      </p>
     </div>
   );
 }
@@ -368,7 +466,7 @@ function DiffBadge({ value }: { value: number | undefined }) {
       : value < 60
         ? 'bg-amber-100 text-amber-700'
         : 'bg-red-100 text-red-700';
-  return <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${tone}`}>KD {value}</span>;
+  return <span className={`px-1.5 py-0.5 rounded text-xs font-semibold ${tone}`}>KD {value}</span>;
 }
 
 type SortKey = 'keyword' | 'volume' | 'difficulty' | 'cpc' | 'intent';
@@ -521,14 +619,28 @@ function KeywordTable({
   // quietly answer a different question than the one the click asked.
   const ordered = sort ? sortRows(objects, sort.key, sort.dir) : objects;
   const visible = limit != null ? ordered.slice(0, limit) : ordered;
+  const [folded, setFolded] = useState(false);
+
+  if (folded) {
+    return (
+      <button onClick={() => setFolded(false)} className="text-sm text-primary-600 hover:text-primary-800 flex items-center gap-1">
+        <ChevronRight className="w-3 h-3" /> Show table · {objects.length + plain.length} keywords
+      </button>
+    );
+  }
 
   return (
     <div>
+      {objects.length + plain.length > 3 && (
+        <button onClick={() => setFolded(true)} className="text-sm text-gray-400 hover:text-gray-700 flex items-center gap-1 mb-1">
+          <ChevronDown className="w-3 h-3" /> Hide table
+        </button>
+      )}
       {objects.length > 0 && (
         <div className="overflow-x-auto -mx-1">
           <table className="w-full min-w-[480px] text-xs border-separate border-spacing-y-1 px-1">
             <thead>
-              <tr className="text-[10px]">
+              <tr className="text-xs">
                 {COLUMNS.map((c) => (
                   <SortHeader
                     key={c.key}
@@ -549,7 +661,7 @@ function KeywordTable({
                   >
                     {k.keyword || k.query || ''}
                     {!hideOwner && Array.isArray(k.owned_by) && k.owned_by.length > 0 && (
-                      <span className="ml-1.5 text-[10px] text-accent-500 font-medium">
+                      <span className="ml-1.5 text-sm text-accent-500 font-medium">
                         from {k.owned_by[0].replace(/^www\./, '').split('.')[0]}{k.owned_by.length > 1 ? ' +' + (k.owned_by.length - 1) : ''}
                       </span>
                     )}
@@ -571,6 +683,9 @@ function KeywordTable({
             </tbody>
           </table>
         </div>
+      )}
+      {limit != null && ordered.length > visible.length && (
+        <span className="text-sm text-gray-400">+{ordered.length - visible.length} more…</span>
       )}
       {plain.length > 0 && (
         <div className="mt-1">
@@ -600,7 +715,7 @@ function KeywordsArtifact({ artifact }: { artifact: Record<string, any> }) {
         </span>
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700"
+          className="flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700"
         >
           {open ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
           {open ? 'Show less' : `Show all ${keywords.length}`}
@@ -608,9 +723,6 @@ function KeywordsArtifact({ artifact }: { artifact: Record<string, any> }) {
       </div>
       <div>
         <KeywordTable rows={keywords} limit={open ? undefined : 24} />
-        {!open && keywords.length > 24 && (
-          <span className="text-xs text-gray-400"> +{keywords.length - 24} more…</span>
-        )}
       </div>
     </div>
   );
@@ -623,7 +735,7 @@ function ClusterMember({ name, stats }: { name: string; stats?: Record<string, a
       <span className="font-medium">{name}</span>
       {stats.volume != null && <span className="text-gray-500">vol {fmtVol(stats.volume)}</span>}
       <DiffBadge value={stats.difficulty} />
-      {stats.intent && <span className="px-1.5 py-0.5 rounded bg-surface-200 text-[10px] capitalize text-gray-600">{stats.intent}</span>}
+      {stats.intent && <span className="px-1.5 py-0.5 rounded bg-surface-200 text-xs capitalize text-gray-600">{stats.intent}</span>}
       {stats.cpc != null && stats.cpc > 0 && <span className="text-gray-500">{fmtCpc(stats.cpc)}</span>}
     </span>
   );
@@ -645,14 +757,14 @@ function ClusterCard({ c }: { c: any }) {
             <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
           )}
           <span className="text-sm font-medium text-gray-800 truncate">{c.name}</span>
-          {c.proposed && <span className="px-1.5 py-0.5 rounded bg-accent-100 text-accent-700 text-[10px] font-semibold">proposed</span>}
-          {c.promoted && <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-semibold">promoted</span>}
+          {c.proposed && <span className="px-1.5 py-0.5 rounded bg-accent-100 text-accent-700 text-xs font-semibold">proposed</span>}
+          {c.promoted && <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 text-xs font-semibold">promoted</span>}
         </span>
         <span className="flex items-center gap-1 flex-shrink-0">
           {c.combined_score != null ? (
             <ScoreBadge value={c.combined_score} />
           ) : c.total_volume != null ? (
-            <span className="text-xs text-gray-400">vol {fmtVol(c.total_volume)}</span>
+            <span className="text-sm text-gray-400">vol {fmtVol(c.total_volume)}</span>
           ) : null}
         </span>
       </button>
@@ -663,18 +775,18 @@ function ClusterCard({ c }: { c: any }) {
               {c.market && <Chip>{c.market}</Chip>}
               {c.intent && <Chip>{c.intent} intent</Chip>}
               {c.total_volume != null && <Chip>vol {fmtVol(c.total_volume)}</Chip>}
-              {c.avg_difficulty != null && <Chip>difficulty {c.avg_difficulty}</Chip>}
+              {c.avg_difficulty != null ? <Chip>difficulty {c.avg_difficulty}</Chip> : c.metrics ? <Chip>KD not measured</Chip> : null}
             </div>
           )}
           {(c.seo_score != null || c.geo_score != null || c.combined_score != null) && (
-            <div className="flex gap-4 text-xs text-gray-500 mb-2">
+            <div className="flex gap-4 text-sm text-gray-500 mb-2">
               <span>SEO <b>{c.seo_score}</b></span>
               <span>GEO <b>{c.geo_score}</b></span>
               <span>Combined <b>{c.combined_score}</b></span>
             </div>
           )}
           {(c.rationale || c.seo_rationale || c.geo_rationale) && (
-            <p className="text-xs text-gray-600 mb-2">
+            <p className="text-sm text-gray-600 mb-2">
               {c.rationale || [c.seo_rationale, c.geo_rationale].filter(Boolean).join(' · ')}
             </p>
           )}
@@ -700,7 +812,7 @@ function ClustersArtifact({ artifact }: { artifact: Record<string, any> }) {
   return (
     <div className="space-y-2">
       {artifact.selected && (
-        <div className="text-xs text-gray-500 mb-1">
+        <div className="text-sm text-gray-500 mb-1">
           <span className="font-semibold text-gray-700">{clusters.length}</span> selected ·{' '}
           <span className="font-semibold text-gray-700">{discarded.length}</span> discarded
         </div>
@@ -713,7 +825,7 @@ function ClustersArtifact({ artifact }: { artifact: Record<string, any> }) {
         <div className="pt-2">
           <button
             onClick={() => setShowDiscarded(!showDiscarded)}
-            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
+            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
           >
             {showDiscarded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
             Discarded clusters ({discarded.length})
@@ -724,7 +836,7 @@ function ClustersArtifact({ artifact }: { artifact: Record<string, any> }) {
                 <div key={`disc-${i}`} className="border border-surface-200 rounded-lg bg-surface-50">
                   <ClusterCard c={c} />
                   {c.discard_reason && (
-                    <div className="px-3 pb-2 -mt-1 text-xs text-gray-500">
+                    <div className="px-3 pb-2 -mt-1 text-sm text-gray-500">
                       <span className="font-medium text-gray-600">Why discarded:</span> {c.discard_reason}
                     </div>
                   )}
@@ -754,9 +866,9 @@ function PillarsArtifact({ artifact }: { artifact: Record<string, any> }) {
           </div>
           <div className="text-sm font-semibold text-gray-900 mb-1">{p.pillar_title}</div>
           {p.cluster_name && (
-            <div className="text-xs text-gray-400 mb-1">Cluster: {p.cluster_name}</div>
+            <div className="text-sm text-gray-400 mb-1">Cluster: {p.cluster_name}</div>
           )}
-          {p.rationale && <p className="text-xs text-gray-600">{p.rationale}</p>}
+          {p.rationale && <p className="text-sm text-gray-600">{p.rationale}</p>}
         </div>
       ))}
     </div>
@@ -787,20 +899,20 @@ function MixArtifact({
         {calendar.map((item: any, i: number) => (
           <div key={i} className="border border-surface-300 rounded-lg p-3">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-gray-400">
+              <span className="text-sm text-gray-400">
                 Week {item.week} · {item.publish_date} · <span className="capitalize">{item.content_type}</span>
               </span>
             </div>
             <div className="text-sm font-semibold text-gray-900">{item.article_title}</div>
             {item.primary_keyword && (
-              <div className="text-xs text-gray-500 mt-1">
+              <div className="text-sm text-gray-500 mt-1">
                 <b>Primary:</b> {item.primary_keyword}
                 {item.secondary_keywords?.length ? (
                   <> · <b>Secondary:</b> {item.secondary_keywords.join(', ')}</>
                 ) : null}
               </div>
             )}
-            {item.angle && <p className="text-xs text-gray-600 mt-1">{item.angle}</p>}
+            {item.angle && <p className="text-sm text-gray-600 mt-1">{item.angle}</p>}
           </div>
         ))}
       </div>
@@ -837,7 +949,7 @@ function MixArtifact({
           <div className="mt-3 space-y-2">
             {feedback.map((f, i) => (
               <div key={i} className="bg-accent-50 border-l-2 border-accent-400 rounded p-2">
-                <div className="text-xs text-gray-500 mb-0.5">
+                <div className="text-sm text-gray-500 mb-0.5">
                   {f.author || 'judge'}
                   {f.at ? ` · ${new Date(f.at).toLocaleString()}` : ''}
                 </div>
@@ -872,7 +984,7 @@ function AuditArtifact({ artifact }: { artifact: Record<string, any> }) {
                   {issues > 0 ? `${issues} issues` : 'clean'}
                 </span>
               ) : (
-                <span className="text-xs text-gray-400">done</span>
+                <span className="text-sm text-gray-400">done</span>
               )}
             </div>
           );
@@ -908,8 +1020,27 @@ function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Rec
     if (Array.isArray(own) && own.length) return own;
     return (universe || []).filter((k: any) => Array.isArray(k?.owned_by) && k.owned_by.includes(d));
   };
-  const queried: string[] = artifact.competitors || [];
-  const user: string[] = artifact.user_supplied || [];
+  // Competitors added after the run, before the next full reload.
+  const [added, setAdded] = useState<string[]>([]);
+  const [newDomain, setNewDomain] = useState('');
+  const addOne = async () => {
+    const d = newDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+    if (!d || !runId) return;
+    setFetching(d);
+    setFetchError(null);
+    try {
+      const res = await fetchCompetitorKeywords(runId, d, 'user');
+      setFetched((prev) => ({ ...prev, [d]: res.rows || [] }));
+      setAdded((prev) => (prev.includes(d) ? prev : [...prev, d]));
+      setNewDomain('');
+    } catch (e: any) {
+      setFetchError(e?.message || 'Could not add that domain');
+    } finally {
+      setFetching(null);
+    }
+  };
+  const queried: string[] = [...(artifact.competitors || []), ...added.filter((d) => !(artifact.competitors || []).includes(d))];
+  const user: string[] = [...(artifact.user_supplied || []), ...added.filter((d) => !(artifact.user_supplied || []).includes(d))];
   const discovered: string[] = artifact.discovered || [];
   const per: Record<string, any> = artifact.per_domain || {};
   const kept = artifact.kept_in_universe;
@@ -962,12 +1093,31 @@ function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Rec
         {contributedLine && <span className="text-gray-400"> · {contributedLine}</span>}
       </div>
       {named > queried.length && (
-        <div className="text-xs text-gray-500">
-          At most five are checked per run, yours first. Not checked: {user.filter((d) => !queried.includes(d)).join(', ')}.
+        <div className="text-sm text-gray-500">
+          Every competitor you name is checked, up to ten. Not checked: {user.filter((d) => !queried.includes(d)).join(', ')}.
+        </div>
+      )}
+      {runId && (
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            value={newDomain}
+            onChange={(e) => setNewDomain(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addOne(); } }}
+            placeholder="Add a competitor domain, e.g. mindtheproduct.com"
+            className="flex-1 min-w-[16rem] rounded-lg border border-surface-300 bg-white px-3 py-1.5 text-sm focus:outline-none focus:border-action-400"
+          />
+          <button
+            onClick={addOne}
+            disabled={!newDomain.trim() || fetching !== null}
+            className="px-3 py-1.5 rounded-lg bg-action-300 text-primary-700 hover:bg-action-400 hover:text-white text-sm font-semibold disabled:opacity-60 transition"
+          >
+            {fetching && !queried.includes(fetching) ? 'Researching…' : 'Add & research (1 lookup)'}
+          </button>
+          {fetchError && fetching === null && <span className="text-sm text-red-600">{fetchError}</span>}
         </div>
       )}
       {artifact.site_has_rankings === false && (
-        <div className="text-xs text-gray-500">
+        <div className="text-sm text-gray-500">
           Your site does not rank for anything yet, so every keyword here is one you are absent from.
         </div>
       )}
@@ -990,16 +1140,16 @@ function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Rec
         <div>
           <button
             onClick={() => setGridOpen(!gridOpen)}
-            className="flex items-center gap-1 text-xs font-semibold text-gray-700 mb-1"
+            className="flex items-center gap-1 text-sm font-semibold text-gray-700 mb-1"
           >
             {gridOpen ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-            Who ranks for what · top {grid.length}{shared ? ' · ' + shared + ' shared by two or more' : ''}
+            Who ranks for what · top {grid.length}{shared ? ' · ' + shared + ' shared by two or more (highlighted)' : ''}
           </button>
           {gridOpen && (
             <div className="overflow-x-auto -mx-1">
               <table className="w-full text-xs border-separate border-spacing-y-1 px-1 min-w-[420px]">
                 <thead>
-                  <tr className="text-[10px] uppercase tracking-wide text-gray-400">
+                  <tr className="text-xs uppercase tracking-wide text-gray-400">
                     <th className="text-left font-medium pl-2 pb-1">Keyword</th>
                     <th className="text-right font-medium pb-1 w-16">Vol</th>
                     <th className="text-left font-medium pb-1 pl-3">Ranked by</th>
@@ -1013,7 +1163,7 @@ function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Rec
                       <td className="py-1 pl-3 pr-2 rounded-r-lg">
                         <span className="flex flex-wrap gap-1">
                           {Array.from(g.by).map((d) => (
-                            <span key={d} className="text-[10px] px-1.5 py-0.5 rounded bg-white border border-surface-300 text-accent-600 font-medium" title={d}>
+                            <span key={d} className="text-xs px-1.5 py-0.5 rounded bg-white border border-surface-300 text-accent-600 font-medium" title={d}>
                               {short(d)}
                             </span>
                           ))}
@@ -1048,12 +1198,12 @@ function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Rec
                   {open ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
                   <span className="text-sm font-medium text-gray-800">{d}</span>
                 </span>
-                <span className="text-xs text-gray-400">{meta}</span>
+                <span className="text-sm text-gray-400">{meta}</span>
               </button>
               {open && (
                 <div className="px-3 pb-3">
                   {rows.length > 0 && v.keywords && rows.length < v.keywords && !fetched[d] && (
-                    <div className="text-xs text-gray-500 mb-2 flex flex-wrap items-center gap-2">
+                    <div className="text-sm text-gray-500 mb-2 flex flex-wrap items-center gap-2">
                       <span>
                         Showing the {rows.length} of {v.keywords} that made it into the universe — this run was recorded before the full list was kept.
                       </span>
@@ -1071,7 +1221,7 @@ function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Rec
                   {rows.length ? (
                     <KeywordTable rows={rows} hideOwner />
                   ) : (
-                    <div className="text-xs text-gray-400">{(v.top || []).join(' · ') || 'No keywords recorded.'}</div>
+                    <div className="text-sm text-gray-400">{(v.top || []).join(' · ') || 'No keywords recorded.'}</div>
                   )}
                 </div>
               )}
@@ -1091,11 +1241,35 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
 
   return (
     <div className="space-y-2">
-      <div className="text-xs text-gray-500">
+      <div className="text-sm text-gray-500">
         {artifact.market ? `Market ${artifact.market}. ` : ''}
         Ranked on measured demand and on whether the sites AI engines cite can
         realistically be displaced.
       </div>
+      {artifact.site_citations && (
+        <div className="border border-surface-300 rounded-lg px-3 py-2 bg-surface-50">
+          <div className="text-sm font-semibold text-gray-700">Where {artifact.site_citations.domain} stands today</div>
+          {artifact.site_citations.error ? (
+            <div className="text-sm text-gray-500">Could not be checked: {artifact.site_citations.error}</div>
+          ) : (
+            <div className="text-sm text-gray-700">
+              Cited in <span className="font-semibold">{artifact.site_citations.answers_citing}</span> AI answer{artifact.site_citations.answers_citing === 1 ? '' : 's'}
+              {artifact.site_citations.sampled != null ? ` of ${artifact.site_citations.sampled} sampled` : ''}.
+              {artifact.site_citations.answers_citing === 0 && ' Nothing yet: every question below is open to be the first answer AI engines lift.'}
+              {(artifact.site_citations.examples || []).length > 0 && (
+                <ul className="mt-1 list-disc list-inside text-gray-600">
+                  {artifact.site_citations.examples.map((e: any, i: number) => (
+                    <li key={i}>{e.question}{e.platform ? ` \u00b7 ${e.platform}` : ''}</li>
+                  ))}
+                </ul>
+              )}
+              {(artifact.site_citations.cited_alongside || []).length > 0 && (
+                <div className="mt-1 text-gray-500">Quoted alongside: {artifact.site_citations.cited_alongside.map((c: any) => (typeof c === 'string' ? c : c.domain)).join(', ')}</div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {brief.map((t: any) => {
         const m = t.metrics || {};
@@ -1117,7 +1291,7 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
                 )}
                 <span className="text-sm font-medium text-gray-800 truncate">{t.topic}</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded-full border flex-shrink-0 ${
+                  className={`text-xs px-1.5 py-0.5 rounded-full border flex-shrink-0 ${
                     winnable
                       ? 'bg-green-50 border-green-300 text-green-800'
                       : verify
@@ -1128,7 +1302,7 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
                   {winnable ? 'winnable' : verify ? 'verify' : 'hard'}
                 </span>
               </span>
-              <span className="text-xs text-gray-400 flex-shrink-0">
+              <span className="text-sm text-gray-400 flex-shrink-0">
                 {fmtVol(m.search_volume || 0)}/mo · authority{' '}
                 {m.weakest_cited_authority || '?'}–{m.strongest_cited_authority || '?'}
               </span>
@@ -1141,7 +1315,7 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
                 {/* The questions are the point of the whole flow, so they lead. */}
                 {t.content_plan?.length > 0 && (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">
+                    <div className="text-sm text-gray-400 mb-1">
                       Questions people ask — use as headings, answer in the first two
                       sentences
                     </div>
@@ -1149,12 +1323,12 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
                       {t.content_plan.map((sec: any, i: number) => (
                         <li key={i} className="text-sm">
                           <div className="flex items-start gap-2">
-                            <span className="text-gray-400 tabular-nums text-xs mt-0.5">
+                            <span className="text-gray-400 tabular-nums text-sm mt-0.5">
                               {i + 1}.
                             </span>
                             <div className="min-w-0">
                               <div className="text-gray-800">{sec.heading}</div>
-                              <div className="text-xs text-gray-500">
+                              <div className="text-sm text-gray-500">
                                 {sec.source === 'people_also_ask'
                                   ? 'People also ask'
                                   : 'An AI engine already answers this'}
@@ -1175,7 +1349,7 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
 
                 {t.niche_sites_already_cited?.length > 0 && (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">
+                    <div className="text-sm text-gray-400 mb-1">
                       Small sites already cited here — your proof it is winnable
                     </div>
                     <div>
@@ -1190,7 +1364,7 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
 
                 {t.currently_cited?.length > 0 && (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">Who AI cites today</div>
+                    <div className="text-sm text-gray-400 mb-1">Who AI cites today</div>
                     <div>
                       {t.currently_cited.slice(0, 10).map((d: any) => (
                         <span
@@ -1212,7 +1386,7 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
                         </span>
                       ))}
                     </div>
-                    <div className="text-[11px] text-gray-400 mt-1">
+                    <div className="text-sm text-gray-400 mt-1">
                       Amber = found by matching the answer text rather than the
                       question, so it may be off-subject. Worth reading, not trusting.
                     </div>
@@ -1225,7 +1399,7 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
       })}
 
       {artifact.cost_note && (
-        <div className="text-[11px] text-gray-400 pt-1">{artifact.cost_note}</div>
+        <div className="text-sm text-gray-400 pt-1">{artifact.cost_note}</div>
       )}
     </div>
   );
@@ -1249,7 +1423,7 @@ function AiCitabilityArtifact({ artifact }: { artifact: Record<string, any> }) {
 
       {artifact.top_cited_sources?.length > 0 && (
         <div>
-          <div className="text-xs text-gray-400 mb-1">Most cited by AI engines</div>
+          <div className="text-sm text-gray-400 mb-1">Most cited by AI engines</div>
           <div>
             {artifact.top_cited_sources.map((s: any) => (
               <Chip key={s.domain}>{s.domain} ×{s.mentions}</Chip>
@@ -1269,32 +1443,32 @@ function AiCitabilityArtifact({ artifact }: { artifact: Record<string, any> }) {
                 {openTerm === t.head_term ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
                 <span className="text-sm font-medium text-gray-800 truncate">{t.head_term}</span>
               </span>
-              <span className="text-xs text-gray-400 flex-shrink-0">
+              <span className="text-sm text-gray-400 flex-shrink-0">
                 {t.questions_asked} Qs{t.ai_search_volume ? ` · vol ${fmtVol(t.ai_search_volume)}` : ''}
               </span>
             </button>
             {openTerm === t.head_term && (
               <div className="px-3 pb-3 space-y-2">
-                <div className="flex gap-4 text-xs text-gray-500">
+                <div className="flex gap-4 text-sm text-gray-500">
                   <span>Answer share <b>{Math.round((t.answer_share ?? 0) * 100)}%</b></span>
                 </div>
                 {t.top_questions?.length > 0 && (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">Top AI questions</div>
-                    <ul className="text-xs text-gray-700 space-y-1 list-disc list-inside">
+                    <div className="text-sm text-gray-400 mb-1">Top AI questions</div>
+                    <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
                       {t.top_questions.map((q: string, i: number) => <li key={i}>{q}</li>)}
                     </ul>
                   </div>
                 )}
                 {t.paa?.length > 0 && (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">People also ask</div>
+                    <div className="text-sm text-gray-400 mb-1">People also ask</div>
                     <div>{t.paa.map((q: string) => <Chip key={q}>{q}</Chip>)}</div>
                   </div>
                 )}
                 {t.top_cited_sources?.length > 0 && (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">Cited for this term</div>
+                    <div className="text-sm text-gray-400 mb-1">Cited for this term</div>
                     <div>{t.top_cited_sources.map((d: string) => <Chip key={d}>{d}</Chip>)}</div>
                   </div>
                 )}
@@ -1311,7 +1485,7 @@ function GenericArtifact({ artifact }: { artifact: Record<string, any> }) {
   return (
     <div className="space-y-2">
       {artifact.title && <div className="text-sm font-semibold text-gray-800">{artifact.title}</div>}
-      <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-auto max-h-64">
+      <pre className="text-sm text-gray-600 whitespace-pre-wrap overflow-auto max-h-64">
         {JSON.stringify(
           Object.fromEntries(Object.entries(artifact).filter(([k]) => !['title', 'source'].includes(k))),
           null,
@@ -1470,12 +1644,48 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
     }
   };
 
+  // Content must never move under the reader. Before a refresh lands, note
+  // which section is at the top of the viewport and where; after React has
+  // painted, put it back exactly there. (The brief arriving ABOVE a reader
+  // who was halfway down the keywords pushed everything down a screen.)
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const anchorRef = useRef<{ id: string; top: number } | null>(null);
+  const captureAnchor = () => {
+    const box = scrollRef.current;
+    if (!box || box.scrollTop < 40) { anchorRef.current = null; return; }
+    const boxTop = box.getBoundingClientRect().top;
+    const first = Array.from(box.querySelectorAll<HTMLElement>('[id^="stage-"]'))
+      .find((n) => n.getBoundingClientRect().bottom - boxTop > 0);
+    anchorRef.current = first ? { id: first.id, top: first.getBoundingClientRect().top - boxTop } : null;
+  };
+  useLayoutEffect(() => {
+    const a = anchorRef.current;
+    const box = scrollRef.current;
+    anchorRef.current = null;
+    if (!a || !box) return;
+    const el = document.getElementById(a.id);
+    if (!el) return;
+    const now = el.getBoundingClientRect().top - box.getBoundingClientRect().top;
+    if (Math.abs(now - a.top) > 1) box.scrollTop += now - a.top;
+  }, [run]);
+
+  // The brief lands last but sits first. If the reader is down the page
+  // when it arrives, say so instead of moving them.
+  const [briefReady, setBriefReady] = useState(false);
+  const hadBrief = useRef<boolean | null>(null);
+  useEffect(() => {
+    const has = !!briefOf(run);
+    if (hadBrief.current === false && has && (scrollRef.current?.scrollTop || 0) > 200) setBriefReady(true);
+    if (run) hadBrief.current = has;
+  }, [run]);
+
   // Silent refetch (no spinner) — used by manual refresh + live polling
   const refresh = async (id?: string) => {
     const target = id || run?.id;
     if (!target) return;
     try {
       const full = await getRun(target);
+      captureAnchor();
       setRun(full);
       getRunChanges(target).then(setChanges).catch(() => {});
     } catch {
@@ -1570,6 +1780,15 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
     };
   }, []);
 
+  // The report on screen is the default run for the WebMCP tools.
+  useEffect(() => {
+    (window as any).__seostrichOpenRun = run?.id || null;
+    return () => { (window as any).__seostrichOpenRun = null; };
+  }, [run?.id]);
+
+  // Which steps are open. Unset means "open only while not done".
+  const [openSteps, setOpenSteps] = useState<Record<string, boolean>>({});
+
   const handleSubmitFeedback = async (text: string) => {
     if (!run) return;
     setSubmitting(true);
@@ -1584,7 +1803,22 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 top-16 z-40 bg-surface-50 overflow-y-auto">
+    <div className="fixed inset-x-0 bottom-0 top-16 z-40 bg-surface-50 flex flex-col">
+     {/* Everything scrolls in here; the composer below is a flex child, so
+         it is pinned to the bottom whether the report is one line or
+         a hundred. (A sticky bar sat wherever the content ended and walked
+         down the page as stages arrived.) */}
+     <div ref={scrollRef} className="flex-1 overflow-y-auto" onScroll={(e) => { if (briefReady && e.currentTarget.scrollTop < 120) setBriefReady(false); }}>
+      {briefReady && (
+        <div className="sticky top-2 z-10 flex justify-center pointer-events-none">
+          <button
+            onClick={() => { setBriefReady(false); document.getElementById('stage-brief')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+            className="pointer-events-auto px-3 py-1.5 rounded-full bg-action-300 text-primary-700 hover:bg-action-400 hover:text-white text-xs font-semibold shadow transition"
+          >
+            The brief is ready · read it ↑
+          </button>
+        </div>
+      )}
 
       {/* The report is ABOUT something — say so as a page heading rather than
           shrinking it into the chrome. No status badge: "complete" on a
@@ -1593,10 +1827,10 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
       {run && !loading && !error && (
         <div className="max-w-3xl lg:max-w-6xl mx-auto px-6 pt-8"><div className="lg:max-w-[48rem]">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2 py-0.5 rounded bg-accent-50 text-accent-600 border border-accent-100">
+            <span className="text-sm font-semibold px-2 py-0.5 rounded bg-accent-50 text-accent-600 border border-accent-100">
               {flowTag(run)}
             </span>
-            {run.created && <span className="text-xs text-gray-400">{formatCreated(run.created)}</span>}
+            {run.created && <span className="text-sm text-gray-400">{formatCreated(run.created)}</span>}
           </div>
           {editingTitle ? (
             <input
@@ -1626,18 +1860,18 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
           {run.prompt && (
             <details className="mt-4 group bg-surface-100 border border-surface-300 rounded-xl px-4 py-2.5">
               <summary className="cursor-pointer list-none flex items-baseline gap-3 text-sm">
-                <span className="text-[10px] font-semibold tracking-[0.16em] uppercase text-primary-600 shrink-0">Your brief</span>
+                <span className="text-sm font-semibold text-primary-600 shrink-0">Your request</span>
                 <span className="text-gray-600 truncate group-open:hidden flex-1 min-w-0">{run.prompt.split(String.fromCharCode(10))[0].slice(0, 140)}</span>
                 <span className="hidden group-open:block flex-1" />
-                <span className="text-xs text-gray-500 shrink-0 ml-auto group-open:hidden">expand ▾</span>
-                <span className="text-xs text-gray-500 shrink-0 ml-auto hidden group-open:inline">collapse ▴</span>
+                <span className="text-sm text-gray-500 shrink-0 ml-auto group-open:hidden">expand ▾</span>
+                <span className="text-sm text-gray-500 shrink-0 ml-auto hidden group-open:inline">collapse ▴</span>
               </summary>
               <div className="mt-2 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto">
                 {run.prompt}
               </div>
             </details>
           )}
-          {briefOf(run) && <BriefCard brief={briefOf(run)} onRegenerate={regenerate} regenerating={regenerating} />}
+          {briefOf(run) && <div id="stage-brief"><BriefCard brief={briefOf(run)} onRegenerate={regenerate} regenerating={regenerating} /></div>}
           {run.summary && !live && !isStreaming && (run.status === 'error' || /failed before returning|pipeline failed|Could not parse|did not finish|stopped while/i.test(run.summary)) ? (
             <div className="mt-5 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4">
               <div className="flex items-start gap-3">
@@ -1656,9 +1890,21 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
               </div>
             </div>
           ) : run.summary ? (
-            <div className="mt-5 bg-white border border-surface-300 rounded-xl px-5 py-4 prose prose-sm max-w-none text-gray-800">
-              <ReactMarkdown>{run.summary}</ReactMarkdown>
-            </div>
+            /* The agent's closing note. Folded: the brief above is the
+               product; this is commentary, and a long one must not push
+               the report down the page. */
+            <details className="mt-4 group bg-surface-100 border border-surface-300 rounded-xl px-4 py-2.5">
+              <summary className="cursor-pointer list-none flex items-baseline gap-3 text-sm">
+                <span className="text-sm font-semibold text-primary-600 shrink-0">Note from the agent</span>
+                <span className="text-gray-600 truncate group-open:hidden flex-1 min-w-0">{run.summary.replace(/[#*_`|>-]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 140)}</span>
+                <span className="hidden group-open:block flex-1" />
+                <span className="text-sm text-gray-500 shrink-0 ml-auto group-open:hidden">expand ▾</span>
+                <span className="text-sm text-gray-500 shrink-0 ml-auto hidden group-open:inline">collapse ▴</span>
+              </summary>
+              <div className="mt-2 prose prose-sm max-w-none text-gray-800 max-h-[28rem] overflow-y-auto">
+                <ReactMarkdown>{run.summary}</ReactMarkdown>
+              </div>
+            </details>
           ) : null}
 
           {/* Only ever shown when it is true. An "unedited" badge on every
@@ -1727,7 +1973,16 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
         {run && !loading && !error && (
           <>
 
-            {/* Vertical stage flow */}
+            {/* The working, step by step. Closed by default: the brief above
+                is the product; this is how it was arrived at. The step that
+                is running stays open so the reader sees it fill in. */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-sm font-semibold text-gray-400">How it got there</div>
+              <div className="text-sm text-gray-500 flex gap-3">
+                <button onClick={() => setOpenSteps(Object.fromEntries(run.stages.map((st) => [st.id, true])))} className="hover:text-gray-800">Expand all</button>
+                <button onClick={() => setOpenSteps(Object.fromEntries(run.stages.map((st) => [st.id, false])))} className="hover:text-gray-800">Collapse all</button>
+              </div>
+            </div>
             <div>
               {run.stages.filter((st) => st.id !== 'brief').map((stage, i) => (
                 <StageCard
@@ -1735,6 +1990,8 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
                   stage={stage}
                   index={i}
                   isLast={i === run.stages.filter((st) => st.id !== 'brief').length - 1}
+                  open={openSteps[stage.id] ?? (stage.status !== 'done' || isProductStage(run, stage))}
+                  onToggle={() => setOpenSteps((m) => ({ ...m, [stage.id]: !(m[stage.id] ?? (stage.status !== 'done' || isProductStage(run, stage))) }))}
                 >
                   {renderStage(
                     stage,
@@ -1763,28 +2020,47 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
        </div>
        {/* Desktop only: the steps so far, newest last. On a phone this would
            push the artefact itself below the fold, so it is not shown. */}
-       {activity.length > 0 && (
+       {run && (activity.length > 0 || run.stages.length > 0) && (
          <aside className="hidden lg:block pt-2">
-           <div className="sticky top-20 text-xs text-gray-500">
-             <div className="font-semibold text-gray-700 mb-2">Steps</div>
-             <ol className="space-y-1.5">
+           <div className="sticky top-4 text-sm text-gray-500">
+             <div className="font-semibold text-gray-700 mb-2">In this report</div>
+             <ol className="list-none space-y-1 mb-5">
+               {checklist(run, run.status === 'running' || !!live).map((it) => (
+                 <li key={it.id}>
+                   <button
+                     disabled={it.state === 'pending'}
+                     onClick={() => {
+                       setOpenSteps((m) => ({ ...m, [it.id]: true }));
+                       setTimeout(() => document.getElementById(`stage-${it.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+                     }}
+                     className={`text-left flex gap-2 ${it.state === 'done' ? 'hover:text-gray-900' : it.state === 'building' ? 'text-gray-900 italic' : 'text-gray-400 cursor-default'}`}
+                   >
+                     <span className="shrink-0 w-3">{it.state === 'done' ? '✓' : it.state === 'building' ? '›' : '○'}</span>
+                     <span>{it.label}{it.state === 'building' ? '…' : ''}</span>
+                   </button>
+                 </li>
+               ))}
+             </ol>
+             {activity.length > 0 && (run.status === 'running' || live) && <div className="font-semibold text-gray-700 mb-2">Right now</div>}
+             {(run.status === 'running' || live) && <ol className="space-y-1.5">
                {dedupeLabels(activity).slice(-14).map((l, i, arr) => (
                  <li key={i} className={`flex gap-2 ${i === arr.length - 1 && run?.status === 'running' ? 'text-gray-800' : ''}`}>
                    <span className="shrink-0">{i === arr.length - 1 && run?.status === 'running' ? '›' : '✓'}</span>
                    <span>{l}</span>
                  </li>
                ))}
-             </ol>
+             </ol>}
            </div>
          </aside>
        )}
       </div>
 
-      {/* The conversation, on the artefact. The last exchange shows so a
-          reply is visible without leaving; the box sends into the same
+     </div>
+
+      {/* The conversation, on the artefact: the box sends into the same
           session. While a run streams it steers instead. */}
       {onSend && (
-        <div className="sticky bottom-0 z-20 border-t border-surface-300 bg-surface-50/95 backdrop-blur">
+        <div className="border-t border-surface-300 bg-surface-50/95 backdrop-blur">
           <div className="max-w-3xl lg:max-w-6xl mx-auto px-6 py-3">
             <div className="flex items-end gap-2">
               <textarea

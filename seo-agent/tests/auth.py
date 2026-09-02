@@ -1,4 +1,5 @@
 import sys, os
+from pathlib import Path  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # seo-agent/
 from api import auth  # importing this loads .env
 # clear AFTER import, so the real .env values don't leak into the assertions

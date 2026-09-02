@@ -170,7 +170,10 @@ def cluster_keywords(
     language_code: str | None = None,
 ) -> dict:
     """Cluster keywords into thematic groups."""
-    ranked = _diverse_top(keywords, 80)
+    # The whole universe (it is capped at 200 upstream). At 80, half the rows
+    # never had a chance to join a theme — observed 2026-09-03: 86 of 158
+    # unclustered, several of them the best evidence for a selected pillar.
+    ranked = _diverse_top(keywords, 200)
     if not ranked:
         return {"success": False, "error": "no keywords to cluster", "clusters": None}
 

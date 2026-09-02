@@ -166,6 +166,60 @@ def run_keyword_strategy(*args, **kwargs) -> dict:
 _current_step: dict[str, str] = {"name": ""}
 
 
+GATE_MIN_SCORE = 60      # the validator's own line: a cluster under this is not one topic
+GATE_APPROVE_MEAN = 75   # and its line for the set as a whole
+
+
+def park_incoherent(clusters: list[dict], validation: dict, max_select: int) -> tuple[list[dict], list[dict], str]:
+    """Act on the validator's per-cluster scores instead of arguing with them.
+
+    The validator scores every cluster 0-100 and says keep/merge/split/drop.
+    Before this, the verdict only travelled as a warning: a set with one
+    catch-all cluster scoring 32 was "needs_revision", nothing acted on it,
+    and the catch-all went on to scoring and selection like the others.
+
+    Now a cluster the validator scores under GATE_MIN_SCORE (or says to drop)
+    is parked with the validator's reason, deterministically, before
+    selection - never below what selection needs to choose from. The verdict
+    is then re-derived on what remains, by the validator's own criteria.
+    Returns (survivors, parked, verdict)."""
+    per: dict[int, dict] = {}
+    for v in validation.get("clusters") or []:
+        if isinstance(v, dict):
+            try:
+                per[int(v.get("n") or 0)] = v
+            except (TypeError, ValueError):
+                pass
+    survivors: list[dict] = []
+    parked: list[dict] = []
+    scores: list[float] = []
+    for i, c in enumerate(clusters, 1):
+        v = per.get(i) or {}
+        try:
+            score = float(v["score"]) if v.get("score") is not None else None
+        except (TypeError, ValueError):
+            score = None
+        bad = score is not None and (score < GATE_MIN_SCORE or str(v.get("rec") or "").lower() == "drop")
+        room = len(clusters) - len(parked) - 1 >= max_select
+        if bad and room:
+            issue = str(v.get("issue") or "").strip()
+            parked.append({
+                "cluster_name": c["name"],
+                "reason": f"Parked by the validation gate: coherence {int(score)}/100"
+                          + (f" - {issue}" if issue else "")
+                          + ". The keywords do not hold together as one topic, so it was not put to selection.",
+            })
+        else:
+            survivors.append(c)
+            if score is not None:
+                scores.append(score)
+    raw = str(validation.get("verdict") or "rejected")
+    if not parked or not scores:
+        return survivors, parked, raw
+    verdict = "approved" if min(scores) >= GATE_MIN_SCORE and sum(scores) / len(scores) >= GATE_APPROVE_MEAN else raw
+    return survivors, parked, verdict
+
+
 def _step(name: str) -> None:
     _current_step["name"] = name
 
@@ -256,7 +310,7 @@ def _run_keyword_strategy(
     steps.append("seeds")
     run_id_now = rec.active_run_id()
     if run_id_now and isinstance(seeds, dict) and seeds.get("business_name"):
-        domain = _domain_only(site_description)
+        domain = _domain_only(site_description) or next(iter(sorted(d for d in own_domains if d)), "")
         rec.name_run(
             run_id_now, str(seeds["business_name"]),
             " · ".join(x for x in (domain, "Content strategy", market.get("label", "")) if x),
@@ -413,18 +467,30 @@ def _run_keyword_strategy(
             {"clusters": clusters}, True,
         )
 
+    # Use the critique: park what the validator scored as incoherent, then
+    # judge the rest by its own criteria. The full cluster list stays on the
+    # stage; only selection's input shrinks.
+    verdict_raw = verdict
+    survivors, gate_parked, verdict = park_incoherent(clusters, validation, max_select)
+    if gate_parked:
+        rec.log_activity(
+            "step",
+            detail=f"gate: parked {len(gate_parked)} incoherent cluster(s) on the validator's scores; "
+                   f"verdict on the rest: {verdict}",
+        )
+
     _step("measuring the themes")
     rec.log_activity("step", detail="node: compute cluster metrics")
     # Deterministic now — pass the keyword universe so each cluster's volume,
     # difficulty, CPC and intent mix are measured from the real rows.
-    scored = score_clusters({"clusters": clusters}, keywords=keywords) or {}
+    scored = score_clusters({"clusters": survivors}, keywords=keywords) or {}
     rec.record_tool("score_clusters", {}, scored, True)
 
     _step("choosing the themes")
 
     rec.log_activity("step", detail=f"node: select top {max_select} clusters")
     selection_res = select_clusters(
-        scored or {"clusters": clusters},
+        scored or {"clusters": survivors},
         max_select=max_select,
         business_description=business_description,
     )
@@ -437,7 +503,7 @@ def _run_keyword_strategy(
             detail=f"relevance gate failed ({str(selection_res.get('error'))[:80]}) — retrying once",
         )
         selection_res = select_clusters(
-            scored or {"clusters": clusters},
+            scored or {"clusters": survivors},
             max_select=max_select,
             business_description=business_description,
         )
@@ -461,7 +527,7 @@ def _run_keyword_strategy(
         # plainly on every entry that relevance was never assessed.
         selection_error = str(selection_res.get("error") or "no usable selection returned")[:200]
         ranked = sorted(
-            clusters,
+            survivors,
             key=lambda c: (c.get("metrics") or {}).get("total_volume", 0),
             reverse=True,
         )
@@ -499,6 +565,9 @@ def _run_keyword_strategy(
                 ],
             },
         }
+    if gate_parked:
+        sel = selection_res.setdefault("selection", {})
+        sel["discarded"] = list(sel.get("discarded") or []) + gate_parked
     rec.record_tool("select_clusters", {}, selection_res, True)
     steps.append("selection")
 
@@ -552,6 +621,8 @@ def _run_keyword_strategy(
             "method": verification.get("method"),
         },
         "validation_verdict": verdict,
+        "validation_verdict_before_parking": verdict_raw,
+        "gate_parked": [g["cluster_name"] for g in gate_parked],
         "validation_issues": validation.get("global_issues", []),
         "validation_issues_detail": (validation.get("clusters") or [])[:8],
         "relevance_gate_ran": not selection_failed,
@@ -570,7 +641,9 @@ def _run_keyword_strategy(
             if verdict == "approved"
             else (
                 f"The clustering was never approved by the validation gate "
-                f"(verdict: {verdict}). The strategy below is still built on it, "
+                f"(verdict: {verdict}"
+                f"{', after parking ' + str(len(gate_parked)) + ' incoherent cluster(s)' if gate_parked else ''}). "
+                f"The strategy below is still built on it, "
                 f"so treat the pillars as a starting point and check the cluster "
                 f"list before committing to it. What it flagged: "
                 f"{'; '.join(str(i) for i in (validation.get('global_issues') or [])[:3]) or 'see validation_issues'}."
