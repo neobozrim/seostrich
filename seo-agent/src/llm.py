@@ -52,10 +52,17 @@ def _request(model: str, msgs: list, temperature: float, max_tokens: int, tools)
     kwargs: dict[str, Any] = {"model": model, "messages": msgs}
     if settings.is_openai:
         kwargs["max_completion_tokens"] = max_tokens
-        kwargs["reasoning_effort"] = (
-            settings.openai_reasoning_fast if model == settings.openai_model_fast
-            else settings.openai_reasoning_main
-        )
+        if tools:
+            # Chat completions accept function tools on these models only with
+            # reasoning_effort 'none' (anything else is a 400: "use /v1/responses
+            # or set reasoning_effort to 'none'"). The tool-calling turns are the
+            # orchestrator and the agent loop — routing, not reasoning.
+            kwargs["reasoning_effort"] = "none"
+        else:
+            kwargs["reasoning_effort"] = (
+                settings.openai_reasoning_fast if model == settings.openai_model_fast
+                else settings.openai_reasoning_main
+            )
     else:
         kwargs["temperature"] = temperature
         kwargs["max_tokens"] = max_tokens
@@ -69,7 +76,7 @@ def _without_unsupported(kwargs: dict[str, Any], err: Exception) -> dict[str, An
     """If the provider rejects a parameter by name, drop it and retry once."""
     text = str(err).lower()
     for key in ("reasoning_effort", "max_completion_tokens", "temperature", "max_tokens"):
-        if key in kwargs and key in text and any(w in text for w in ("unsupported", "unknown", "not supported", "unrecognized")):
+        if key in kwargs and key in text and any(w in text for w in ("unsupported", "unknown", "not supported", "unrecognized", "are not supported", "is not supported")):
             out = dict(kwargs)
             out.pop(key)
             if key == "max_completion_tokens":
