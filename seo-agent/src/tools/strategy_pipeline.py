@@ -186,6 +186,7 @@ def run_keyword_strategy(
     universe = pull_universe(
         seeds, location_code=location_code, language_code=language_code,
         competitor_urls=competitors, site_url=site_description,
+        business_description=business_description,
     )
     keywords = universe.get("keywords") or []
     rec.record_tool(
@@ -203,7 +204,9 @@ def run_keyword_strategy(
             detail=(f"competitors: {len(comp['queried'])} queried "
                     f"({len(comp.get('user') or [])} supplied, {len(comp.get('discovered') or [])} discovered), "
                     f"{comp.get('keywords_contributed', 0)} keywords, "
-                    f"{len(comp.get('consensus') or [])} ranked by two or more"),
+                    f"{len(comp.get('consensus') or [])} ranked by two or more"
+                    + (f"; relevance gate kept {comp['relevance']['kept']}, dropped {comp['relevance']['dropped']}"
+                       if (comp.get('relevance') or {}).get('ran') else "")),
         )
     if not keywords:
         # pull_universe keeps the seeds themselves as a floor, so reaching this

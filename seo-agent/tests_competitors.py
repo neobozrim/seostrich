@@ -168,4 +168,26 @@ ok(m6["per_domain"]["lennysnewsletter.com"]["brand_terms_skipped"] == 2, "and th
 ok(m6["per_domain"]["lennysnewsletter.com"]["keywords"] == 1, "the keyword count is the topical count")
 ok([r["keyword"] for r in m6["per_domain"]["lennysnewsletter.com"]["rows"]] == ["product strategy"], "the stored list is topical too")
 
+print("7. the relevance gate")
+rows7 = [{"keyword": "ai product management", "volume": 480}, {"keyword": "lenny job board", "volume": 4400},
+         {"keyword": "product strategy", "volume": 1200}, {"keyword": "cybersecurity product", "volume": 1000}]
+with patch.object(pu.llm, "chat", lambda *a, **k: "ignored"), \
+     patch.object(pu.llm, "parse_json_response", lambda r: {"keep": [1, 3], "dropped_because": "job board and cybersecurity are not this business"}):
+    kept, gate = pu._relevance_gate(rows7, "An AI community of practice for product managers")
+ok([r["keyword"] for r in kept] == ["ai product management", "product strategy"], "keeps what the model keeps, by number")
+ok(gate["ran"] and gate["kept"] == 2 and gate["dropped"] == 2, "the map records the counts")
+ok(gate["dropped_examples"][0] == "lenny job board", "dropped examples lead with the biggest")
+ok("job board" in gate["dropped_because"], "and the model's one-line reason")
+
+with patch.object(pu.llm, "chat", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("timeout"))):
+    kept, gate = pu._relevance_gate(rows7, "a business")
+ok(len(kept) == 4 and gate["ran"] is False and "timeout" in gate["error"], "fails open, and says so")
+
+with patch.object(pu.llm, "chat", lambda *a, **k: "x"), patch.object(pu.llm, "parse_json_response", lambda r: {"keep": []}):
+    kept, gate = pu._relevance_gate(rows7, "a business")
+ok(len(kept) == 4 and "cannot be right" in gate["note"], "a model that keeps nothing does not empty the universe")
+
+kept, gate = pu._relevance_gate(rows7, "")
+ok(len(kept) == 4 and gate["ran"] is False, "no business description: nothing to judge against, all kept")
+
 print(f"competitors: {PASS} assertions passed")

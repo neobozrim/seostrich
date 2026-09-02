@@ -19,7 +19,7 @@ import {
   Undo2,
 } from 'lucide-react';
 import { Run, RunStage, RunFeedback, RunSummary, ActivityEvent } from '@/types';
-import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, getRunChanges, renameRun,
+import { getRuns, getRun, addRunFeedback, getUsername, getRunActivity, getRunChanges, renameRun, fetchCompetitorKeywords,
   resetRun, getRunGovernance, AuthError } from '@/lib/api';
 import { activityLabel, currentActivity } from '@/lib/activity';
 import { StageIcon } from '@/components/StageIcon';
@@ -789,10 +789,28 @@ function AuditArtifact({ artifact }: { artifact: Record<string, any> }) {
   );
 }
 
-function CompetitorsArtifact({ artifact, universe = [] }: { artifact: Record<string, any>; universe?: any[] }) {
+function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Record<string, any>; universe?: any[]; runId?: string }) {
+  // Rows fetched on demand for runs that predate full storage.
+  const [fetched, setFetched] = useState<Record<string, any[]>>({});
+  const [fetching, setFetching] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const fetchAll = async (d: string) => {
+    if (!runId) return;
+    setFetching(d);
+    setFetchError(null);
+    try {
+      const res = await fetchCompetitorKeywords(runId, d);
+      setFetched((prev) => ({ ...prev, [d]: res.rows || [] }));
+    } catch (e: any) {
+      setFetchError(e?.message || 'Could not fetch');
+    } finally {
+      setFetching(null);
+    }
+  };
   // Runs recorded before the map kept every keyword: rebuild each
   // competitor's list from the universe rows tagged with their owners.
   const rowsFor = (d: string): any[] => {
+    if (fetched[d]) return fetched[d];
     const own = artifact.per_domain?.[d]?.rows;
     if (Array.isArray(own) && own.length) return own;
     return (universe || []).filter((k: any) => Array.isArray(k?.owned_by) && k.owned_by.includes(d));
@@ -860,6 +878,19 @@ function CompetitorsArtifact({ artifact, universe = [] }: { artifact: Record<str
           Your site does not rank for anything yet, so every keyword here is one you are absent from.
         </div>
       )}
+      {artifact.relevance?.ran ? (
+        <div className="text-xs text-gray-600 bg-surface-100 border border-surface-200 rounded-lg px-3 py-2">
+          <span className="font-semibold">Relevance gate:</span> kept {artifact.relevance.kept}, dropped {artifact.relevance.dropped} as not about this business
+          {artifact.relevance.dropped_because ? ' — ' + artifact.relevance.dropped_because : ''}
+          {Array.isArray(artifact.relevance.dropped_examples) && artifact.relevance.dropped_examples.length > 0 && (
+            <span className="text-gray-400"> · e.g. {artifact.relevance.dropped_examples.slice(0, 5).join(', ')}</span>
+          )}
+        </div>
+      ) : artifact.relevance && artifact.relevance.ran === false && artifact.keywords_contributed ? (
+        <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+          The relevance gate did not run on this map{artifact.relevance.error ? ' (' + artifact.relevance.error + ')' : ''} — competitor keywords were kept unfiltered.
+        </div>
+      ) : null}
 
       {/* Who ranks for what */}
       {grid.length > 0 && (
@@ -928,9 +959,20 @@ function CompetitorsArtifact({ artifact, universe = [] }: { artifact: Record<str
               </button>
               {open && (
                 <div className="px-3 pb-3">
-                  {rows.length > 0 && v.keywords && rows.length < v.keywords && (
-                    <div className="text-xs text-gray-500 mb-2">
-                      Showing the {rows.length} of {v.keywords} that made it into the universe — this run was recorded before the full list was kept.
+                  {rows.length > 0 && v.keywords && rows.length < v.keywords && !fetched[d] && (
+                    <div className="text-xs text-gray-500 mb-2 flex flex-wrap items-center gap-2">
+                      <span>
+                        Showing the {rows.length} of {v.keywords} that made it into the universe — this run was recorded before the full list was kept.
+                      </span>
+                      <button
+                        onClick={() => fetchAll(d)}
+                        disabled={fetching === d}
+                        className="text-action-500 hover:underline underline-offset-2 font-medium disabled:opacity-50"
+                        title="One DataForSEO lookup, saved onto this artefact"
+                      >
+                        {fetching === d ? 'Fetching…' : 'Show all ' + v.keywords + ' (1 lookup)'}
+                      </button>
+                      {fetchError && fetching === null && <span className="text-red-600">{fetchError}</span>}
                     </div>
                   )}
                   {rows.length ? (
@@ -1192,7 +1234,8 @@ function renderStage(
   feedback: RunFeedback[],
   onSubmitFeedback: (text: string) => void,
   submitting: boolean,
-  universe: any[] = []
+  universe: any[] = [],
+  runId?: string
 ) {
   switch (stage.id) {
     case 'intake':
@@ -1208,7 +1251,7 @@ function renderStage(
     case 'audit':
       return <AuditArtifact artifact={stage.artifact} />;
     case 'competitors':
-      return <CompetitorsArtifact artifact={stage.artifact} universe={universe} />;
+      return <CompetitorsArtifact artifact={stage.artifact} universe={universe} runId={runId} />;
     case 'ai_citability':
       // The GEO graph and the older brief both land on this stage id.
       return stage.artifact?.brief ? (
@@ -1551,7 +1594,8 @@ export function RunView({ tasks, onClose, initialRunId, live }: RunViewProps) {
                     handleSubmitFeedback,
                     submitting
                   ,
-                    (run.stages.find((x) => x.id === 'keywords')?.artifact?.keywords || []))}
+                    (run.stages.find((x) => x.id === 'keywords')?.artifact?.keywords || []),
+                    run.id)}
                 </StageCard>
               ))}
             </div>

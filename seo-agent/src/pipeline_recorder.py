@@ -443,6 +443,7 @@ def record_tool(tool_name: str, args: dict, result, success: bool) -> None:
             "per_domain": m.get("per_domain") or {},
             "consensus": m.get("consensus") or [],
             "keywords_contributed": m.get("keywords_contributed", 0),
+            "relevance": m.get("relevance") or {},
             "kept_in_universe": m.get("kept_in_universe", 0),
             "seed_derived_in_universe": m.get("seed_derived_in_universe", 0),
         }

@@ -295,6 +295,16 @@ export async function renameRun(runId: string, title: string): Promise<{ ok: boo
   return response.json();
 }
 
+export async function fetchCompetitorKeywords(runId: string, domain: string): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/competitors/fetch`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ domain }),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
 export async function getRunChanges(runId: string, signal?: AbortSignal) {
   const response = await fetch(`${API_BASE}/api/runs/${runId}/changes`, {
     headers: authHeaders(),

@@ -3,6 +3,8 @@ from __future__ import annotations
 from urllib.parse import urlparse
 
 from . import dataforseo as dfs
+from .. import llm
+from ..config import settings
 from .cache import get_cached, set_cached
 
 # Below this many deduped keywords the market is "thin" and we escalate to
@@ -27,6 +29,7 @@ def pull_universe(
     language_code: str = "en",
     competitor_urls: list[str] = None,
     site_url: str = "",
+    business_description: str = "",
 ) -> dict:
     """Expand keyword seeds into a full keyword universe using DataForSEO.
 
@@ -56,7 +59,15 @@ def pull_universe(
     # What the competition actually ranks for is the strongest signal in the
     # whole universe, and it belongs in every run.
     competitor_map = _competitor_universe(competitor_urls, site_url, location_code, language_code)
-    all_keywords.extend(competitor_map.pop("_rows", []))
+    comp_rows = competitor_map.pop("_rows", [])
+    # Semantic gate. Consensus and volume say what the competition wins; they
+    # say nothing about whether it is YOUR topic. "lenny job board" has
+    # volume and a competitor ranks for it, and it has no business in a
+    # universe that feeds this business's pillars.
+    comp_rows, gate = _relevance_gate(comp_rows, business_description)
+    if isinstance(competitor_map, dict):
+        competitor_map["relevance"] = gate
+    all_keywords.extend(comp_rows)
 
     # Always keep the seeds themselves as a floor. In thin markets these are
     # often the only usable terms — the discovery-input keyword survives even
@@ -432,6 +443,60 @@ _GENERIC = {
 }
 _SUFFIXES = ("newsletter", "school", "blog", "labs", "media", "digital", "online", "official",
              "podcast", "hq", "app", "ai", "io")
+
+
+RELEVANCE_SYSTEM = """You are an SEO strategist. You are given a business and a numbered list of
+keywords that its COMPETITORS rank for. Keep only the keywords a reader of this
+business would plausibly be searching for — topics this business could
+legitimately write about. Drop keywords about the competitor itself (its name,
+products, people, jobs, pricing), unrelated industries, and generic phrases
+with no connection to the business.
+
+Answer with JSON only:
+{"keep": [numbers], "dropped_because": "one short sentence on what you removed"}"""
+
+
+def _relevance_gate(rows: list[dict], business_description: str) -> tuple[list[dict], dict]:
+    """Keep the competitor keywords that are about this business's topics.
+
+    One call on the fast model, index-encoded so the answer is a list of
+    numbers rather than the keywords repeated back. Fails OPEN: if the model
+    call breaks, every row is kept and the map says the gate did not run —
+    a silent drop would be worse than a noisy universe.
+    """
+    if not rows or not (business_description or "").strip():
+        return rows, {"ran": False, "kept": len(rows), "dropped": 0}
+
+    listing = "\n".join(f"{i + 1}. {r.get('keyword', '')}" for i, r in enumerate(rows[:300]))
+    user_msg = f"The business:\n{business_description.strip()[:1500]}\n\nCompetitor keywords:\n{listing}"
+    try:
+        resp = llm.chat(user_msg, system=RELEVANCE_SYSTEM, model=settings.qwen_model_fast,
+                        temperature=0, max_tokens=1200)
+        data = llm.parse_json_response(resp)
+        keep = data.get("keep") if isinstance(data, dict) else None
+        if not isinstance(keep, list):
+            raise ValueError("no keep list")
+        keep_idx = {int(i) - 1 for i in keep if str(i).lstrip("-").isdigit()}
+    except Exception as e:
+        print(f"  [pull_universe] relevance gate did not run: {e}")
+        return rows, {"ran": False, "kept": len(rows), "dropped": 0, "error": str(e)[:120]}
+
+    kept = [r for i, r in enumerate(rows) if i in keep_idx or i >= 300]
+    dropped = [r for i, r in enumerate(rows) if i not in keep_idx and i < 300]
+    # A model that keeps nothing has misread the task; do not empty the universe on it.
+    if not kept and rows:
+        return rows, {"ran": True, "kept": len(rows), "dropped": 0,
+                      "note": "the model kept nothing, which cannot be right — all rows retained"}
+    gate = {
+        "ran": True,
+        "kept": len(kept),
+        "dropped": len(dropped),
+        "dropped_because": str((data.get("dropped_because") if isinstance(data, dict) else "") or "")[:200],
+        "dropped_examples": [r.get("keyword") for r in
+                             sorted(dropped, key=lambda r: -(r.get("volume") or 0))[:8]],
+    }
+    print(f"  [pull_universe] relevance gate kept {len(kept)}/{len(rows)} competitor keywords")
+    return kept, gate
 
 
 def _brand_tokens(domain: str) -> set[str]:

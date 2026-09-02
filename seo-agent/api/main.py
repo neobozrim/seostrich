@@ -388,6 +388,49 @@ async def rename_run(run_id: str, body: RenameIn, _auth: None = Depends(require_
     return {"ok": True, "title": title}
 
 
+class CompetitorFetchIn(BaseModel):
+    domain: str
+
+
+@app.post("/api/runs/{run_id}/competitors/fetch")
+async def fetch_competitor_keywords(run_id: str, body: CompetitorFetchIn, _auth: None = Depends(require_auth)):
+    """Pull one competitor's full ranked-keyword list onto the run's map.
+
+    Runs recorded before the map kept every keyword only have the ones that
+    made the universe cut. This is one DataForSEO call, brand terms removed,
+    written under per_domain[domain].rows so the artefact shows the full list
+    from then on."""
+    from src.tools import dataforseo as dfs
+    from src.tools.pull_universe import _is_brand_term
+
+    run = runs.get_run(run_id)
+    if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    stage = next((s for s in run.get("stages", []) if s.get("id") == "competitors"), None)
+    if stage is None:
+        raise HTTPException(status_code=400, detail="This run has no competitor map")
+    domain = (body.domain or "").strip().lower().removeprefix("www.")
+    per = stage["artifact"].setdefault("per_domain", {})
+    if domain not in per and domain not in (stage["artifact"].get("competitors") or []):
+        raise HTTPException(status_code=400, detail="That domain is not on this run's map")
+    try:
+        kws = await asyncio.to_thread(dfs.keywords_for_site, domain, 100)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"DataForSEO: {e}")
+    rows = [
+        {"keyword": k.get("keyword"), "volume": k.get("volume"), "difficulty": k.get("difficulty"),
+         "cpc": k.get("cpc"), "intent": k.get("intent"), "rank": k.get("rank")}
+        for k in kws if not _is_brand_term((k.get("keyword") or "").lower(), domain)
+    ]
+    entry = per.setdefault(domain, {})
+    entry["rows"] = rows
+    entry["keywords"] = len(rows)
+    entry["brand_terms_skipped"] = len(kws) - len(rows)
+    entry["fetched_later"] = True
+    runs.save_run(run_id, run)
+    return {"ok": True, "domain": domain, "keywords": len(rows), "brand_terms_skipped": len(kws) - len(rows), "rows": rows}
+
+
 @app.get("/api/runs/{run_id}/changes")
 async def get_run_changes(run_id: str, _auth: None = Depends(require_auth)):
     """Whether this report still differs from what the pipeline produced."""
