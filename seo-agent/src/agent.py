@@ -59,6 +59,7 @@ from .tools.ai_citability import ai_citability_brief
 from .tools.cluster_ops import (
     list_clusters_all, promote_cluster, discard_cluster, propose_cluster,
 )
+from . import errors
 from .tools.strategy_pipeline import run_keyword_strategy
 from .tools.geo_demand import run_geo_demand
 from .tools.run_sections import read_run_section
@@ -172,7 +173,7 @@ returns confidently-formatted keywords from an unrelated business domain.
 For ANY request for keyword strategy, clusters, pillars or a content plan you MUST call `run_keyword_strategy` FIRST. It executes the fixed graph in code — seeds → DataForSEO keyword universe → over-cluster (10) → validate gate (re-clusters once on "needs_revision") → score → select top 3-4 → AI-citability brief on the selected head terms → pillars from the selection only. Every node records its output as an inspectable stage.
 - "Keep it short / quick / compact" limits the LENGTH of your final answer — it NEVER skips or shortens the pipeline.
 - Never quote volumes, difficulties, intents or CPCs that did not come from tool output. Invented numbers are a hard failure.
-- If the pipeline returns an error (e.g. DataForSEO budget exhausted), report exactly what it produced so far and ask how to proceed.
+- If the pipeline returns an error, say which step it stopped at and that nothing was invented, then offer a retry. NEVER quote internal error text, codes, or tool output verbatim in your reply — a person is reading it.
 
 **Thin-data markets:** Some languages and niches have few or no search terms (e.g. niche art forms in smaller markets — spoken-word poetry in Bulgarian is a real case). The pipeline handles this automatically: when direct keyword expansion comes back thin it falls back to what competitors rank for, and always keeps the discovery seeds themselves so a strategy can still be built. In a thin run, low or zero volumes are NOT a failure — say plainly that the strategy leans on competitor and thematic evidence rather than search volume, and never invent volumes to compensate.
 
@@ -1680,12 +1681,16 @@ def run_agent(
                     }
                 except Exception as e:
                     print(f"[Tool error]: {tool_name}: {e}")
+                    # The model repeats whatever it is handed, and its reply
+                    # becomes the summary. It gets a sentence a person can act
+                    # on; the raw text goes to the server log.
+                    print(f"[Tool error] {tool_name}: {errors.detail(e)}")
                     return {
                         "tc": tc,
                         "result": None,
                         "parsed_args": parsed_args,
-                        "result_str": json.dumps({"error": str(e)}),
-                        "error": str(e),
+                        "result_str": json.dumps({"error": errors.user_message(e), "retry_is_safe": errors.is_recoverable(e)}),
+                        "error": errors.user_message(e),
                         "success": False,
                     }
             
@@ -1799,15 +1804,15 @@ def run_agent(
                 except _CacheHit:
                     pass
                 except Exception as e:
-                    result_str = json.dumps({"error": str(e)})
-                    print(f"[Tool error]: {e}")
+                    print(f"[Tool error] {tool_name}: {errors.detail(e)}")
+                    result_str = json.dumps({"error": errors.user_message(e), "retry_is_safe": errors.is_recoverable(e)})
                     session_data["tool_results"].append({
                         "round": round_num,
                         "tool": tool_name,
                         "args": tool_args,
                         "result": None,
                         "success": False,
-                        "error": str(e),
+                        "error": errors.user_message(e),
                     })
                     pipeline_recorder.record_tool(tool_name, parsed_args, None, False)
 

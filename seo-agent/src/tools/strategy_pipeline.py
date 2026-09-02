@@ -22,6 +22,7 @@ from .score_clusters import score_clusters
 from .select_clusters import select_clusters
 from .strategy_brief import write_brief
 from . import site_fetch
+from .. import errors
 from .. import runs as runs_store
 from .serp_verify import apply_merges, verify_clusters
 from .validate_clusters import validate_clusters
@@ -140,7 +141,36 @@ def _domain_only(url: str) -> str:
     return u.removeprefix("www.")
 
 
-def run_keyword_strategy(
+def run_keyword_strategy(*args, **kwargs) -> dict:
+    """The graph, with any raised node turned into a stopped step. The agent
+    is told which step and that a retry is safe; the exception itself goes
+    to the log, not to a bubble."""
+    _current_step["name"] = "starting"
+    try:
+        return _run_keyword_strategy(*args, **kwargs)
+    except Exception as e:
+        step = _current_step.get("name") or "an unknown step"
+        print(f"[strategy graph] stopped at {step}: {errors.detail(e)}")
+        try:
+            rec.log_activity("step", detail=f"stopped at {step}")
+        except Exception:
+            pass
+        return {
+            "success": False,
+            "stopped_at": step,
+            "error": f"The strategy pipeline stopped while {step}. Nothing was invented; the stages it finished are on the artefact. Retrying is safe.",
+            "retry_is_safe": errors.is_recoverable(e),
+        }
+
+
+_current_step: dict[str, str] = {"name": ""}
+
+
+def _step(name: str) -> None:
+    _current_step["name"] = name
+
+
+def _run_keyword_strategy(
     business_description: str,
     location_code: int | None = None,
     language_code: str | None = None,
@@ -218,6 +248,7 @@ def run_keyword_strategy(
     if site_url and not site_description:
         site_description = site_url
 
+    _step("building seeds")
     rec.log_activity("step", detail="node: extract seeds")
     seeds = extract_seeds(business_description, site_description, competitors,
                           language_code=language_code, site_content=site_content)
@@ -231,6 +262,7 @@ def run_keyword_strategy(
             " · ".join(x for x in (domain, "Content strategy", market.get("label", "")) if x),
         )
 
+    _step("pulling keyword data")
     rec.log_activity("step", detail="node: keyword universe via DataForSEO")
     universe = pull_universe(
         seeds, location_code=location_code, language_code=language_code,
@@ -273,6 +305,7 @@ def run_keyword_strategy(
         )
     steps.append("keywords")
 
+    _step("grouping keywords into themes")
     rec.log_activity("step", detail=f"node: cluster {len(keywords)} keywords (over-generate 10)")
     clustered = _cluster_with_retry(keywords, location_code, language_code)
     clusters = _norm_clusters(clustered.get("clusters"))
@@ -299,6 +332,7 @@ def run_keyword_strategy(
     # Only pairs whose head terms already share vocabulary are checked, so
     # unrelated clusters cost nothing, and an unverified pair stays separate —
     # splitting effort is recoverable, a wrongly merged page is not.
+    _step("verifying themes against live results")
     rec.log_activity("step", detail="node: verify clusters against live SERPs")
     verification = verify_clusters(clusters, location_code, language_code)
     if verification.get("merges"):
@@ -348,6 +382,7 @@ def run_keyword_strategy(
     verdict = "rejected"
     validation: dict = {}
     for attempt in range(1, MAX_ATTEMPTS + 1):
+        _step("reviewing the themes")
         rec.log_activity("step", detail=f"node: validate clusters (attempt {attempt})")
         validation = validate_clusters(
             {c["name"]: c["keywords"] for c in clusters},
@@ -378,11 +413,14 @@ def run_keyword_strategy(
             {"clusters": clusters}, True,
         )
 
+    _step("measuring the themes")
     rec.log_activity("step", detail="node: compute cluster metrics")
     # Deterministic now — pass the keyword universe so each cluster's volume,
     # difficulty, CPC and intent mix are measured from the real rows.
     scored = score_clusters({"clusters": clusters}, keywords=keywords) or {}
     rec.record_tool("score_clusters", {}, scored, True)
+
+    _step("choosing the themes")
 
     rec.log_activity("step", detail=f"node: select top {max_select} clusters")
     selection_res = select_clusters(
@@ -474,6 +512,7 @@ def run_keyword_strategy(
     # about search. It lives in the GEO flow, where it is the whole point.
     brief: dict = {}
 
+    _step("writing the content pillars")
     rec.log_activity("step", detail="node: pillars from selected clusters only")
     scored_list = scored.get("scored_clusters") or scored.get("clusters") or []
     if isinstance(scored_list, list):
@@ -492,6 +531,7 @@ def run_keyword_strategy(
     # The brief: the one page a reader acts on, built from the stages above.
     run_id_now = rec.active_run_id()
     if run_id_now:
+        _step("writing the brief")
         rec.log_activity("step", detail="node: write the brief")
         brief_res = write_brief(run_id_now, business_description)
         if brief_res.get("ok"):

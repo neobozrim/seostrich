@@ -1624,24 +1624,42 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
           {/* What you asked for, kept with what you got. Collapsed: the
               first line is enough to recognise it; open it to reread. */}
           {run.prompt && (
-            <details className="mt-4 group">
-              <summary className="cursor-pointer list-none flex items-baseline gap-2 text-sm">
-                <span className="text-[10px] font-semibold tracking-[0.16em] uppercase text-gray-400 shrink-0">Your brief</span>
-                <span className="text-gray-600 truncate group-open:hidden">{run.prompt.split(String.fromCharCode(10))[0].slice(0, 140)}</span>
-                <span className="text-xs text-gray-400 shrink-0 group-open:hidden">expand</span>
-                <span className="text-xs text-gray-400 shrink-0 hidden group-open:inline">collapse</span>
+            <details className="mt-4 group bg-surface-100 border border-surface-300 rounded-xl px-4 py-2.5">
+              <summary className="cursor-pointer list-none flex items-baseline gap-3 text-sm">
+                <span className="text-[10px] font-semibold tracking-[0.16em] uppercase text-primary-600 shrink-0">Your brief</span>
+                <span className="text-gray-600 truncate group-open:hidden flex-1 min-w-0">{run.prompt.split(String.fromCharCode(10))[0].slice(0, 140)}</span>
+                <span className="hidden group-open:block flex-1" />
+                <span className="text-xs text-gray-500 shrink-0 ml-auto group-open:hidden">expand ▾</span>
+                <span className="text-xs text-gray-500 shrink-0 ml-auto hidden group-open:inline">collapse ▴</span>
               </summary>
-              <div className="mt-2 bg-white border border-surface-300 rounded-xl px-4 py-3 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto">
+              <div className="mt-2 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto">
                 {run.prompt}
               </div>
             </details>
           )}
           {briefOf(run) && <BriefCard brief={briefOf(run)} onRegenerate={regenerate} regenerating={regenerating} />}
-          {run.summary && (
+          {run.summary && !live && !isStreaming && (run.status === 'error' || /failed before returning|pipeline failed|Could not parse|did not finish|stopped while/i.test(run.summary)) ? (
+            <div className="mt-5 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4">
+              <div className="flex items-start gap-3">
+                <div className="text-sm text-amber-900 leading-relaxed min-w-0">
+                  <div className="font-semibold mb-1">This run did not finish.</div>
+                  <div>Nothing was invented. The stages it completed are below; a retry picks up the same brief.</div>
+                </div>
+                {onSend && (
+                  <button
+                    onClick={() => onSend('Retry the same pipeline with the same brief.')}
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-action-300 text-primary-700 hover:bg-action-400 hover:text-white text-sm font-semibold transition"
+                  >
+                    Retry
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : run.summary ? (
             <div className="mt-5 bg-white border border-surface-300 rounded-xl px-5 py-4 prose prose-sm max-w-none text-gray-800">
               <ReactMarkdown>{run.summary}</ReactMarkdown>
             </div>
-          )}
+          ) : null}
 
           {/* Only ever shown when it is true. An "unedited" badge on every
               report would be noise; "someone changed this" is news. */}
