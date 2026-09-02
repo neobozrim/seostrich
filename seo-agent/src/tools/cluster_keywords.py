@@ -60,6 +60,33 @@ def _resolve(ref, ranked: list[dict]) -> str | None:
     return None
 
 
+# A head term with more words than this is a sentence, not a search. Seen
+# 2026-09-01: the model chose "hugging face the ai community building the
+# future" — a Hugging Face tagline — as the head of a cluster, and the cluster
+# was then named and judged by it.
+HEAD_MAX_WORDS = 5
+
+
+def _pick_head(members: list[str], stats: dict) -> str:
+    """The cluster's head term, chosen from the data rather than by the model.
+
+    Highest volume wins. Among ties, the shortest phrase: it is the most
+    generic form of the query, and it is what SERP verification and
+    re-research key off. A phrase over HEAD_MAX_WORDS only wins if nothing
+    shorter has any volume at all — a tagline should never front a cluster
+    while a real query sits beside it.
+    """
+    def key(m: str):
+        vol = stats.get(m.lower(), {}).get("volume") or 0
+        words = len(m.split())
+        return (-vol, words > HEAD_MAX_WORDS, words, m.lower())
+
+    short = [m for m in members if len(m.split()) <= HEAD_MAX_WORDS]
+    short_with_vol = [m for m in short if (stats.get(m.lower(), {}).get("volume") or 0) > 0]
+    pool = short_with_vol or short or members
+    return sorted(pool, key=key)[0]
+
+
 def _expand(raw, ranked: list[dict]) -> list[dict]:
     """Turn index-based clusters into the full shape the pipeline expects."""
     clusters = raw.get("clusters") if isinstance(raw, dict) else raw
@@ -77,8 +104,8 @@ def _expand(raw, ranked: list[dict]) -> list[dict]:
         ]
         if not members:
             continue
-        head = _resolve(c.get("head") or c.get("head_term"), ranked) or members[0]
         vols = [stats.get(m.lower(), {}).get("volume") or 0 for m in members]
+        head = _pick_head(members, stats)
         diffs = [stats.get(m.lower(), {}).get("difficulty") or 0 for m in members]
         out.append({
             "cluster_id": c.get("id", i),

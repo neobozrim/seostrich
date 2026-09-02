@@ -96,6 +96,61 @@ def _for_selection(scored: dict) -> list[dict]:
     return lean
 
 
+# DataForSEO's smallest non-zero volume bucket is 10. A cluster whose BEST
+# keyword sits in that bucket has no measurable demand: it is a handful of
+# phrases nobody searches, and one of them will be a tagline or a stray brand
+# query that the expansion dragged in. Such a cluster must not become a
+# content pillar on the strength of "relevance" alone.
+#
+# The floor is relative, not absolute. In a genuinely thin market every
+# cluster is under it, and discarding all of them would leave nothing — there
+# the floor is waived and the fact is stated, so the report says "this market
+# has no measurable demand" instead of manufacturing pillars.
+DEMAND_FLOOR = 20
+
+
+def _apply_demand_floor(scored: dict) -> tuple[dict, list[dict], str]:
+    """Split clusters into (eligible-for-selection, pre-discarded, note)."""
+    key = "scored_clusters" if scored.get("scored_clusters") else "clusters"
+    clusters = scored.get(key) or []
+
+    def max_vol(c: dict) -> int:
+        m = c.get("metrics") or {}
+        if m.get("max_volume") is not None:
+            return int(m["max_volume"] or 0)
+        return int(c.get("max_volume") or c.get("avg_volume") or 0)
+
+    above = [c for c in clusters if max_vol(c) >= DEMAND_FLOOR]
+    if not above or len(above) == len(clusters):
+        note = "" if above else (
+            f"thin market: no cluster has a keyword at or above {DEMAND_FLOOR} searches/month, "
+            f"so the demand floor was waived and selection ran on relevance alone"
+        )
+        return scored, [], note
+
+    dropped = []
+    for c in clusters:
+        if max_vol(c) >= DEMAND_FLOOR:
+            continue
+        m = c.get("metrics") or {}
+        top = (m.get("top_keywords") or [{}])[0]
+        name = c.get("cluster_name") or c.get("name") or ""
+        dropped.append({
+            "cluster_name": name,
+            "reason": (
+                f"no measurable search demand in this market: its best keyword "
+                f"\"{top.get('keyword') or c.get('head_term') or '?'}\" has "
+                f"{top.get('volume') or max_vol(c)} searches/month, under the "
+                f"{DEMAND_FLOOR}/month floor — parked, not deleted; promote it back if "
+                f"you want to build for it anyway"
+            ),
+            "demand_floor": True,
+        })
+    filtered = dict(scored)
+    filtered[key] = above
+    return filtered, dropped, ""
+
+
 def select_clusters(scored_clusters: dict, max_select: int = 4, business_description: str = "") -> dict:
     """Pick the top clusters from a scored, over-generated set.
 
@@ -106,6 +161,10 @@ def select_clusters(scored_clusters: dict, max_select: int = 4, business_descrip
         scored_clusters.get("scored_clusters") or scored_clusters.get("clusters")
     ):
         return {"success": False, "error": "scored_clusters must contain a scored_clusters list"}
+
+    # Enforced in code, before the model sees the candidates: a cluster with no
+    # measurable demand cannot be selected however relevant it sounds.
+    scored_clusters, floor_dropped, floor_note = _apply_demand_floor(scored_clusters)
 
     biz = (business_description or "").strip()
     biz_block = f"The business this strategy is for:\n{biz}\n\n" if biz else ""
@@ -143,13 +202,14 @@ Select at most {max_select} clusters to pursue as pillars. Relevance to the busi
                     })
         if not names:
             return {"success": False, "error": "selection list is empty", "selection": None}
-        return {
-            "success": True,
-            "selection": {
-                "selected": names,
-                "selected_reasons": reasons,
-                "discarded": result.get("discarded", []),
-            },
+        discarded = list(result.get("discarded", []) or []) + floor_dropped
+        selection = {
+            "selected": names,
+            "selected_reasons": reasons,
+            "discarded": discarded,
         }
+        if floor_note:
+            selection["note"] = floor_note
+        return {"success": True, "selection": selection}
     except Exception as e:
         return {"success": False, "error": f"selection failed: {str(e)}", "selection": None}
