@@ -174,12 +174,19 @@ def _task_items(data: dict, label: str = "") -> list:
     return (first or {}).get("items") or []
 
 
-def keywords_for_site(url: str, limit: int = 100) -> list[dict]:
+def keywords_for_site(url: str, limit: int = 100, location_code: int | None = None, language_code: str | None = None) -> list[dict]:
+    """What a domain ranks for IN A MARKET. Without location/language DataForSEO
+    answers from its default (US, English) index, which is wrong for every
+    other market and silently so — observed 2026-09-03."""
     async def _inner():
         payload = {
             "target": _normalize(url),
             "limit": limit,
         }
+        if location_code:
+            payload["location_code"] = location_code
+        if language_code:
+            payload["language_code"] = language_code
         data = await _post("/v3/dataforseo_labs/ranked_keywords/live", [payload])
         items = _task_items(data)
         results = []

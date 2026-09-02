@@ -28,8 +28,9 @@ def ok(cond, label):
 calls = []
 
 
-def fake_keywords_for_site(domain, limit=100):
+def fake_keywords_for_site(domain, limit=100, location_code=None, language_code=None):
     calls.append(("ranked", domain, limit))
+    scoped.append((domain, location_code, language_code))
     data = {
         "productpirates.club": [],  # the new site ranks for nothing
         "lennysnewsletter.com": [{"keyword": "product manager", "volume": 5000},
@@ -81,6 +82,8 @@ def run(**kw):
             p.stop()
 
 
+scoped = []
+
 print("1. user-supplied competitors are queried, user first")
 m = run(urls=["https://www.lennysnewsletter.com/", "productschool.com", "https://mindtheproduct.com/blog"],
         site="https://productpirates.club/")
@@ -93,6 +96,7 @@ ok(m["site_has_rankings"] is False, "the site was checked and ranks for nothing"
 ok(not any(c[0] == "intersect" for c in calls), "no intersection calls for a site with no rankings")
 ranked = [c for c in calls if c[0] == "ranked" and c[1] != "productpirates.club"]
 ok(len(ranked) == 5 and all(c[2] == 100 for c in ranked), "one ranked_keywords call per queried domain")
+ok(scoped and all(loc == 2840 and lang == "en" for _, loc, lang in scoped), f"every ranked-keywords lookup is scoped to the run's market: {scoped[:2]}")
 
 print("2. rows are tagged and consensus is computed")
 rows = {r["keyword"]: r for r in m["_rows"]}
@@ -111,7 +115,7 @@ ok(m["per_domain"]["lennysnewsletter.com"]["keywords"] == 3, "per-domain counts 
 
 print("3. intersection runs only when the site has rankings")
 with patch.object(pu.dfs, "keywords_for_site",
-                  lambda d, limit=100: [{"keyword": "x", "volume": 1}] if d == "productpirates.club" else fake_keywords_for_site(d, limit)):
+                  lambda d, limit=100, **kw: [{"keyword": "x", "volume": 1}] if d == "productpirates.club" else fake_keywords_for_site(d, limit, **kw)):
     ps = ctx()[1:]
     for p in ps: p.start()
     try:
@@ -137,6 +141,22 @@ finally:
     for p_ in ps: p_.stop()
 ok("usebraintrust.com" not in mn["queried"] and "langfuse.com" in mn["queried"], f"namesake skipped, real competitor kept: {mn['queried']}")
 ok(mn.get("skipped_namesakes") == ["usebraintrust.com"], "and the skip is recorded on the map")
+
+print("3c. a competitor's other-script rankings stay on the map, flagged, and out of the universe")
+def fake_kw_cyrillic(domain, limit=100, location_code=None, language_code=None):
+    calls.append(("ranked", domain, limit))
+    return [{"keyword": "product strategy", "volume": 100}, {"keyword": "софтуни курс", "volume": 900}] if domain == "softuni.bg" else []
+ps = [patch.object(pu.dfs, "keywords_for_site", fake_kw_cyrillic), patch.object(pu.dfs, "competitors_domain", lambda *a, **k: []),
+      patch.object(pu.dfs, "domain_intersection", fake_intersection), patch.object(pu.dfs, "budget_remaining", fake_budget)]
+for p_ in ps: p_.start()
+try:
+    mc = pu._competitor_universe(["softuni.bg"], "", 2840, "en")
+finally:
+    for p_ in ps: p_.stop()
+ok(mc["per_domain"]["softuni.bg"]["other_script"] == 1, f"one other-script row counted: {mc['per_domain']['softuni.bg']}")
+ok(any(r.get("foreign_script") for r in mc["per_domain"]["softuni.bg"]["rows"]), "the row is flagged on the map")
+kept, dropped = pu._script_filter(mc["_rows"], "en")
+ok(dropped == 1 and [r["keyword"] for r in kept] == ["product strategy"], "and the universe filter drops exactly that row")
 
 print("4. caps and edges")
 m3 = run(urls=[f"https://c{i}.com" for i in range(12)], site="")
@@ -175,7 +195,7 @@ ok(not pu._is_brand_term("ai product management", "aiproduct.com"), "a topical p
 ok(not pu._is_brand_term("product strategy", "lennysnewsletter.com"), "an ordinary topic passes")
 ok(not pu._is_brand_term("mind the product", "mtp.com"), "a stem under five letters is never used")
 
-with patch.object(pu.dfs, "keywords_for_site", lambda d, limit=100: [
+with patch.object(pu.dfs, "keywords_for_site", lambda d, limit=100, **kw: [
         {"keyword": "lenny podcast", "volume": 4400}, {"keyword": "product strategy", "volume": 1200},
         {"keyword": "lennys newsletter", "volume": 9000}] if d == "lennysnewsletter.com" else []),      patch.object(pu.dfs, "competitors_domain", lambda d, limit=10: []),      patch.object(pu.dfs, "domain_intersection", lambda a, b, limit=50: []),      patch.object(pu.dfs, "budget_remaining", lambda: 9):
     m6 = pu._competitor_universe(["lennysnewsletter.com"], "", 2840, "en")

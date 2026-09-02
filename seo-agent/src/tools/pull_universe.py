@@ -289,7 +289,7 @@ def _competitor_keywords(
     results: list[dict] = []
     for domain in domains[:2]:
         try:
-            kws = dfs.keywords_for_site(domain, limit=50)
+            kws = dfs.keywords_for_site(domain, limit=50, location_code=location_code, language_code=language_code)
         except Exception as e:
             print(f"  [WARN] keywords_for_site failed for '{domain}': {e}")
             continue
@@ -378,7 +378,7 @@ def _competitor_universe(
     site_has_rankings = None
     if site_domain and dfs.budget_remaining() > 0:
         try:
-            site_has_rankings = bool(dfs.keywords_for_site(site_domain, limit=1))
+            site_has_rankings = bool(dfs.keywords_for_site(site_domain, limit=1, location_code=location_code, language_code=language_code))
         except Exception as e:
             print(f"  [WARN] keywords_for_site failed for site '{site_domain}': {e}")
     result["site_has_rankings"] = site_has_rankings
@@ -390,7 +390,7 @@ def _competitor_universe(
             print("  [pull_universe] DFS budget exhausted before competitor lookups finished")
             break
         try:
-            kws = dfs.keywords_for_site(domain, limit=COMPETITOR_KEYWORDS_PER_DOMAIN)
+            kws = dfs.keywords_for_site(domain, limit=COMPETITOR_KEYWORDS_PER_DOMAIN, location_code=location_code, language_code=language_code)
         except Exception as e:
             print(f"  [WARN] keywords_for_site failed for '{domain}': {e}")
             kws = []
@@ -405,6 +405,7 @@ def _competitor_universe(
         # navigational for THEM; nobody else can win them and they only crowd
         # out the topical keywords. Dropped, and counted, so the map says so.
         brand_hits = 0
+        other_script = 0
         for kw in kws:
             key = (kw.get("keyword") or "").strip().lower()
             if not key:
@@ -412,6 +413,12 @@ def _competitor_universe(
             if _is_brand_term(key, domain):
                 brand_hits += 1
                 continue
+            # A Bulgarian site ranking for Bulgarian queries in the US index
+            # is real, and evidence about the competitor: it stays on the
+            # map, flagged. It never enters the universe (see _script_filter).
+            if _foreign_script(key, language_code):
+                kw["foreign_script"] = True
+                other_script += 1
             owners.setdefault(key, set()).add(domain)
             row = rows_by_kw.get(key)
             if row is None:
@@ -425,6 +432,7 @@ def _competitor_universe(
         result["per_domain"][domain] = {
             "keywords": len(kws) - brand_hits,
             "brand_terms_skipped": brand_hits,
+            "other_script": other_script,
             "shared_with_site": len(shared_set),
             "top": [k.get("keyword") for k in kws[:5]],
             # The whole list, so the report can show what each one ranks for
@@ -432,7 +440,8 @@ def _competitor_universe(
             "rows": [
                 {"keyword": k.get("keyword"), "volume": k.get("volume"),
                  "difficulty": k.get("difficulty"), "cpc": k.get("cpc"),
-                 "intent": k.get("intent"), "rank": k.get("rank")}
+                 "intent": k.get("intent"), "rank": k.get("rank"),
+                 **({"foreign_script": True} if k.get("foreign_script") else {})}
                 for k in kws
                 if not _is_brand_term((k.get("keyword") or "").lower(), domain)
             ],
@@ -459,6 +468,14 @@ def _competitor_universe(
 _CYRILLIC_LANGS = {"bg", "ru", "uk", "sr", "mk", "be", "kk"}
 _NON_LATIN = re.compile(r"[Ѐ-ӿͰ-Ͽ֐-׿؀-ۿ฀-๿぀-ヿ一-鿿가-힯]")
 _CYRILLIC = re.compile(r"[Ѐ-ӿ]")
+
+
+def _foreign_script(keyword: str, language_code: str | None) -> bool:
+    """True when a keyword is written in a script the market's language does not use."""
+    lang = (language_code or "en").lower()[:2]
+    if lang in _CYRILLIC_LANGS:
+        return bool(_NON_LATIN.search(keyword)) and not _CYRILLIC.search(keyword)
+    return bool(_NON_LATIN.search(keyword))
 
 
 def _script_filter(rows: list[dict], language_code: str | None) -> tuple[list[dict], int]:

@@ -1108,6 +1108,11 @@ function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Rec
           {fetchError && fetching === null && <span className="text-sm text-red-600">{fetchError}</span>}
         </div>
       )}
+      {Object.values(per).some((v: any) => v?.other_script) && (
+        <div className="text-sm text-gray-500">
+          Some of these rankings are in another script than the market language (a Bulgarian site ranking for Bulgarian queries in the US index, say). They stay on this map as evidence about the competitor and never enter the clusters.
+        </div>
+      )}
       {artifact.site_has_rankings === false && (
         <div className="text-sm text-gray-500">
           Your site does not rank for anything yet, so every keyword here is one you are absent from.
@@ -1179,6 +1184,7 @@ function CompetitorsArtifact({ artifact, universe = [], runId }: { artifact: Rec
           const meta =
             (v.keywords ?? rows.length) + ' keywords' +
             (v.shared_with_site ? ' · ' + v.shared_with_site + ' shared with you' : '') +
+            (v.other_script ? ' · ' + v.other_script + ' in another script' : '') +
             (user.includes(d) ? '' : ' · discovered');
           return (
             <div key={d} className="border border-surface-300 rounded-lg">

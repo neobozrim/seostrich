@@ -434,8 +434,9 @@ async def fetch_competitor_keywords(run_id: str, body: CompetitorFetchIn, _auth:
         # page fetch — a public host only, never something on our network.
         if not domain or site_fetch.safe_url(domain) is None:
             raise HTTPException(status_code=400, detail="That is not a public web domain")
+    locale = next((s.get("artifact", {}).get("locale") or {} for s in run.get("stages", []) if s.get("id") == "intake"), {})
     try:
-        kws = await asyncio.to_thread(dfs.keywords_for_site, domain, 100)
+        kws = await asyncio.to_thread(dfs.keywords_for_site, domain, 100, locale.get("location_code"), locale.get("language_code"))
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"DataForSEO: {e}")
     rows = [
