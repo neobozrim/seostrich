@@ -49,15 +49,17 @@ module.exports = {
           800: '#40382F',
           900: '#191411',
         },
-        // The single action colour. Everything else on the page is brown, sand
-        // and cream; the one thing you DO — start — is the only blue.
+        // The single action colour: the darker pink of the ostrich's neck.
+        // Everything else on the page is brown, sand and cream; the one thing
+        // you DO — start, send, steer — is the mascot's colour, and nothing
+        // else is. White text on 400 sits at ~4.6:1.
         action: {
-          50: '#EAF1FD',
-          100: '#D6E3FB',
-          300: '#8FB1F2',
-          400: '#2E6BE6',
-          500: '#245BC9',
-          600: '#1D4BA8',
+          50: '#FBEFF1',
+          100: '#F6DCE0',
+          300: '#E3A3AD',
+          400: '#B8606E',
+          500: '#A4525F',
+          600: '#8E4450',
         },
         surface: {
           50: '#FCFAF8',

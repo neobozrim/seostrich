@@ -515,8 +515,8 @@ export default function Home() {
             )}
             <button
               onClick={newChat}
-              className="inline-flex items-center gap-1.5 rounded-full bg-action-400 text-white font-semibold
-                         px-5 py-2 text-sm hover:bg-action-500 active:scale-[0.98] transition shadow-sm"
+              className="inline-flex items-center gap-1.5 rounded-full bg-action-300 text-primary-700 hover:bg-action-400 hover:text-white font-semibold
+                         px-5 py-2 text-sm active:scale-[0.98] transition shadow-sm"
             >
               New chat <span className="text-lg leading-none">+</span>
             </button>

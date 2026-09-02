@@ -35,20 +35,47 @@ class Settings(BaseSettings):
     # (9,464 reasoning tokens) vs 44s on flash for the same ten clusters.
     qwen_model_fast: str = Field(default="qwen3.8-flash", alias="QWEN_MODEL_FAST")
 
+    # OpenAI, selected with LLM_PROVIDER=openai. Model ids come from the
+    # account's own /v1/models listing, never guessed.
+    openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
+    openai_model: str = Field(default="gpt-5.6-sol", alias="OPENAI_MODEL")
+    openai_model_fast: str = Field(default="gpt-5.6-terra", alias="OPENAI_MODEL_FAST")
+    # Thinking control for the mechanical nodes (clustering, extraction,
+    # gates): a reasoning model spends most of its time thinking about a task
+    # that has no reasoning in it. "low" on the fast model; "medium" on main.
+    openai_reasoning_fast: str = Field(default="low", alias="OPENAI_REASONING_FAST")
+    openai_reasoning_main: str = Field(default="medium", alias="OPENAI_REASONING_MAIN")
+
+    @property
+    def is_openai(self) -> bool:
+        return self.provider == "openai"
+
+    @property
+    def model_main(self) -> str:
+        return self.openai_model if self.is_openai else self.qwen_model
+
+    @property
+    def model_fast(self) -> str:
+        return self.openai_model_fast if self.is_openai else self.qwen_model_fast
+
     @property
     def provider(self) -> str:
         p = (self.llm_provider or "cloud").strip().lower().replace("-", "_")
-        return p if p in PROVIDER_BASE_URLS else "cloud"
+        return p if p in PROVIDER_BASE_URLS or p == "openai" else "cloud"
 
     @property
     def qwen_api_key(self) -> str:
         """Key for the selected provider, falling back to whichever is set."""
+        if self.is_openai:
+            return self.openai_api_key
         if self.provider == "token_plan":
             return self.qwen_token_plan_api_key or self.qwen_cloud_api_key
         return self.qwen_cloud_api_key or self.qwen_token_plan_api_key
 
     @property
     def qwen_base_url(self) -> str:
+        if self.is_openai:
+            return "https://api.openai.com/v1"
         return self.qwen_base_url_override or PROVIDER_BASE_URLS[self.provider]
 
     dataforseo_login: str = Field(default="", alias="DATAFORSEO_LOGIN")

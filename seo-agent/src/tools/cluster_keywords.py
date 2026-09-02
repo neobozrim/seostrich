@@ -199,7 +199,7 @@ def cluster_keywords(
         # ~9.5k thinking tokens it does not need here.
         resp = llm.chat(
             user_msg, system=SYSTEM_PROMPT, temperature=0.3,
-            max_tokens=2500, model=settings.qwen_model_fast,
+            max_tokens=2500, model=settings.model_fast,
         )
         parsed = llm.parse_json_response(resp)
         clusters = _expand(parsed, ranked)

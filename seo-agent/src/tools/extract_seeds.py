@@ -63,6 +63,6 @@ Extract keyword seeds for SEO research."""
     # about, so preserving the user's own words matters more here than depth.
     resp = llm.chat(
         user_msg, system=SYSTEM_PROMPT, temperature=0.3,
-        max_tokens=800, model=settings.qwen_model_fast,
+        max_tokens=800, model=settings.model_fast,
     )
     return llm.parse_json_response(resp)

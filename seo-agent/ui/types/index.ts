@@ -71,6 +71,7 @@ export interface RunSummary {
   modified?: number;
   pinned?: boolean;
   pin_note?: string;
+  archived?: boolean;
 }
 
 export interface RunStage {

@@ -2,11 +2,9 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  BookOpenCheck,
   CircleDollarSign,
   Eye,
   Pencil,
-  Plug,
   Search,
   CircleCheck,
   CircleAlert,
@@ -120,6 +118,7 @@ const RECIPES: Recipe[] = [
 
 export function WebMcpGuide({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState('');
+  const [tab, setTab] = useState<'tools' | 'uses'>('tools');
   // 'unknown' until checked; then whether this browser exposes WebMCP at all,
   // and whether our registration went through.
   const [status, setStatus] = useState<'unknown' | 'registered' | 'unavailable' | 'failed'>('unknown');
@@ -163,26 +162,15 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-x-0 bottom-0 top-16 bg-surface-50 z-40 overflow-y-auto">
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-        <div className="flex items-center gap-2 text-xs font-medium text-primary-500 mb-3">
-          <Plug className="w-4 h-4" />
-          WebMCP
-        </div>
         <h1 className="text-2xl sm:text-3xl font-display text-primary-700">
-          Drive this app with your own assistant
+          SEOstrich has full WebMCP support
         </h1>
         <p className="mt-4 text-gray-700 leading-relaxed">
-          SEOstrich publishes {tools.length} tools onto this page. Any assistant
-          that speaks WebMCP — in your browser, in your editor — can call them
-          while you watch, with no API key, no export and no copy-paste. It reads
-          the same run you are looking at, and when it changes something, the
-          change lands here.
-        </p>
-        <p className="mt-3 text-gray-700 leading-relaxed">
-          That matters because an SEO strategy is a set of judgement calls, and
-          the one you disagree with is usually a call we could not have made for
-          you: you know you do not sell courses, that a topic is off-brand, that
-          a competitor matters. {readCount} of the tools let an assistant read
-          the working; the rest let it argue back and change the outcome.
+          Every decision this app makes is on the page as a tool. That lets the assistant you
+          already use — in your browser, in your editor — read the working behind a strategy,
+          argue with it, change it, and rebuild the plan, while you watch. No API key, no
+          export, no copy-paste: {tools.length} tools, registered on this page, working on the
+          artefact you are looking at.
         </p>
 
         {/* ---- is it live here? ---- */}
@@ -229,13 +217,28 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {/* ---- the recipes ---- */}
-        <h2 className="mt-12 mb-1 text-lg font-semibold text-primary-700 flex items-center gap-2">
-          <BookOpenCheck className="w-5 h-5 text-primary-400" />
-          Things worth asking for
-        </h2>
-        <p className="text-sm text-gray-500 mb-5">
-          Open a report first, then say any of these to your assistant. It picks
+        {/* ---- two tabs ---- */}
+        <div className="mt-10 border-b border-surface-300 flex gap-6">
+          {([
+            ['tools', 'WebMCP tools', 'what your assistant can do'],
+            ['uses', 'Example use cases', 'how to make the most of WebMCP and SEOstrich'],
+          ] as const).map(([id, label, sub]) => (
+            <button
+              key={id}
+              onClick={() => setTab(id)}
+              className={`pb-3 -mb-px text-left border-b-2 transition-colors ${
+                tab === id ? 'border-primary-500 text-primary-700' : 'border-transparent text-gray-500 hover:text-gray-800'
+              }`}
+            >
+              <div className="text-sm font-semibold">{label}</div>
+              <div className="text-xs text-gray-400">{sub}</div>
+            </button>
+          ))}
+        </div>
+
+        {tab === 'uses' && (<>
+        <p className="mt-6 text-sm text-gray-500 mb-5">
+          Open an artefact first, then say any of these to your assistant. It picks
           the tools itself — you never name them.
         </p>
 
@@ -269,12 +272,10 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
             </li>
           ))}
         </ol>
+        </>)}
 
-        {/* ---- the reference ---- */}
-        <h2 className="mt-12 mb-1 text-lg font-semibold text-primary-700">
-          Every tool on this page
-        </h2>
-        <p className="text-sm text-gray-500 mb-4">
+        {tab === 'tools' && (<>
+        <p className="mt-6 text-sm text-gray-500 mb-4">
           Rendered from the same registry the page registers, so this list
           cannot drift from the code.
           {status === 'registered' && ' Every tool below is live in this browser.'}
@@ -333,6 +334,8 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
             );
           })}
         </div>
+
+        </>)}
 
         <p className="mt-10 text-xs text-gray-500 leading-relaxed">
           Tools are registered on <code className="font-mono">document.modelContext</code>{' '}

@@ -87,7 +87,7 @@ ok(res2["ok"] is False and "boom" in res2["error"], "a failed model call is repo
 ok(next(s for s in runs.get_run(RID)["stages"] if s["id"] == "brief")["artifact"]["the_call"]["pillar"] == "AI PM Learning Hub",
    "and the previous brief is kept")
 
-print("4. a change to the selection marks the brief stale and rebuilds it")
+print("4. a change to the selection marks the brief stale — and does NOT rebuild it")
 calls = []
 def fake_refresh(run_id):
     calls.append(run_id); return True
@@ -96,12 +96,12 @@ with patch.object(sb, "refresh_async", fake_refresh), patch.object(g.strategy_br
 ok(r["ok"], "discard ok")
 st = next(s for s in runs.get_run(RID)["stages"] if s["id"] == "brief")
 ok(st["artifact"]["stale"] is True and "Builder hands-on" in st["artifact"]["stale_reason"], "brief marked stale with the reason")
-ok(calls == [RID], "a rebuild was requested")
+ok(calls == [], "no rebuild is requested: the brief is on demand")
 
 with patch.object(g.strategy_brief, "refresh_async", fake_refresh):
     g.promote_cluster(RID, "Builder hands-on", by="user")
     g.reset_run(RID, by="user")
-ok(calls == [RID, RID, RID], "promote and reset request rebuilds too")
+ok(calls == [], "promote and reset mark stale without rebuilding either")
 
 print("5. refresh_async really runs, once at a time")
 answers2 = [good, good]

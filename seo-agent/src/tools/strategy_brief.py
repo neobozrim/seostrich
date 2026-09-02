@@ -164,7 +164,7 @@ def write_brief(run_id: str, business_description: str = "") -> dict:
     for attempt in range(2):
         try:
             resp = llm.chat(user_msg if attempt == 0 else user_msg + f"\n\nYour previous answer was rejected: {last_err}. Fix it.",
-                            system=SYSTEM_PROMPT, model=settings.qwen_model_fast, temperature=0.2, max_tokens=2500)
+                            system=SYSTEM_PROMPT, model=settings.model_fast, temperature=0.2, max_tokens=2500)
             cand = llm.parse_json_response(resp)
             ok, why = _valid(cand, inp)
             if ok:

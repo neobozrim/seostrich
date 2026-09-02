@@ -111,9 +111,10 @@ def _ensure_baseline(run: dict) -> None:
 
 
 def _selection_changed(run: dict, run_id: str, what: str) -> None:
-    """Every op that moves a cluster in or out invalidates the brief. Marked
-    on the artefact synchronously (so the UI can say "updating"), rebuilt in
-    the background so the op itself stays fast."""
+    """Every op that moves a cluster in or out invalidates the brief. It is
+    MARKED stale here — cheap, honest — and rebuilt only on demand (the
+    Rebuild control, or seo_regenerate_brief): a brief is a model call, and
+    ten quick edits in a row should cost one rebuild, not ten."""
     strategy_brief.mark_stale(run, what)
 
 
@@ -253,7 +254,6 @@ def _promote_cluster_locked(run_id: str, cluster_name: str, by: str = "agent") -
                 was_discarded_for=hit.get("discard_reason"))
     _selection_changed(run, run_id, f"promoted {entry.get('cluster_name') or cluster_name}")
     runs.save_run(run_id, run)
-    strategy_brief.refresh_async(run_id)
     return {"ok": True, "promoted": entry.get("name"), "selected_count": artifact["count"]}
 
 
@@ -289,7 +289,6 @@ def _discard_cluster_locked(run_id: str, cluster_name: str, reason: str = "",
                 reason=reason or "discarded by user", by=by)
     _selection_changed(run, run_id, f"discarded {entry.get('cluster_name') or cluster_name}")
     runs.save_run(run_id, run)
-    strategy_brief.refresh_async(run_id)
     return {"ok": True, "discarded": entry.get("name"), "selected_count": len(clusters)}
 
 
@@ -485,7 +484,6 @@ def propose_cluster(
                     keywords_found=len(members))
         _selection_changed(run, run_id, f"proposed {topic}")
         runs.save_run(run_id, run)
-        strategy_brief.refresh_async(run_id)
     return {"ok": True, "proposed": entry}
 
 
@@ -566,7 +564,6 @@ def reset_run(run_id: str, by: str = "agent") -> dict:
                     changes_undone=undone)
         _selection_changed(run, run_id, "reset to as-produced")
         runs.save_run(run_id, run)
-        strategy_brief.refresh_async(run_id)
         artifact = stage["artifact"]
         return {
             "ok": True,

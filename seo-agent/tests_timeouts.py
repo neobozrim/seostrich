@@ -45,9 +45,9 @@ for fn in (llm.chat, llm.chat_stream):
     chk(f"{fn.__name__} takes model", "model" in inspect.signature(fn).parameters)
 
 print("3. the mechanical node runs on the fast model")
-chk("fast model configured", bool(settings.qwen_model_fast))
+chk("fast model configured", bool(settings.model_fast))
 src = Path("src/tools/cluster_keywords.py").read_text(encoding="utf-8")
-chk("clustering requests the fast model", "qwen_model_fast" in src)
+chk("clustering requests the fast model", "model_fast" in src)
 chk("clustering no longer hardcodes a short timeout", "timeout=120" not in src)
 
 print("4. no node pairs a large budget with the old 120s deadline")

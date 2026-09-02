@@ -289,9 +289,15 @@ function BriefCard({ brief, onRegenerate, regenerating }: { brief: any; onRegene
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="text-[10px] font-semibold tracking-[0.16em] uppercase text-gray-400">The brief</div>
         {brief.stale ? (
-          <span className="flex items-center gap-1.5 text-xs text-amber-800">
-            <Loader2 className="w-3 h-3 animate-spin" /> updating after: {brief.stale_reason || 'a change to the selection'}
-          </span>
+          <button
+            onClick={onRegenerate}
+            disabled={regenerating}
+            className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100 disabled:opacity-50"
+            title="The selection changed since this brief was written"
+          >
+            {regenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+            {regenerating ? 'Rebuilding…' : `Out of date — ${brief.stale_reason || 'the selection changed'} · Rebuild`}
+          </button>
         ) : (
           <button onClick={onRegenerate} disabled={regenerating} className="text-xs text-gray-400 hover:text-gray-700 disabled:opacity-50">
             {regenerating ? 'Rebuilding…' : 'Rebuild'}
@@ -1479,13 +1485,12 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
   };
 
   // While a run is in progress, poll so stages stream in without a manual refresh
-  const briefStale = !!briefOf(run)?.stale;
   useEffect(() => {
     if (!run) return;
-    if (run.status !== 'running' && !live && !briefStale) return;
+    if (run.status !== 'running' && !live) return;
     const t = setInterval(() => refresh(run.id), 1500);
     return () => clearInterval(t);
-  }, [run?.id, run?.status, live, briefStale]);
+  }, [run?.id, run?.status, live]);
 
   // When the stream closes, fetch once more so the summary and any late edit
   // (a proposed cluster) are on screen without a manual refresh.
@@ -1779,7 +1784,7 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
                 onClick={submitDraft}
                 disabled={!draft.trim()}
                 title={isStreaming ? 'Steer' : 'Send'}
-                className="px-4 py-2.5 rounded-xl bg-action-400 text-white text-sm font-semibold hover:bg-action-500 disabled:opacity-50 flex items-center gap-1.5"
+                className="px-4 py-2.5 rounded-xl bg-action-300 text-primary-700 hover:bg-action-400 hover:text-white text-sm font-semibold disabled:opacity-60 disabled:hover:bg-action-300 disabled:hover:text-primary-700 flex items-center gap-1.5 transition"
               >
                 {isStreaming ? 'Steer' : <Send className="w-4 h-4" />}
               </button>

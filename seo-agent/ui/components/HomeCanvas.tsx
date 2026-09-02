@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Pin, PinOff, Send } from 'lucide-react';
-import { getRuns, pinRun } from '@/lib/api';
+import { Pin, PinOff, Send, MoreHorizontal, Archive, ArchiveRestore, FolderArchive, ArrowLeft } from 'lucide-react';
+import { getRuns, pinRun, archiveRun } from '@/lib/api';
 import { RunSummary } from '@/types';
 
 /**
@@ -63,6 +63,20 @@ interface Props {
 
 export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
   const [runs, setRuns] = useState<RunSummary[] | null>(null);
+  // The archive is the same canvas with a different ground and heading.
+  const [showArchive, setShowArchive] = useState(false);
+  const [menuFor, setMenuFor] = useState<string | null>(null);
+
+  const toggleArchive = async (run: RunSummary) => {
+    const next = !run.archived;
+    setMenuFor(null);
+    setRuns((prev) => ordered((prev || []).map((r) => (r.id === run.id ? { ...r, archived: next, pinned: next ? false : r.pinned } : r))));
+    try {
+      await archiveRun(run.id, next);
+    } catch {
+      setRuns((prev) => ordered((prev || []).map((r) => (r.id === run.id ? { ...r, archived: !next } : r))));
+    }
+  };
   const [draft, setDraft] = useState('');
   const [peekOk, setPeekOk] = useState(true);
   const [runOk, setRunOk] = useState(true);
@@ -83,13 +97,16 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
       .catch(() => setRuns([]));
   }, []);
 
-  const empty = runs !== null && runs.length === 0;
+  const active = (runs || []).filter((r) => !r.archived);
+  const archived = (runs || []).filter((r) => r.archived);
+  const shown = showArchive ? archived : active;
+  const empty = runs !== null && active.length === 0 && !showArchive;
 
   return (
-    <div className="relative min-h-full">
+    <div className={`relative min-h-[calc(100vh-4rem)] ${showArchive ? 'bg-surface-200' : ''}`}>
       {/* The ostrich, peeking in from the bottom-left. Decorative: content
           flows over it, and it never intercepts a click. */}
-      {peekOk && !empty && (
+      {peekOk && !empty && !showArchive && (
         <img
           src="/brand/ostrich-peek.png"
           alt=""
@@ -131,12 +148,12 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
                 }}
                 rows={3}
                 placeholder="My business is…"
-                className="w-full resize-none rounded-xl border-2 border-surface-300 bg-white px-4 py-3 pr-12 text-base focus:outline-none focus:border-action-400"
+                className="w-full resize-none rounded-xl border-2 border-surface-300 bg-white px-4 py-3 pr-12 text-base focus:outline-none focus:border-action-300"
               />
               <button
                 onClick={() => onStartChat(draft)}
                 aria-label="Start"
-                className="absolute bottom-3 right-3 p-2 rounded-lg bg-action-400 text-white hover:bg-action-500 transition"
+                className="absolute bottom-3 right-3 p-2 rounded-lg bg-action-300 text-primary-700 hover:bg-action-400 hover:text-white transition"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -144,9 +161,22 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
           </div>
         )}
 
-        {runs && runs.length > 0 && (
-          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:pl-24 lg:pl-56">
-            {runs.map((run) => {
+        {showArchive && (
+          <div className="mb-5 flex items-center gap-3">
+            <button onClick={() => setShowArchive(false)} className="p-1.5 rounded-lg hover:bg-white/60" title="Back">
+              <ArrowLeft className="w-4 h-4 text-gray-600" />
+            </button>
+            <h1 className="font-display text-2xl text-primary-700">Archive</h1>
+            <span className="text-sm text-gray-500">{archived.length} artefact{archived.length === 1 ? '' : 's'}</span>
+          </div>
+        )}
+
+        {runs && (shown.length > 0 || (!showArchive && archived.length > 0)) && (
+          <div className={`grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${showArchive ? '' : 'sm:pl-24 lg:pl-56'}`}>
+            {showArchive && shown.length === 0 && (
+              <div className="text-sm text-gray-500">Nothing archived.</div>
+            )}
+            {shown.map((run) => {
               const live = run.status === 'running';
               return (
                 <button
@@ -158,24 +188,41 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
                   <div className="flex items-start justify-between gap-2">
                     <span className="font-display text-base text-primary-700 truncate">{nameOf(run)}</span>
                     <span className="flex items-center gap-1 shrink-0">
+                      {run.pinned && <Pin className="w-3.5 h-3.5 text-primary-400" />}
                       {live && (
                         <span className="flex items-center gap-1 text-[11px] text-action-500">
                           <span className="w-1.5 h-1.5 rounded-full bg-action-400 animate-pulse" />
                           live
                         </span>
                       )}
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        aria-label={run.pinned ? 'Unpin' : 'Pin'}
-                        title={run.pinned ? 'Pinned — always first' : 'Pin so it is always first'}
-                        onClick={(e) => { e.stopPropagation(); togglePin(run); }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); togglePin(run); }
-                        }}
-                        className={`p-1 rounded hover:bg-surface-100 ${run.pinned ? 'text-primary-400' : 'text-gray-300 hover:text-gray-600'}`}
-                      >
-                        {run.pinned ? <Pin className="w-3.5 h-3.5" /> : <PinOff className="w-3.5 h-3.5" />}
+                      <span className="relative">
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          aria-label="More"
+                          onClick={(e) => { e.stopPropagation(); setMenuFor(menuFor === run.id ? null : run.id); }}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); setMenuFor(menuFor === run.id ? null : run.id); } }}
+                          className="p-1 rounded hover:bg-surface-100 text-gray-300 hover:text-gray-700"
+                        >
+                          <MoreHorizontal className="w-4 h-4" />
+                        </span>
+                        {menuFor === run.id && (
+                          <span
+                            className="absolute right-0 top-6 z-20 w-40 bg-white border border-surface-300 rounded-lg shadow-lg py-1 text-sm"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {!run.archived && (
+                              <span role="button" onClick={() => { setMenuFor(null); togglePin(run); }} className="flex items-center gap-2 px-3 py-1.5 hover:bg-surface-100 cursor-pointer">
+                                {run.pinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}
+                                {run.pinned ? 'Unpin' : 'Pin to top'}
+                              </span>
+                            )}
+                            <span role="button" onClick={() => toggleArchive(run)} className="flex items-center gap-2 px-3 py-1.5 hover:bg-surface-100 cursor-pointer">
+                              {run.archived ? <ArchiveRestore className="w-3.5 h-3.5" /> : <Archive className="w-3.5 h-3.5" />}
+                              {run.archived ? 'Restore' : 'Archive'}
+                            </span>
+                          </span>
+                        )}
                       </span>
                     </span>
                   </div>
@@ -188,6 +235,18 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
                 </button>
               );
             })}
+            {!showArchive && archived.length > 0 && (
+              <button
+                onClick={() => setShowArchive(true)}
+                className="text-left rounded-xl border border-dashed border-surface-400 bg-surface-100/80 p-4 hover:border-gray-500 hover:bg-surface-100 transition flex items-center gap-3"
+              >
+                <FolderArchive className="w-6 h-6 text-gray-500 shrink-0" />
+                <div>
+                  <div className="font-display text-base text-gray-700">Archive</div>
+                  <div className="text-xs text-gray-400">{archived.length} artefact{archived.length === 1 ? '' : 's'}</div>
+                </div>
+              </button>
+            )}
           </div>
         )}
       </div>

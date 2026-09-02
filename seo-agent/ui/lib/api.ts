@@ -314,6 +314,16 @@ export async function regenerateBrief(runId: string): Promise<any> {
   return response.json();
 }
 
+export async function archiveRun(runId: string, archived: boolean): Promise<{ ok: boolean; archived: boolean }> {
+  const response = await fetch(`${API_BASE}/api/runs/${runId}/archive`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ archived }),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
 export async function getRunChanges(runId: string, signal?: AbortSignal) {
   const response = await fetch(`${API_BASE}/api/runs/${runId}/changes`, {
     headers: authHeaders(),

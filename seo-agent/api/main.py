@@ -223,6 +223,18 @@ class PinIn(BaseModel):
     note: str = ""
 
 
+class ArchiveIn(BaseModel):
+    archived: bool = True
+
+
+@app.post("/api/runs/{run_id}/archive")
+async def archive_run(run_id: str, body: ArchiveIn, _auth: None = Depends(require_auth)):
+    run = runs.set_archived(run_id, body.archived)
+    if run is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return {"ok": True, "archived": bool(run.get("archived"))}
+
+
 @app.post("/api/runs/{run_id}/pin")
 async def pin_run(run_id: str, body: PinIn, _auth: None = Depends(require_auth)):
     """Pin a run so it leads the home canvas regardless of recency."""

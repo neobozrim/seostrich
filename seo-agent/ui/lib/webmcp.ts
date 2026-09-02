@@ -397,7 +397,7 @@ export function buildTools() {
       name: 'seo_get_brief',
       title: 'The brief: what to build, in what order, and why',
       description:
-        'The one page a content team acts on, built from the measured stages: which pillar to build first and why (with the numbers), who owns the keywords in that space, six pieces each with a working title and the exact question it answers, and what was parked and why. Use this when you want the plan rather than the working. It is rebuilt whenever the selection changes, so after a discard or promote read it again to see the new plan. If `stale` is true a rebuild is in progress. Read-only, no cost.',
+        'The one page a content team acts on, built from the measured stages: which pillar to build first and why (with the numbers), who owns the keywords in that space, six pieces each with a working title and the exact question it answers, and what was parked and why. Use this when you want the plan rather than the working. When the selection changes it is marked `stale` (with the reason) but NOT rebuilt — call seo_regenerate_brief to rebuild it once you are done editing, so ten edits cost one model call rather than ten. Read-only, no cost.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
       execute: async (input: { run_id?: string }, options?: any) => {
@@ -414,7 +414,7 @@ export function buildTools() {
       name: 'seo_regenerate_brief',
       title: 'Rebuild the brief from the current selection',
       description:
-        'Rewrite the brief from the clusters as they stand now. Use this after you have changed the selection and want the plan to reflect it immediately, or when the brief says it is stale. Writes to the run; costs a model call but no DataForSEO calls.',
+        'Rewrite the brief from the clusters as they stand now. Use this once after a batch of changes to the selection — it is the only thing that rebuilds the brief. Writes to the run; costs a model call but no DataForSEO calls.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_WRITE,
       execute: async (input: { run_id?: string }, options?: any) => {

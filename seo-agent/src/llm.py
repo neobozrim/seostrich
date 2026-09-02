@@ -42,6 +42,53 @@ def _pace() -> None:
 DEFAULT_TIMEOUT = 300.0
 
 
+def _request(model: str, msgs: list, temperature: float, max_tokens: int, tools) -> dict[str, Any]:
+    """Shape a chat request for the provider in use.
+
+    OpenAI's reasoning models refuse `temperature` and `max_tokens` (they want
+    `max_completion_tokens`) and take `reasoning_effort` — which is the whole
+    point for the mechanical nodes: a task with no reasoning in it should not
+    pay for thinking. Qwen keeps the plain shape."""
+    kwargs: dict[str, Any] = {"model": model, "messages": msgs}
+    if settings.is_openai:
+        kwargs["max_completion_tokens"] = max_tokens
+        kwargs["reasoning_effort"] = (
+            settings.openai_reasoning_fast if model == settings.openai_model_fast
+            else settings.openai_reasoning_main
+        )
+    else:
+        kwargs["temperature"] = temperature
+        kwargs["max_tokens"] = max_tokens
+    if tools:
+        kwargs["tools"] = tools
+        kwargs["tool_choice"] = "auto"
+    return kwargs
+
+
+def _without_unsupported(kwargs: dict[str, Any], err: Exception) -> dict[str, Any] | None:
+    """If the provider rejects a parameter by name, drop it and retry once."""
+    text = str(err).lower()
+    for key in ("reasoning_effort", "max_completion_tokens", "temperature", "max_tokens"):
+        if key in kwargs and key in text and any(w in text for w in ("unsupported", "unknown", "not supported", "unrecognized")):
+            out = dict(kwargs)
+            out.pop(key)
+            if key == "max_completion_tokens":
+                out["max_tokens"] = kwargs[key]
+            print(f"[llm] {key} rejected by the model; retrying without it")
+            return out
+    return None
+
+
+def _create(client: OpenAI, kwargs: dict[str, Any]):
+    try:
+        return client.chat.completions.create(**kwargs)
+    except Exception as e:
+        retry = _without_unsupported(kwargs, e)
+        if retry is None:
+            raise
+        return client.chat.completions.create(**retry)
+
+
 def get_client() -> OpenAI:
     global _client
     if _client is None:
@@ -82,15 +129,7 @@ def chat(
     if system:
         msgs.insert(0, {"role": "system", "content": system})
 
-    kwargs: dict[str, Any] = {
-        "model": model or settings.qwen_model,
-        "messages": msgs,
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-    }
-    if tools:
-        kwargs["tools"] = tools
-        kwargs["tool_choice"] = "auto"
+    kwargs = _request(model or settings.model_main, msgs, temperature, max_tokens, tools)
 
     if settings.mock_llm:
         return {
@@ -100,7 +139,7 @@ def chat(
 
     _pace()
     client = get_client().with_options(timeout=timeout or DEFAULT_TIMEOUT)
-    resp = client.chat.completions.create(**kwargs)
+    resp = _create(client, kwargs)
     choice = resp.choices[0]
     result: dict[str, Any] = {
         "content": choice.message.content or "",
@@ -148,16 +187,8 @@ def chat_stream(
     if system:
         msgs.insert(0, {"role": "system", "content": system})
 
-    kwargs: dict[str, Any] = {
-        "model": model or settings.qwen_model,
-        "messages": msgs,
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-        "stream": True,
-    }
-    if tools:
-        kwargs["tools"] = tools
-        kwargs["tool_choice"] = "auto"
+    kwargs = _request(model or settings.model_main, msgs, temperature, max_tokens, tools)
+    kwargs["stream"] = True
 
     if settings.mock_llm:
         yield {"type": "final", "content": "[]", "tool_calls": []}
@@ -169,7 +200,7 @@ def chat_stream(
     partial: dict[int, dict[str, Any]] = {}
 
     client = get_client().with_options(timeout=timeout or DEFAULT_TIMEOUT)
-    for event in client.chat.completions.create(**kwargs):
+    for event in _create(client, kwargs):
         if not event.choices:
             continue
         delta = event.choices[0].delta

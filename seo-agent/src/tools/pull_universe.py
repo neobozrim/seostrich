@@ -470,7 +470,7 @@ def _relevance_gate(rows: list[dict], business_description: str) -> tuple[list[d
     listing = "\n".join(f"{i + 1}. {r.get('keyword', '')}" for i, r in enumerate(rows[:300]))
     user_msg = f"The business:\n{business_description.strip()[:1500]}\n\nCompetitor keywords:\n{listing}"
     try:
-        resp = llm.chat(user_msg, system=RELEVANCE_SYSTEM, model=settings.qwen_model_fast,
+        resp = llm.chat(user_msg, system=RELEVANCE_SYSTEM, model=settings.model_fast,
                         temperature=0, max_tokens=1200)
         data = llm.parse_json_response(resp)
         keep = data.get("keep") if isinstance(data, dict) else None

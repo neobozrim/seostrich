@@ -71,6 +71,7 @@ def list_runs() -> list[dict]:
                     # Pinned runs lead the home canvas regardless of recency,
                     # so a curated run stays the first thing anyone sees.
                     "pinned": bool(run.get("pinned")),
+                    "archived": bool(run.get("archived")),
                     "pin_note": run.get("pin_note") or "",
                 }
             )
@@ -196,6 +197,19 @@ def sync_seeds() -> list[str]:
 def restore_defaults() -> list[str]:
     """Force-reseed all default runs from the repo seed dir."""
     return seed_defaults(force=True)
+
+
+def set_archived(run_id: str, archived: bool) -> dict | None:
+    """Archived runs leave the home canvas for the Archive folder. Nothing is
+    deleted; an archived run is unpinned, since pinned means "show first"."""
+    run = get_run(run_id)
+    if run is None:
+        return None
+    run["archived"] = bool(archived)
+    if archived:
+        run["pinned"] = False
+    save_run(run_id, run)
+    return run
 
 
 def set_pinned(run_id: str, pinned: bool, note: str = "") -> dict | None:
