@@ -39,7 +39,7 @@ WRITES = {
     "seo_rerun_cluster_research", "seo_submit_feedback", "seo_restore_defaults",
     "seo_research_competitor",
 }
-SPENDS = {"seo_propose_cluster", "seo_rerun_cluster_research", "seo_research_competitor"}
+SPENDS = {"seo_propose_cluster", "seo_rerun_cluster_research", "seo_research_competitor", "seo_research_keyword"}
 
 print(f"1. every tool is documented ({len(DESCS)} found)")
 chk("every registered tool has a parsed description",

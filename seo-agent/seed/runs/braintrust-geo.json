@@ -3,7 +3,7 @@
  "project": "braintrust.dev · AI visibility · US-EN",
  "title": "Braintrust",
  "prompt": "Run the AI visibility (GEO) report for Braintrust (braintrust.dev), the LLM evaluation and observability platform (not the freelance marketplace). Market: United States, English.\nResearch how AI engines already answer questions about LLM evaluation and observability, and who they cite.\nTopics: llm evaluation, llm observability, llm as a judge, rag evaluation, ai agent evaluation, llm tracing, prompt versioning, llm evaluation framework, evals for llm applications.\nThen check which AI answers already cite braintrust.dev.\n",
- "created": "2026-09-02T22:08:33.590956+00:00",
+ "created": "2026-09-03T07:04:33.884229+00:00",
  "status": "done",
  "stages": [
   {
@@ -129,14 +129,14 @@
       "cited_sources": [
        {
         "domain": "www.youtube.com",
-        "citations": 90,
+        "citations": 91,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 1000
        },
        {
         "domain": "github.com",
-        "citations": 20,
+        "citations": 21,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 867
@@ -281,7 +281,7 @@
       "cited_sources": [
        {
         "domain": "www.youtube.com",
-        "citations": 43,
+        "citations": 49,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 1000
@@ -316,21 +316,21 @@
        },
        {
         "domain": "www.cdc.gov",
-        "citations": 8,
+        "citations": 7,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 635
        },
        {
         "domain": "medlineplus.gov",
-        "citations": 9,
+        "citations": 8,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 587
        },
        {
         "domain": "www.mayoclinic.org",
-        "citations": 21,
+        "citations": 19,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 584
@@ -344,21 +344,14 @@
        },
        {
         "domain": "my.clevelandclinic.org",
-        "citations": 30,
+        "citations": 28,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 546
        },
        {
-        "domain": "www.cancer.org",
-        "citations": 6,
-        "found_by": "mentioned_in_adjacent_answers",
-        "confidence": "needs_review",
-        "authority_rank": 541
-       },
-       {
         "domain": "www.medicalnewstoday.com",
-        "citations": 12,
+        "citations": 10,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 537
@@ -372,31 +365,45 @@
        },
        {
         "domain": "www.mdanderson.org",
-        "citations": 16,
+        "citations": 17,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 439
        },
        {
-        "domain": "int.livhospital.com",
+        "domain": "www.aimatmelanoma.org",
         "citations": 6,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
-        "authority_rank": 333
+        "authority_rank": 303
+       },
+       {
+        "domain": "docs.ragas.io",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 292
        }
       ],
       "niche_sites_cited": [
        {
-        "domain": "int.livhospital.com",
+        "domain": "www.aimatmelanoma.org",
         "citations": 6,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
-        "authority_rank": 333
+        "authority_rank": 303
+       },
+       {
+        "domain": "docs.ragas.io",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 292
        }
       ],
-      "weakest_cited_authority": 333,
+      "weakest_cited_authority": 292,
       "strongest_cited_authority": 1000,
-      "displaceability": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "displaceability": "winnable: 1 niche site(s) are cited on questions that name this topic (weakest 292), so it does not require a global brand to be quoted",
       "evidence": "AI engines answer this AND it has search volume"
      },
      {
@@ -419,14 +426,14 @@
        },
        {
         "domain": "www.linkedin.com",
-        "citations": 8,
+        "citations": 7,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 977
        },
        {
         "domain": "github.com",
-        "citations": 7,
+        "citations": 6,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 867
@@ -440,7 +447,7 @@
        },
        {
         "domain": "www.reddit.com",
-        "citations": 24,
+        "citations": 22,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 813
@@ -453,18 +460,18 @@
         "authority_rank": 744
        },
        {
+        "domain": "learn.microsoft.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 674
+       },
+       {
         "domain": "aws.amazon.com",
         "citations": 11,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 673
-       },
-       {
-        "domain": "www.anthropic.com",
-        "citations": 5,
-        "found_by": "asked_about_this_topic",
-        "confidence": "high",
-        "authority_rank": 615
        },
        {
         "domain": "www.ibm.com",
@@ -489,7 +496,7 @@
        },
        {
         "domain": "azure.microsoft.com",
-        "citations": 12,
+        "citations": 14,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 580
@@ -503,7 +510,7 @@
        },
        {
         "domain": "ai.azure.com",
-        "citations": 7,
+        "citations": 8,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 381
@@ -543,7 +550,7 @@
       "cited_sources": [
        {
         "domain": "www.youtube.com",
-        "citations": 76,
+        "citations": 77,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 1000
@@ -557,7 +564,7 @@
        },
        {
         "domain": "github.com",
-        "citations": 31,
+        "citations": 32,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 867
@@ -805,7 +812,7 @@
       "cited_sources": [
        {
         "domain": "www.youtube.com",
-        "citations": 76,
+        "citations": 80,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 1000
@@ -826,7 +833,7 @@
        },
        {
         "domain": "www.amazon.com",
-        "citations": 16,
+        "citations": 15,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 850
@@ -840,24 +847,24 @@
        },
        {
         "domain": "www.reddit.com",
-        "citations": 45,
+        "citations": 44,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 813
        },
        {
-        "domain": "www.apple.com",
-        "citations": 20,
-        "found_by": "mentioned_in_adjacent_answers",
-        "confidence": "needs_review",
-        "authority_rank": 732
-       },
-       {
-        "domain": "support.apple.com",
+        "domain": "medium.com",
         "citations": 6,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
-        "authority_rank": 729
+        "authority_rank": 744
+       },
+       {
+        "domain": "www.apple.com",
+        "citations": 17,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 732
        },
        {
         "domain": "developer.chrome.com",
@@ -875,7 +882,7 @@
        },
        {
         "domain": "www.nvidia.com",
-        "citations": 21,
+        "citations": 20,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 596
@@ -885,11 +892,11 @@
         "citations": 7,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
-        "authority_rank": 567
+        "authority_rank": 568
        },
        {
         "domain": "www.techpowerup.com",
-        "citations": 15,
+        "citations": 14,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 506
@@ -935,14 +942,14 @@
       "currently_cited": [
        {
         "domain": "www.youtube.com",
-        "citations": 90,
+        "citations": 91,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 1000
        },
        {
         "domain": "github.com",
-        "citations": 20,
+        "citations": 21,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 867
@@ -1062,7 +1069,7 @@
        "How to evaluate LLM model performance?",
        "What are the best LLM evaluation tools?",
        "What are rubrics in LLM evaluation?",
-       "How to evaluate LLM generated text?"
+       "How to do evals for LLMs?"
       ],
       "questions_ai_answers": [
        "llm evaluation",
@@ -1075,6 +1082,354 @@
        "survey on evaluation of llm based agents",
        "llm evaluation platform",
        "llm model evaluation"
+      ],
+      "all_questions_ai_answers": [
+       {
+        "question": "llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "developer.nvidia.com",
+         "magazine.sebastianraschka.com",
+         "www.databricks.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "llm evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "www.datadoghq.com",
+         "www.evidentlyai.com",
+         "www.langchain.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "llm evaluation metrics",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.braintrust.dev",
+         "www.databricks.com",
+         "www.evidentlyai.com",
+         "www.ibm.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "evaluation llm",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "launchdarkly.com",
+         "www.databricks.com",
+         "www.ibm.com",
+         "www.langchain.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "llm evaluation tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "medium.com",
+         "www.braintrust.dev",
+         "www.reddit.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "llm as a judge evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "huggingface.co",
+         "langfuse.com",
+         "mlflow.org",
+         "www.evidentlyai.com"
+        ]
+       },
+       {
+        "question": "llm-as a judge evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "huggingface.co",
+         "langfuse.com",
+         "www.evidentlyai.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "survey on evaluation of llm based agents",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "arxiv.org",
+         "huggingface.co",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "llm evaluation platform",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "mlflow.org",
+         "www.braintrust.dev",
+         "www.datadoghq.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "llm model evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "developer.nvidia.com",
+         "www.databricks.com",
+         "www.geeksforgeeks.org",
+         "www.ibm.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "llm agent evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "cameronrwolfe.substack.com",
+         "cloud.google.com",
+         "langfuse.com",
+         "mlflow.org",
+         "www.databricks.com"
+        ]
+       },
+       {
+        "question": "llm evaluation harness",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "docs.nvidia.com",
+         "github.com",
+         "www.eleuther.ai",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "llm as judge evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "langfuse.com",
+         "mlflow.org",
+         "www.evidentlyai.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "llm evaluation-harness",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "slyracoon23.github.io",
+         "www.eleuther.ai",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "llm evaluation benchmarks",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "galileo.ai",
+         "github.com",
+         "www.evidentlyai.com",
+         "www.turing.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ragas llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "docs.ragas.io",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "what is llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "www.braintrust.dev",
+         "www.evidentlyai.com",
+         "www.ibm.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "llm-as judge evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arxiv.org",
+         "aws.amazon.com",
+         "huggingface.co",
+         "langfuse.com",
+         "www.evidentlyai.com"
+        ]
+       },
+       {
+        "question": "best llm evaluation tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "medium.com",
+         "mlflow.org",
+         "rhesis.ai",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "braintrust llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.braintrust.dev",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "deepeval llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "github.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "evaluation framework llm",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "atlan.com",
+         "deepeval.com",
+         "mlflow.org",
+         "www.langchain.com"
+        ]
+       },
+       {
+        "question": "evaluation of llm",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "mlflow.org",
+         "www.evidentlyai.com",
+         "www.ibm.com",
+         "www.reddit.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "evaluation of llms",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "mlflow.org",
+         "www.evidentlyai.com",
+         "www.ibm.com",
+         "www.reddit.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "mlflow for llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "mlflow.org"
+        ]
+       },
+       {
+        "question": "open-source llm evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "atlan.com",
+         "deepeval.com",
+         "github.com",
+         "www.datadoghq.com"
+        ]
+       },
+       {
+        "question": "llm evaluation techniques",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "arxiv.org",
+         "launchdarkly.com",
+         "www.databricks.com",
+         "www.evidentlyai.com"
+        ]
+       },
+       {
+        "question": "evaluation metrics for llms",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "www.comet.com",
+         "www.databricks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "what is the best llm evaluation tool?",
+        "platform": "chat_gpt",
+        "has_answer": true,
+        "cited": []
+       }
+      ],
+      "all_questions_people_ask": [
+       {
+        "question": "How to evaluate LLM model performance?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What are the best LLM evaluation tools?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What are rubrics in LLM evaluation?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "How to do evals for LLMs?",
+        "answered_by": "",
+        "cited": []
+       }
       ],
       "content_plan": [
        {
@@ -1096,9 +1451,9 @@
         "currently_answered_by": ""
        },
        {
-        "heading": "How to evaluate LLM generated text?",
+        "heading": "How to do evals for LLMs?",
         "source": "people_also_ask",
-        "answer_first_brief": "Open the section by answering \"How to evaluate LLM generated text?\" in one or two plain sentences, then add the depth underneath.",
+        "answer_first_brief": "Open the section by answering \"How to do evals for LLMs?\" in one or two plain sentences, then add the depth underneath.",
         "currently_answered_by": ""
        },
        {
@@ -1196,13 +1551,13 @@
        "ai_search_volume": 570,
        "answered_share": 1.0,
        "open_share": 0.6,
-       "weakest_cited_authority": 333,
+       "weakest_cited_authority": 292,
        "strongest_cited_authority": 1000
       },
       "currently_cited": [
        {
         "domain": "www.youtube.com",
-        "citations": 43,
+        "citations": 49,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 1000
@@ -1237,21 +1592,21 @@
        },
        {
         "domain": "www.cdc.gov",
-        "citations": 8,
+        "citations": 7,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 635
        },
        {
         "domain": "medlineplus.gov",
-        "citations": 9,
+        "citations": 8,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 587
        },
        {
         "domain": "www.mayoclinic.org",
-        "citations": 21,
+        "citations": 19,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 584
@@ -1265,21 +1620,14 @@
        },
        {
         "domain": "my.clevelandclinic.org",
-        "citations": 30,
+        "citations": 28,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 546
        },
        {
-        "domain": "www.cancer.org",
-        "citations": 6,
-        "found_by": "mentioned_in_adjacent_answers",
-        "confidence": "needs_review",
-        "authority_rank": 541
-       },
-       {
         "domain": "www.medicalnewstoday.com",
-        "citations": 12,
+        "citations": 10,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 537
@@ -1293,31 +1641,42 @@
        },
        {
         "domain": "www.mdanderson.org",
-        "citations": 16,
+        "citations": 17,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 439
        },
        {
-        "domain": "int.livhospital.com",
+        "domain": "www.aimatmelanoma.org",
         "citations": 6,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
-        "authority_rank": 333
+        "authority_rank": 303
+       },
+       {
+        "domain": "docs.ragas.io",
+        "citations": 5,
+        "found_by": "asked_about_this_topic",
+        "confidence": "high",
+        "authority_rank": 292
        }
       ],
-      "can_you_displace_them": "probably winnable, but verify: 1 niche site(s) appear, only in answers to ADJACENT questions rather than to this topic by name — check they are really about your subject before betting on it",
+      "can_you_displace_them": "winnable: 1 niche site(s) are cited on questions that name this topic (weakest 292), so it does not require a global brand to be quoted",
       "niche_sites_already_cited": [
        {
-        "domain": "int.livhospital.com",
-        "authority_rank": 333
+        "domain": "www.aimatmelanoma.org",
+        "authority_rank": 303
+       },
+       {
+        "domain": "docs.ragas.io",
+        "authority_rank": 292
        }
       ],
       "questions_people_ask": [
        "Is ChatGPT a RAG model?",
+       "What does RAG stand for?",
        "How do I test my RAG?",
-       "What are some evaluation tools for RAG methods?",
-       "Can you explain RAG in a simple way?"
+       "What are some evaluation tools for RAG methods?"
       ],
       "questions_ai_answers": [
        "rag evaluation",
@@ -1328,11 +1687,125 @@
        "ragas rag evaluation framework",
        "rag evaluation frameworks"
       ],
+      "all_questions_ai_answers": [
+       {
+        "question": "rag evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "docs.langchain.com",
+         "docs.ragas.io",
+         "qdrant.tech",
+         "www.evidentlyai.com"
+        ]
+       },
+       {
+        "question": "rag evaluation metrics",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "docs.langchain.com",
+         "qdrant.tech",
+         "www.comet.com",
+         "www.evidentlyai.com",
+         "www.geeksforgeeks.org"
+        ]
+       },
+       {
+        "question": "ragas rag evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "docs.ragas.io",
+         "langfuse.com",
+         "www.geeksforgeeks.org",
+         "www.vectara.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ragas for rag evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "docs.ragas.io",
+         "langfuse.com",
+         "www.geeksforgeeks.org",
+         "www.vectara.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "rag evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "docs.anyscale.com",
+         "docs.langchain.com",
+         "www.comet.com",
+         "www.evidentlyai.com",
+         "www.patronus.ai"
+        ]
+       },
+       {
+        "question": "ragas rag evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arxiv.org",
+         "docs.ragas.io",
+         "langfuse.com",
+         "www.vectara.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "rag evaluation frameworks",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "docs.langchain.com",
+         "www.braintrust.dev",
+         "www.patronus.ai",
+         "www.reddit.com"
+        ]
+       }
+      ],
+      "all_questions_people_ask": [
+       {
+        "question": "Is ChatGPT a RAG model?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What does RAG stand for?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "How do I test my RAG?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What are some evaluation tools for RAG methods?",
+        "answered_by": "",
+        "cited": []
+       }
+      ],
       "content_plan": [
        {
         "heading": "Is ChatGPT a RAG model?",
         "source": "people_also_ask",
         "answer_first_brief": "Open the section by answering \"Is ChatGPT a RAG model?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "What does RAG stand for?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"What does RAG stand for?\" in one or two plain sentences, then add the depth underneath.",
         "currently_answered_by": ""
        },
        {
@@ -1345,12 +1818,6 @@
         "heading": "What are some evaluation tools for RAG methods?",
         "source": "people_also_ask",
         "answer_first_brief": "Open the section by answering \"What are some evaluation tools for RAG methods?\" in one or two plain sentences, then add the depth underneath.",
-        "currently_answered_by": ""
-       },
-       {
-        "heading": "Can you explain RAG in a simple way?",
-        "source": "people_also_ask",
-        "answer_first_brief": "Open the section by answering \"Can you explain RAG in a simple way?\" in one or two plain sentences, then add the depth underneath.",
         "currently_answered_by": ""
        },
        {
@@ -1451,14 +1918,14 @@
        },
        {
         "domain": "www.linkedin.com",
-        "citations": 8,
+        "citations": 7,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 977
        },
        {
         "domain": "github.com",
-        "citations": 7,
+        "citations": 6,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 867
@@ -1472,7 +1939,7 @@
        },
        {
         "domain": "www.reddit.com",
-        "citations": 24,
+        "citations": 22,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 813
@@ -1485,18 +1952,18 @@
         "authority_rank": 744
        },
        {
+        "domain": "learn.microsoft.com",
+        "citations": 6,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 674
+       },
+       {
         "domain": "aws.amazon.com",
         "citations": 11,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 673
-       },
-       {
-        "domain": "www.anthropic.com",
-        "citations": 5,
-        "found_by": "asked_about_this_topic",
-        "confidence": "high",
-        "authority_rank": 615
        },
        {
         "domain": "www.ibm.com",
@@ -1521,7 +1988,7 @@
        },
        {
         "domain": "azure.microsoft.com",
-        "citations": 12,
+        "citations": 14,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 580
@@ -1535,7 +2002,7 @@
        },
        {
         "domain": "ai.azure.com",
-        "citations": 7,
+        "citations": 8,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 381
@@ -1555,12 +2022,7 @@
         "authority_rank": 309
        }
       ],
-      "questions_people_ask": [
-       "What is the best evaluation framework for AI agents?",
-       "How to measure the performance of an agent in AI?",
-       "How to write evals for AI agents?",
-       "What are the 7 types of AI agents?"
-      ],
+      "questions_people_ask": [],
       "questions_ai_answers": [
        "ai agent evaluation",
        "ai agents evaluation",
@@ -1569,31 +2031,82 @@
        "ai agent evaluation tools",
        "ai agent evaluation metrics"
       ],
+      "all_questions_ai_answers": [
+       {
+        "question": "ai agent evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "developer.nvidia.com",
+         "medium.com",
+         "www.databricks.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "ai agents evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "aws.amazon.com",
+         "www.anthropic.com",
+         "www.ibm.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "ai agent evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "aws.amazon.com",
+         "galileo.ai",
+         "www.anthropic.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "ai agent evaluation frameworks",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "aws.amazon.com",
+         "galileo.ai",
+         "www.anthropic.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "ai agent evaluation tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "medium.com",
+         "mlflow.org",
+         "www.augmentcode.com",
+         "www.ibm.com"
+        ]
+       },
+       {
+        "question": "ai agent evaluation metrics",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "cloud.google.com",
+         "deepeval.com",
+         "galileo.ai",
+         "medium.com",
+         "wandb.ai"
+        ]
+       }
+      ],
+      "all_questions_people_ask": [],
       "content_plan": [
-       {
-        "heading": "What is the best evaluation framework for AI agents?",
-        "source": "people_also_ask",
-        "answer_first_brief": "Open the section by answering \"What is the best evaluation framework for AI agents?\" in one or two plain sentences, then add the depth underneath.",
-        "currently_answered_by": ""
-       },
-       {
-        "heading": "How to measure the performance of an agent in AI?",
-        "source": "people_also_ask",
-        "answer_first_brief": "Open the section by answering \"How to measure the performance of an agent in AI?\" in one or two plain sentences, then add the depth underneath.",
-        "currently_answered_by": ""
-       },
-       {
-        "heading": "How to write evals for AI agents?",
-        "source": "people_also_ask",
-        "answer_first_brief": "Open the section by answering \"How to write evals for AI agents?\" in one or two plain sentences, then add the depth underneath.",
-        "currently_answered_by": ""
-       },
-       {
-        "heading": "What are the 7 types of AI agents?",
-        "source": "people_also_ask",
-        "answer_first_brief": "Open the section by answering \"What are the 7 types of AI agents?\" in one or two plain sentences, then add the depth underneath.",
-        "currently_answered_by": ""
-       },
        {
         "heading": "ai agent evaluation",
         "source": "ai_engine_answered_this",
@@ -1675,7 +2188,7 @@
       "currently_cited": [
        {
         "domain": "www.youtube.com",
-        "citations": 76,
+        "citations": 77,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 1000
@@ -1689,7 +2202,7 @@
        },
        {
         "domain": "github.com",
-        "citations": 31,
+        "citations": 32,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 867
@@ -1797,6 +2310,64 @@
        "evaluation framework llm",
        "open-source llm evaluation framework"
       ],
+      "all_questions_ai_answers": [
+       {
+        "question": "llm evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "www.datadoghq.com",
+         "www.evidentlyai.com",
+         "www.langchain.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "evaluation framework llm",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "atlan.com",
+         "deepeval.com",
+         "mlflow.org",
+         "www.langchain.com"
+        ]
+       },
+       {
+        "question": "open-source llm evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "atlan.com",
+         "deepeval.com",
+         "github.com",
+         "www.datadoghq.com"
+        ]
+       }
+      ],
+      "all_questions_people_ask": [
+       {
+        "question": "What are the top 5 LLM evaluation tools?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "How do you evaluate LLM performance?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What are the 6 steps of the evaluation framework?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What are LLM evaluators?",
+        "answered_by": "",
+        "cited": []
+       }
+      ],
       "content_plan": [
        {
         "heading": "What are the top 5 LLM evaluation tools?",
@@ -1886,6 +2457,7 @@
     "method": "Search volume and AI presence are measured from DataForSEO; the ranking is arithmetic over those measurements and publishes its inputs. The expensive per-keyword search_mentions call ran only on the shortlist that the cheap volume check kept, and People-also-ask only on the final winners.",
     "reading_the_numbers": "ai_search_volume is a SUM across every question matched for the topic, and for Google AI Overviews DataForSEO derives it from Google search volume — so it sizes the question cluster and is NOT a separate AI demand channel. Do not compare it against search_volume for a single head term. answered_share are near-constant because AI Overview answers nearly everything; judge the opportunity on can_you_displace_them.",
     "platforms_measured": [
+     "chat_gpt",
      "google"
     ],
     "site_citations": {
@@ -1974,8 +2546,8 @@
    }
   }
  ],
- "ended": "2026-09-02T22:09:58.997591+00:00",
- "summary": "The brief prioritizes **LLM evaluation**: 1,000 monthly searches, 29 AI-answer questions, and 53% open opportunity. It is winnable because AI engines already cite specialist sites with authority ranks down to 288—including Braintrust itself—rather than only global brands.\n\nBraintrust already appears in **244 measured Google AI answers**, with examples including “LLM evaluation,” “LLM as a judge,” “AI evaluation,” and “LLM gateway.” Within the LLM-evaluation topic set, braintrust.dev received 8 citations. Its main citation-set competitors include Arize, Galileo, Langfuse, MLflow, LangChain, IBM, and Databricks.\n\nSecondary opportunities are **LLM evaluation framework** (390 searches, 40% open), **AI agent evaluation** (260, 33%), and **RAG evaluation** (210, 60%). The latter two need caution because the apparent low-authority citations came from adjacent-answer text and may be off-topic. Several RAG matches were clearly medical; those domains are unverified competitors, as are Ubie Health and other `needs_review` agent-evaluation matches.\n\nFor every recommended section in the brief, use the exact question as the heading and make the first two sentences the complete answer. Add explanation, examples, and product context afterward. Publish these as dedicated blog or resource pages; do not dilute core site copy to accommodate informational questions.",
+ "ended": "2026-09-03T07:06:08.707614+00:00",
+ "summary": "The brief prioritizes **LLM evaluation**: 1,000 monthly searches, 53% open share, and cited-source authority ranging from 288–1,000. It is preferable not merely because it is largest, but because niche publishers already win citations—Braintrust included—so global-brand authority is not required. Next are **RAG evaluation** (210 searches, 60% open share, authority 292–1,000), **LLM evaluation framework** (390, 40%, 296–1,000), and **AI agent evaluation** (260, 33%, 309–1,000), though the latter’s niche evidence needs verification.\n\nBraintrust.dev appears in sampled Google answers for **LLM evaluation metrics, LLM evaluation tools, LLM evaluation platform, what is LLM evaluation, Braintrust LLM evaluation,** and **RAG evaluation frameworks**. The domain-wide check found 244 citing answers and sampled 50; examples also include **LLM as a judge, AI evaluation,** and **LLM evaluation**. No passage-level citation text was returned, so context is query-level only. The “brain trust” sample may concern the unrelated marketplace or generic phrase and should not be counted without manual verification.\n\nBraintrust must out-answer Arize, Evidently AI, DeepEval, MLflow, SuperAnnotate, LangChain, Ragas, Patronus AI, Galileo, Databricks, Anthropic, AWS, IBM, NVIDIA, Reddit, GitHub, and YouTube. Treat Wikipedia, Coursera, medical domains, LinkedIn, Medium, and other sources marked `needs_review` as unverified: they were matched through adjacent answer text and may be off-topic.\n\nThe highest-value sections include **How to evaluate LLM model performance?; What are the best LLM evaluation tools?; What are rubrics in LLM evaluation?; How to do evals for LLMs?; How do I test my RAG?; What are some evaluation tools for RAG methods?; What are the top 5 LLM evaluation tools?; How do you evaluate LLM performance?; What are LLM evaluators?** Also build direct sections for **LLM evaluation metrics, LLM-as-a-judge evaluation, RAG evaluation metrics, RAG evaluation framework, AI agent evaluation tools,** and **AI agent evaluation metrics**.\n\nEach question should be the heading, and its first two sentences must directly answer it; only then add evidence, examples, methodology, or narrative. That makes the passage extractable and citable. Use blog pages for direct question answering. Do not force existing product copy around these questions—add dedicated intent-matched pages and link them to Braintrust’s evaluation, tracing, and observability capabilities.",
  "pinned": true,
  "pin_note": "AI visibility (GEO) for braintrust.dev: LLM evaluation, observability, LLM-as-judge, RAG and agent evaluation - who AI engines cite today, what is open, and whether braintrust.dev is cited yet.",
  "archived": false

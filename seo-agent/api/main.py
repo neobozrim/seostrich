@@ -400,6 +400,62 @@ async def rename_run(run_id: str, body: RenameIn, _auth: None = Depends(require_
     return {"ok": True, "title": title}
 
 
+class KeywordResearchIn(BaseModel):
+    topic: str
+    run_id: Optional[str] = None
+    limit: int = 30
+
+
+@app.post("/api/research/keyword")
+async def research_keyword(body: KeywordResearchIn, _auth: None = Depends(require_auth)):
+    """The phrases people search around one topic, with real volume,
+    difficulty, CPC and intent - one DataForSEO call in the run's market,
+    nothing written. For "could this be a head term" and "give me two
+    secondary terms for this post" without touching the report."""
+    from src.tools import dataforseo as dfs
+    from src.pipeline_recorder import use_run, market_label
+
+    topic = (body.topic or "").strip()
+    if not topic:
+        raise HTTPException(status_code=400, detail="A topic is required")
+    loc, lang = 2840, "en"
+    if body.run_id:
+        run = runs.get_run(body.run_id)
+        if run is None:
+            raise HTTPException(status_code=404, detail="Run not found")
+        locale = next((s.get("artifact", {}).get("locale") or {} for s in run.get("stages", []) if s.get("id") == "intake"), {})
+        loc = locale.get("location_code") or loc
+        lang = locale.get("language_code") or lang
+    limit = max(5, min(int(body.limit or 30), 50))
+
+    def _lookup():
+        def _go():
+            rows = list(dfs.keyword_suggestions(topic, limit=limit, location_code=loc, language_code=lang) or [])
+            # A narrow phrase returns a handful of variants; the related set
+            # says whether there is a theme around it. Second call only then.
+            if len(rows) < 8:
+                seen = {str(r.get("keyword", "")).lower() for r in rows}
+                rows += [r for r in (dfs.related_keywords(topic, limit=limit, location_code=loc, language_code=lang) or [])
+                         if str(r.get("keyword", "")).lower() not in seen]
+            return rows
+        if body.run_id:
+            with use_run(body.run_id):
+                return _go()
+        return _go()
+
+    try:
+        rows = await asyncio.to_thread(_lookup)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"DataForSEO: {e}")
+    keywords = sorted(
+        ({"keyword": k.get("keyword"), "volume": k.get("volume"), "difficulty": k.get("difficulty"),
+          "cpc": k.get("cpc"), "intent": k.get("intent")} for k in rows if isinstance(k, dict) and k.get("keyword")),
+        key=lambda k: -(k.get("volume") or 0),
+    )
+    return {"topic": topic, "market": market_label(loc, lang), "count": len(keywords), "keywords": keywords,
+            "note": "Measured by DataForSEO in the run's market; nothing on the run changed. Volumes are monthly searches, difficulty 0-100."}
+
+
 class SiteLanguageIn(BaseModel):
     url: str
     language_code: str = "en"

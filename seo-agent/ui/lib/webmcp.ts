@@ -34,6 +34,7 @@ import {
   resetRun,
   regenerateBrief,
   fetchCompetitorKeywords,
+  researchKeyword,
 } from './api';
 
 interface ModelContextLike {
@@ -104,17 +105,24 @@ export function buildTools() {
       name: 'seo_get_pipeline_overview',
       title: 'SEO pipeline overview',
       description:
-        'Start here. Returns the current run: its id, the business it is for, its status, and every stage it has produced (intake, seeds, keywords, clusters, pillars, ai_citability, mix). Use this first to see what exists before fetching any single part, and to get a run_id for the other tools. Read-only, no cost.',
+        'Where to start: the report on screen (or the one named by run_id) with its stages, plus every other report in this workspace with its run_id, type (SEO content strategy or AI visibility) and date, so you can read a second report - the AI-visibility one next to a strategy, say - by passing its run_id to the other tools. Use it first. Read-only, no cost.',
       inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
       execute: async (input: { run_id?: string }, _options?: any) => {
         const run = await resolveRun(input?.run_id);
         if (!run) return 'No pipeline run found.';
+        const all = await getRuns().catch(() => []);
         return {
           id: run.id,
+          title: run.title,
           project: run.project,
+          type: (all.find((r: any) => r.id === run.id) || {}).flow || '',
+          created: run.created,
           status: run.status,
           stages: run.stages.map((s: any) => ({ id: s.id, label: s.label, status: s.status })),
+          other_reports: all
+            .filter((r: any) => r.id !== run.id && !r.archived && !/^(test|diag)-/.test(r.id))
+            .map((r: any) => ({ run_id: r.id, title: r.title, type: r.flow || '', created: r.created, pinned: !!r.pinned, stages: r.stages })),
         };
       },
     },
@@ -500,6 +508,27 @@ export function buildTools() {
         if (!run) return 'No pipeline run found.';
         if (!input?.domain) return 'A domain is required.';
         return fetchCompetitorKeywords(run.id, input.domain, 'webmcp');
+      },
+    },
+    {
+      name: 'seo_research_keyword',
+      title: 'Research one keyword',
+      description:
+        'The phrases people search around one topic, with real monthly volume, difficulty, CPC and intent, measured by DataForSEO in the run\u2019s market. Use it to check whether a keyword could carry a theme of its own, or to pick two or three secondary terms for a post around a head term. Read-only: nothing on the run changes, unlike seo_propose_cluster. Costs one DataForSEO call (two when the phrase is narrow and related terms are fetched as well).',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ...RUN_ID_PROP,
+          topic: { type: 'string', description: 'The keyword or topic to research, e.g. "llm evaluation harness".' },
+          limit: { type: 'integer', description: 'How many phrases to return (5-50, default 30).' },
+        },
+        required: ['topic'],
+      },
+      annotations: READ_ONLY,
+      execute: async (input: { run_id?: string; topic: string; limit?: number }) => {
+        if (!input?.topic) return 'A topic is required.';
+        const run = await resolveRun(input?.run_id);
+        return researchKeyword(input.topic, run?.id, input.limit || 30);
       },
     },
     {

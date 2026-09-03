@@ -203,7 +203,9 @@ def _citability(
                 for d, n in (bucket["sources"] + wide_sources[topic]).most_common(15)
             ],
             "wide_answers_scanned": wide_seen[topic],
-            "questions": bucket["questions"][:10],
+            # Every question found. The report shows the first ten and folds
+            # the rest; an assistant planning content wants all of them.
+            "questions": bucket["questions"],
         }
     return out
 
@@ -699,6 +701,26 @@ def run_geo_demand(
             ],
             "questions_people_ask": [q.get("question") for q in paa][:10],
             "questions_ai_answers": [q.get("question") for q in ai_questions][:10],
+            # The full lists, with what is known about each: which engine
+            # answers it and who it cites. Measured, small, and the raw
+            # material for choosing what to write.
+            "all_questions_ai_answers": [
+                {
+                    "question": q.get("question", ""),
+                    "platform": q.get("platform", ""),
+                    "has_answer": bool(q.get("has_answer")),
+                    "cited": sorted({
+                        (src.get("domain") if isinstance(src, dict) else str(src)) or ""
+                        for src in (q.get("sources") or []) if (src.get("domain") if isinstance(src, dict) else src)
+                    })[:6],
+                }
+                for q in ai_questions if q.get("question")
+            ],
+            "all_questions_people_ask": [
+                {"question": q.get("question", ""), "answered_by": (q.get("domain") or "").removeprefix("www."),
+                 "cited": [c for c in (q.get("cited") or []) if c][:5]}
+                for q in paa if q.get("question")
+            ],
             # Ready-to-write sections, so the output is a content plan rather
             # than a data dump the reader has to interpret.
             "content_plan": _content_plan(row, paa, ai_questions),

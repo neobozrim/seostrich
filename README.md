@@ -6,10 +6,10 @@ An SEO strategy agent whose every decision is on the page as a WebMCP tool, so
 the visitor's *own* assistant can read the working, argue with it, and change
 the outcome. It builds keyword strategies and AI-visibility (GEO) briefs from
 measured DataForSEO data — never a number a model made up — and exposes
-**23 tools** on `document.modelContext` to read, audit, edit and reset them.
+**24 tools** on `document.modelContext` to read, audit, edit and reset them.
 
 - **Live app:** https://www.seostrich.works/ — credentials are on the submission form
-- **The tools, explained:** open the app and press **WebMCP** in the header (lists all 23 from the live registry, with twelve worked prompts)
+- **The tools, explained:** open the app and press **WebMCP** in the header (lists all 24 from the live registry, with twelve worked prompts)
 - **Registration code:** [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts)
 - **How the pipeline works:** [`seo-agent/docs/graphs.md`](seo-agent/docs/graphs.md) — the system, strategy and GEO graphs, with diagrams
 - **Backend API:** https://agent-memory-production-7d5d.up.railway.app
@@ -18,7 +18,7 @@ measured DataForSEO data — never a number a model made up — and exposes
 ## Try WebMCP in 60 seconds
 
 1. Open the live app in **ChatGPT's desktop app** (its in-app browser supports WebMCP out of the box), or in **Google Chrome 149+** with `chrome://flags/#enable-webmcp-testing` set to *Enabled* (relaunch). Sign in.
-   - In Chrome, the [Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd) extension lists every tool the page registers, lets you call any of them by hand with its JSON schema, and has a chat that shows which tool an agent picks for a prompt. Handy for checking all 23 without guessing.
+   - In Chrome, the [Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd) extension lists every tool the page registers, lets you call any of them by hand with its JSON schema, and has a chat that shows which tool an agent picks for a prompt. Handy for checking all 24 without guessing.
 2. Open the pinned **Product Pirates Club** report.
 3. Ask your assistant: *"Audit this SEO strategy for me — do the discard reasons actually hold up?"*
 4. Then: *"Drop the courses cluster, we don't sell courses, and bring back the one on building AI products."* Watch the report change.
@@ -41,7 +41,7 @@ the rest, and hand the report back exactly as produced when it is done. The
 human sees the same report change in front of them, with an "edited" badge and
 a full history of who changed what.
 
-## The 23 tools
+## The 24 tools
 
 Registered in [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts) with the standard pattern:
 
@@ -82,6 +82,7 @@ document.modelContext.registerTool({
 | `seo_propose_cluster` | Add a topic the pipeline never explored. Runs real keyword research on it |
 | `seo_rerun_cluster_research` | Refresh one cluster's data without re-running or re-billing the rest |
 | `seo_research_competitor` | Put a competitor on the map and pull the keywords it ranks for |
+| `seo_research_keyword` | The phrases around one keyword with real volume, difficulty and CPC - read-only, one lookup, nothing on the run changes |
 | `seo_regenerate_brief` | Rebuild the brief from the selection as it stands now |
 | `seo_submit_feedback` | Leave a note on the run for the human |
 
@@ -162,7 +163,7 @@ Complete diff: [`f9b3f10` → `main`](https://github.com/neobozrim/seostrich/com
 | [`15e853f`](https://github.com/neobozrim/seostrich/commit/15e853f), [`2845060`](https://github.com/neobozrim/seostrich/commit/2845060), [`c5ad588`](https://github.com/neobozrim/seostrich/commit/c5ad588), [`b4ffa20`](https://github.com/neobozrim/seostrich/commit/b4ffa20) | 2026-09-02 | The report is the product: home is your artefacts, one shared header, live artefact that fills in as the graph runs, editable heading, the orchestrator routes and never edits a result |
 | [`c22e2bd`](https://github.com/neobozrim/seostrich/commit/c22e2bd), [`d71b4fd`](https://github.com/neobozrim/seostrich/commit/d71b4fd), [`d89a158`](https://github.com/neobozrim/seostrich/commit/d89a158), [`9b33205`](https://github.com/neobozrim/seostrich/commit/9b33205) | 2026-09-02 | The brief as a stage (rebuilt on demand), archive, OpenAI models with thinking control, the user's own pages read for seeds, every URL in the brief used, the three graphs drawn |
 | [`f7c366c`](https://github.com/neobozrim/seostrich/commit/f7c366c), [`4d55ef2`](https://github.com/neobozrim/seostrich/commit/4d55ef2), [`e281438`](https://github.com/neobozrim/seostrich/commit/e281438) | 2026-09-02 | Language names accepted at the market gate, no internal error text ever reaches a chat bubble, repo cleaned for launch |
-| [`e281438` → `main`](https://github.com/neobozrim/seostrich/compare/e281438...main) | 2026-09-03 | Launch: every question in the brief is one Google shows (People also ask) with who answers it today; the validation gate parks incoherent themes on its own scores; product-led themes are never pillars; every named competitor checked, competitors addable after the run (`seo_research_competitor`, tool 23); GEO reports check the site's own citations; collapsible steps, three type sizes, scroll anchoring, launch animation; 23 tools verified through Chrome's `document.modelContext.executeTool` and an LLM agent loop over them |
+| [`e281438` → `main`](https://github.com/neobozrim/seostrich/compare/e281438...main) | 2026-09-03 | Launch: every question in the brief is one Google shows (People also ask) with who answers it today; the validation gate parks incoherent themes on its own scores; product-led themes are never pillars; every named competitor checked, competitors addable after the run (`seo_research_competitor`, tool 23); GEO reports check the site's own citations; collapsible steps, three type sizes, scroll anchoring, launch animation; 24 tools verified through Chrome's `document.modelContext.executeTool` and an LLM agent loop over them |
 
 ---
 
@@ -174,7 +175,7 @@ LICENSE                  — MIT
 seo-agent/
 ├── api/                 — FastAPI backend: chat streaming, runs, artifacts, governance, auth
 ├── src/                 — orchestrator, agents, flow graphs, 40+ tools
-├── ui/                  — Next.js app; ui/lib/webmcp.ts registers the 23 WebMCP tools
+├── ui/                  — Next.js app; ui/lib/webmcp.ts registers the 24 WebMCP tools
 ├── docs/graphs.md       — the system, strategy and GEO graphs, with diagrams
 ├── seed/runs/           — four bundled reports (Product Pirates + Braintrust, strategy + AI visibility), pinned on the home canvas
 ├── tests/               — standalone test scripts, one concern each

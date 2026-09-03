@@ -3,7 +3,7 @@
  "project": "productpirates.club · AI visibility · US-EN",
  "title": "Product Pirates Club",
  "prompt": "Run the AI visibility (GEO) report for Product Pirates Club (productpirates.club). Market: United States, English.\nProduct Pirates Club is an AI community of practice for product people (PMs and product engineers) who learn by building: shipping small AI tools, evaluating LLM outputs, wiring agents to real systems, building knowledge graphs.\nTopics to measure: ai product manager course, ai for product management, building ai agents, how to build ai agents, llm evaluation, eval systems, ai prototyping, ai prototyping for product managers, knowledge graph engineering, ai workflow automation.\nAlso check which AI answers already cite productpirates.club.\n",
- "created": "2026-09-02T22:08:31.121851+00:00",
+ "created": "2026-09-03T07:04:33.589054+00:00",
  "status": "done",
  "stages": [
   {
@@ -219,7 +219,7 @@
         "citations": 21,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
-        "authority_rank": 330
+        "authority_rank": 331
        },
        {
         "domain": "www.moveworks.com",
@@ -249,7 +249,7 @@
         "citations": 21,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
-        "authority_rank": 330
+        "authority_rank": 331
        },
        {
         "domain": "www.moveworks.com",
@@ -291,14 +291,14 @@
       "cited_sources": [
        {
         "domain": "www.youtube.com",
-        "citations": 90,
+        "citations": 91,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 1000
        },
        {
         "domain": "github.com",
-        "citations": 20,
+        "citations": 21,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 867
@@ -708,14 +708,21 @@
       "ai_questions_found": 41,
       "ai_search_volume": 8197,
       "answered_share": 1.0,
-      "open_share": 0.13,
+      "open_share": 0.07,
       "cited_sources": [
        {
         "domain": "www.youtube.com",
-        "citations": 212,
+        "citations": 215,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 1000
+       },
+       {
+        "domain": "apps.apple.com",
+        "citations": 5,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 978
        },
        {
         "domain": "www.linkedin.com",
@@ -726,21 +733,21 @@
        },
        {
         "domain": "github.com",
-        "citations": 8,
+        "citations": 9,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 867
        },
        {
         "domain": "en.wikipedia.org",
-        "citations": 19,
+        "citations": 18,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 816
        },
        {
         "domain": "www.reddit.com",
-        "citations": 43,
+        "citations": 40,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 813
@@ -768,7 +775,7 @@
        },
        {
         "domain": "cloud.google.com",
-        "citations": 19,
+        "citations": 21,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 680
@@ -782,7 +789,7 @@
        },
        {
         "domain": "www.salesforce.com",
-        "citations": 12,
+        "citations": 13,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 673
@@ -796,21 +803,14 @@
        },
        {
         "domain": "www.ibm.com",
-        "citations": 21,
+        "citations": 20,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 607
        },
        {
-        "domain": "azure.microsoft.com",
-        "citations": 7,
-        "found_by": "mentioned_in_adjacent_answers",
-        "confidence": "needs_review",
-        "authority_rank": 580
-       },
-       {
         "domain": "replit.com",
-        "citations": 9,
+        "citations": 8,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 529
@@ -831,18 +831,18 @@
       "ai_questions_found": 2,
       "ai_search_volume": 2440,
       "answered_share": 1.0,
-      "open_share": 0.27,
+      "open_share": 0.2,
       "cited_sources": [
        {
         "domain": "www.youtube.com",
-        "citations": 70,
+        "citations": 72,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 1000
        },
        {
         "domain": "www.linkedin.com",
-        "citations": 10,
+        "citations": 11,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 977
@@ -897,6 +897,13 @@
         "authority_rank": 673
        },
        {
+        "domain": "builtin.com",
+        "citations": 4,
+        "found_by": "mentioned_in_adjacent_answers",
+        "confidence": "needs_review",
+        "authority_rank": 610
+       },
+       {
         "domain": "www.ibm.com",
         "citations": 11,
         "found_by": "mentioned_in_adjacent_answers",
@@ -925,15 +932,8 @@
         "authority_rank": 516
        },
        {
-        "domain": "realestate.usnews.com",
-        "citations": 6,
-        "found_by": "mentioned_in_adjacent_answers",
-        "confidence": "needs_review",
-        "authority_rank": 408
-       },
-       {
         "domain": "www.safehome.org",
-        "citations": 8,
+        "citations": 4,
         "found_by": "mentioned_in_adjacent_answers",
         "confidence": "needs_review",
         "authority_rank": 399
@@ -1045,7 +1045,7 @@
         "citations": 21,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
-        "authority_rank": 330
+        "authority_rank": 331
        },
        {
         "domain": "www.moveworks.com",
@@ -1073,7 +1073,7 @@
       "niche_sites_already_cited": [
        {
         "domain": "www.gumloop.com",
-        "authority_rank": 330
+        "authority_rank": 331
        },
        {
         "domain": "www.moveworks.com",
@@ -1105,6 +1105,382 @@
        "ai powered workflow automation",
        "ai agents workflow automation",
        "best ai workflow automation tools"
+      ],
+      "all_questions_ai_answers": [
+       {
+        "question": "ai workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "n8n.io",
+         "stepper.io",
+         "www.domo.com",
+         "www.gumloop.com",
+         "www.vellum.ai"
+        ]
+       },
+       {
+        "question": "ai workflow automation tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "stepper.io",
+         "www.gumloop.com",
+         "www.reddit.com",
+         "www.teamwork.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai powered workflow automation platform",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "appian.com",
+         "blog.n8n.io",
+         "n8n.io",
+         "www.nice.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai automation workflow",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "n8n.io",
+         "stepper.io",
+         "www.gumloop.com",
+         "www.moveworks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai workflow automation platforms",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.gumloop.com",
+         "www.nice.com",
+         "www.vellum.ai",
+         "www.youtube.com",
+         "www.zite.com"
+        ]
+       },
+       {
+        "question": "ai workflow automation software",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "blog.n8n.io",
+         "www.gumloop.com",
+         "www.kore.ai",
+         "www.vellum.ai",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai agent workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "n8n.io",
+         "www.gooddata.ai",
+         "www.ibm.com",
+         "www.tines.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai powered workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "blog.box.com",
+         "blog.n8n.io",
+         "www.gumloop.com",
+         "www.moveworks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai agents workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "n8n.io",
+         "www.gooddata.ai",
+         "www.ibm.com",
+         "www.tines.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "best ai workflow automation tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "blog.n8n.io",
+         "gptforwork.com",
+         "www.gumloop.com",
+         "www.vellum.ai",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "what is ai workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "blog.box.com",
+         "www.gumloop.com",
+         "www.moveworks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "workflow automation ai",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "blog.box.com",
+         "blog.n8n.io",
+         "www.gumloop.com",
+         "www.moveworks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai automation workflows",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "appian.com",
+         "m.youtube.com",
+         "www.moveworks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai agent for workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "kissflow.com",
+         "n8n.io",
+         "www.gooddata.ai",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai workflow automation free",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "bit-flows.com",
+         "www.layer3labs.io",
+         "www.zite.com"
+        ]
+       },
+       {
+        "question": "agentic ai workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "quantiphi.com",
+         "www.ibm.com",
+         "www.nice.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai for workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.gumloop.com",
+         "www.outsystems.com",
+         "www.reddit.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai driven workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.gumloop.com",
+         "www.outsystems.com",
+         "www.reddit.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai tools for workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.gumloop.com",
+         "www.producthunt.com",
+         "www.teamwork.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai-driven workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.gumloop.com",
+         "www.outsystems.com",
+         "www.reddit.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai workflow automation services",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.freshworks.com",
+         "www.gumloop.com",
+         "www.nice.com",
+         "www.ninetwothree.co",
+         "zenphi.com"
+        ]
+       },
+       {
+        "question": "top ai workflow automation tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.freshworks.com",
+         "www.gumloop.com",
+         "www.producthunt.com",
+         "www.teamwork.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai-based workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "n8n.io",
+         "vellum.ai",
+         "www.gumloop.com",
+         "www.make.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai based workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "n8n.io",
+         "vellum.ai",
+         "www.gumloop.com",
+         "www.make.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai in workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "appian.com",
+         "n8n.io",
+         "www.blinkops.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "workflow ai automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.domo.com",
+         "www.gumloop.com",
+         "www.moveworks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "free ai workflow automation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "blog.n8n.io",
+         "n8n.io",
+         "www.activepieces.com",
+         "www.gumloop.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "workflow automation with ai",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "appian.com",
+         "blog.box.com",
+         "www.gumloop.com",
+         "www.moveworks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "workflow automation ai tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "emergingai.substack.com",
+         "www.gumloop.com",
+         "www.teamwork.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "which ai is best for workflow automation?",
+        "platform": "chat_gpt",
+        "has_answer": true,
+        "cited": []
+       },
+       {
+        "question": "what is the best ai workflow automation tool?",
+        "platform": "chat_gpt",
+        "has_answer": true,
+        "cited": [
+         "bika.ai",
+         "slack.com",
+         "techbullion.com",
+         "www.prompts.ai"
+        ]
+       }
+      ],
+      "all_questions_people_ask": [
+       {
+        "question": "How can I automate my workflows using AI?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What is the best AI workflow automation tool?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "Can ChatGPT create workflows?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What AI tool can I use to generate workflows?",
+        "answered_by": "",
+        "cited": []
+       }
       ],
       "content_plan": [
        {
@@ -1232,14 +1608,14 @@
       "currently_cited": [
        {
         "domain": "www.youtube.com",
-        "citations": 90,
+        "citations": 91,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 1000
        },
        {
         "domain": "github.com",
-        "citations": 20,
+        "citations": 21,
         "found_by": "asked_about_this_topic",
         "confidence": "high",
         "authority_rank": 867
@@ -1372,6 +1748,354 @@
        "survey on evaluation of llm based agents",
        "llm evaluation platform",
        "llm model evaluation"
+      ],
+      "all_questions_ai_answers": [
+       {
+        "question": "llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "developer.nvidia.com",
+         "magazine.sebastianraschka.com",
+         "www.databricks.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "llm evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "www.datadoghq.com",
+         "www.evidentlyai.com",
+         "www.langchain.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "llm evaluation metrics",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.braintrust.dev",
+         "www.databricks.com",
+         "www.evidentlyai.com",
+         "www.ibm.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "evaluation llm",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "launchdarkly.com",
+         "www.databricks.com",
+         "www.ibm.com",
+         "www.langchain.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "llm evaluation tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "medium.com",
+         "www.braintrust.dev",
+         "www.reddit.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "llm as a judge evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "huggingface.co",
+         "langfuse.com",
+         "mlflow.org",
+         "www.evidentlyai.com"
+        ]
+       },
+       {
+        "question": "llm-as a judge evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "huggingface.co",
+         "langfuse.com",
+         "www.evidentlyai.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "survey on evaluation of llm based agents",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "arxiv.org",
+         "huggingface.co",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "llm evaluation platform",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "mlflow.org",
+         "www.braintrust.dev",
+         "www.datadoghq.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "llm model evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "developer.nvidia.com",
+         "www.databricks.com",
+         "www.geeksforgeeks.org",
+         "www.ibm.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "llm agent evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "cameronrwolfe.substack.com",
+         "cloud.google.com",
+         "langfuse.com",
+         "mlflow.org",
+         "www.databricks.com"
+        ]
+       },
+       {
+        "question": "llm evaluation harness",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "docs.nvidia.com",
+         "github.com",
+         "www.eleuther.ai",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "llm as judge evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "langfuse.com",
+         "mlflow.org",
+         "www.evidentlyai.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "llm evaluation-harness",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "github.com",
+         "slyracoon23.github.io",
+         "www.eleuther.ai",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "llm evaluation benchmarks",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "galileo.ai",
+         "github.com",
+         "www.evidentlyai.com",
+         "www.turing.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ragas llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "docs.ragas.io",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "what is llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "www.braintrust.dev",
+         "www.evidentlyai.com",
+         "www.ibm.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "llm-as judge evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arxiv.org",
+         "aws.amazon.com",
+         "huggingface.co",
+         "langfuse.com",
+         "www.evidentlyai.com"
+        ]
+       },
+       {
+        "question": "best llm evaluation tools",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "medium.com",
+         "mlflow.org",
+         "rhesis.ai",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "braintrust llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.braintrust.dev",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "deepeval llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "deepeval.com",
+         "github.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "evaluation framework llm",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "atlan.com",
+         "deepeval.com",
+         "mlflow.org",
+         "www.langchain.com"
+        ]
+       },
+       {
+        "question": "evaluation of llm",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "mlflow.org",
+         "www.evidentlyai.com",
+         "www.ibm.com",
+         "www.reddit.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "evaluation of llms",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "mlflow.org",
+         "www.evidentlyai.com",
+         "www.ibm.com",
+         "www.reddit.com",
+         "www.superannotate.com"
+        ]
+       },
+       {
+        "question": "mlflow for llm evaluation",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "mlflow.org"
+        ]
+       },
+       {
+        "question": "open-source llm evaluation framework",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "atlan.com",
+         "deepeval.com",
+         "github.com",
+         "www.datadoghq.com"
+        ]
+       },
+       {
+        "question": "llm evaluation techniques",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "arxiv.org",
+         "launchdarkly.com",
+         "www.databricks.com",
+         "www.evidentlyai.com"
+        ]
+       },
+       {
+        "question": "evaluation metrics for llms",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "arize.com",
+         "www.comet.com",
+         "www.databricks.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "what is the best llm evaluation tool?",
+        "platform": "chat_gpt",
+        "has_answer": true,
+        "cited": []
+       }
+      ],
+      "all_questions_people_ask": [
+       {
+        "question": "How to evaluate LLM model performance?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What are the best LLM evaluation tools?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What are rubrics in LLM evaluation?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "How to evaluate LLM generated text?",
+        "answered_by": "",
+        "cited": []
+       }
       ],
       "content_plan": [
        {
@@ -1616,9 +2340,9 @@
       ],
       "questions_people_ask": [
        "How do I become an AI product manager?",
-       "Which AI course is best for product managers?",
        "What qualifications are required for AI product manager?",
-       "How much does an AI product manager make?"
+       "How much does an AI product manager make?",
+       "Can AI do a product manager job?"
       ],
       "questions_ai_answers": [
        "ai product manager course",
@@ -1629,17 +2353,116 @@
        "ai product manager course free",
        "best ai product manager course"
       ],
+      "all_questions_ai_answers": [
+       {
+        "question": "ai product manager course",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "productschool.com",
+         "www.coursera.org",
+         "www.pce.uw.edu",
+         "www.pragmaticinstitute.com",
+         "www.udacity.com"
+        ]
+       },
+       {
+        "question": "ai courses for product managers",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "maven.com",
+         "productside.com",
+         "www.pendo.io"
+        ]
+       },
+       {
+        "question": "ai for product managers course",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "cpoclub.com",
+         "maven.com",
+         "www.coursera.org",
+         "www.mygreatlearning.com",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "best ai courses for product managers",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "community.deeplearning.ai",
+         "cpoclub.com",
+         "online.stanford.edu",
+         "www.coursera.org",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "best ai course for product managers",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "community.deeplearning.ai",
+         "cpoclub.com",
+         "online.stanford.edu",
+         "www.coursera.org",
+         "www.reddit.com"
+        ]
+       },
+       {
+        "question": "ai product manager course free",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "hellopm.co",
+         "www.coursera.org",
+         "www.pendo.io",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "best ai product manager course",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "maven.com",
+         "productschool.com",
+         "www.coursera.org",
+         "www.pendo.io",
+         "www.youtube.com"
+        ]
+       }
+      ],
+      "all_questions_people_ask": [
+       {
+        "question": "How do I become an AI product manager?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What qualifications are required for AI product manager?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "How much does an AI product manager make?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "Can AI do a product manager job?",
+        "answered_by": "",
+        "cited": []
+       }
+      ],
       "content_plan": [
        {
         "heading": "How do I become an AI product manager?",
         "source": "people_also_ask",
         "answer_first_brief": "Open the section by answering \"How do I become an AI product manager?\" in one or two plain sentences, then add the depth underneath.",
-        "currently_answered_by": ""
-       },
-       {
-        "heading": "Which AI course is best for product managers?",
-        "source": "people_also_ask",
-        "answer_first_brief": "Open the section by answering \"Which AI course is best for product managers?\" in one or two plain sentences, then add the depth underneath.",
         "currently_answered_by": ""
        },
        {
@@ -1652,6 +2475,12 @@
         "heading": "How much does an AI product manager make?",
         "source": "people_also_ask",
         "answer_first_brief": "Open the section by answering \"How much does an AI product manager make?\" in one or two plain sentences, then add the depth underneath.",
+        "currently_answered_by": ""
+       },
+       {
+        "heading": "Can AI do a product manager job?",
+        "source": "people_also_ask",
+        "answer_first_brief": "Open the section by answering \"Can AI do a product manager job?\" in one or two plain sentences, then add the depth underneath.",
         "currently_answered_by": ""
        },
        {
@@ -1870,6 +2699,94 @@
        "pendo ai for product management exam answers",
        "ai for product management pendo"
       ],
+      "all_questions_ai_answers": [
+       {
+        "question": "ai tools for product management",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "monday.com",
+         "productschool.com",
+         "www.airtable.com",
+         "www.chatprd.ai",
+         "www.usemotion.com"
+        ]
+       },
+       {
+        "question": "ai agent for product management",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "medium.com",
+         "www.lennysnewsletter.com",
+         "www.mindstudio.ai",
+         "www.reddit.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "best ai tools for product management",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "aakashgupta.medium.com",
+         "www.builder.io",
+         "www.chatprd.ai",
+         "www.linkedin.com",
+         "www.youtube.com"
+        ]
+       },
+       {
+        "question": "ai for product management course",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "aiandproduct.com",
+         "logicmojo.com",
+         "maven.com",
+         "productschool.com"
+        ]
+       },
+       {
+        "question": "pendo ai for product management exam answers",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.credly.com",
+         "www.pendo.io"
+        ]
+       },
+       {
+        "question": "ai for product management pendo",
+        "platform": "google",
+        "has_answer": true,
+        "cited": [
+         "www.pendo.io"
+        ]
+       }
+      ],
+      "all_questions_people_ask": [
+       {
+        "question": "How can AI be used in product management?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "Which AI is best for product managers?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "Can AI do a product manager job?",
+        "answered_by": "",
+        "cited": []
+       },
+       {
+        "question": "What are top 3 skills for a product manager?",
+        "answered_by": "",
+        "cited": []
+       }
+      ],
       "content_plan": [
        {
         "heading": "How can AI be used in product management?",
@@ -1990,6 +2907,7 @@
     "method": "Search volume and AI presence are measured from DataForSEO; the ranking is arithmetic over those measurements and publishes its inputs. The expensive per-keyword search_mentions call ran only on the shortlist that the cheap volume check kept, and People-also-ask only on the final winners.",
     "reading_the_numbers": "ai_search_volume is a SUM across every question matched for the topic, and for Google AI Overviews DataForSEO derives it from Google search volume — so it sizes the question cluster and is NOT a separate AI demand channel. Do not compare it against search_volume for a single head term. answered_share are near-constant because AI Overview answers nearly everything; judge the opportunity on can_you_displace_them.",
     "platforms_measured": [
+     "chat_gpt",
      "google"
     ],
     "site_citations": {
@@ -2004,8 +2922,8 @@
    }
   }
  ],
- "ended": "2026-09-02T22:09:51.192825+00:00",
- "summary": "The brief prioritizes **AI workflow automation** and **LLM evaluation** over the larger **AI for product management** term. The first two each have 1,000 searches, but already cite attainable niche competitors: Gumloop and Moveworks for workflow automation; Braintrust, SuperAnnotate, DeepEval, and Evidently AI for evaluation. By contrast, the 3,600-search product-management topic is only provisionally winnable because its lowest-authority candidate, Edgewood, came from adjacent-answer matching and remains unverified.\n\nBuild dedicated answer-first pages rather than rewriting general site copy. Use every question in the brief as an exact heading, and make the first two sentences the direct answer—context, story, examples, and Product Pirates’ build-by-doing perspective come afterward. This gives engines a passage they can lift and cite.\n\nThe check measured Google AI answers. It found **zero answers currently citing productpirates.club**, establishing the baseline.",
+ "ended": "2026-09-03T07:06:00.562382+00:00",
+ "summary": "The brief prioritizes **AI workflow automation** and **LLM evaluation**, despite larger head-term demand for AI product management and agent-building terms. Each has 1,000 searches, but niche sources already win citations: Gumloop/Moveworks at authority 331/320 for workflow automation, and Braintrust/SuperAnnotate/DeepEval/Evidently at 333–288 for evaluation. That makes them demonstrably attainable.\n\nCreate dedicated answer pages, not rewritten site copy. Use every supplied question as an H2 and make the first two sentences the complete answer an engine can quote; context and stories come afterward. Product Pirates Club currently appears in **0 sampled AI answers**, so this is the baseline. Treat LinkedIn, Wikipedia, Oracle, Microsoft, Salesforce, Edgewood and other `needs_review` domains as unverified because they were matched from adjacent answer text rather than direct topic questions.",
  "pinned": true,
  "pin_note": "AI visibility (GEO) for the same business: what AI engines already answer on its topics, who they cite, which of that is displaceable, and where productpirates.club stands today.",
  "archived": false

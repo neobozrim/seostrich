@@ -1345,6 +1345,44 @@ function GeoDemandArtifact({ artifact }: { artifact: Record<string, any> }) {
                   </div>
                 )}
 
+                {/* Everything found, folded: the ten above are the lead; an
+                    assistant planning a calendar wants the whole list. */}
+                {(t.all_questions_ai_answers?.length > 0 || t.all_questions_people_ask?.length > 0) && (
+                  <details className="group">
+                    <summary className="cursor-pointer list-none text-sm text-primary-600 hover:text-primary-800">
+                      <span className="group-open:hidden">Show all {(t.all_questions_ai_answers?.length || 0) + (t.all_questions_people_ask?.length || 0)} questions found</span>
+                      <span className="hidden group-open:inline">Hide the full list</span>
+                    </summary>
+                    <div className="mt-2 space-y-3">
+                      {t.all_questions_ai_answers?.length > 0 && (
+                        <div>
+                          <div className="text-sm text-gray-400 mb-1">AI engines already answer these ({t.all_questions_ai_answers.length})</div>
+                          <ul className="space-y-1">
+                            {t.all_questions_ai_answers.map((q: any, i: number) => (
+                              <li key={i} className="text-sm text-gray-800">
+                                {q.question}
+                                <span className="text-gray-500">{q.platform ? ` · ${q.platform}` : ''}{q.cited?.length ? ` · cites ${q.cited.join(', ')}` : ''}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {t.all_questions_people_ask?.length > 0 && (
+                        <div>
+                          <div className="text-sm text-gray-400 mb-1">People also ask ({t.all_questions_people_ask.length})</div>
+                          <ul className="space-y-1">
+                            {t.all_questions_people_ask.map((q: any, i: number) => (
+                              <li key={i} className="text-sm text-gray-800">
+                                {q.question}<span className="text-gray-500">{q.answered_by ? ` · answered by ${q.answered_by}` : ''}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </details>
+                )}
+
                 {t.niche_sites_already_cited?.length > 0 && (
                   <div>
                     <div className="text-sm text-gray-400 mb-1">

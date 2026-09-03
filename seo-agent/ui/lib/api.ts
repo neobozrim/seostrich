@@ -295,6 +295,16 @@ export async function renameRun(runId: string, title: string): Promise<{ ok: boo
   return response.json();
 }
 
+export async function researchKeyword(topic: string, runId?: string, limit = 30): Promise<any> {
+  const response = await fetch(`${API_BASE}/api/research/keyword`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic, run_id: runId || null, limit }),
+  });
+  await ensureOk(response);
+  return response.json();
+}
+
 export async function checkSiteLanguage(url: string, languageCode: string): Promise<any> {
   const response = await fetch(`${API_BASE}/api/site/language`, {
     method: 'POST',
