@@ -105,10 +105,10 @@ export function buildTools() {
       title: 'SEO pipeline overview',
       description:
         'Start here. Returns the current run: its id, the business it is for, its status, and every stage it has produced (intake, seeds, keywords, clusters, pillars, ai_citability, mix). Use this first to see what exists before fetching any single part, and to get a run_id for the other tools. Read-only, no cost.',
-      inputSchema: { type: 'object', properties: {} },
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
-      execute: async (_input: any, _options?: any) => {
-        const run = await currentRun();
+      execute: async (input: { run_id?: string }, _options?: any) => {
+        const run = await resolveRun(input?.run_id);
         if (!run) return 'No pipeline run found.';
         return {
           id: run.id,
@@ -123,10 +123,10 @@ export function buildTools() {
       title: 'SEO keyword clusters (selected)',
       description:
         'List the SELECTED keyword clusters for the current run with their measured metrics and member keywords. For the discarded ones and the reasoning behind every decision, use seo_list_clusters_all instead. Read-only, no cost.',
-      inputSchema: { type: 'object', properties: {} },
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
-      execute: async () => {
-        const run = await currentRun();
+      execute: async (input: { run_id?: string }) => {
+        const run = await resolveRun(input?.run_id);
         const stage = run?.stages?.find((s: any) => s.id === 'clusters');
         if (!stage) return 'No clusters stage found.';
         return stage.artifact?.clusters || [];
@@ -137,10 +137,10 @@ export function buildTools() {
       title: 'SEO content pillars',
       description:
         'The finished output of a strategy run: the content pillars to actually write, each with a title, type (hub/guide/comparison), priority order, and the rationale naming the metric that justified it. Use this when you want the recommendation rather than the working. Empty until a run reaches the pillars stage. Read-only, no cost.',
-      inputSchema: { type: 'object', properties: {} },
+      inputSchema: { type: 'object', properties: { ...RUN_ID_PROP } },
       annotations: READ_ONLY,
-      execute: async () => {
-        const run = await currentRun();
+      execute: async (input: { run_id?: string }) => {
+        const run = await resolveRun(input?.run_id);
         const stage = run?.stages?.find((s: any) => s.id === 'pillars');
         if (!stage) return 'No pillars stage found.';
         return stage.artifact?.pillars || [];
@@ -320,7 +320,7 @@ export function buildTools() {
         try {
           return await getRunStage(run.id, 'ai_citability', options?.signal);
         } catch {
-          return 'No AI-citability stage yet — run ai_citability_brief in the pipeline first.';
+          return 'This run is a content strategy; AI visibility is a separate report. Start one with "Analyse AI visibility" (or ask for the GEO report) and read it with this tool.';
         }
       },
     },

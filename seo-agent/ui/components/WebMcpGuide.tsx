@@ -33,86 +33,65 @@ const BILLED = new Set([
   'seo_propose_cluster',
 ]);
 
-type Recipe = {
-  say: string;
-  does: string;
-  tools: string[];
-};
 
 /** Ordered by how much they show off what the tools make possible, not by how
  *  simple they are. The first four are the ones worth trying first. */
-const RECIPES: Recipe[] = [
+const RECIPES: Array<{ goal: string; say: string; does: string; tools: string[] }> = [
   {
-    say: 'Audit this SEO strategy for me. Do the discard reasons actually hold up?',
+    goal: 'Trust it before you build on it',
+    say: 'Audit this strategy. Do the discard reasons hold up, and is any pillar standing on one keyword?',
     does:
-      'Your assistant pulls every cluster — kept AND dropped — with the measured metrics behind each decision, and argues with the reasoning instead of taking it on trust. This is the thing a static report cannot do.',
-    tools: ['seo_list_clusters_all', 'seo_analyze_run'],
+      'The assistant reads every cluster with its measured metrics and the reasons on both sides of the cut, checks the run for gaps, and tells you where a pillar is thin (one keyword carrying the volume) or a parked cluster deserved better — with the numbers, not opinions.',
+    tools: ['seo_analyze_run', 'seo_list_clusters_all', 'seo_get_keywords', 'seo_check_if_edited'],
   },
   {
-    say: 'Drop the cluster about courses — we do not sell courses — and bring back the one on building AI products.',
+    goal: 'Make the strategy fit the business',
+    say: 'We do not sell courses and we will never lead with a product name. Drop the courses theme, bring back the one on evaluation, and rebuild the brief.',
     does:
-      'Changes the strategy in place, both ways, with your reason recorded. The dropped cluster is parked, not deleted, so nothing here is a one-way door.',
-    tools: ['seo_discard_cluster', 'seo_promote_cluster'],
+      'Selection is the person’s call. The assistant parks the cluster with your reason, promotes the parked one, and rebuilds the brief so the six pieces follow the new selection. Every change is logged with who and why; the report shows an "edited" badge and can be reset to as-produced.',
+    tools: ['seo_discard_cluster', 'seo_promote_cluster', 'seo_regenerate_brief', 'seo_get_governance_history'],
   },
   {
-    say: 'We are not going after prompt engineering. Re-shape the strategy around evaluation and knowledge graphs instead.',
+    goal: 'Chase a keyword that could become a head term',
+    say: '"evaluation harness" has volume and almost no difficulty. Could it carry a theme of its own? Research it and tell me what it pulls in.',
     does:
-      'A goal stated in one sentence, applied across the whole selection: your assistant drops what conflicts with it and researches the topics that are missing, pulling real volume and difficulty for the new ones.',
-    tools: ['seo_discard_cluster', 'seo_propose_cluster'],
+      'One scoped DataForSEO lookup on that topic: the phrases people search around it, with real volume, difficulty and CPC. The assistant reads the result against the existing clusters and says whether it stands on its own or belongs inside one. Nothing else in the run changes; the proposal is logged and reversible.',
+    tools: ['seo_propose_cluster', 'seo_get_keywords', 'seo_list_clusters_all'],
   },
   {
-    say: 'Which of these keywords could we realistically rank for this year?',
+    goal: 'Decide with little information',
+    say: 'The eval theme has only three keywords. Before we commit a writer, is there more demand around it, and who owns it today?',
     does:
-      'Gets the flat keyword table — volume, difficulty, CPC, intent, cluster — and lets your assistant apply its own threshold rather than ours. Filter, rank, cross-tabulate: it is your analysis, on our data.',
-    tools: ['seo_get_keywords'],
+      'The assistant refreshes that one cluster (one paid call, in place), re-reads its keywords, and checks the competitor map for who ranks where. You get a yes or no with the evidence: enough demand for a hub, or one good article and move on.',
+    tools: ['seo_rerun_cluster_research', 'seo_get_keywords', 'seo_get_stage_artifact'],
   },
   {
-    say: 'Is any cluster carried by a single keyword?',
+    goal: 'See who you are really up against',
+    say: 'Add mindtheproduct.com to the competitor map. What does it rank for that we have nothing on?',
     does:
-      'A concentration check no report thought to include. One 8,000-volume term next to nine dead ones is not a cluster, and the numbers to prove it are already there.',
-    tools: ['seo_get_keywords', 'seo_list_clusters_all'],
+      'A competitor the run did not check joins the map with the keywords it ranks for in your market. The assistant reads it against the universe and names the gaps: what they own that none of the selected themes cover.',
+    tools: ['seo_research_competitor', 'seo_get_stage_artifact', 'seo_get_keyword_clusters'],
   },
   {
-    say: 'What do people actually ask about these topics, and is AI already answering them?',
+    goal: 'Know what to write first, and for whom',
+    say: 'Which piece should we write first, what question does it answer, and who answers that question on Google today?',
     does:
-      'Returns AI search demand per topic, which sources ChatGPT and Google AI currently cite, how much of the answer space is still unclaimed, and the real People-also-ask questions — so you write against questions users ask, not ones we guessed.',
-    tools: ['seo_get_ai_citability'],
+      'The brief already holds the order: the pillar to build first with its reasons, six pieces each answering a question Google shows under People also ask, and the page that answers it today. The assistant reads it and turns it into a writer’s starting point.',
+    tools: ['seo_get_brief', 'seo_get_content_calendar', 'seo_get_content_pillars'],
   },
   {
-    say: 'Check whether competitor.com gets cited by AI answers, and what for.',
+    goal: 'Be the answer AI engines lift',
+    say: 'On our topics, what do people actually ask, who gets cited by AI answers, and is any of it winnable for a site nobody cites yet?',
     does:
-      'Far more concrete than a keyword list: the actual answers that quote them, and who is quoted alongside. Run it on your own domain too — a new site returns zero, which is the honest baseline.',
-    tools: ['seo_check_ai_citations'],
+      'From the AI-visibility report: the questions AI engines already answer, the sites they cite with their authority, what share of the answer space is open, and where your own site stands today. The assistant ranks the openings and says which are realistic.',
+    tools: ['seo_get_ai_citability', 'seo_check_ai_citations'],
   },
   {
-    say: 'What did someone already decide here before I change anything?',
+    goal: 'Hand it to someone else without losing the plot',
+    say: 'Has anyone changed this since it was produced? Put it back to as-produced and tell me what it looked like.',
     does:
-      'The full record of promotions, discards and proposals, in order, each with its reason and whether it came from the agent, an outside assistant, or a person. Stops one assistant quietly undoing another judgement call.',
-    tools: ['seo_get_governance_history'],
-  },
-  {
-    say: 'Is this run trustworthy, or is something missing?',
-    does:
-      'A deterministic health check — no model, no API calls: which stages are absent, whether it errored or was stopped, whether the selection was ever curated. Run it before you trust a report you did not watch being made.',
-    tools: ['seo_analyze_run'],
-  },
-  {
-    say: 'This cluster looks stale. Refresh just that one.',
-    does:
-      'Re-researches a single cluster and merges the new data in, without re-running — or re-billing — the other five.',
-    tools: ['seo_rerun_cluster_research'],
-  },
-  {
-    say: 'Turn the selected pillars into a brief for the writer.',
-    does:
-      'Pulls the pillars, the calendar and the questions people ask, and your assistant writes the brief in its own format — because the useful last step is always specific to you.',
-    tools: ['seo_get_content_pillars', 'seo_get_content_calendar', 'seo_get_ai_citability'],
-  },
-  {
-    say: 'I disagree with how this weighted commercial intent — note that for the team.',
-    does:
-      'Records a judgement on the run without changing it. For things an assistant should raise rather than decide.',
-    tools: ['seo_submit_feedback'],
+      'Reports are shared. The change history says who did what and why; a reset restores the pipeline’s own selection and keeps the history. Nothing is ever deleted.',
+    tools: ['seo_check_if_edited', 'seo_get_governance_history', 'seo_reset_run'],
   },
 ];
 
@@ -244,8 +223,9 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
 
         {tab === 'uses' && (<>
         <p className="mt-6 text-sm text-gray-500 mb-5">
-          Open an artefact first, then say any of these to your assistant. It picks
-          the tools itself — you never name them.
+          Each of these is a business question, not a tool. Open a report, say it to your
+          assistant, and it picks the tools itself — often several, in sequence — to get you
+          an answer with the numbers behind it.
         </p>
 
         <ol className="space-y-4">
@@ -259,6 +239,7 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
                   {i + 1}
                 </span>
                 <div className="min-w-0">
+                  <div className="text-sm font-semibold text-primary-700 mb-1">{r.goal}</div>
                   <p className="text-gray-800 font-medium leading-snug">
                     &ldquo;{r.say}&rdquo;
                   </p>
@@ -267,7 +248,7 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
                     {r.tools.map((t) => (
                       <code
                         key={t}
-                        className="text-[11px] bg-surface-200 text-gray-600 px-2 py-0.5 rounded font-mono"
+                        className="text-xs bg-surface-200 text-gray-600 px-2 py-0.5 rounded font-mono"
                       >
                         {t}
                       </code>
