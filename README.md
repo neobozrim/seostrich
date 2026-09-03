@@ -1,6 +1,9 @@
 # SEOstrich — **GET FOUND**
 
+![SEOstrich — GET FOUND](seo-agent/docs/seostrich-banner.png)
+
 **Submission to [The WebMCP Challenge](https://webmcp.devpost.com)** · Submission period Aug 25 – Sep 3, 2026, 1pm PT
+**Devpost entry:** https://devpost.com/software/seostrich-get-discovered
 
 An SEO strategy agent whose every decision is on the page as a WebMCP tool, so
 the visitor's *own* assistant can read the working, argue with it, and change
@@ -9,6 +12,7 @@ measured DataForSEO data — never a number a model made up — and exposes
 **24 tools** on `document.modelContext` to read, audit, edit and reset them.
 
 - **Live app:** https://www.seostrich.works/ — credentials are on the submission form
+- **Devpost:** https://devpost.com/software/seostrich-get-discovered
 - **The tools, explained:** open the app and press **WebMCP** in the header (lists all 24 from the live registry, with twelve worked prompts)
 - **Registration code:** [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts)
 - **How the pipeline works:** [`seo-agent/docs/graphs.md`](seo-agent/docs/graphs.md) — the system, strategy and GEO graphs, with diagrams
