@@ -150,6 +150,14 @@ def run_keyword_strategy(*args, **kwargs) -> dict:
         return _run_keyword_strategy(*args, **kwargs)
     except Exception as e:
         step = _current_step.get("name") or "an unknown step"
+        if type(e).__name__ == "StopRequested":
+            rec.log_activity("step", detail=f"stopped by you while {step}")
+            return {
+                "success": False,
+                "stopped_by_user": True,
+                "stopped_at": step,
+                "error": f"You stopped the run while {step}. The stages it finished are on the artefact; say what to change and it picks up from the same brief.",
+            }
         print(f"[strategy graph] stopped at {step}: {errors.detail(e)}")
         try:
             rec.log_activity("step", detail=f"stopped at {step}")
@@ -222,6 +230,7 @@ def park_incoherent(clusters: list[dict], validation: dict, max_select: int) -> 
 
 def _step(name: str) -> None:
     _current_step["name"] = name
+    rec.check_stop()  # a steer lands here, between nodes, not after the graph
 
 
 def _run_keyword_strategy(

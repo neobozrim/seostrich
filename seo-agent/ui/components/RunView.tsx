@@ -1825,6 +1825,16 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
   // Which steps are open. Unset means "open only while not done".
   const [openSteps, setOpenSteps] = useState<Record<string, boolean>>({});
 
+  // A different report was opened while this view is up (a new chat's run
+  // arriving over an older one): follow it.
+  useEffect(() => {
+    if (initialRunId && run && initialRunId !== run.id) {
+      setOpenSteps({});
+      loadRun(initialRunId).catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialRunId]);
+
   const handleSubmitFeedback = async (text: string) => {
     if (!run) return;
     setSubmitting(true);

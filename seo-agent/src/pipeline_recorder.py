@@ -184,7 +184,31 @@ def use_run(run_id: str):
         _active_run_id.reset(token)
 
 
+# "Steer" while a graph runs: the stop flag lives in the orchestrator, per
+# session; the graphs only know their run. The orchestrator registers a hook
+# per run, and every node boundary asks it. Before this a steer could only
+# take effect after the whole graph, which made the button a lie.
+_stop_hooks: dict[str, object] = {}
+
+
+def set_stop_hook(run_id: str, fn) -> None:
+    _stop_hooks[run_id] = fn
+
+
+def clear_stop_hook(run_id: str) -> None:
+    _stop_hooks.pop(run_id, None)
+
+
+def check_stop() -> None:
+    """Raise (whatever the hook raises) when the user asked this run to stop."""
+    rid = active_run_id()
+    fn = _stop_hooks.get(rid) if rid else None
+    if fn is not None:
+        fn()
+
+
 def end_run(run_id: str, status: str = "done") -> None:
+    clear_stop_hook(run_id)
     run = runs.get_run(run_id)
     if run:
         run["status"] = status

@@ -103,6 +103,14 @@ market and returns confident, well-formatted keywords from an unrelated industry
   strategy (`keyword_strategy`). Say "I'll build the content strategy" in one line and
   route it; do not ask what they would like. Ask only when a requirement is missing.
 - Missing something? Ask for it. One question at a time. Do not route a half-specified job.
+- A change with a nameable topic ("we should also post about recipes", "drop the courses
+  theme") is not missing anything: route it to `seo_agent` as the task ("propose a cluster on
+  signature coffee drink recipes; reason: ...") and report what it returned. You have no tool
+  that changes a report yourself. NEVER say something was added, dropped or changed unless a
+  tool result in this turn says so; if nothing ran, say nothing changed. Ask only when the
+  topic itself is unnamed.
+- If the person stopped a run and then added information, that IS the instruction: run the
+  same flow again with the brief plus what they added; the market is already confirmed.
 - Have everything? Call `seo_agent` with the flow id, a clear task, and a context string
   that includes the country and language the user gave you.
 - When the agent returns, present its results plainly and ask what they want to adjust.
@@ -495,7 +503,17 @@ def run_orchestrator_stream(
                             "type": "status",
                             "content": f"DataForSEO budget extended to {new_cap} calls",
                         }
-                pipeline_recorder.begin_run(run_id, initial_message or task)
+                # The request on the artefact is what the person said across
+                # this conversation, not only the message that finally routed
+                # it ("Actually, to clarify..." is not a brief).
+                user_turns = [
+                    str(m.get("content")).strip() for m in (messages or [])
+                    if isinstance(m, dict) and m.get("role") == "user" and isinstance(m.get("content"), str) and str(m.get("content")).strip()
+                ]
+                if initial_message and (not user_turns or user_turns[-1] != initial_message.strip()):
+                    user_turns.append(initial_message.strip())
+                pipeline_recorder.begin_run(run_id, "\n\n".join(user_turns[-6:]) or task)
+                pipeline_recorder.set_stop_hook(run_id, lambda: _check_stop(sid))
                 opened_runs.add(run_id)
                 before_stages = pipeline_recorder.stage_ids(run_id)
 
@@ -560,7 +578,14 @@ def run_orchestrator_stream(
                 if "error" in worker_outcome:
                     err = worker_outcome["error"]
                     if isinstance(err, StopRequested):
-                        pipeline_recorder.end_run(run_id, status="stopped")
+                        # "Stopped" is for a run cut off mid-graph. If the
+                        # graph had already finished (the brief or the AI
+                        # visibility stage is there), the stop only ended the
+                        # chat turn; the report is done.
+                        _rec = runs_store.get_run(run_id) or {}
+                        _stages = _rec.get("stages") or []
+                        _finished = bool(_stages) and _stages[-1].get("id") in ("brief", "ai_citability") and _stages[-1].get("status") == "done"
+                        pipeline_recorder.end_run(run_id, status="done" if _finished else "stopped")
                         session_data["agent_calls"].append({
                             "task": task,
                             "context": context,

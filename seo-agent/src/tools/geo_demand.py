@@ -591,6 +591,7 @@ def run_geo_demand(
 
     steps: list[str] = []
 
+    rec.check_stop()
     rec.log_activity("step", detail=f"node: search demand for {len(clean)} topics (1 call)")
     demand = _demand_rows(clean, loc, lang)
     rec.record_tool("keyword_overview", {"location_code": loc, "language_code": lang},
@@ -630,10 +631,12 @@ def run_geo_demand(
     citability = _citability(shortlist, loc, lang, wide=wide_competitive_scan)
     steps.append("citability")
 
+    rec.check_stop()
     rec.log_activity("step", detail="node: grade the sites AI engines cite")
     competition = _displaceability(citability)
     steps.append("displaceability")
 
+    rec.check_stop()
     rec.log_activity("step", detail="node: rank topics on measured demand")
     measured = [r for r in demand if r["keyword"] in set(shortlist)]
     ranked = _rank(measured, citability, competition)
@@ -774,6 +777,7 @@ def run_geo_demand(
     # The site's own standing today: which AI answers already cite it, and
     # who is quoted alongside. One paid call; the brief said whose site it is.
     if site_domain:
+        rec.check_stop()
         rec.log_activity("step", detail=f"node: which AI answers already cite {site_domain}")
         try:
             cites = ai_mentions_domain(site_domain, location_code=market["location_code"], language_code=market["language_code"])

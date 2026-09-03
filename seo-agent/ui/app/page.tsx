@@ -475,6 +475,10 @@ export default function Home() {
     if (isStreaming) handleStop();
     setAtHome(false);
     setLaunch(null);
+    // A new chat starts on the chat, not on top of the last report.
+    setShowRun(false);
+    setOpenRunId(null);
+    openedRunRef.current = null;
     setMessages([]);
     setSessionId(null);
     setChatOpen(true);
