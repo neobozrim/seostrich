@@ -72,14 +72,14 @@ STAGE_LABELS = {
     "competitors": "Competitor map",
     "onpage": "On-page recommendations",
     "ai_citability": "AI visibility",
-    "brief": "The brief",
+    "brief": "SEO strategy brief",
 }
 
 # Google Ads location codes used by DataForSEO -> human market labels
 MARKET_LABELS = {
     2840: "US", 2826: "UK", 2100: "BG", 2056: "BE", 2250: "FR",
-    2276: "DE", 2528: "NL", 2724: "IE", 2036: "AU", 2124: "CA",
-    2704: "ES", 2380: "IT", 2616: "PL", 2642: "RO", 2300: "GR",
+    2276: "DE", 2528: "NL", 2372: "IE", 2724: "ES", 2036: "AU", 2124: "CA",
+    2380: "IT", 2616: "PL", 2642: "RO", 2300: "GR",
 }
 
 KEYWORD_TOOLS = {"keyword_suggestions", "related_keywords", "keywords_for_site", "keyword_overview", "pull_universe"}
@@ -108,7 +108,15 @@ def _trim(value, max_items: int = 50):
 def market_label(location_code: int | None, language_code: str | None) -> str:
     if not location_code:
         return ""
-    country = MARKET_LABELS.get(location_code, f"LOC-{location_code}")
+    country = ""
+    try:
+        # DataForSEO's own ISO code for the location; the static map below is
+        # the fallback (it once said 2724 was Ireland; that is Spain).
+        from . import market as _market
+        country = next((k for k, m in _market.markets().items() if m.get("code") == int(location_code)), "")
+    except Exception:
+        country = ""
+    country = country or MARKET_LABELS.get(location_code, f"LOC-{location_code}")
     lang = (language_code or "").lower()
     return f"{country}-{lang.upper()}" if lang else country
 

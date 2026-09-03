@@ -295,6 +295,13 @@ export async function renameRun(runId: string, title: string): Promise<{ ok: boo
   return response.json();
 }
 
+export async function getMarkets(): Promise<Array<{ market: string; country: string; location_code: number; languages: string[] }>> {
+  const response = await fetch(`${API_BASE}/api/flows`, { headers: authHeaders() });
+  await ensureOk(response);
+  const data = await response.json();
+  return data.markets || [];
+}
+
 export async function researchKeyword(topic: string, runId?: string, limit = 30): Promise<any> {
   const response = await fetch(`${API_BASE}/api/research/keyword`, {
     method: 'POST',

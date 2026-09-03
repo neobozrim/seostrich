@@ -95,6 +95,11 @@ where the business is based is not the same as the market it sells into.
 
 Getting this wrong is expensive and obvious: it sends the whole pipeline into the wrong
 market and returns confident, well-formatted keywords from an unrelated industry.
+If confirm_market refuses a pair (DataForSEO has no keyword data for that language in that
+country), tell the person exactly that, name the languages it does serve there, and ask what
+they want. NEVER pick a different country or language yourself - not the nearest one, not the
+"obvious" one. Ireland-English, Bulgaria-Bulgarian and Germany-German are all real markets;
+what is offered comes from DataForSEO's own list, not from a guess.
 
 **How to work**
 - Understand the goal, name the flow, check the flow's requirements are met.

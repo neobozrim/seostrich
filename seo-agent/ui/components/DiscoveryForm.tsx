@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { X, Search, Sparkles } from 'lucide-react';
-import { getRuns, getRun, checkSiteLanguage } from '@/lib/api';
+import { getRuns, getRun, checkSiteLanguage, getMarkets } from '@/lib/api';
 
 /**
  * The two ways in, and the questionnaire behind each.
@@ -14,25 +14,44 @@ import { getRuns, getRun, checkSiteLanguage } from '@/lib/api';
  */
 export type DiscoveryKind = 'strategy' | 'geo';
 
-// Mirrors src/market.py MARKETS: the markets the gate accepts, with the
-// languages DataForSEO serves for each, most common first.
-const MARKETS: Array<{ key: string; country: string; languages: string[] }> = [
+// Fallback only: the live list comes from the API, which takes it from
+// DataForSEO's own catalog (codes and languages). These are DataForSEO's
+// values as of 2026-09-03.
+const MARKETS_FALLBACK: Array<{ key: string; country: string; languages: string[] }> = [
   { key: 'US', country: 'United States', languages: ['en', 'es'] },
   { key: 'UK', country: 'United Kingdom', languages: ['en'] },
   { key: 'IE', country: 'Ireland', languages: ['en'] },
   { key: 'CA', country: 'Canada', languages: ['en', 'fr'] },
   { key: 'AU', country: 'Australia', languages: ['en'] },
-  { key: 'DE', country: 'Germany', languages: ['de', 'en'] },
-  { key: 'FR', country: 'France', languages: ['fr', 'en'] },
-  { key: 'ES', country: 'Spain', languages: ['es', 'en'] },
-  { key: 'IT', country: 'Italy', languages: ['it', 'en'] },
-  { key: 'NL', country: 'Netherlands', languages: ['nl', 'en'] },
-  { key: 'BE', country: 'Belgium', languages: ['nl', 'fr', 'en'] },
-  { key: 'PL', country: 'Poland', languages: ['pl', 'en'] },
-  { key: 'RO', country: 'Romania', languages: ['ro', 'en'] },
+  { key: 'DE', country: 'Germany', languages: ['de'] },
+  { key: 'FR', country: 'France', languages: ['fr'] },
+  { key: 'ES', country: 'Spain', languages: ['es'] },
+  { key: 'IT', country: 'Italy', languages: ['it'] },
+  { key: 'NL', country: 'Netherlands', languages: ['nl'] },
+  { key: 'BE', country: 'Belgium', languages: ['fr', 'nl', 'de'] },
+  { key: 'PL', country: 'Poland', languages: ['pl'] },
+  { key: 'RO', country: 'Romania', languages: ['ro'] },
   { key: 'GR', country: 'Greece', languages: ['el', 'en'] },
-  { key: 'BG', country: 'Bulgaria', languages: ['bg', 'en'] },
+  { key: 'BG', country: 'Bulgaria', languages: ['bg'] },
 ];
+let MARKETS: Array<{ key: string; country: string; languages: string[] }> = MARKETS_FALLBACK;
+const marketListeners = new Set<() => void>();
+let marketsLoaded = false;
+async function loadMarkets() {
+  if (marketsLoaded) return;
+  marketsLoaded = true;
+  try {
+    const live = await getMarkets();
+    if (live.length > 5) {
+      MARKETS = live
+        .map((m) => ({ key: m.market, country: m.country, languages: m.languages }))
+        .sort((a, b) => a.country.localeCompare(b.country));
+      marketListeners.forEach((fn) => fn());
+    }
+  } catch {
+    /* the fallback list stays */
+  }
+}
 // A detected language → the market that speaks it, for the one-click switch.
 const LANG_TO_MARKET: Record<string, { country: string; language: string }> = {
   bg: { country: 'Bulgaria', language: 'bg' }, de: { country: 'Germany', language: 'de' }, fr: { country: 'France', language: 'fr' },
@@ -92,7 +111,12 @@ function LocaleWarning({ check, kind, onSwitch }: { check: any; kind: DiscoveryK
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: 'English', es: 'Spanish', fr: 'French', de: 'German', it: 'Italian', nl: 'Dutch',
-  pl: 'Polish', ro: 'Romanian', el: 'Greek', bg: 'Bulgarian',
+  pl: 'Polish', ro: 'Romanian', el: 'Greek', bg: 'Bulgarian', pt: 'Portuguese', sv: 'Swedish',
+  da: 'Danish', no: 'Norwegian', fi: 'Finnish', cs: 'Czech', hu: 'Hungarian', tr: 'Turkish',
+  ja: 'Japanese', zh: 'Chinese', ko: 'Korean', ru: 'Russian', uk: 'Ukrainian', ar: 'Arabic',
+  he: 'Hebrew', hi: 'Hindi', id: 'Indonesian', th: 'Thai', vi: 'Vietnamese', ms: 'Malay',
+  sk: 'Slovak', sl: 'Slovenian', hr: 'Croatian', sr: 'Serbian', lt: 'Lithuanian', lv: 'Latvian',
+  et: 'Estonian', zh_TW: 'Chinese (Traditional)', 'zh-TW': 'Chinese (Traditional)', tl: 'Filipino',
 };
 
 const GOALS = [
@@ -160,7 +184,9 @@ const EMPTY_GEO: GeoAnswers = { name: '', site: '', description: '', country: 'U
 
 /** The two cards. Home puts them above the reports; a new chat under GET FOUND. */
 export function DiscoveryCtas({ onPick, compact = false }: { onPick: (kind: DiscoveryKind) => void; compact?: boolean }) {
-  const card = 'flex-1 min-w-[15rem] text-left rounded-xl border border-surface-300 bg-white hover:border-action-400 hover:shadow-sm transition px-4 py-3';
+  // The two ways in are the light pink of the action colour, so they read as
+  // "start here" next to the report cards, which stay white.
+  const card = 'flex-1 min-w-[15rem] text-left rounded-xl border border-action-300 bg-action-300/35 hover:bg-action-300/60 hover:border-action-400 hover:shadow-sm transition px-4 py-3';
   return (
     <div className={`flex flex-col sm:flex-row gap-3 ${compact ? '' : 'w-full'}`}>
       <button onClick={() => onPick('strategy')} className={card}>
@@ -196,6 +222,13 @@ function Field({ label, hint, children, required }: { label: string; hint?: stri
 }
 
 function MarketFields({ country, language, onChange }: { country: string; language: string; onChange: (c: string, l: string) => void }) {
+  const [, bump] = useState(0);
+  useEffect(() => {
+    const fn = () => bump((n) => n + 1);
+    marketListeners.add(fn);
+    void loadMarkets();
+    return () => { marketListeners.delete(fn); };
+  }, []);
   const m = MARKETS.find((x) => x.country === country) || MARKETS[0];
   return (
     <div className="grid grid-cols-2 gap-3">

@@ -103,33 +103,50 @@ async def _get(endpoint: str) -> dict:
 _LOC_LANG_CACHE: dict[int, list[str]] | None = None
 
 
-async def _location_languages() -> dict[int, list[str]]:
-    """location_code -> supported language codes, most keyword coverage first.
+_LOC_CATALOG_CACHE: list[dict] | None = None
 
-    Cached per process; sourced from DFS's own locations_and_languages so we
-    never pay for a call with an unsupported location/language pair.
-    """
-    global _LOC_LANG_CACHE
-    if _LOC_LANG_CACHE is not None:
-        return _LOC_LANG_CACHE
+
+async def _locations_catalog() -> list[dict]:
+    """DataForSEO's own countries, with their codes, ISO codes and the
+    languages it serves keyword data for (most coverage first). Cached per
+    process. This is the ONLY source of location codes: a hand-typed table
+    once mapped Ireland to 2724, which is Spain."""
+    global _LOC_CATALOG_CACHE
+    if _LOC_CATALOG_CACHE is not None:
+        return _LOC_CATALOG_CACHE
     try:
         data = await _get("/v3/dataforseo_labs/locations_and_languages")
     except Exception as exc:
         print(f"  [dfs] locations_and_languages unavailable: {exc}")
-        return {}
+        return []
     tasks = data.get("tasks") or []
     result = (tasks[0] or {}).get("result") if tasks else None
     items = result if isinstance(result, list) else []
-    cache: dict[int, list[str]] = {}
+    out: list[dict] = []
     for item in items:
-        langs = sorted(
-            item.get("available_languages") or [],
-            key=lambda l: l.get("keywords", 0),
-            reverse=True,
-        )
+        if item.get("location_type") != "Country":
+            continue
+        langs = sorted(item.get("available_languages") or [], key=lambda l: l.get("keywords", 0), reverse=True)
         codes = [l.get("language_code") for l in langs if l.get("language_code")]
-        if codes:
-            cache[item.get("location_code")] = codes
+        if not codes or not item.get("location_code"):
+            continue
+        out.append({
+            "location_code": int(item["location_code"]),
+            "country": item.get("location_name", ""),
+            "iso": (item.get("country_iso_code") or "").upper(),
+            "languages": codes,
+        })
+    if out:
+        _LOC_CATALOG_CACHE = out
+    return out
+
+
+async def _location_languages() -> dict[int, list[str]]:
+    """location_code -> supported language codes, most keyword coverage first."""
+    global _LOC_LANG_CACHE
+    if _LOC_LANG_CACHE is not None:
+        return _LOC_LANG_CACHE
+    cache = {c["location_code"]: c["languages"] for c in await _locations_catalog()}
     if cache:
         _LOC_LANG_CACHE = cache
     return cache

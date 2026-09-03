@@ -18,24 +18,49 @@ import threading
 # `languages` lists the plausible search languages for that market, most
 # common first — the actual set is validated against DFS before we accept it.
 MARKETS: dict[str, dict] = {
+    # Fallback only, for when DataForSEO's catalog cannot be fetched. Codes
+    # and languages are DataForSEO's own (checked 2026-09-03): Ireland is
+    # 2372 (2724 is Spain), and Labs serves one language for most of Europe.
     "US": {"code": 2840, "country": "United States", "languages": ["en", "es"]},
     "UK": {"code": 2826, "country": "United Kingdom", "languages": ["en"]},
-    "IE": {"code": 2724, "country": "Ireland", "languages": ["en"]},
+    "IE": {"code": 2372, "country": "Ireland", "languages": ["en"]},
     "CA": {"code": 2124, "country": "Canada", "languages": ["en", "fr"]},
     "AU": {"code": 2036, "country": "Australia", "languages": ["en"]},
-    "DE": {"code": 2276, "country": "Germany", "languages": ["de", "en"]},
-    "FR": {"code": 2250, "country": "France", "languages": ["fr", "en"]},
-    "ES": {"code": 2704, "country": "Spain", "languages": ["es", "en"]},
-    "IT": {"code": 2380, "country": "Italy", "languages": ["it", "en"]},
-    "NL": {"code": 2528, "country": "Netherlands", "languages": ["nl", "en"]},
-    "BE": {"code": 2056, "country": "Belgium", "languages": ["nl", "fr", "en"]},
-    "PL": {"code": 2616, "country": "Poland", "languages": ["pl", "en"]},
-    "RO": {"code": 2642, "country": "Romania", "languages": ["ro", "en"]},
+    "DE": {"code": 2276, "country": "Germany", "languages": ["de"]},
+    "FR": {"code": 2250, "country": "France", "languages": ["fr"]},
+    "ES": {"code": 2724, "country": "Spain", "languages": ["es"]},
+    "IT": {"code": 2380, "country": "Italy", "languages": ["it"]},
+    "NL": {"code": 2528, "country": "Netherlands", "languages": ["nl"]},
+    "BE": {"code": 2056, "country": "Belgium", "languages": ["fr", "nl", "de"]},
+    "PL": {"code": 2616, "country": "Poland", "languages": ["pl"]},
+    "RO": {"code": 2642, "country": "Romania", "languages": ["ro"]},
     "GR": {"code": 2300, "country": "Greece", "languages": ["el", "en"]},
-    "BG": {"code": 2100, "country": "Bulgaria", "languages": ["bg", "en"]},
+    "BG": {"code": 2100, "country": "Bulgaria", "languages": ["bg"]},
 }
 
 _BY_CODE = {m["code"]: (key, m) for key, m in MARKETS.items()}
+
+# The United Kingdom's ISO code is GB; people (and the old table) say UK.
+_ISO_ALIASES = {"GB": "UK"}
+
+
+def markets() -> dict[str, dict]:
+    """Every country DataForSEO serves, keyed by ISO code, with its location
+    code and the languages it has keyword data for. Falls back to the
+    static table above when DataForSEO cannot be reached."""
+    try:
+        from .tools.dataforseo import _locations_catalog, _run
+
+        live = _run(_locations_catalog())
+    except Exception:
+        live = []
+    if not live:
+        return MARKETS
+    out: dict[str, dict] = {}
+    for c in live:
+        iso = _ISO_ALIASES.get(c["iso"], c["iso"]) or c["country"].upper()[:3]
+        out[iso] = {"code": c["location_code"], "country": c["country"], "languages": list(c["languages"])}
+    return out
 
 # Confirmed markets, keyed by run id. Set only via confirm_market().
 _confirmed: dict[str, dict] = {}
@@ -51,7 +76,7 @@ def catalog() -> list[dict]:
     return [
         {"market": key, "country": m["country"], "location_code": m["code"],
          "languages": m["languages"]}
-        for key, m in MARKETS.items()
+        for key, m in markets().items()
     ]
 
 
@@ -60,14 +85,19 @@ def _lookup(country: str) -> tuple[str, dict] | None:
     raw = str(country or "").strip()
     if not raw:
         return None
+    table = markets()
     if raw.isdigit():
-        return _BY_CODE.get(int(raw))
-    key = raw.upper()
-    if key in MARKETS:
-        return key, MARKETS[key]
+        return next(((k, m) for k, m in table.items() if m["code"] == int(raw)), None)
+    key = _ISO_ALIASES.get(raw.upper(), raw.upper())
+    if key in table:
+        return key, table[key]
     lowered = raw.lower()
-    for k, m in MARKETS.items():
+    for k, m in table.items():
         if m["country"].lower() == lowered:
+            return k, m
+    # Common spellings people use.
+    for k, m in table.items():
+        if lowered in (m["country"].lower().replace("the ", ""), m["country"].lower().split(" (")[0]):
             return k, m
     return None
 
@@ -140,7 +170,7 @@ def resolve(country: str, language: str) -> dict:
             "suggested_languages": market["languages"],
         }
 
-    supported = _supported_languages(code)
+    supported = _supported_languages(code) or list(market.get("languages") or [])
     if supported and lang not in supported:
         return {
             "ok": False,
@@ -225,7 +255,7 @@ def require_market(
         "LANGUAGE to target — never infer them from the domain, the TLD, or the "
         "language of the conversation — then call confirm_market(country, "
         "language) before any keyword research. "
-        f"Offerable markets: {', '.join(sorted(MARKETS))}."
+        f"Offerable markets: {', '.join(sorted(markets()))}."
     )
 
 

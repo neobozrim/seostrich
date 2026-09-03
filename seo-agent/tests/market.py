@@ -26,6 +26,15 @@ r = run_keyword_strategy("Spoken-word poetry", location_code=2100, language_code
 check("guessed BG still refused", r.get("success") is False and r.get("needs") == "confirm_market")
 
 print("3. bad inputs are rejected with usable choices")
+print("0. codes are DataForSEO's, never a hand-typed table's")
+r_ie = market.resolve("Ireland", "English")
+check("Ireland is 2372 (2724 is Spain) and serves English", r_ie.get("ok") is True and r_ie["location_code"] == 2372 and r_ie["language_code"] == "en", r_ie)
+r_es = market.resolve("Spain", "Spanish")
+check("Spain is 2724", r_es.get("ok") is True and r_es["location_code"] == 2724, r_es)
+r_gb = market.resolve("GB", "en")
+check("GB is the United Kingdom", r_gb.get("ok") is True and r_gb["location_code"] == 2826, r_gb)
+check("the catalog is DataForSEO's list, not fifteen countries", len(market.catalog()) >= 15, len(market.catalog()))
+
 check("unknown country", market.resolve("Wakanda", "en").get("ok") is False)
 check("offers catalog", len(market.resolve("Wakanda", "en").get("available_markets", [])) > 5)
 r = market.resolve("BG", "")
