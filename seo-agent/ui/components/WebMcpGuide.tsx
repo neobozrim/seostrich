@@ -172,6 +172,12 @@ export function WebMcpGuide({ onClose }: { onClose: () => void }) {
           export, no copy-paste: {tools.length} tools, registered on this page, working on the
           artefact you are looking at.
         </p>
+        <p className="mt-3 text-gray-700 leading-relaxed">
+          Two ways in, two graphs: <strong>Create SEO strategy</strong> and <strong>Analyse AI
+          visibility</strong>, each behind a short questionnaire that composes the brief. The
+          orchestrator only routes; the graphs do the work; the tools below read, audit, edit and
+          reset what they produced.
+        </p>
 
         {/* ---- is it live here? ---- */}
         {status === 'registered' && (
