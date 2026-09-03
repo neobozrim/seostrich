@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { X, Search, Sparkles } from 'lucide-react';
-import { getRuns, getRun } from '@/lib/api';
+import { getRuns, getRun, checkSiteLanguage } from '@/lib/api';
 
 /**
  * The two ways in, and the questionnaire behind each.
@@ -33,6 +33,63 @@ const MARKETS: Array<{ key: string; country: string; languages: string[] }> = [
   { key: 'GR', country: 'Greece', languages: ['el', 'en'] },
   { key: 'BG', country: 'Bulgaria', languages: ['bg', 'en'] },
 ];
+// A detected language → the market that speaks it, for the one-click switch.
+const LANG_TO_MARKET: Record<string, { country: string; language: string }> = {
+  bg: { country: 'Bulgaria', language: 'bg' }, de: { country: 'Germany', language: 'de' }, fr: { country: 'France', language: 'fr' },
+  es: { country: 'Spain', language: 'es' }, it: { country: 'Italy', language: 'it' }, nl: { country: 'Netherlands', language: 'nl' },
+  pl: { country: 'Poland', language: 'pl' }, ro: { country: 'Romania', language: 'ro' }, el: { country: 'Greece', language: 'el' },
+};
+const SCRIPT_LANG_HINT: Record<string, string> = { cyrillic: 'bg', greek: 'el' };
+
+function useSiteLanguage(site: string, language: string) {
+  const [check, setCheck] = useState<any>(null);
+  useEffect(() => {
+    const url = site.trim();
+    if (!url || !/\./.test(url)) { setCheck(null); return; }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      try {
+        const res = await checkSiteLanguage(url, language);
+        if (!cancelled) setCheck(res?.ok ? res : null);
+      } catch {
+        if (!cancelled) setCheck(null);
+      }
+    }, 700);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [site, language]);
+  return check;
+}
+
+function LocaleWarning({ check, kind, onSwitch }: { check: any; kind: DiscoveryKind; onSwitch: (country: string, language: string) => void }) {
+  if (!check?.mismatch) return null;
+  const detected = check.lang || SCRIPT_LANG_HINT[check.script] || '';
+  const detectedName = detected ? (LANGUAGE_NAMES[detected] || detected) : (check.script ? `${check.script} script` : 'another language');
+  const target = detected ? LANG_TO_MARKET[detected] : undefined;
+  const marketName = LANGUAGE_NAMES[check.market_language] || check.market_language;
+  return (
+    <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-900 leading-relaxed">
+      <div className="font-semibold mb-1">{check.domain} reads as {detectedName}; the market you chose searches in {marketName}.</div>
+      {kind === 'strategy' ? (
+        <div>
+          That is fine for exploring. The keywords, themes and the strategy will be built on {marketName} searches only: your pages are read
+          for seeds, but only {marketName} phrases are used, and competitor rankings in another language stay on the map without entering the
+          themes. You can change the market here, or edit the result afterwards in chat or over WebMCP.
+        </div>
+      ) : (
+        <div>
+          That is fine for exploring. The report measures what AI engines answer in {marketName}; the citation check for {check.domain} runs in
+          that market too. Change the market here if that is not what you meant.
+        </div>
+      )}
+      {target && (
+        <button type="button" onClick={() => onSwitch(target.country, target.language)} className="mt-2 px-3 py-1 rounded-full bg-white border border-amber-300 text-amber-900 hover:bg-amber-100 text-sm font-semibold">
+          Switch to {target.country} · {LANGUAGE_NAMES[target.language]}
+        </button>
+      )}
+    </div>
+  );
+}
+
 const LANGUAGE_NAMES: Record<string, string> = {
   en: 'English', es: 'Spanish', fr: 'French', de: 'German', it: 'Italian', nl: 'Dutch',
   pl: 'Polish', ro: 'Romanian', el: 'Greek', bg: 'Bulgarian',
@@ -167,6 +224,8 @@ export function DiscoveryForm({ kind, onClose, onSubmit }: { kind: DiscoveryKind
   const [st, setSt] = useState<StrategyAnswers>(EMPTY_STRATEGY);
   const [geo, setGeo] = useState<GeoAnswers>(EMPTY_GEO);
   const [prefillNote, setPrefillNote] = useState<string>('');
+  const stCheck = useSiteLanguage(kind === 'strategy' ? st.site : '', st.language);
+  const geoCheck = useSiteLanguage(kind === 'geo' ? geo.site : '', geo.language);
 
   // GEO: the strategy on the canvas already chose the themes; start from them.
   useEffect(() => {
@@ -255,6 +314,7 @@ export function DiscoveryForm({ kind, onClose, onSubmit }: { kind: DiscoveryKind
                 <textarea value={st.competitors} onChange={(e) => setSt({ ...st, competitors: e.target.value })} rows={3} className={FIELD} placeholder={'https://lennysnewsletter.com\nproductschool.com'} />
               </Field>
               <MarketFields country={st.country} language={st.language} onChange={(c, l) => setSt({ ...st, country: c, language: l })} />
+              <LocaleWarning check={stCheck} kind="strategy" onSwitch={(c, l) => setSt({ ...st, country: c, language: l })} />
               <Field label="Not going after" hint="Optional. Topics the strategy should stay away from.">
                 <input value={st.exclude} onChange={(e) => setSt({ ...st, exclude: e.target.value })} className={FIELD} placeholder='"what is an LLM" explainers, prompt-engineering tips' />
               </Field>
@@ -271,6 +331,7 @@ export function DiscoveryForm({ kind, onClose, onSubmit }: { kind: DiscoveryKind
                 <textarea value={geo.description} onChange={(e) => setGeo({ ...geo, description: e.target.value })} rows={2} className={FIELD} />
               </Field>
               <MarketFields country={geo.country} language={geo.language} onChange={(c, l) => setGeo({ ...geo, country: c, language: l })} />
+              <LocaleWarning check={geoCheck} kind="geo" onSwitch={(c, l) => setGeo({ ...geo, country: c, language: l })} />
               <Field label="The topics or questions you want to be the answer for" required hint={prefillNote || 'Three to ten, one per line.'}>
                 <textarea value={geo.topics} onChange={(e) => setGeo({ ...geo, topics: e.target.value })} rows={6} className={FIELD} placeholder={'llm evaluation\nllm observability\nllm as a judge'} />
               </Field>

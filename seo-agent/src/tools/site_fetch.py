@@ -207,8 +207,52 @@ def fetch_page(url: str) -> dict:
         if sum(len(x) for x in paras) > 1500:
             break
     text = "\n".join(paras)[:MAX_TEXT]
-    return {"url": str(r.url) if 'r' in locals() else u, "ok": True, "title": title, "description": desc,
-            "headings": headings, "link_texts": links, "text": text}
+    html_lang = ""
+    try:
+        html_lang = str((soup.html.get("lang") if soup.html else "") or "").strip().lower()[:5]
+    except Exception:
+        html_lang = ""
+    page = {"url": str(r.url) if 'r' in locals() else u, "ok": True, "title": title, "description": desc,
+            "headings": headings, "link_texts": links, "text": text, "html_lang": html_lang}
+    page.update(page_language(page))
+    return page
+
+
+_SCRIPTS = (
+    ("cyrillic", re.compile(r"[\u0400-\u04FF]")),
+    ("greek", re.compile(r"[\u0370-\u03FF]")),
+    ("hebrew", re.compile(r"[\u0590-\u05FF]")),
+    ("arabic", re.compile(r"[\u0600-\u06FF]")),
+    ("cjk", re.compile(r"[\u3040-\u30FF\u4E00-\u9FFF\uAC00-\uD7AF]")),
+    ("latin", re.compile(r"[A-Za-z\u00C0-\u024F]")),
+)
+_CYRILLIC_LANGS = {"bg", "ru", "uk", "sr", "mk", "be", "kk"}
+
+
+def page_language(page: dict) -> dict:
+    """The language a page reads in: the html lang attribute when the page
+    declares one, else the script its words are written in. Cheap, local,
+    and enough to say "this site is not in the market's language"."""
+    declared = str(page.get("html_lang") or "").split("-")[0].lower()
+    sample = " ".join([str(page.get("title") or ""), " ".join(page.get("headings") or []), str(page.get("text") or "")])[:4000]
+    counts = {name: len(rx.findall(sample)) for name, rx in _SCRIPTS}
+    total = sum(counts.values()) or 1
+    script, n = max(counts.items(), key=lambda kv: kv[1]) if sample.strip() else ("", 0)
+    return {"lang": declared or "", "script": script if n else "", "script_share": round(n / total, 2)}
+
+
+def language_mismatch(page: dict, language_code: str) -> bool:
+    """True when a page is plainly not in the market's language."""
+    lang = (language_code or "en").lower()[:2]
+    declared = (page.get("lang") or "").lower()[:2]
+    if declared and declared != lang:
+        return True
+    script = page.get("script") or ""
+    if not script or (page.get("script_share") or 0) < 0.6:
+        return False
+    if lang in _CYRILLIC_LANGS:
+        return script not in ("cyrillic", "latin")
+    return script != "latin"
 
 
 def page_summary_for_prompt(page: dict, label: str) -> str:

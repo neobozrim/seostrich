@@ -1869,6 +1869,28 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
               </div>
             </details>
           )}
+          {(() => {
+            const comp = run.stages.find((s) => s.id === 'competitors')?.artifact || {};
+            const seedsDropped = comp.seeds_dropped_other_script || 0;
+            const rowsDropped = comp.script_dropped || 0;
+            const perOther = Object.values(comp.per_domain || {}).reduce((n: number, v: any) => n + (v?.other_script || 0), 0);
+            const market = run.stages.find((s) => s.id === 'intake')?.artifact?.market || '';
+            if (!seedsDropped && !rowsDropped && !perOther) return null;
+            return (
+              <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-900 leading-relaxed">
+                <div className="font-semibold mb-1">Some of what was read is in another language than this market{market ? ` (${market})` : ''}.</div>
+                <div>
+                  {[
+                    seedsDropped ? `${seedsDropped} seed phrase${seedsDropped === 1 ? '' : 's'} from your pages` : '',
+                    perOther ? `${perOther} competitor ranking${perOther === 1 ? '' : 's'}` : '',
+                  ].filter(Boolean).join(' and ')}
+                  {(seedsDropped || perOther) ? ` ${seedsDropped + perOther === 1 ? 'was' : 'were'} left out of the themes; the strategy is built on the market language only. ` : ''}
+                  {perOther ? 'Those rankings stay on the competitor map as evidence. ' : ''}
+                  Change any of it in chat or over WebMCP: discard, promote, propose, add a competitor, rebuild the brief.
+                </div>
+              </div>
+            );
+          })()}
           {briefOf(run) && <div id="stage-brief"><BriefCard brief={briefOf(run)} onRegenerate={regenerate} regenerating={regenerating} /></div>}
           {run.summary && !live && !isStreaming && (run.status === 'error' || /failed before returning|pipeline failed|Could not parse|did not finish|stopped while/i.test(run.summary)) ? (
             <div className="mt-5 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4">

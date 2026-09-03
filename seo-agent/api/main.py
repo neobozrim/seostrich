@@ -400,6 +400,35 @@ async def rename_run(run_id: str, body: RenameIn, _auth: None = Depends(require_
     return {"ok": True, "title": title}
 
 
+class SiteLanguageIn(BaseModel):
+    url: str
+    language_code: str = "en"
+
+
+@app.post("/api/site/language")
+async def site_language(body: SiteLanguageIn, _auth: None = Depends(require_auth)):
+    """What language a site reads in, against the market language chosen.
+    One guarded page fetch, no paid call. The form warns on a mismatch; the
+    run still goes ahead if the person wants it to."""
+    from src.tools import site_fetch
+
+    url = site_fetch.safe_url((body.url or "").strip())
+    if not url:
+        return {"ok": False, "error": "not a public web address"}
+    page = await asyncio.to_thread(site_fetch.fetch_page, url)
+    if not page.get("ok"):
+        return {"ok": False, "error": page.get("error", "could not read the page")}
+    return {
+        "ok": True,
+        "domain": site_fetch.domain_of(url),
+        "lang": page.get("lang") or "",
+        "script": page.get("script") or "",
+        "script_share": page.get("script_share"),
+        "market_language": (body.language_code or "en").lower()[:2],
+        "mismatch": site_fetch.language_mismatch(page, body.language_code),
+    }
+
+
 class CompetitorFetchIn(BaseModel):
     domain: str
     by: str | None = None
