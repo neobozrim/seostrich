@@ -12,6 +12,7 @@ import { ProfileMenu } from '@/components/ProfileMenu';
 import { WebMcpGuide } from '@/components/WebMcpGuide';
 import { LoginForm } from '@/components/LoginForm';
 import { LaunchState } from '@/components/LaunchState';
+import { DiscoveryForm, DiscoveryCtas, DiscoveryKind } from '@/components/DiscoveryForm';
 import { sendMessage, getMemory, checkAuth, clearToken, getUsername, stopSession, getApiHealth, getApiBase, EXPECTED_API_VERSION, AuthError } from '@/lib/api';
 import { registerWebMcpTools } from '@/lib/webmcp';
 
@@ -58,6 +59,8 @@ export default function Home() {
   // The logo goes home even mid-chat; the chat is kept and comes back on
   // the next send or "New chat".
   const [atHome, setAtHome] = useState(false);
+  // Which discovery questionnaire is open, if any.
+  const [discovery, setDiscovery] = useState<DiscoveryKind | null>(null);
   // Which run this chat turn already opened, so a second stage event does
   // not re-open it after the person closed it to read the conversation.
   const openedRunRef = useRef<string | null>(null);
@@ -460,6 +463,7 @@ export default function Home() {
 
   // Home = the canvas. The chat is kept, so "home" never destroys work.
   const goHome = () => {
+    setDiscovery(null);
     setAtHome(true);
     setLaunch(null);
     setShowRun(false);
@@ -578,11 +582,16 @@ export default function Home() {
                 setChatOpen(true);
                 setTimeout(() => textareaRef.current?.focus(), 0);
               }}
+              onDiscover={setDiscovery}
             />
           ) : messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full py-8">
+            <div className="flex flex-col items-center justify-center h-full py-8 px-4">
               <img src="/brand/ostrich-run.png" alt="" aria-hidden className="w-36 sm:w-44 h-auto mb-4" />
               <p className="font-display text-3xl sm:text-4xl tracking-[0.18em] text-primary-700">GET FOUND</p>
+              <div className="mt-8 w-full max-w-2xl">
+                <DiscoveryCtas onPick={setDiscovery} />
+              </div>
+              <p className="mt-4 text-sm text-gray-500">or just tell it what you do and where, below.</p>
             </div>
           ) : (
             <div className="max-w-3xl mx-auto divide-y divide-gray-200">
@@ -689,6 +698,20 @@ export default function Home() {
 
       {/* Reports (run detail) */}
       {showWebMcp && <WebMcpGuide onClose={() => setShowWebMcp(false)} />}
+
+      {/* The questionnaire. Its answers become the brief; the brief goes the
+          way typed text goes, so everything after it is unchanged. */}
+      {discovery && (
+        <DiscoveryForm
+          kind={discovery}
+          onClose={() => setDiscovery(null)}
+          onSubmit={(brief) => {
+            setDiscovery(null);
+            setAtHome(false);
+            void sendText(brief);
+          }}
+        />
+      )}
 
       {showRun && (
         <RunView

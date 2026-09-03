@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Pin, PinOff, Send, MoreHorizontal, Archive, ArchiveRestore, FolderArchive, ArrowLeft } from 'lucide-react';
 import { getRuns, pinRun, archiveRun } from '@/lib/api';
 import { RunSummary } from '@/types';
+import { DiscoveryCtas, DiscoveryKind } from '@/components/DiscoveryForm';
 
 /**
  * The home is the artefacts. Nothing else.
@@ -61,6 +62,7 @@ function isFixture(run: RunSummary): boolean {
 interface Props {
   onOpenRun: (runId: string) => void;
   onStartChat: (prompt?: string) => void;
+  onDiscover: (kind: DiscoveryKind) => void;
 }
 
 function whenCreated(iso: string): string {
@@ -69,7 +71,7 @@ function whenCreated(iso: string): string {
   return d.toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
 }
 
-export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
+export function HomeCanvas({ onOpenRun, onStartChat, onDiscover }: Props) {
   const [runs, setRuns] = useState<RunSummary[] | null>(null);
   // The archive is the same canvas with a different ground and heading.
   const [showArchive, setShowArchive] = useState(false);
@@ -144,7 +146,10 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
             <p className="mt-3 text-gray-500 max-w-md">
               Tell it what you do and where. It builds the strategy in front of you.
             </p>
-            <div className="relative mt-8 w-full max-w-xl">
+            <div className="mt-8 w-full max-w-2xl">
+              <DiscoveryCtas onPick={onDiscover} />
+            </div>
+            <div className="relative mt-4 w-full max-w-xl">
               <textarea
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
@@ -176,6 +181,14 @@ export function HomeCanvas({ onOpenRun, onStartChat }: Props) {
             </button>
             <h1 className="font-display text-2xl text-primary-700">Archive</h1>
             <span className="text-sm text-gray-500">{archived.length} artefact{archived.length === 1 ? '' : 's'}</span>
+          </div>
+        )}
+
+        {/* The two ways in, first — on a phone they are what you see under
+            the header. The reports follow. */}
+        {runs && !empty && !showArchive && (
+          <div className="mb-5 sm:pl-24 lg:pl-56">
+            <DiscoveryCtas onPick={onDiscover} />
           </div>
         )}
 
