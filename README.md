@@ -18,7 +18,7 @@ measured DataForSEO data — never a number a model made up — and exposes
 - **How the pipeline works:** [`seo-agent/docs/graphs.md`](seo-agent/docs/graphs.md) — the system, strategy and GEO graphs, with diagrams
 - **Backend API:** https://agent-memory-production-7d5d.up.railway.app
 - **Licence:** MIT (see [LICENSE](LICENSE))
-- **Built with:** WebMCP (`document.modelContext`), Next.js on Vercel, FastAPI on Railway, DataForSEO, OpenAI GPT-5.6 (Sol for reasoning steps, Terra for fast ones)
+- **Built with:** WebMCP (`document.modelContext`), Next.js on Vercel, FastAPI on Railway, DataForSEO, OpenAI GPT-5.6 (Sol for reasoning steps, Terra for fast ones); developed with Claude Code (Fable 5.1, Opus 5) and, in the first days, Qwen Code (Qwen 3.8-Max)
 
 ## Try WebMCP in 60 seconds
 
