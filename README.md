@@ -13,11 +13,12 @@ measured DataForSEO data — never a number a model made up — and exposes
 
 - **Live app:** https://www.seostrich.works/ — credentials are on the submission form
 - **Devpost:** https://devpost.com/software/seostrich-get-discovered
-- **The tools, explained:** open the app and press **WebMCP** in the header (lists all 24 from the live registry, with twelve worked prompts)
+- **The tools, explained:** open the app and press **WebMCP** in the header (lists all 24 from the live registry, with eight business use cases)
 - **Registration code:** [`seo-agent/ui/lib/webmcp.ts`](seo-agent/ui/lib/webmcp.ts)
 - **How the pipeline works:** [`seo-agent/docs/graphs.md`](seo-agent/docs/graphs.md) — the system, strategy and GEO graphs, with diagrams
 - **Backend API:** https://agent-memory-production-7d5d.up.railway.app
 - **Licence:** MIT (see [LICENSE](LICENSE))
+- **Built with:** WebMCP (`document.modelContext`), Next.js on Vercel, FastAPI on Railway, DataForSEO, OpenAI GPT-5.6 (Sol for reasoning steps, Terra for fast ones)
 
 ## Try WebMCP in 60 seconds
 
@@ -76,6 +77,7 @@ document.modelContext.registerTool({
 | `seo_check_ai_citations` | Which AI answers cite any domain, and for what. Point it at your site or a competitor |
 | `seo_get_stage_artifact` | The raw artifact of one stage, unshaped |
 | `seo_analyze_run` | Deterministic check for missing stages, errors or early stops before trusting a run |
+| `seo_research_keyword` | The phrases around one keyword with real volume, difficulty and CPC — one DataForSEO lookup, read-only: nothing on the run changes |
 
 **Change it**
 
@@ -86,7 +88,6 @@ document.modelContext.registerTool({
 | `seo_propose_cluster` | Add a topic the pipeline never explored. Runs real keyword research on it |
 | `seo_rerun_cluster_research` | Refresh one cluster's data without re-running or re-billing the rest |
 | `seo_research_competitor` | Put a competitor on the map and pull the keywords it ranks for |
-| `seo_research_keyword` | The phrases around one keyword with real volume, difficulty and CPC - read-only, one lookup, nothing on the run changes |
 | `seo_regenerate_brief` | Rebuild the SEO strategy brief from the selection as it stands now |
 | `seo_submit_feedback` | Leave a note on the run for the human |
 
@@ -167,7 +168,8 @@ Complete diff: [`f9b3f10` → `main`](https://github.com/neobozrim/seostrich/com
 | [`15e853f`](https://github.com/neobozrim/seostrich/commit/15e853f), [`2845060`](https://github.com/neobozrim/seostrich/commit/2845060), [`c5ad588`](https://github.com/neobozrim/seostrich/commit/c5ad588), [`b4ffa20`](https://github.com/neobozrim/seostrich/commit/b4ffa20) | 2026-09-02 | The report is the product: home is your artefacts, one shared header, live artefact that fills in as the graph runs, editable heading, the orchestrator routes and never edits a result |
 | [`c22e2bd`](https://github.com/neobozrim/seostrich/commit/c22e2bd), [`d71b4fd`](https://github.com/neobozrim/seostrich/commit/d71b4fd), [`d89a158`](https://github.com/neobozrim/seostrich/commit/d89a158), [`9b33205`](https://github.com/neobozrim/seostrich/commit/9b33205) | 2026-09-02 | The brief as a stage (rebuilt on demand), archive, OpenAI models with thinking control, the user's own pages read for seeds, every URL in the brief used, the three graphs drawn |
 | [`f7c366c`](https://github.com/neobozrim/seostrich/commit/f7c366c), [`4d55ef2`](https://github.com/neobozrim/seostrich/commit/4d55ef2), [`e281438`](https://github.com/neobozrim/seostrich/commit/e281438) | 2026-09-02 | Language names accepted at the market gate, no internal error text ever reaches a chat bubble, repo cleaned for launch |
-| [`e281438` → `main`](https://github.com/neobozrim/seostrich/compare/e281438...main) | 2026-09-03 | Launch: every question in the brief is one Google shows (People also ask) with who answers it today; the validation gate parks incoherent themes on its own scores; product-led themes are never pillars; every named competitor checked, competitors addable after the run (`seo_research_competitor`, tool 23); GEO reports check the site's own citations; collapsible steps, three type sizes, scroll anchoring, launch animation; 24 tools verified through Chrome's `document.modelContext.executeTool` and an LLM agent loop over them |
+| [`e281438` → `08172e5`](https://github.com/neobozrim/seostrich/compare/e281438...08172e5) | 2026-09-03 | Launch: every question in the brief is one Google shows (People also ask) with who answers it today; the validation gate parks incoherent themes on its own scores; product-led themes are never pillars; every named competitor checked, competitors addable after the run (`seo_research_competitor`); GEO reports check the site's own citations and keep every question found; `seo_research_keyword` (read-only research, tool 24); collapsible steps, three type sizes, scroll anchoring, launch animation; all 24 tools verified through Chrome's `document.modelContext.executeTool` and an LLM agent loop over them |
+| [`08172e5` → `main`](https://github.com/neobozrim/seostrich/compare/08172e5...main) | 2026-09-03 | Two ways in — *Create SEO strategy* and *Analyse AI visibility* — each behind a discovery questionnaire that composes the brief; a warning when the site is not in the market's language; steer stops a graph between nodes and a change is routed, never claimed; markets come from DataForSEO's own list (a hand-typed table had Ireland as Spain); six bundled reports |
 
 ---
 
@@ -221,6 +223,8 @@ npm run dev                                       # expects NEXT_PUBLIC_API_URL=
 ```bash
 python tests/geo.py
 ```
+
+Or the whole set: `for t in tests/*.py; do python "$t"; done`.
 
 Each prints its assertions and exits non-zero on failure.
 

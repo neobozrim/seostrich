@@ -4,6 +4,10 @@ The stop flag lives with the orchestrator per session; graphs only know
 their run. A hook registered per run is consulted at every node boundary.
 Before this a steer could only take effect after the whole graph."""
 import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # seo-agent/
+
+import sys
 from unittest.mock import patch
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")

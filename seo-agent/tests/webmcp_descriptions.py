@@ -5,6 +5,10 @@ agent cannot read the source, so anything it must know to call the tool
 correctly — what comes back, when to reach for it, and whether it spends money
 or changes state — has to be in the text.
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # seo-agent/
+
 from __future__ import annotations
 
 import re
