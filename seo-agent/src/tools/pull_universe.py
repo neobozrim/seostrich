@@ -46,6 +46,12 @@ def pull_universe(
     all_keywords: list[dict] = []
 
     # ---- Ladder 1: direct seed expansion (related + suggestions) ----
+    # Seeds in another script than the market's language never expand: a
+    # Bulgarian site read for seeds handed a US-English run Bulgarian phrases
+    # (observed 2026-09-03), and every one of them was a wasted paid call.
+    seeds, seeds_dropped = _seeds_in_script(seeds, language_code)
+    if seeds_dropped:
+        print(f"  [pull_universe] {seeds_dropped} seed(s) in another script than the market language dropped")
     expand_seeds = _collect_seeds(seeds)[:MAX_EXPAND_SEEDS]
     for seed in expand_seeds:
         all_keywords.extend(_expand_seed(seed, location_code, language_code))
@@ -84,6 +90,8 @@ def pull_universe(
     unique, script_dropped = _script_filter(unique, language_code)
     if script_dropped and isinstance(competitor_map, dict):
         competitor_map["script_dropped"] = script_dropped
+    if seeds_dropped and isinstance(competitor_map, dict):
+        competitor_map["seeds_dropped_other_script"] = seeds_dropped
 
     # ---- Ladder 3: thin market -> competitor discovery ----
     if len(unique) < THIN_THRESHOLD and dfs.budget_remaining() > 0 and not competitor_map.get("queried"):
@@ -468,6 +476,22 @@ def _competitor_universe(
 _CYRILLIC_LANGS = {"bg", "ru", "uk", "sr", "mk", "be", "kk"}
 _NON_LATIN = re.compile(r"[Ѐ-ӿͰ-Ͽ֐-׿؀-ۿ฀-๿぀-ヿ一-鿿가-힯]")
 _CYRILLIC = re.compile(r"[Ѐ-ӿ]")
+
+
+def _seeds_in_script(seeds: dict, language_code: str | None) -> tuple[dict, int]:
+    """Keep only the seeds written in the market language's script."""
+    if not isinstance(seeds, dict):
+        return seeds, 0
+    out: dict = {}
+    dropped = 0
+    for key, val in seeds.items():
+        if isinstance(val, list):
+            kept = [x for x in val if not (isinstance(x, str) and _foreign_script(x, language_code))]
+            dropped += len(val) - len(kept)
+            out[key] = kept
+        else:
+            out[key] = val
+    return out, dropped
 
 
 def _foreign_script(keyword: str, language_code: str | None) -> bool:

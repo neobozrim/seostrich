@@ -158,6 +158,12 @@ ok(any(r.get("foreign_script") for r in mc["per_domain"]["softuni.bg"]["rows"]),
 kept, dropped = pu._script_filter(mc["_rows"], "en")
 ok(dropped == 1 and [r["keyword"] for r in kept] == ["product strategy"], "and the universe filter drops exactly that row")
 
+print("3d. seeds in another script never expand")
+sd, n = pu._seeds_in_script({"business_seeds": ["production AI agents"], "site_seeds": ["Награда за драматургия", "AI agent evaluation"], "competitor_seeds": []}, "en")
+ok(n == 1 and sd["site_seeds"] == ["AI agent evaluation"] and sd["business_seeds"] == ["production AI agents"], f"the Bulgarian site seed is dropped for a US-EN run: {sd}")
+sd2, n2 = pu._seeds_in_script({"site_seeds": ["софтуни", "softuni"]}, "bg")
+ok(n2 == 0, "a Bulgarian run keeps both scripts")
+
 print("4. caps and edges")
 m3 = run(urls=[f"https://c{i}.com" for i in range(12)], site="")
 ok(len(m3["user"]) == 12 or len(m3["user"]) <= pu.MAX_COMPETITOR_URLS, "pull_universe caps at 10 before this point")
