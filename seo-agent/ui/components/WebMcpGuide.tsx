@@ -76,7 +76,7 @@ const RECIPES: Array<{ goal: string; say: string; does: string; tools: string[] 
     goal: 'Know what to write first, and for whom',
     say: 'Which piece should we write first, what question does it answer, and who answers that question on Google today?',
     does:
-      'The brief already holds the order: the pillar to build first with its reasons, six pieces each answering a question Google shows under People also ask, and the page that answers it today. The assistant reads it and turns it into a writer’s starting point.',
+      'The SEO strategy brief already holds the order: the pillar to build first with its reasons, six pieces each answering a question Google shows under People also ask, and the page that answers it today. The assistant reads it and turns it into a writer’s starting point.',
     tools: ['seo_get_brief', 'seo_get_content_calendar', 'seo_get_content_pillars'],
   },
   {

@@ -269,7 +269,7 @@ const PLAN: Record<string, string[]> = {
 };
 const STAGE_NAMES: Record<string, string> = {
   seeds: 'Seeds', intake: 'Intake', keywords: 'Keyword discovery', competitors: 'Competitor map', clusters: 'Clusters',
-  pillars: 'Content pillars', brief: 'The brief', ai_citability: 'AI visibility', mix: 'Content mix', audit: 'Technical audit',
+  pillars: 'Content pillars', brief: 'SEO strategy brief', ai_citability: 'AI visibility', mix: 'Content mix', audit: 'Technical audit',
 };
 type ChecklistItem = { id: string; label: string; state: 'done' | 'building' | 'pending' };
 function checklist(run: Run, running: boolean): ChecklistItem[] {
@@ -358,7 +358,7 @@ function BriefCard({ brief, onRegenerate, regenerating }: { brief: any; onRegene
   return (
     <div className="mt-5 bg-white border border-surface-300 rounded-xl px-5 py-5 shadow-sm">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <div className="text-sm font-semibold text-gray-400">The brief</div>
+        <div className="text-sm font-semibold text-gray-400">SEO strategy brief</div>
         {brief.stale ? (
           <button
             onClick={onRegenerate}
@@ -1861,7 +1861,7 @@ export function RunView({ tasks, onClose, initialRunId, live, isStreaming, onSen
             onClick={() => { setBriefReady(false); document.getElementById('stage-brief')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
             className="pointer-events-auto px-3 py-1.5 rounded-full bg-action-300 text-primary-700 hover:bg-action-400 hover:text-white text-xs font-semibold shadow transition"
           >
-            The brief is ready · read it ↑
+            The SEO strategy brief is ready · read it ↑
           </button>
         </div>
       )}
