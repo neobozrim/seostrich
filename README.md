@@ -66,8 +66,8 @@ document.modelContext.registerTool({
 | `seo_get_keyword_clusters` | The selected clusters with measured metrics and member keywords |
 | `seo_list_clusters_all` | Selected *and* discarded clusters, each with a `reasoning` block for why it was kept or cut |
 | `seo_get_content_pillars` | The pillars to actually write, with type and rationale |
-| `seo_get_brief` | The one page a content team acts on: what to build first, in what order, and why |
-| `seo_get_content_calendar` | Publishing order from the brief |
+| `seo_get_brief` | The SEO strategy brief: the one page a content team acts on, what to build first, in what order, and why |
+| `seo_get_content_calendar` | Publishing order from the SEO strategy brief |
 | `seo_get_ai_citability` | AI search demand per topic, which sources AI answers cite, how displaceable they are |
 | `seo_check_ai_citations` | Which AI answers cite any domain, and for what. Point it at your site or a competitor |
 | `seo_get_stage_artifact` | The raw artifact of one stage, unshaped |
@@ -83,7 +83,7 @@ document.modelContext.registerTool({
 | `seo_rerun_cluster_research` | Refresh one cluster's data without re-running or re-billing the rest |
 | `seo_research_competitor` | Put a competitor on the map and pull the keywords it ranks for |
 | `seo_research_keyword` | The phrases around one keyword with real volume, difficulty and CPC - read-only, one lookup, nothing on the run changes |
-| `seo_regenerate_brief` | Rebuild the brief from the selection as it stands now |
+| `seo_regenerate_brief` | Rebuild the SEO strategy brief from the selection as it stands now |
 | `seo_submit_feedback` | Leave a note on the run for the human |
 
 **Govern it**
@@ -101,7 +101,7 @@ documented in the app's **WebMCP** panel from the live registry.
 ## The flows
 
 **Content strategy** — intake → seeds → keyword universe → competitors →
-clusters → validation gate → scoring → selection → pillars → brief.
+clusters → validation gate → scoring → selection → pillars → SEO strategy brief.
 
 **AI visibility (GEO)** — measure real AI search demand, check which AI answers
 exist and who they cite, grade whether those sites can realistically be
@@ -177,7 +177,7 @@ seo-agent/
 ├── src/                 — orchestrator, agents, flow graphs, 40+ tools
 ├── ui/                  — Next.js app; ui/lib/webmcp.ts registers the 24 WebMCP tools
 ├── docs/graphs.md       — the system, strategy and GEO graphs, with diagrams
-├── seed/runs/           — four bundled reports (Product Pirates + Braintrust, strategy + AI visibility), pinned on the home canvas
+├── seed/runs/           — six bundled reports (Product Pirates + Braintrust, strategy + AI visibility; two specialty-coffee strategies), pinned on the home canvas
 ├── tests/               — standalone test scripts, one concern each
 └── requirements.txt, railway.toml, .python-version, .env.example
 ```
@@ -188,7 +188,9 @@ runs there. It is gitignored and never published.
 ## Run locally
 
 Copy `seo-agent/.env.example` to `.env` **at the repo root** and fill in
-DataForSEO credentials and a Qwen API key. Set `USER_NAME` / `PASSWORD` to
+DataForSEO credentials and an OpenAI API key. The agents run on GPT-5.6 Sol
+for reasoning steps and GPT-5.6 Terra for fast ones; the model ids are in
+`src/config.py` and can be overridden in `.env`. Set `USER_NAME` / `PASSWORD` to
 require login; leave them unset and the app stays open (fine locally, not in
 public).
 

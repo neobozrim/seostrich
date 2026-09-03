@@ -1,0 +1,1881 @@
+{
+ "id": "squirrel-attack",
+ "project": "Content strategy · IE-EN",
+ "title": "Squirrel Attack Specialty Coffee",
+ "prompt": "Build the SEO content strategy for Squirrel Attack Specialty Coffee.\r\n\r\nSquirrel Attack Specialty Coffee: A new independent specialty coffee roaster based in Sofia, Bulgaria. It will roast and sell high-quality specialty coffee beans online to international customers, with an English-language brand and store. The business has not launched yet and does not have a website.\r\nGoal: increase sales — bring in people ready to buy.\r\nAudience: English-speaking specialty coffee drinkers in Ireland who buy freshly roasted beans online and value quality, traceability, and independent European roasters..\r\nCompetitors — see what they rank for and where the gaps are:\r\n- https://amatterofconcrete.com/\r\n- https://kissthehippo.com/\r\n- https://tanat.coffee/en/\r\nMarket: Ireland, English.",
+ "created": "2026-09-03T13:18:35.683342+00:00",
+ "status": "done",
+ "stages": [
+  {
+   "id": "seeds",
+   "label": "Seeds",
+   "status": "done",
+   "artifact": {
+    "business_name": "Squirrel Attack Specialty Coffee",
+    "business_seeds": [
+     "specialty coffee beans",
+     "freshly roasted coffee",
+     "coffee beans online",
+     "single origin coffee"
+    ],
+    "site_seeds": [
+     "online specialty coffee",
+     "buy coffee beans",
+     "traceable coffee beans",
+     "small batch roaster"
+    ],
+    "competitor_seeds": [
+     "specialty coffee subscription",
+     "single origin beans",
+     "small batch coffee",
+     "European coffee roaster"
+    ],
+    "notes": "Seeds target English-speaking Irish buyers searching for fresh, traceable specialty coffee beans online. Site seeds are inferred from the business description because site page content was not fetched."
+   }
+  },
+  {
+   "id": "intake",
+   "label": "Intake",
+   "status": "done",
+   "artifact": {
+    "locale": {
+     "location_code": 2372,
+     "language_code": "en"
+    },
+    "market": "IE-EN"
+   }
+  },
+  {
+   "id": "keywords",
+   "label": "Keyword discovery",
+   "status": "done",
+   "artifact": {
+    "count": 93,
+    "keywords": [
+     {
+      "keyword": "best coffee beans ireland",
+      "volume": 390,
+      "difficulty": 6,
+      "cpc": 1.73,
+      "intent": "commercial",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "coffee beans dublin",
+      "volume": 170,
+      "difficulty": 14,
+      "cpc": 1.86,
+      "intent": "informational",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "subscriptions coffee",
+      "volume": 110,
+      "difficulty": 0,
+      "cpc": 2.240000009536743,
+      "intent": "informational",
+      "rank": 52,
+      "ranking_url": "https://kissthehippo.com/pages/coffee-subscriptions",
+      "estimated_traffic": 0.23100000619888306,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "buy coffee beans",
+      "volume": 90,
+      "difficulty": 8,
+      "cpc": 2.85,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "1kg coffee beans ireland",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 1.37,
+      "intent": "informational",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "coffee beans buy",
+      "volume": 90,
+      "difficulty": 11,
+      "cpc": 2.85,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy coffee beans ireland",
+      "volume": 40,
+      "difficulty": 43,
+      "cpc": 3.16,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "wholesale coffee beans ireland",
+      "volume": 40,
+      "difficulty": 32,
+      "cpc": 2.1,
+      "intent": "informational",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "coffee beans limerick",
+      "volume": 40,
+      "difficulty": null,
+      "cpc": 0.74,
+      "intent": "informational",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "braeburn coffee beans where to buy",
+      "volume": 40,
+      "difficulty": null,
+      "cpc": 1.72,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy online coffee beans",
+      "volume": 40,
+      "difficulty": null,
+      "cpc": 3.29,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "coffee beans buy online",
+      "volume": 40,
+      "difficulty": 37,
+      "cpc": 3.29,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy coffee beans online",
+      "volume": 40,
+      "difficulty": 37,
+      "cpc": 3.29,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy coffee beans in ireland",
+      "volume": 40,
+      "difficulty": 43,
+      "cpc": 3.16,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "freshly roasted coffee beans",
+      "volume": 30,
+      "difficulty": null,
+      "cpc": 1.77,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "coffee beans online ireland",
+      "volume": 30,
+      "difficulty": 43,
+      "cpc": 1.48,
+      "intent": "informational",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "fresh coffee beans ireland",
+      "volume": 30,
+      "difficulty": null,
+      "cpc": 1.81,
+      "intent": "informational",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "specialty coffee beans",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 2.39,
+      "intent": "informational",
+      "source_seed": "specialty coffee beans"
+     },
+     {
+      "keyword": "where can i buy coffee beans",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 1.17,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "good coffee beans to buy",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 1.77,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where buy coffee beans",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 1.17,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "best coffee beans to buy",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 1.77,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy coffee beans",
+      "volume": 20,
+      "difficulty": 36,
+      "cpc": 1.17,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy coffee beans in dublin",
+      "volume": 20,
+      "difficulty": 41,
+      "cpc": 0.9,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy coffee beans dublin",
+      "volume": 20,
+      "difficulty": 41,
+      "cpc": 0.9,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy specialty coffee beans online",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "specialty coffee beans"
+     },
+     {
+      "keyword": "specialty green coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee beans"
+     },
+     {
+      "keyword": "where to buy specialty coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.08,
+      "intent": "transactional",
+      "source_seed": "specialty coffee beans"
+     },
+     {
+      "keyword": "specialty coffee green beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee beans"
+     },
+     {
+      "keyword": "specialty coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee beans"
+     },
+     {
+      "keyword": "specialty coffee beans online",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee beans"
+     },
+     {
+      "keyword": "specialty coffee online",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "online specialty coffee"
+     },
+     {
+      "keyword": "specialty coffee online shop",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "online specialty coffee"
+     },
+     {
+      "keyword": "specialty coffee subscription",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee subscription"
+     },
+     {
+      "keyword": "freshly roasted coffee",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "how to store freshly roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "freshly roasted coffee near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "what does freshly roasted coffee look like",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "where to buy freshly roasted coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "freshly roasted coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 2.92,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "how long does freshly roasted coffee last",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "where to buy freshly roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "freshly roasted coffee beans online",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "best freshly roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "commercial",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "where to get freshly roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "is freshly roasted coffee better",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "where can i buy freshly roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "how long do freshly roasted coffee beans last",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "freshly roasted coffee"
+     },
+     {
+      "keyword": "buy coffee beans rome",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "cheaper to buy coffee beans or ground",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy costa coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 2.67,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where can i buy decaf coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy whole coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy unroasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy coffee beans online europe",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy quality coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy coffee beans in ho chi minh",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy flavored coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy coffee beans in rome",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy green coffee beans in bulk",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy starbucks coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "green coffee beans buy",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "best place to buy coffee beans online",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.83,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy illy coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "bulk buy green coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy best coffee beans online",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy green coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 0.33,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "which coffee beans to buy",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "coffee beans near me to buy",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy raw coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy green coffee beans bulk",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy colombian coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "frank and honest coffee beans where to buy",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 4.01,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "bulk buy coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 0.98,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy coffee beans dublin",
+      "volume": 10,
+      "difficulty": 43,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where can i buy good quality coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where can i buy fresh coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 0.76,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy coffee beans edinburgh",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy organic green coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "why buy coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "buy coffee beans glasgow",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "where to buy decaffeinated coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "buy coffee beans"
+     },
+     {
+      "keyword": "specialty coffee beans uk",
+      "volume": 0,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee beans"
+     },
+     {
+      "keyword": "specialty coffee order online",
+      "volume": 0,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "online specialty coffee"
+     },
+     {
+      "keyword": "online specialty coffee",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "single origin beans",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "coffee beans online",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "traceable coffee beans",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "small batch coffee",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "single origin coffee",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "small batch roaster",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "European coffee roaster",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     }
+    ]
+   }
+  },
+  {
+   "id": "competitors",
+   "label": "Competitor map",
+   "status": "done",
+   "artifact": {
+    "competitors": [
+     "amatterofconcrete.com",
+     "kissthehippo.com",
+     "tanat.coffee"
+    ],
+    "user_supplied": [
+     "amatterofconcrete.com",
+     "kissthehippo.com",
+     "tanat.coffee"
+    ],
+    "discovered": [],
+    "site_has_rankings": null,
+    "per_domain": {
+     "amatterofconcrete.com": {
+      "keywords": 1,
+      "brand_terms_skipped": 0,
+      "other_script": 0,
+      "shared_with_site": 0,
+      "top": [
+       "apax"
+      ],
+      "rows": [
+       {
+        "keyword": "apax",
+        "volume": 110,
+        "difficulty": 12,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 33
+       }
+      ]
+     },
+     "kissthehippo.com": {
+      "keywords": 5,
+      "brand_terms_skipped": 0,
+      "other_script": 0,
+      "shared_with_site": 0,
+      "top": [
+       "la marzocco linea mini",
+       "fellow aiden",
+       "the coffee pods",
+       "subscriptions coffee",
+       "keep the cup"
+      ],
+      "rows": [
+       {
+        "keyword": "la marzocco linea mini",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 0.23000000417232513,
+        "intent": "informational",
+        "rank": 35
+       },
+       {
+        "keyword": "fellow aiden",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.949999988079071,
+        "intent": "informational",
+        "rank": 36
+       },
+       {
+        "keyword": "the coffee pods",
+        "volume": 390,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 56
+       },
+       {
+        "keyword": "subscriptions coffee",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 2.240000009536743,
+        "intent": "informational",
+        "rank": 52
+       },
+       {
+        "keyword": "keep the cup",
+        "volume": 880,
+        "difficulty": 0,
+        "cpc": 1.0099999904632568,
+        "intent": "informational",
+        "rank": 51
+       }
+      ]
+     },
+     "tanat.coffee": {
+      "keywords": 1,
+      "brand_terms_skipped": 0,
+      "other_script": 0,
+      "shared_with_site": 0,
+      "top": [
+       "brew cork"
+      ],
+      "rows": [
+       {
+        "keyword": "brew cork",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": 0.6700000166893005,
+        "intent": "informational",
+        "rank": 1
+       }
+      ]
+     }
+    },
+    "consensus": [],
+    "keywords_contributed": 7,
+    "relevance": {
+     "ran": true,
+     "kept": 1,
+     "dropped": 6,
+     "dropped_because": "Removed competitor names, branded coffee equipment/products, and unrelated phrases.",
+     "dropped_examples": [
+      "keep the cup",
+      "the coffee pods",
+      "la marzocco linea mini",
+      "brew cork",
+      "apax",
+      "fellow aiden"
+     ]
+    },
+    "kept_in_universe": 1,
+    "seed_derived_in_universe": 92
+   }
+  },
+  {
+   "id": "clusters",
+   "label": "Clusters",
+   "status": "done",
+   "artifact": {
+    "count": 1,
+    "clusters": [
+     {
+      "cluster_id": 1,
+      "cluster_name": "Freshness Education",
+      "head_term": "freshly roasted coffee beans",
+      "keywords": [
+       "freshly roasted coffee beans",
+       "freshly roasted coffee",
+       "how to store freshly roasted coffee beans",
+       "freshly roasted coffee near me",
+       "what does freshly roasted coffee look like",
+       "freshly roasted coffee beans near me",
+       "how long does freshly roasted coffee last",
+       "freshly roasted coffee beans online",
+       "where to get freshly roasted coffee beans",
+       "is freshly roasted coffee better",
+       "how long do freshly roasted coffee beans last",
+       "coffee beans dublin",
+       "1kg coffee beans ireland",
+       "wholesale coffee beans ireland",
+       "coffee beans limerick",
+       "coffee beans online ireland",
+       "fresh coffee beans ireland",
+       "small batch roaster",
+       "specialty coffee beans uk",
+       "European coffee roaster",
+       "best coffee beans ireland",
+       "good coffee beans to buy",
+       "best coffee beans to buy",
+       "best freshly roasted coffee beans",
+       "cheaper to buy coffee beans or ground",
+       "which coffee beans to buy",
+       "why buy coffee beans",
+       "buy coffee beans",
+       "coffee beans buy",
+       "buy online coffee beans",
+       "coffee beans buy online",
+       "buy coffee beans online",
+       "buy specialty coffee beans online",
+       "where to buy specialty coffee beans",
+       "buy coffee beans online europe",
+       "best place to buy coffee beans online",
+       "buy best coffee beans online",
+       "specialty coffee order online",
+       "where can i buy coffee beans",
+       "where buy coffee beans",
+       "where to buy coffee beans",
+       "where to buy freshly roasted coffee beans near me",
+       "where to buy freshly roasted coffee beans",
+       "where can i buy freshly roasted coffee beans",
+       "where to buy whole coffee beans near me",
+       "buy quality coffee beans",
+       "coffee beans near me to buy",
+       "where can i buy good quality coffee beans",
+       "where can i buy fresh coffee beans",
+       "buy coffee beans ireland",
+       "braeburn coffee beans where to buy",
+       "buy coffee beans in ireland",
+       "where to buy coffee beans in dublin",
+       "where to buy coffee beans dublin",
+       "buy coffee beans dublin",
+       "where to buy costa coffee beans",
+       "where can i buy decaf coffee beans",
+       "where to buy flavored coffee beans",
+       "buy starbucks coffee beans",
+       "where to buy illy coffee beans",
+       "buy roasted coffee beans",
+       "where to buy colombian coffee beans",
+       "frank and honest coffee beans where to buy",
+       "where to buy decaffeinated coffee beans"
+      ],
+      "intent": "informational",
+      "avg_volume": 12,
+      "avg_difficulty": 25.6,
+      "rationale": "Explains freshness, storage, and shelf life.",
+      "name": "Freshness Education",
+      "merged_from": [
+       "Freshness Education",
+       "Local Ireland Info",
+       "Purchase Comparison",
+       "Online Purchase",
+       "Location Purchase",
+       "Irish Purchase",
+       "Brand Type Purchase"
+      ],
+      "merge_reason": "Google returns 30% of the same results for both, so one page can serve them",
+      "total_volume": 1750,
+      "market": "IE-EN",
+      "keyword_stats": {
+       "freshly roasted coffee beans": {
+        "volume": 30,
+        "intent": "informational",
+        "cpc": 1.77
+       },
+       "freshly roasted coffee": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "how to store freshly roasted coffee beans": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "freshly roasted coffee near me": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "what does freshly roasted coffee look like": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "freshly roasted coffee beans near me": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 2.92
+       },
+       "how long does freshly roasted coffee last": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "freshly roasted coffee beans online": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "where to get freshly roasted coffee beans": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "is freshly roasted coffee better": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "how long do freshly roasted coffee beans last": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "coffee beans dublin": {
+        "volume": 170,
+        "difficulty": 14,
+        "intent": "informational",
+        "cpc": 1.86
+       },
+       "1kg coffee beans ireland": {
+        "volume": 90,
+        "intent": "informational",
+        "cpc": 1.37
+       },
+       "wholesale coffee beans ireland": {
+        "volume": 40,
+        "difficulty": 32,
+        "intent": "informational",
+        "cpc": 2.1
+       },
+       "coffee beans limerick": {
+        "volume": 40,
+        "intent": "informational",
+        "cpc": 0.74
+       },
+       "coffee beans online ireland": {
+        "volume": 30,
+        "difficulty": 43,
+        "intent": "informational",
+        "cpc": 1.48
+       },
+       "fresh coffee beans ireland": {
+        "volume": 30,
+        "intent": "informational",
+        "cpc": 1.81
+       },
+       "small batch roaster": {
+        "intent": "informational"
+       },
+       "specialty coffee beans uk": {
+        "intent": "informational"
+       },
+       "European coffee roaster": {
+        "intent": "informational"
+       },
+       "best coffee beans ireland": {
+        "volume": 390,
+        "difficulty": 6,
+        "intent": "commercial",
+        "cpc": 1.73
+       },
+       "good coffee beans to buy": {
+        "volume": 20,
+        "intent": "transactional",
+        "cpc": 1.77
+       },
+       "best coffee beans to buy": {
+        "volume": 20,
+        "intent": "transactional",
+        "cpc": 1.77
+       },
+       "best freshly roasted coffee beans": {
+        "volume": 10,
+        "intent": "commercial"
+       },
+       "cheaper to buy coffee beans or ground": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "which coffee beans to buy": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "why buy coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "buy coffee beans": {
+        "volume": 90,
+        "difficulty": 8,
+        "intent": "transactional",
+        "cpc": 2.85
+       },
+       "coffee beans buy": {
+        "volume": 90,
+        "difficulty": 11,
+        "intent": "transactional",
+        "cpc": 2.85
+       },
+       "buy online coffee beans": {
+        "volume": 40,
+        "intent": "transactional",
+        "cpc": 3.29
+       },
+       "coffee beans buy online": {
+        "volume": 40,
+        "difficulty": 37,
+        "intent": "transactional",
+        "cpc": 3.29
+       },
+       "buy coffee beans online": {
+        "volume": 40,
+        "difficulty": 37,
+        "intent": "transactional",
+        "cpc": 3.29
+       },
+       "buy specialty coffee beans online": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy specialty coffee beans": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 1.08
+       },
+       "buy coffee beans online europe": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "best place to buy coffee beans online": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 1.83
+       },
+       "buy best coffee beans online": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "specialty coffee order online": {
+        "intent": "transactional"
+       },
+       "where can i buy coffee beans": {
+        "volume": 20,
+        "intent": "transactional",
+        "cpc": 1.17
+       },
+       "where buy coffee beans": {
+        "volume": 20,
+        "intent": "transactional",
+        "cpc": 1.17
+       },
+       "where to buy coffee beans": {
+        "volume": 20,
+        "difficulty": 36,
+        "intent": "transactional",
+        "cpc": 1.17
+       },
+       "where to buy freshly roasted coffee beans near me": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy freshly roasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where can i buy freshly roasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy whole coffee beans near me": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "buy quality coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "coffee beans near me to buy": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where can i buy good quality coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where can i buy fresh coffee beans": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 0.76
+       },
+       "buy coffee beans ireland": {
+        "volume": 40,
+        "difficulty": 43,
+        "intent": "transactional",
+        "cpc": 3.16
+       },
+       "braeburn coffee beans where to buy": {
+        "volume": 40,
+        "intent": "transactional",
+        "cpc": 1.72
+       },
+       "buy coffee beans in ireland": {
+        "volume": 40,
+        "difficulty": 43,
+        "intent": "transactional",
+        "cpc": 3.16
+       },
+       "where to buy coffee beans in dublin": {
+        "volume": 20,
+        "difficulty": 41,
+        "intent": "transactional",
+        "cpc": 0.9
+       },
+       "where to buy coffee beans dublin": {
+        "volume": 20,
+        "difficulty": 41,
+        "intent": "transactional",
+        "cpc": 0.9
+       },
+       "buy coffee beans dublin": {
+        "volume": 10,
+        "difficulty": 43,
+        "intent": "transactional"
+       },
+       "where to buy costa coffee beans": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 2.67
+       },
+       "where can i buy decaf coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy flavored coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "buy starbucks coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy illy coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "buy roasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy colombian coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "frank and honest coffee beans where to buy": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 4.01
+       },
+       "where to buy decaffeinated coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       }
+      },
+      "metrics": {
+       "keyword_count": 64,
+       "total_volume": 1750,
+       "max_volume": 390,
+       "median_volume": 10,
+       "avg_difficulty": 25.6,
+       "max_difficulty": 43,
+       "difficulty_measured_for": 17,
+       "avg_cpc": 0.92,
+       "max_cpc": 4.01,
+       "commercial_keywords": 44,
+       "commercial_share": 0.69,
+       "top_keywords": [
+        {
+         "keyword": "best coffee beans ireland",
+         "volume": 390,
+         "difficulty": 6,
+         "cpc": 1.73,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "coffee beans dublin",
+         "volume": 170,
+         "difficulty": 14,
+         "cpc": 1.86,
+         "intent": "informational"
+        },
+        {
+         "keyword": "1kg coffee beans ireland",
+         "volume": 90,
+         "difficulty": 0,
+         "cpc": 1.37,
+         "intent": "informational"
+        },
+        {
+         "keyword": "buy coffee beans",
+         "volume": 90,
+         "difficulty": 8,
+         "cpc": 2.85,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "coffee beans buy",
+         "volume": 90,
+         "difficulty": 11,
+         "cpc": 2.85,
+         "intent": "transactional"
+        }
+       ]
+      },
+      "opportunity": "high",
+      "opportunity_rule": "1000+ total volume at difficulty 30 or below",
+      "selection_reason": "Directly serves Squirrel Attack’s core audience — English-speaking Irish specialty coffee drinkers buying freshly roasted beans online — by answering their top freshness, storage, and shelf-life questions, reinforcing trust in quality and traceability.",
+      "what_it_is": "An informational cluster about freshness cues, optimal storage, and shelf life of freshly roasted coffee beans, searched by conscientious home brewers who prioritize bean quality and timing.",
+      "how_to_use_it": "Build a cornerstone 'Freshness Guide' page (not just a blog post) that positions Squirrel Attack as the trusted European roaster who educates on freshness — embedding roast-date transparency, storage tips with Bulgarian climate context, and a clear 'best before' rationale tied to their 7–14 day peak"
+     }
+    ],
+    "discarded": [
+     {
+      "cluster_id": 2,
+      "cluster_name": "Specialty Discovery",
+      "head_term": "subscriptions coffee",
+      "keywords": [
+       "subscriptions coffee",
+       "specialty coffee beans",
+       "specialty coffee online",
+       "specialty coffee subscription",
+       "specialty coffee online shop",
+       "specialty green coffee beans",
+       "specialty coffee green beans",
+       "specialty coffee beans near me",
+       "specialty coffee beans online",
+       "online specialty coffee",
+       "single origin beans",
+       "coffee beans online",
+       "traceable coffee beans",
+       "small batch coffee",
+       "single origin coffee"
+      ],
+      "intent": "informational",
+      "avg_volume": 13,
+      "avg_difficulty": 0.0,
+      "rationale": "Covers specialty, subscription, and origin concepts.",
+      "name": "Specialty Discovery",
+      "total_volume": 200,
+      "market": "IE-EN",
+      "keyword_stats": {
+       "subscriptions coffee": {
+        "volume": 110,
+        "intent": "informational",
+        "cpc": 2.240000009536743,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "specialty coffee beans": {
+        "volume": 20,
+        "intent": "informational",
+        "cpc": 2.39
+       },
+       "specialty coffee online": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "specialty coffee subscription": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "specialty coffee online shop": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "specialty green coffee beans": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "specialty coffee green beans": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "specialty coffee beans near me": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "specialty coffee beans online": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "online specialty coffee": {
+        "intent": "informational"
+       },
+       "single origin beans": {
+        "intent": "informational"
+       },
+       "coffee beans online": {
+        "intent": "informational"
+       },
+       "traceable coffee beans": {
+        "intent": "informational"
+       },
+       "small batch coffee": {
+        "intent": "informational"
+       },
+       "single origin coffee": {
+        "intent": "informational"
+       }
+      },
+      "metrics": {
+       "keyword_count": 15,
+       "total_volume": 200,
+       "max_volume": 110,
+       "median_volume": 10,
+       "avg_difficulty": 0.0,
+       "max_difficulty": 0,
+       "difficulty_measured_for": 7,
+       "avg_cpc": 0.31,
+       "max_cpc": 2.39,
+       "commercial_keywords": 0,
+       "commercial_share": 0.0,
+       "top_keywords": [
+        {
+         "keyword": "subscriptions coffee",
+         "volume": 110,
+         "difficulty": 0,
+         "cpc": 2.240000009536743,
+         "intent": "informational"
+        },
+        {
+         "keyword": "specialty coffee beans",
+         "volume": 20,
+         "difficulty": null,
+         "cpc": 2.39,
+         "intent": "informational"
+        },
+        {
+         "keyword": "specialty coffee online",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "informational"
+        },
+        {
+         "keyword": "specialty coffee subscription",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "informational"
+        },
+        {
+         "keyword": "specialty coffee online shop",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "low",
+      "opportunity_rule": "under 300 total volume",
+      "discard_reason": "Off-topic: 'subscriptions coffee' and 'specialty coffee beans' are generic commercial terms with near-zero commercial intent (commercial_share: 0.0) and no relevance to Squirrel Attack’s current offering — they don’t sell subscriptions, and 'specialty coffee beans' is too broad and undifferentiated "
+     },
+     {
+      "cluster_id": 8,
+      "cluster_name": "Global City Purchase",
+      "head_term": "buy coffee beans edinburgh",
+      "keywords": [
+       "buy coffee beans rome",
+       "where to buy coffee beans in ho chi minh",
+       "where to buy coffee beans in rome",
+       "buy coffee beans edinburgh",
+       "buy coffee beans glasgow"
+      ],
+      "intent": "transactional",
+      "avg_volume": 10,
+      "avg_difficulty": null,
+      "rationale": "Targets specific overseas city purchases.",
+      "name": "Global City Purchase",
+      "total_volume": 50,
+      "market": "IE-EN",
+      "keyword_stats": {
+       "buy coffee beans rome": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy coffee beans in ho chi minh": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy coffee beans in rome": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "buy coffee beans edinburgh": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "buy coffee beans glasgow": {
+        "volume": 10,
+        "intent": "transactional"
+       }
+      },
+      "metrics": {
+       "keyword_count": 5,
+       "total_volume": 50,
+       "max_volume": 10,
+       "median_volume": 10,
+       "avg_difficulty": null,
+       "max_difficulty": null,
+       "difficulty_measured_for": 0,
+       "avg_cpc": 0.0,
+       "max_cpc": 0,
+       "commercial_keywords": 5,
+       "commercial_share": 1.0,
+       "top_keywords": [
+        {
+         "keyword": "buy coffee beans rome",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "where to buy coffee beans in ho chi minh",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "where to buy coffee beans in rome",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "buy coffee beans edinburgh",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "buy coffee beans glasgow",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        }
+       ]
+      },
+      "opportunity": "low",
+      "opportunity_rule": "under 300 total volume",
+      "discard_reason": "no measurable search demand in this market: its best keyword \"buy coffee beans rome\" has 10 searches/month, under the 20/month floor — parked, not deleted; promote it back if you want to build for it anyway"
+     },
+     {
+      "cluster_id": 9,
+      "cluster_name": "Green Bulk Purchase",
+      "head_term": "bulk buy coffee beans",
+      "keywords": [
+       "buy unroasted coffee beans",
+       "buy green coffee beans in bulk",
+       "green coffee beans buy",
+       "bulk buy green coffee beans",
+       "where to buy green coffee beans",
+       "buy raw coffee beans",
+       "buy green coffee beans bulk",
+       "bulk buy coffee beans",
+       "buy organic green coffee beans"
+      ],
+      "intent": "transactional",
+      "avg_volume": 10,
+      "avg_difficulty": null,
+      "rationale": "Serves unroasted and bulk purchasing intent.",
+      "name": "Green Bulk Purchase",
+      "total_volume": 90,
+      "market": "IE-EN",
+      "keyword_stats": {
+       "buy unroasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "buy green coffee beans in bulk": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "green coffee beans buy": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "bulk buy green coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where to buy green coffee beans": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 0.33
+       },
+       "buy raw coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "buy green coffee beans bulk": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "bulk buy coffee beans": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 0.98
+       },
+       "buy organic green coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       }
+      },
+      "metrics": {
+       "keyword_count": 9,
+       "total_volume": 90,
+       "max_volume": 10,
+       "median_volume": 10,
+       "avg_difficulty": null,
+       "max_difficulty": null,
+       "difficulty_measured_for": 0,
+       "avg_cpc": 0.15,
+       "max_cpc": 0.98,
+       "commercial_keywords": 9,
+       "commercial_share": 1.0,
+       "top_keywords": [
+        {
+         "keyword": "buy unroasted coffee beans",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "buy green coffee beans in bulk",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "green coffee beans buy",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "bulk buy green coffee beans",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": null,
+         "intent": "transactional"
+        },
+        {
+         "keyword": "where to buy green coffee beans",
+         "volume": 10,
+         "difficulty": null,
+         "cpc": 0.33,
+         "intent": "transactional"
+        }
+       ]
+      },
+      "opportunity": "low",
+      "opportunity_rule": "under 300 total volume",
+      "discard_reason": "no measurable search demand in this market: its best keyword \"buy unroasted coffee beans\" has 10 searches/month, under the 20/month floor — parked, not deleted; promote it back if you want to build for it anyway"
+     }
+    ],
+    "selected": true
+   }
+  },
+  {
+   "id": "pillars",
+   "label": "Content pillars",
+   "status": "done",
+   "artifact": {
+    "pillars": [
+     {
+      "cluster_id": 1,
+      "cluster_name": "Freshness Education",
+      "pillar_title": "The Complete Guide to Freshly Roasted Coffee Beans: Storage, Shelf Life & Where to Buy",
+      "pillar_type": "guide",
+      "priority": 1,
+      "rationale": "Selected for highest total_volume (1750) among all clusters — strong aggregate search demand — combined with low avg_difficulty (25.6), well below the 30 threshold in the opportunity rule, and high commercial_share (0.69), indicating strong monetization potential via affiliate links or direct sales. Top keyword 'best coffee beans ireland' alone delivers 390 volume at only difficulty 6 and $1.73 CPC — exceptional efficiency."
+     }
+    ],
+    "skipped": []
+   }
+  },
+  {
+   "id": "brief",
+   "label": "The brief",
+   "status": "done",
+   "artifact": {
+    "the_call": {
+     "pillar": "The Complete Guide to Freshly Roasted Coffee Beans: Storage, Shelf Life & Where to Buy",
+     "why": "Build this first because Freshness Education is the only selected cluster and has 1750 total volume at avg_difficulty 25.6, below the 30 threshold, with commercial_share 0.69. Its top keyword, best coffee beans ireland, has 390 volume at difficulty 6, making it the fastest path to relevant Irish buying intent. The parked clusters are lower-volume or off-intent, with total volumes of 200, 50, and 90, so they should not lead the brief."
+    },
+    "out_answer": [],
+    "pieces": [
+     {
+      "title": "Are Freshly Roasted Coffee Beans Better? The Freshness Guide for Irish Buyers",
+      "question": "Are freshly roasted coffee beans better?",
+      "question_source": "people_also_ask",
+      "cluster": "Freshness Education",
+      "target_keyword": "buy online coffee beans",
+      "format": "explainer",
+      "asked_under": "freshly roasted coffee beans",
+      "currently_answered_by": "reddit.com",
+      "answered_by_url": "https://www.reddit.com/r/espresso/comments/hdrlww/do_freshly_roasted_beans_really_make_a_difference/",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "How Long Should You Wait to Use Freshly Roasted Coffee Beans?",
+      "question": "How long should you wait to use freshly roasted coffee beans?",
+      "question_source": "people_also_ask",
+      "cluster": "Freshness Education",
+      "target_keyword": "coffee beans buy",
+      "format": "how-to",
+      "asked_under": "freshly roasted coffee beans",
+      "currently_answered_by": "reddit.com",
+      "answered_by_url": "https://www.reddit.com/r/Coffee/comments/jprui8/how_many_days_should_i_wait_to_use_fresh_roasted/",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "Which Coffee Brand in Ireland Offers the Best Coffee? Specialty Roaster Comparison",
+      "question": "Which coffee brand in Ireland offers the best coffee?",
+      "question_source": "people_also_ask",
+      "cluster": "Freshness Education",
+      "target_keyword": "best coffee beans ireland",
+      "format": "comparison",
+      "asked_under": "freshly roasted coffee beans",
+      "currently_answered_by": "reddit.com",
+      "answered_by_url": "https://www.reddit.com/r/ireland/comments/1l7uooj/coffee_lovers_of_ireland/",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "How to Choose Specialty Coffee Beans from an Independent European Roaster",
+      "question": "How do I choose specialty coffee beans from an independent European roaster?",
+      "question_source": "written",
+      "cluster": "Specialty Discovery",
+      "target_keyword": "buy coffee beans",
+      "format": "guide",
+      "currently_answered_by": "sarahfreia.com",
+      "answered_by_url": "https://www.sarahfreia.com/blog/2026-top-10-best-european-coffee-roasters",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "How to Buy Freshly Roasted Coffee Beans Online in Ireland",
+      "question": "How do I buy freshly roasted coffee beans online in Ireland?",
+      "question_source": "written",
+      "cluster": "Global City Purchase",
+      "target_keyword": "buy coffee beans online",
+      "format": "how-to",
+      "currently_answered_by": "discountcoffee.ie",
+      "answered_by_url": "https://discountcoffee.ie/collections/coffee-beans",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "What to Check Before Buying 1kg Coffee Beans in Ireland",
+      "question": "What should I check before buying 1kg coffee beans in Ireland?",
+      "question_source": "written",
+      "cluster": "Green Bulk Purchase",
+      "target_keyword": "1kg coffee beans ireland",
+      "format": "list",
+      "currently_answered_by": "essencecoffee.ie",
+      "answered_by_url": "https://essencecoffee.ie/the-ultimate-guide-to-buying-and-brewing-the-best-1kg-coffee-beans/",
+      "answered_by_source": "serp"
+     }
+    ],
+    "parked": [
+     {
+      "cluster": "Specialty Discovery",
+      "why": "Off-topic because subscriptions coffee and specialty coffee beans are generic commercial terms with near-zero commercial intent and no relevance to Squirrel Attack’s current offering."
+     },
+     {
+      "cluster": "Global City Purchase",
+      "why": "No measurable search demand in this market because its best keyword has only 10 searches/month, under the 20/month floor."
+     },
+     {
+      "cluster": "Green Bulk Purchase",
+      "why": "No measurable search demand in this market because its best keyword has only 10 searches/month, under the 20/month floor."
+     }
+    ],
+    "written_at": "2026-09-03T13:28:52.719169+00:00",
+    "stale": false,
+    "based_on": {
+     "selected": [
+      "Freshness Education"
+     ],
+     "parked": [
+      "Specialty Discovery",
+      "Global City Purchase",
+      "Green Bulk Purchase"
+     ],
+     "questions_observed": {
+      "Freshness Education": 4
+     }
+    }
+   }
+  }
+ ],
+ "ended": "2026-09-03T13:29:00.394951+00:00",
+ "pinned": true,
+ "pin_note": "SEO content strategy for Squirrel Attack Specialty Coffee, a new independent roastery (Ireland, English). Built through the discovery questionnaire; three competitors checked; the brief targets questions Google shows under People also ask.",
+ "archived": false
+}

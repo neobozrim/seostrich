@@ -1,0 +1,4743 @@
+{
+ "id": "sofia-coffee",
+ "project": "Content strategy · UK-EN",
+ "title": "Sofia Specialty Coffee Roaster",
+ "prompt": "Build the SEO content strategy for Sofia Specialty Coffee Roaster & Café.\r\n\r\nSofia Specialty Coffee Roaster & Café: A Sofia-based specialty coffee roaster and welcoming coffee shop. It serves excellent coffee in Sofia to international visitors, expats, digital nomads, and English-speaking locals, and sells its own freshly roasted specialty coffee beans online to customers internationally. The strategy should balance local café discovery with international direct-to-consumer bean sales.\r\nGoal: increase sales — bring in people ready to buy.\r\nAudience: Foreign visitors, expats and digital nomads seeking specialty coffee in Sofia, plus international home brewers buying distinctive European-roasted coffee beans online..\r\nCompetitors — see what they rank for and where the gaps are:\r\n- https://amatterofconcrete.com/\r\n- https://kissthehippo.com\r\n- https://tanat.coffee/en/\r\nMarket: United Kingdom, English.",
+ "created": "2026-09-03T13:37:04.466470+00:00",
+ "status": "done",
+ "stages": [
+  {
+   "id": "seeds",
+   "label": "Seeds",
+   "status": "done",
+   "artifact": {
+    "business_name": "Sofia Specialty Coffee Roaster",
+    "business_seeds": [
+     "specialty coffee roaster",
+     "sofia coffee shop",
+     "buy coffee beans online",
+     "digital nomad coffee shop"
+    ],
+    "site_seeds": [
+     "sofia specialty coffee",
+     "fresh roasted beans",
+     "coffee beans delivery",
+     "specialty coffee subscription"
+    ],
+    "competitor_seeds": [
+     "single origin coffee",
+     "third wave coffee",
+     "sustainable coffee beans",
+     "coffee subscription"
+    ],
+    "notes": "Site content was not fetched, so site seeds are inferred from the business description and likely page topics. Business seeds cover local café intent, roasting, online bean sales, and nomad/expat use cases; competitor seeds reflect common specialty coffee roaster themes."
+   }
+  },
+  {
+   "id": "intake",
+   "label": "Intake",
+   "status": "done",
+   "artifact": {
+    "locale": {
+     "location_code": 2826,
+     "language_code": "en"
+    },
+    "market": "UK-EN"
+   }
+  },
+  {
+   "id": "keywords",
+   "label": "Keyword discovery",
+   "status": "done",
+   "artifact": {
+    "count": 166,
+    "keywords": [
+     {
+      "keyword": "square mile coffee",
+      "volume": 8100,
+      "difficulty": 8,
+      "cpc": 0.56,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "coffee roaster london",
+      "volume": 1000,
+      "difficulty": 55,
+      "cpc": 3.13,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "fresh roasted coffee beans",
+      "volume": 720,
+      "difficulty": 11,
+      "cpc": 3.03,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "coffee beans fresh roasted",
+      "volume": 720,
+      "difficulty": 11,
+      "cpc": 3.03,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "coffee art course",
+      "volume": 720,
+      "difficulty": 0,
+      "cpc": 1.5699999332427979,
+      "intent": "informational",
+      "rank": 4,
+      "ranking_url": "https://kissthehippo.com/products/latte-art-course",
+      "estimated_traffic": 47.448001861572266,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "single origin coffee",
+      "volume": 590,
+      "difficulty": 0,
+      "cpc": 3.25,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "coffee single origin",
+      "volume": 590,
+      "difficulty": 0,
+      "cpc": 3.25,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "latte art course",
+      "volume": 590,
+      "difficulty": 0,
+      "cpc": 1.3899999856948853,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://kissthehippo.com/products/latte-art-course-spitalfields",
+      "estimated_traffic": 95.58000183105469,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "coffee art class",
+      "volume": 590,
+      "difficulty": 0,
+      "cpc": 1.3899999856948853,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://kissthehippo.com/products/latte-art-course",
+      "estimated_traffic": 57.40700149536133,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "coffee pod subscription",
+      "volume": 260,
+      "difficulty": 0,
+      "cpc": 5.210000038146973,
+      "intent": "informational",
+      "rank": 1,
+      "ranking_url": "https://kissthehippo.com/pages/coffee-subscriptions",
+      "estimated_traffic": 79.04000091552734,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "coffee beans tasting pack",
+      "volume": 210,
+      "difficulty": 0,
+      "cpc": 2.759999990463257,
+      "intent": "informational",
+      "rank": 5,
+      "ranking_url": "https://kissthehippo.com/products/explorer-taster-pack",
+      "estimated_traffic": 13.83899974822998,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "co fermented coffee",
+      "volume": 210,
+      "difficulty": 0,
+      "cpc": 1.4700000286102295,
+      "intent": "informational",
+      "rank": 26,
+      "ranking_url": "https://tanat.coffee/en/fermentation-cafe-techniques-innovantes/",
+      "estimated_traffic": 0.5040000081062317,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "co ferment coffee",
+      "volume": 210,
+      "difficulty": 0,
+      "cpc": 1.4700000286102295,
+      "intent": "informational",
+      "rank": 29,
+      "ranking_url": "https://tanat.coffee/en/fermentation-cafe-techniques-innovantes/",
+      "estimated_traffic": 0.4410000145435333,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "coffee art book",
+      "volume": 210,
+      "difficulty": 0,
+      "cpc": 0.23999999463558197,
+      "intent": "informational",
+      "rank": 50,
+      "ranking_url": "https://tanat.coffee/en/lart-du-latte-art-quand-le-cafe-devient-une-toile/",
+      "estimated_traffic": 0.4410000145435333,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "assembly coffee roasters",
+      "volume": 170,
+      "difficulty": 4,
+      "cpc": 0.77,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "single origin coffee beans",
+      "volume": 170,
+      "difficulty": 0,
+      "cpc": 3.84,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee bean",
+      "volume": 170,
+      "difficulty": 0,
+      "cpc": 3.84,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "coffee bean single origin",
+      "volume": 170,
+      "difficulty": 0,
+      "cpc": 3.84,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "coffee beans single origin",
+      "volume": 170,
+      "difficulty": 0,
+      "cpc": 3.84,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "fresh roasted coffee beans near me",
+      "volume": 170,
+      "difficulty": 0,
+      "cpc": 2.02,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "uk specialty coffee roasters",
+      "volume": 140,
+      "difficulty": 0,
+      "cpc": 2.37,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "fermented coffee",
+      "volume": 140,
+      "difficulty": 0,
+      "cpc": 1.8199999332427979,
+      "intent": "informational",
+      "rank": 34,
+      "ranking_url": "https://tanat.coffee/en/les-methodes-de-fermentation-et-de-sechage-du-cafe/",
+      "estimated_traffic": 0.2939999997615814,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "specialty coffee roaster",
+      "volume": 110,
+      "difficulty": 10,
+      "cpc": 0.64,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "single origin coffee near me",
+      "volume": 110,
+      "difficulty": 29,
+      "cpc": 0.14,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "cupping spoon",
+      "volume": 110,
+      "difficulty": 0,
+      "cpc": 1.2799999713897705,
+      "intent": "informational",
+      "rank": 7,
+      "ranking_url": "https://tanat.coffee/en/boutique/cuillere-cupping-tanat/",
+      "estimated_traffic": 10.70300006866455,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "latte art names",
+      "volume": 110,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 21,
+      "ranking_url": "https://tanat.coffee/en/lart-du-latte-art-quand-le-cafe-devient-une-toile/",
+      "estimated_traffic": 0.4729999899864197,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "latte art name",
+      "volume": 110,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 24,
+      "ranking_url": "https://tanat.coffee/en/lart-du-latte-art-quand-le-cafe-devient-une-toile/",
+      "estimated_traffic": 0.3630000054836273,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "coffee cupping spoons",
+      "volume": 110,
+      "difficulty": 0,
+      "cpc": 1.2599999904632568,
+      "intent": "informational",
+      "rank": 35,
+      "ranking_url": "https://tanat.coffee/en/boutique/cuillere-cupping-tanat/",
+      "estimated_traffic": 0.23100000619888306,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "coffee roaster machine uk",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 2.18,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "specialty coffee roaster near me",
+      "volume": 90,
+      "difficulty": 26,
+      "cpc": 0.26,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "what is single origin coffee",
+      "volume": 90,
+      "difficulty": 5,
+      "cpc": 0.79,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "what is a single origin coffee",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 0.79,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "fresh roasted coffee beans uk",
+      "volume": 90,
+      "difficulty": 15,
+      "cpc": 3.16,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "coffee tasting experience near me",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 1.25,
+      "intent": "informational",
+      "rank": 6,
+      "ranking_url": "https://kissthehippo.com/products/coffee-tasting-experience",
+      "estimated_traffic": 14.579999923706055,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "latte art workshop",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 1.2100000381469727,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://kissthehippo.com/products/latte-art-course",
+      "estimated_traffic": 14.579999923706055,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "specialty coffee pods",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 2.059999942779541,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://kissthehippo.com/pages/coffee-subscriptions",
+      "estimated_traffic": 14.579999923706055,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "workshop latte art",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 1.8899999856948853,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://kissthehippo.com/products/latte-art-course",
+      "estimated_traffic": 14.579999923706055,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "coffee taster packs",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 2.680000066757202,
+      "intent": "informational",
+      "rank": 4,
+      "ranking_url": "https://kissthehippo.com/products/explorer-taster-pack",
+      "estimated_traffic": 8.756999969482422,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "organic coffee cafe near me",
+      "volume": 90,
+      "difficulty": 5,
+      "cpc": 0.949999988079071,
+      "intent": "informational",
+      "rank": 6,
+      "ranking_url": "https://kissthehippo.com/",
+      "estimated_traffic": 8.756999969482422,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "canned cold coffee",
+      "volume": 90,
+      "difficulty": 0,
+      "cpc": 1.0199999809265137,
+      "intent": "informational",
+      "rank": 6,
+      "ranking_url": "https://kissthehippo.com/products/organic-carbon-negative-cold-brew-coffee",
+      "estimated_traffic": 5.930999755859375,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "latte art types",
+      "volume": 90,
+      "difficulty": 8,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 74,
+      "ranking_url": "https://tanat.coffee/en/lart-du-latte-art-quand-le-cafe-devient-une-toile/",
+      "estimated_traffic": 0.1889999955892563,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "cold brew coffee can",
+      "volume": 70,
+      "difficulty": 7,
+      "cpc": 2.0199999809265137,
+      "intent": "informational",
+      "rank": 3,
+      "ranking_url": "https://kissthehippo.com/products/organic-carbon-negative-cold-brew-coffee",
+      "estimated_traffic": 21.280000686645508,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "cold brew coffee canned",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 2.049999952316284,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://kissthehippo.com/products/organic-carbon-negative-cold-brew-coffee",
+      "estimated_traffic": 21.280000686645508,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "canned cold brew coffee",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 2.0199999809265137,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://kissthehippo.com/products/organic-carbon-negative-cold-brew-coffee",
+      "estimated_traffic": 11.34000015258789,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "coffee taster set",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 2.5299999713897705,
+      "intent": "informational",
+      "rank": 2,
+      "ranking_url": "https://kissthehippo.com/products/explorer-taster-pack",
+      "estimated_traffic": 11.34000015258789,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "cold brew coffee cans",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 2.0199999809265137,
+      "intent": "informational",
+      "rank": 4,
+      "ranking_url": "https://kissthehippo.com/products/organic-carbon-negative-cold-brew-coffee",
+      "estimated_traffic": 11.34000015258789,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "cold brew coffee in can",
+      "volume": 70,
+      "difficulty": 6,
+      "cpc": 2.049999952316284,
+      "intent": "informational",
+      "rank": 5,
+      "ranking_url": "https://kissthehippo.com/products/organic-carbon-negative-cold-brew-coffee",
+      "estimated_traffic": 11.34000015258789,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "coffee pod gift",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 4.349999904632568,
+      "intent": "informational",
+      "rank": 4,
+      "ranking_url": "https://kissthehippo.com/pages/coffee-subscriptions",
+      "estimated_traffic": 6.810999870300293,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "coffee pod gift set",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 2.3399999141693115,
+      "intent": "informational",
+      "rank": 5,
+      "ranking_url": "https://kissthehippo.com/products/coffee-pods-gift-bundle",
+      "estimated_traffic": 6.810999870300293,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "coffee bag tote",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": 0.44999998807907104,
+      "intent": "informational",
+      "rank": 8,
+      "ranking_url": "https://kissthehippo.com/products/holiday-friendly-tote",
+      "estimated_traffic": 4.61299991607666,
+      "source": "competitor",
+      "owned_by": [
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "fermentation of coffee beans",
+      "volume": 70,
+      "difficulty": 12,
+      "cpc": 1.8799999952316284,
+      "intent": "informational",
+      "rank": 4,
+      "ranking_url": "https://tanat.coffee/en/les-methodes-de-fermentation-et-de-sechage-du-cafe/",
+      "estimated_traffic": 6.810999870300293,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "is coffee fermented",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 16,
+      "ranking_url": "https://tanat.coffee/en/les-methodes-de-fermentation-et-de-sechage-du-cafe/",
+      "estimated_traffic": 0.6370000243186951,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "coffee drying",
+      "volume": 70,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "rank": 63,
+      "ranking_url": "https://tanat.coffee/en/les-methodes-de-fermentation-et-de-sechage-du-cafe/",
+      "estimated_traffic": 0.1469999998807907,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "single origin coffee uk",
+      "volume": 50,
+      "difficulty": 0,
+      "cpc": 1.7,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee vs blend",
+      "volume": 50,
+      "difficulty": 0,
+      "cpc": 1.77,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "coffee blends vs single origin",
+      "volume": 50,
+      "difficulty": 39,
+      "cpc": 3.39,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "coffee blend vs single origin",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 3.39,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "colombian single origin coffee",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 0.51,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "colombia single origin coffee",
+      "volume": 50,
+      "difficulty": 40,
+      "cpc": 0.51,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "blend vs single origin coffee",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 1.77,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee colombia",
+      "volume": 50,
+      "difficulty": 40,
+      "cpc": 0.51,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin vs blend coffee",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 3.39,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "coffee single origin vs blend",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 1.77,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin vs blended coffee",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 3.39,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin colombian coffee",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 0.51,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "best freshly roasted coffee beans uk",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 3.92,
+      "intent": "commercial",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "james gourmet coffee beans",
+      "volume": 50,
+      "difficulty": null,
+      "cpc": 4.13,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "ombligon",
+      "volume": 50,
+      "difficulty": 0,
+      "cpc": 0.3700000047683716,
+      "intent": "informational",
+      "rank": 8,
+      "ranking_url": "https://tanat.coffee/en/boutique/nestor-lasso-ombligon/",
+      "estimated_traffic": 1.690000057220459,
+      "source": "competitor",
+      "owned_by": [
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "single origin coffee meaning",
+      "volume": 40,
+      "difficulty": 2,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "what does single origin coffee mean",
+      "volume": 40,
+      "difficulty": null,
+      "cpc": 0.9,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee definition",
+      "volume": 40,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee beans uk",
+      "volume": 30,
+      "difficulty": null,
+      "cpc": 1.79,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "best single origin coffee",
+      "volume": 30,
+      "difficulty": 45,
+      "cpc": 1.95,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "best coffee single origin",
+      "volume": 30,
+      "difficulty": 45,
+      "cpc": 1.95,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin organic coffee",
+      "volume": 30,
+      "difficulty": null,
+      "cpc": 2.07,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "organic single origin coffee",
+      "volume": 30,
+      "difficulty": null,
+      "cpc": 2.07,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "lidl single origin coffee",
+      "volume": 30,
+      "difficulty": null,
+      "cpc": 0.22,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "is single origin coffee better",
+      "volume": 30,
+      "difficulty": null,
+      "cpc": 3.85,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee subscription",
+      "volume": 30,
+      "difficulty": 0,
+      "cpc": 3.1,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "best fresh roasted coffee beans",
+      "volume": 30,
+      "difficulty": null,
+      "cpc": 3.58,
+      "intent": "commercial",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "uk coffee roasters list",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 3.45,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "artesano specialty coffee roaster",
+      "volume": 20,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "best single origin coffee beans",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 1.91,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "m&s single origin coffee",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 0.02,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "brazil single origin coffee",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 0.18,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "brazilian single origin coffee",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 0.18,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "lofbergs brazil single origin whole coffee beans 1kg",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 0.28,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "fresh roasted beans",
+      "volume": 20,
+      "difficulty": 39,
+      "cpc": 3.85,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "best fresh roasted coffee beans uk",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 6.23,
+      "intent": "commercial",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans london",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 4.45,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "buy fresh roasted coffee beans near me",
+      "volume": 20,
+      "difficulty": null,
+      "cpc": 0.91,
+      "intent": "transactional",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "roaster specialty coffee house",
+      "volume": 10,
+      "difficulty": 0,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "pacamara coffee roaster x specialty coffee lab",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "coffee specialty roaster pte ltd",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "roaster specialty coffee",
+      "volume": 10,
+      "difficulty": 3,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "letefoho specialty coffee roaster",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "tame rabbit specialty coffee & roaster",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "specialty coffee sofia",
+      "volume": 10,
+      "difficulty": 45,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "sofia specialty coffee"
+     },
+     {
+      "keyword": "single origin coffee beans 1kg",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.18,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee roasters",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 3.51,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee menu",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin dark roast coffee",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin filter coffee",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.98,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "lavazza single origin coffee",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "starbucks single-origin coffee",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 0.75,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee macau",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee kenya",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 5.91,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "best organic single origin coffee",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "commercial",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "buy single origin coffee online",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "meaning of single origin coffee",
+      "volume": 10,
+      "difficulty": 2,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin arabica coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "single origin coffee countries",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "single origin coffee"
+     },
+     {
+      "keyword": "sofia coffee shop",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "sofia coffee shop"
+     },
+     {
+      "keyword": "freya coffee shop sofia",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "sofia coffee shop"
+     },
+     {
+      "keyword": "coffee shop sofia",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "sofia coffee shop"
+     },
+     {
+      "keyword": "fresh roasted beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 0.88,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "order fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "how to keep roasted coffee beans fresh",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "bulk fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "1kg fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 2.12,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "how long do fresh roasted coffee beans last",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "local fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 4.33,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted decaf coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 2.38,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans subscription",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.5,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans perth",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "organic fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 2.05,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted espresso beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "coffee beans fresh roasted near me",
+      "volume": 10,
+      "difficulty": 30,
+      "cpc": 4.1,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "where to get fresh roasted coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "where to get fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted italian coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "buy fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.98,
+      "intent": "transactional",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "how to get fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 0.96,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans online",
+      "volume": 10,
+      "difficulty": 61,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans melbourne",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "best place to buy fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.79,
+      "intent": "transactional",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans sydney",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans for sale",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 3.49,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "how to buy fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "transactional",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "how to store fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "how long does roasted coffee beans stay fresh",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 0.1,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted arabica coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 5.1,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "storing fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "best fresh roasted coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.75,
+      "intent": "commercial",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "best fresh roasted coffee beans online",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 8.43,
+      "intent": "commercial",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans tampa",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "where can i buy fresh roasted coffee beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.44,
+      "intent": "transactional",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans amazon",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "roasted fresh garbanzo beans",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans vs old",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "commercial",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "where can i get fresh roasted coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans ireland",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "where can i buy fresh roasted coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 1.8,
+      "intent": "transactional",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans singapore",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "fresh roasted coffee beans delivered",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 4.56,
+      "intent": "informational",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "where to buy fresh roasted coffee beans near me",
+      "volume": 10,
+      "difficulty": null,
+      "cpc": 2.57,
+      "intent": "transactional",
+      "source_seed": "fresh roasted beans"
+     },
+     {
+      "keyword": "frankie's beans specialty coffee roaster",
+      "volume": 0,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "london specialty coffee roaster",
+      "volume": null,
+      "difficulty": null,
+      "cpc": null,
+      "intent": "informational",
+      "source_seed": "specialty coffee roaster"
+     },
+     {
+      "keyword": "sofia specialty coffee",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "third wave coffee",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "buy coffee beans online",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "coffee beans delivery",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "sustainable coffee beans",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "digital nomad coffee shop",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "specialty coffee subscription",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     },
+     {
+      "keyword": "coffee subscription",
+      "volume": 0,
+      "difficulty": 0,
+      "cpc": 0,
+      "intent": "informational",
+      "source": "seed"
+     }
+    ]
+   }
+  },
+  {
+   "id": "competitors",
+   "label": "Competitor map",
+   "status": "done",
+   "artifact": {
+    "competitors": [
+     "amatterofconcrete.com",
+     "kissthehippo.com",
+     "tanat.coffee"
+    ],
+    "user_supplied": [
+     "amatterofconcrete.com",
+     "kissthehippo.com",
+     "tanat.coffee"
+    ],
+    "discovered": [],
+    "site_has_rankings": null,
+    "per_domain": {
+     "amatterofconcrete.com": {
+      "keywords": 46,
+      "brand_terms_skipped": 0,
+      "other_script": 0,
+      "shared_with_site": 0,
+      "top": [
+       "amoc coffee",
+       "pesado shower screen",
+       "weber blind shaker",
+       "weber eg-1 grinder",
+       "melodrip uk"
+      ],
+      "rows": [
+       {
+        "keyword": "amoc coffee",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": 0.2199999988079071,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "pesado shower screen",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.9599999785423279,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "weber blind shaker",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.23999999463558197,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "weber eg-1 grinder",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 3.2300000190734863,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "melodrip uk",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "weber workshops eg 1",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 0.8700000047683716,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "eg1",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 0.8100000023841858,
+        "intent": "informational",
+        "rank": 9
+       },
+       {
+        "keyword": "weber workshops eg-1",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 0.7400000095367432,
+        "intent": "informational",
+        "rank": 10
+       },
+       {
+        "keyword": "eg 1",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 0.8100000023841858,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "weber bird",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.7099999785423279,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "eg-1",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 0.4300000071525574,
+        "intent": "informational",
+        "rank": 16
+       },
+       {
+        "keyword": "orea o1",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.6200000047683716,
+        "intent": "informational",
+        "rank": 15
+       },
+       {
+        "keyword": "weber eg 1 grinder",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 3.2300000190734863,
+        "intent": "informational",
+        "rank": 16
+       },
+       {
+        "keyword": "weber moonraker",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.6100000143051147,
+        "intent": "informational",
+        "rank": 16
+       },
+       {
+        "keyword": "eg 1 grinder",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 0.2800000011920929,
+        "intent": "informational",
+        "rank": 17
+       },
+       {
+        "keyword": "weber eg 1",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": 0.6800000071525574,
+        "intent": "informational",
+        "rank": 17
+       },
+       {
+        "keyword": "eg-1 grinder",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 1.5899999141693115,
+        "intent": "informational",
+        "rank": 17
+       },
+       {
+        "keyword": "orea coffee",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 0.7400000095367432,
+        "intent": "informational",
+        "rank": 16
+       },
+       {
+        "keyword": "weber grinder",
+        "volume": 170,
+        "difficulty": 2,
+        "cpc": 0.30000001192092896,
+        "intent": "informational",
+        "rank": 20
+       },
+       {
+        "keyword": "pesado",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 1.2899999618530273,
+        "intent": "informational",
+        "rank": 18
+       },
+       {
+        "keyword": "orea brewer",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 0.6600000262260437,
+        "intent": "informational",
+        "rank": 22
+       },
+       {
+        "keyword": "weber coffee grinder",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.3100000023841858,
+        "intent": "informational",
+        "rank": 21
+       },
+       {
+        "keyword": "orea uk",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.8700000047683716,
+        "intent": "informational",
+        "rank": 21
+       },
+       {
+        "keyword": "rhino pitcher rinser",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 2.740000009536743,
+        "intent": "informational",
+        "rank": 27
+       },
+       {
+        "keyword": "apax lab",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.190000057220459,
+        "intent": "informational",
+        "rank": 23
+       },
+       {
+        "keyword": "slayer single group",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.9200000166893005,
+        "intent": "informational",
+        "rank": 27
+       },
+       {
+        "keyword": "amo coffee",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 3.0199999809265137,
+        "intent": "informational",
+        "rank": 25
+       },
+       {
+        "keyword": "laurina coffee",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.9399999976158142,
+        "intent": "informational",
+        "rank": 25
+       },
+       {
+        "keyword": "acaia orbit",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 1.2899999618530273,
+        "intent": "informational",
+        "rank": 31
+       },
+       {
+        "keyword": "orea",
+        "volume": 1300,
+        "difficulty": 0,
+        "cpc": 0.8299999833106995,
+        "intent": "informational",
+        "rank": 29
+       },
+       {
+        "keyword": "orea dripper",
+        "volume": 110,
+        "difficulty": 13,
+        "cpc": 0.4300000071525574,
+        "intent": "informational",
+        "rank": 32
+       },
+       {
+        "keyword": "water for coffee book",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "barista hustle",
+        "volume": 210,
+        "difficulty": 6,
+        "cpc": 0.38999998569488525,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "the physics of filter coffee",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.20000000298023224,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "poma coffee",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 36
+       },
+       {
+        "keyword": "orea z1",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": 0.6700000166893005,
+        "intent": "informational",
+        "rank": 40
+       },
+       {
+        "keyword": "cafec abaca filters",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.9800000190734863,
+        "intent": "informational",
+        "rank": 40
+       },
+       {
+        "keyword": "laurina",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 39
+       },
+       {
+        "keyword": "cafec abaca filter",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.6499999761581421,
+        "intent": "informational",
+        "rank": 44
+       },
+       {
+        "keyword": "kinto coffee server",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.8199999928474426,
+        "intent": "informational",
+        "rank": 48
+       },
+       {
+        "keyword": "sumo coffee",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 56
+       },
+       {
+        "keyword": "oma coffee",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 2.8600001335144043,
+        "intent": "informational",
+        "rank": 62
+       },
+       {
+        "keyword": "oma coffee roasters",
+        "volume": 6600,
+        "difficulty": 0,
+        "cpc": 0.8899999856948853,
+        "intent": "informational",
+        "rank": 64
+       },
+       {
+        "keyword": "sumo coffee roasters",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 64
+       },
+       {
+        "keyword": "oma coffee roaster",
+        "volume": 6600,
+        "difficulty": 0,
+        "cpc": 0.8899999856948853,
+        "intent": "informational",
+        "rank": 76
+       },
+       {
+        "keyword": "costa o2",
+        "volume": 210,
+        "difficulty": 6,
+        "cpc": 0.5,
+        "intent": "informational",
+        "rank": 88
+       }
+      ]
+     },
+     "kissthehippo.com": {
+      "keywords": 99,
+      "brand_terms_skipped": 1,
+      "other_script": 0,
+      "shared_with_site": 0,
+      "top": [
+       "coffee pod subscription",
+       "coffee shop cannon street",
+       "cold brew coffee can",
+       "cold brew coffee canned",
+       "george street coffee"
+      ],
+      "rows": [
+       {
+        "keyword": "coffee pod subscription",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 5.210000038146973,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "coffee shop cannon street",
+        "volume": 140,
+        "difficulty": 9,
+        "cpc": 0.4000000059604645,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "cold brew coffee can",
+        "volume": 70,
+        "difficulty": 7,
+        "cpc": 2.0199999809265137,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "cold brew coffee canned",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 2.049999952316284,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "george street coffee",
+        "volume": 90,
+        "difficulty": 2,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "hippo coffee",
+        "volume": 480,
+        "difficulty": 0,
+        "cpc": 2.2799999713897705,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "hippo coffee london",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.25,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "hippo coffee london",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.25,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "hippo mug",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.20000000298023224,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "hippo mugs",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.25,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "kiss the hippo cannon street",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 8.930000305175781,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo chelsea",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee",
+        "volume": 12100,
+        "difficulty": 0,
+        "cpc": 1.3300000429153442,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee beans",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 0.699999988079071,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee chelsea",
+        "volume": 6600,
+        "difficulty": 0,
+        "cpc": 0.25,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee covent garden",
+        "volume": 8100,
+        "difficulty": 0,
+        "cpc": 0.4000000059604645,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee covent garden reviews",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "kiss the hippo coffee fitzrovia",
+        "volume": 1900,
+        "difficulty": 0,
+        "cpc": 0.699999988079071,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "kiss the hippo coffee london",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 0.8799999952316284,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "kiss the hippo coffee mayfair",
+        "volume": 9900,
+        "difficulty": 0,
+        "cpc": 0.27000001072883606,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee mayfair reviews",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 2
+       },
+       {
+        "keyword": "kiss the hippo coffee richmond",
+        "volume": 3600,
+        "difficulty": 0,
+        "cpc": 2.7200000286102295,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee shoreditch",
+        "volume": 3600,
+        "difficulty": 0,
+        "cpc": 0.30000001192092896,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee shoreditch",
+        "volume": 3600,
+        "difficulty": 0,
+        "cpc": 0.30000001192092896,
+        "intent": "informational",
+        "rank": 12
+       },
+       {
+        "keyword": "kiss the hippo coffee soho",
+        "volume": 12100,
+        "difficulty": 0,
+        "cpc": 1.0399999618530273,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo coffee spitalfields",
+        "volume": 5400,
+        "difficulty": 0,
+        "cpc": 0.1899999976158142,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "kiss the hippo covent garden",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "kiss the hippo discount code",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 5.639999866485596,
+        "intent": "transactional",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo fitzrovia",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 0.18000000715255737,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "kiss the hippo fulham pier",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.9500000476837158,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo golden square",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "kiss the hippo locations",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.4000000059604645,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "kiss the hippo london",
+        "volume": 320,
+        "difficulty": 2,
+        "cpc": 0.9599999785423279,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "kiss the hippo margaret street",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.5199999809265137,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo mayfair",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 0.5600000023841858,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "kiss the hippo menu",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 3.5,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo near me",
+        "volume": 1600,
+        "difficulty": 0,
+        "cpc": 0.09000000357627869,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "kiss the hippo old street",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo oxford circus",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 0.27000001072883606,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo richmond",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 3.799999952316284,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo shoreditch",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.11999999731779099,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo soho",
+        "volume": 480,
+        "difficulty": 0,
+        "cpc": 3.2699999809265137,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "kiss the hippo spitalfields",
+        "volume": 210,
+        "difficulty": 3,
+        "cpc": 0.09000000357627869,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "latte art class london",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 1.4500000476837158,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "latte art course london",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 1.4500000476837158,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "laurina coffee",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.9399999976158142,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "morning mini coffee machine",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.1100000143051147,
+        "intent": "informational",
+        "rank": 1
+       },
+       {
+        "keyword": "w1w 8sg",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.2200000286102295,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "canned cold brew coffee",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 2.0199999809265137,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "coffee taster set",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 2.5299999713897705,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "coffee tasting experience london",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 2.6600000858306885,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "coffee tasting experience near me",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.25,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "cold brew coffee cans",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 2.0199999809265137,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "cold brew coffee in can",
+        "volume": 70,
+        "difficulty": 6,
+        "cpc": 2.049999952316284,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "fellow ode gen 2",
+        "volume": 1000,
+        "difficulty": 0,
+        "cpc": 2.809999942779541,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "hipo coffee",
+        "volume": 720,
+        "difficulty": 0,
+        "cpc": 0.6000000238418579,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "hippo kiss",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 1.75,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "kinto coffee server",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.8199999928474426,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "kiss mug",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.20999999344348907,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "kiss the hippo coffee chelsea reviews",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "commercial",
+        "rank": 3
+       },
+       {
+        "keyword": "latte art course",
+        "volume": 590,
+        "difficulty": 0,
+        "cpc": 1.3899999856948853,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "latte art workshop",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.2100000381469727,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "ode 2 grinder",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 3.369999885559082,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "opal one",
+        "volume": 720,
+        "difficulty": 0,
+        "cpc": 1.3899999856948853,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "opal one coffee machine",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 1.4900000095367432,
+        "intent": "informational",
+        "rank": 2
+       },
+       {
+        "keyword": "red hippo",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "specialty coffee pods",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 2.059999942779541,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "stagg ekg pro",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.159999966621399,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "timemore c3 pro",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.1100000143051147,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "workshop latte art",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.8899999856948853,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "aarke coffee grinder",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 2.25,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "aarke filter granules",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.8700000047683716,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "baratza sette 270wi",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 1.2799999713897705,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "coffee art class",
+        "volume": 590,
+        "difficulty": 0,
+        "cpc": 1.3899999856948853,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "coffee cannon street",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "coffee class london",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 1.6299999952316284,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "coffee experience london",
+        "volume": 170,
+        "difficulty": 0,
+        "cpc": 1.3300000429153442,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "coffee pod gift",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 4.349999904632568,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "coffee pod gift set",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 2.3399999141693115,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "coffee taster packs",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 2.680000066757202,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "fellow ode",
+        "volume": 590,
+        "difficulty": 0,
+        "cpc": 1.9600000381469727,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "fellow ode grinder",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 1.5299999713897705,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "kinto day off tumbler",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 0.6600000262260437,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "kiss cafe",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 5
+       },
+       {
+        "keyword": "kiss the hippo jobs",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 15.9399995803833,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "london coffee subscription",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 4.03000020980835,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "nespresso pod subscription",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 2.130000114440918,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "nespresso subscription",
+        "volume": 1000,
+        "difficulty": 0,
+        "cpc": 0.5,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "opal coffee machine",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 1.2000000476837158,
+        "intent": "informational",
+        "rank": 3
+       },
+       {
+        "keyword": "organic coffee cafe near me",
+        "volume": 90,
+        "difficulty": 5,
+        "cpc": 0.949999988079071,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "sette 270wi",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.949999988079071,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "wilfa zense grinder",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.8299999237060547,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "barista class london",
+        "volume": 880,
+        "difficulty": 0,
+        "cpc": 1.6100000143051147,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "canned cold coffee",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 1.0199999809265137,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "chemex pour over",
+        "volume": 140,
+        "difficulty": 4,
+        "cpc": 0.7200000286102295,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "coffee and pod",
+        "volume": 14800,
+        "difficulty": 0,
+        "cpc": 2.740000009536743,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "coffee art course",
+        "volume": 720,
+        "difficulty": 0,
+        "cpc": 1.5699999332427979,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "coffee bag tote",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.44999998807907104,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "coffee beans tasting pack",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 2.759999990463257,
+        "intent": "informational",
+        "rank": 5
+       }
+      ]
+     },
+     "tanat.coffee": {
+      "keywords": 44,
+      "brand_terms_skipped": 4,
+      "other_script": 0,
+      "shared_with_site": 0,
+      "top": [
+       "kawa coffee",
+       "tanat",
+       "tanat coffee",
+       "tanat coffee paris",
+       "tanat paris"
+      ],
+      "rows": [
+       {
+        "keyword": "kawa coffee",
+        "volume": 260,
+        "difficulty": 0,
+        "cpc": 0.6600000262260437,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "kawa coffee paris",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 6
+       },
+       {
+        "keyword": "cupping spoon",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.2799999713897705,
+        "intent": "informational",
+        "rank": 7
+       },
+       {
+        "keyword": "fermentation of coffee beans",
+        "volume": 70,
+        "difficulty": 12,
+        "cpc": 1.8799999952316284,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "jairo arcila coffee",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.9100000262260437,
+        "intent": "informational",
+        "rank": 4
+       },
+       {
+        "keyword": "ombligon",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.3700000047683716,
+        "intent": "informational",
+        "rank": 8
+       },
+       {
+        "keyword": "is coffee fermented",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 16
+       },
+       {
+        "keyword": "cafec abaca filters",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.9800000190734863,
+        "intent": "informational",
+        "rank": 14
+       },
+       {
+        "keyword": "coffee tamper de'longhi",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.5,
+        "intent": "informational",
+        "rank": 22
+       },
+       {
+        "keyword": "ek43s",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.8199999928474426,
+        "intent": "informational",
+        "rank": 19
+       },
+       {
+        "keyword": "french coffee brand",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.15000000596046448,
+        "intent": "informational",
+        "rank": 21
+       },
+       {
+        "keyword": "cafec abaca filter",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.6499999761581421,
+        "intent": "informational",
+        "rank": 22
+       },
+       {
+        "keyword": "e65s gbw",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 2.7200000286102295,
+        "intent": "informational",
+        "rank": 21
+       },
+       {
+        "keyword": "latte art names",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 21
+       },
+       {
+        "keyword": "coffee tamper delonghi",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.3499999940395355,
+        "intent": "informational",
+        "rank": 25
+       },
+       {
+        "keyword": "latte art name",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 24
+       },
+       {
+        "keyword": "tally pro",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 2.140000104904175,
+        "intent": "informational",
+        "rank": 22
+       },
+       {
+        "keyword": "timemore fish pro x",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.8100000023841858,
+        "intent": "informational",
+        "rank": 24
+       },
+       {
+        "keyword": "co fermented coffee",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 1.4700000286102295,
+        "intent": "informational",
+        "rank": 26
+       },
+       {
+        "keyword": "delonghi tamper",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 0.3400000035762787,
+        "intent": "informational",
+        "rank": 33
+       },
+       {
+        "keyword": "delonghi coffee tamper",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.5,
+        "intent": "informational",
+        "rank": 34
+       },
+       {
+        "keyword": "latte origins",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 29
+       },
+       {
+        "keyword": "co ferment coffee",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 1.4700000286102295,
+        "intent": "informational",
+        "rank": 29
+       },
+       {
+        "keyword": "coffee cupping spoons",
+        "volume": 110,
+        "difficulty": 0,
+        "cpc": 1.2599999904632568,
+        "intent": "informational",
+        "rank": 35
+       },
+       {
+        "keyword": "kata coffee",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 1.7100000381469727,
+        "intent": "informational",
+        "rank": 26
+       },
+       {
+        "keyword": "the physics of filter coffee",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.20000000298023224,
+        "intent": "informational",
+        "rank": 28
+       },
+       {
+        "keyword": "cork keepcup",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.3799999952316284,
+        "intent": "informational",
+        "rank": 31
+       },
+       {
+        "keyword": "keepcup cork",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.3199999928474426,
+        "intent": "informational",
+        "rank": 32
+       },
+       {
+        "keyword": "kinto jug",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.8299999833106995,
+        "intent": "informational",
+        "rank": 36
+       },
+       {
+        "keyword": "orea v4",
+        "volume": 320,
+        "difficulty": 0,
+        "cpc": 0.6000000238418579,
+        "intent": "informational",
+        "rank": 32
+       },
+       {
+        "keyword": "fermented coffee",
+        "volume": 140,
+        "difficulty": 0,
+        "cpc": 1.8199999332427979,
+        "intent": "informational",
+        "rank": 34
+       },
+       {
+        "keyword": "kavat coffee",
+        "volume": 90,
+        "difficulty": 11,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 41
+       },
+       {
+        "keyword": "cafec t90",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": 0.6399999856948853,
+        "intent": "informational",
+        "rank": 38
+       },
+       {
+        "keyword": "coffee from france",
+        "volume": 1600,
+        "difficulty": 0,
+        "cpc": 0.49000000953674316,
+        "intent": "informational",
+        "rank": 43
+       },
+       {
+        "keyword": "kinto carafe",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 0.6700000166893005,
+        "intent": "informational",
+        "rank": 43
+       },
+       {
+        "keyword": "coffee art book",
+        "volume": 210,
+        "difficulty": 0,
+        "cpc": 0.23999999463558197,
+        "intent": "informational",
+        "rank": 50
+       },
+       {
+        "keyword": "puqpress m3",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": 3.3899998664855957,
+        "intent": "informational",
+        "rank": 49
+       },
+       {
+        "keyword": "orea z1 brewer",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 0.3400000035762787,
+        "intent": "informational",
+        "rank": 49
+       },
+       {
+        "keyword": "kaf kaf paris",
+        "volume": 90,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 51
+       },
+       {
+        "keyword": "tank coffee",
+        "volume": 390,
+        "difficulty": 0,
+        "cpc": 2.4000000953674316,
+        "intent": "informational",
+        "rank": 57
+       },
+       {
+        "keyword": "datura coffee",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 54
+       },
+       {
+        "keyword": "coffee drying",
+        "volume": 70,
+        "difficulty": 0,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 63
+       },
+       {
+        "keyword": "mahlkonig e65 gbw",
+        "volume": 50,
+        "difficulty": 0,
+        "cpc": 2.450000047683716,
+        "intent": "informational",
+        "rank": 70
+       },
+       {
+        "keyword": "latte art types",
+        "volume": 90,
+        "difficulty": 8,
+        "cpc": null,
+        "intent": "informational",
+        "rank": 74
+       }
+      ]
+     }
+    },
+    "consensus": [
+     {
+      "keyword": "the physics of filter coffee",
+      "volume": 90,
+      "owned_by": [
+       "amatterofconcrete.com",
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "cafec abaca filters",
+      "volume": 90,
+      "owned_by": [
+       "amatterofconcrete.com",
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "cafec abaca filter",
+      "volume": 90,
+      "owned_by": [
+       "amatterofconcrete.com",
+       "tanat.coffee"
+      ]
+     },
+     {
+      "keyword": "kinto coffee server",
+      "volume": 90,
+      "owned_by": [
+       "amatterofconcrete.com",
+       "kissthehippo.com"
+      ]
+     },
+     {
+      "keyword": "laurina coffee",
+      "volume": 50,
+      "owned_by": [
+       "amatterofconcrete.com",
+       "kissthehippo.com"
+      ]
+     }
+    ],
+    "keywords_contributed": 182,
+    "relevance": {
+     "ran": true,
+     "kept": 34,
+     "dropped": 148,
+     "dropped_because": "Removed competitor-specific Kiss the Hippo/Hippo/London terms, branded equipment/models, and unrelated or overly generic phrases.",
+     "dropped_examples": [
+      "coffee and pod",
+      "kiss the hippo coffee",
+      "kiss the hippo coffee soho",
+      "kiss the hippo coffee mayfair",
+      "kiss the hippo coffee covent garden",
+      "oma coffee roasters",
+      "oma coffee roaster",
+      "kiss the hippo coffee chelsea"
+     ]
+    },
+    "kept_in_universe": 34,
+    "seed_derived_in_universe": 132
+   }
+  },
+  {
+   "id": "clusters",
+   "label": "Clusters",
+   "status": "done",
+   "artifact": {
+    "count": 4,
+    "clusters": [
+     {
+      "cluster_id": 2,
+      "cluster_name": "Fresh roasted coffee beans info",
+      "head_term": "coffee beans fresh roasted",
+      "keywords": [
+       "fresh roasted coffee beans",
+       "coffee beans fresh roasted",
+       "fresh roasted coffee beans near me",
+       "fresh roasted coffee beans uk",
+       "fresh roasted beans",
+       "fresh roasted coffee beans london",
+       "fresh roasted beans near me",
+       "how to keep roasted coffee beans fresh",
+       "bulk fresh roasted coffee beans",
+       "1kg fresh roasted coffee beans",
+       "how long do fresh roasted coffee beans last",
+       "local fresh roasted coffee beans",
+       "fresh roasted decaf coffee beans",
+       "fresh roasted coffee beans subscription",
+       "organic fresh roasted coffee beans",
+       "buy fresh roasted coffee beans near me",
+       "order fresh roasted coffee beans",
+       "coffee beans fresh roasted near me",
+       "where to get fresh roasted coffee beans near me",
+       "where to get fresh roasted coffee beans",
+       "buy fresh roasted coffee beans",
+       "how to get fresh roasted coffee beans",
+       "fresh roasted coffee beans online",
+       "best place to buy fresh roasted coffee beans",
+       "fresh roasted coffee beans for sale",
+       "how to buy fresh roasted coffee beans",
+       "where can i buy fresh roasted coffee beans",
+       "fresh roasted coffee beans amazon",
+       "where can i buy fresh roasted coffee beans near me",
+       "where to buy fresh roasted coffee beans near me"
+      ],
+      "intent": "informational",
+      "avg_volume": 122,
+      "avg_difficulty": 23.9,
+      "rationale": "Fresh roasted bean product queries.",
+      "name": "Fresh roasted coffee beans info",
+      "merged_from": [
+       "Fresh roasted coffee beans info",
+       "Buy fresh roasted coffee beans"
+      ],
+      "merge_reason": "Google returns 78% of the same results for both, so one page can serve them",
+      "total_volume": 1990,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "fresh roasted coffee beans": {
+        "volume": 720,
+        "difficulty": 11,
+        "intent": "informational",
+        "cpc": 3.03
+       },
+       "coffee beans fresh roasted": {
+        "volume": 720,
+        "difficulty": 11,
+        "intent": "informational",
+        "cpc": 3.03
+       },
+       "fresh roasted coffee beans near me": {
+        "volume": 170,
+        "intent": "informational",
+        "cpc": 2.02
+       },
+       "fresh roasted coffee beans uk": {
+        "volume": 90,
+        "difficulty": 15,
+        "intent": "informational",
+        "cpc": 3.16
+       },
+       "fresh roasted beans": {
+        "volume": 20,
+        "difficulty": 39,
+        "intent": "informational",
+        "cpc": 3.85
+       },
+       "fresh roasted coffee beans london": {
+        "volume": 20,
+        "intent": "informational",
+        "cpc": 4.45
+       },
+       "fresh roasted beans near me": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 0.88
+       },
+       "how to keep roasted coffee beans fresh": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "bulk fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "1kg fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 2.12
+       },
+       "how long do fresh roasted coffee beans last": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "local fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 4.33
+       },
+       "fresh roasted decaf coffee beans": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 2.38
+       },
+       "fresh roasted coffee beans subscription": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 1.5
+       },
+       "organic fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 2.05
+       },
+       "buy fresh roasted coffee beans near me": {
+        "volume": 20,
+        "intent": "transactional",
+        "cpc": 0.91
+       },
+       "order fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "coffee beans fresh roasted near me": {
+        "volume": 10,
+        "difficulty": 30,
+        "intent": "informational",
+        "cpc": 4.1
+       },
+       "where to get fresh roasted coffee beans near me": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "where to get fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "buy fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 1.98
+       },
+       "how to get fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 0.96
+       },
+       "fresh roasted coffee beans online": {
+        "volume": 10,
+        "difficulty": 61,
+        "intent": "informational"
+       },
+       "best place to buy fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 1.79
+       },
+       "fresh roasted coffee beans for sale": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 3.49
+       },
+       "how to buy fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional"
+       },
+       "where can i buy fresh roasted coffee beans": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 1.44
+       },
+       "fresh roasted coffee beans amazon": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "where can i buy fresh roasted coffee beans near me": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 1.8
+       },
+       "where to buy fresh roasted coffee beans near me": {
+        "volume": 10,
+        "intent": "transactional",
+        "cpc": 2.57
+       }
+      },
+      "metrics": {
+       "keyword_count": 30,
+       "total_volume": 1990,
+       "max_volume": 720,
+       "median_volume": 10,
+       "avg_difficulty": 23.9,
+       "max_difficulty": 61,
+       "difficulty_measured_for": 7,
+       "avg_cpc": 1.73,
+       "max_cpc": 4.45,
+       "commercial_keywords": 8,
+       "commercial_share": 0.27,
+       "top_keywords": [
+        {
+         "keyword": "fresh roasted coffee beans",
+         "volume": 720,
+         "difficulty": 11,
+         "cpc": 3.03,
+         "intent": "informational"
+        },
+        {
+         "keyword": "coffee beans fresh roasted",
+         "volume": 720,
+         "difficulty": 11,
+         "cpc": 3.03,
+         "intent": "informational"
+        },
+        {
+         "keyword": "fresh roasted coffee beans near me",
+         "volume": 170,
+         "difficulty": 0,
+         "cpc": 2.02,
+         "intent": "informational"
+        },
+        {
+         "keyword": "fresh roasted coffee beans uk",
+         "volume": 90,
+         "difficulty": 15,
+         "cpc": 3.16,
+         "intent": "informational"
+        },
+        {
+         "keyword": "fresh roasted beans",
+         "volume": 20,
+         "difficulty": 39,
+         "cpc": 3.85,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "high",
+      "opportunity_rule": "1000+ total volume at difficulty 30 or below",
+      "selection_reason": "Highly relevant: 'fresh roasted' is a key differentiator for Sofia Specialty Coffee’s online bean business and in-café credibility, and the cluster includes location-agnostic and geo-modified queries (e.g., 'fresh roasted coffee beans uk') that match its international shipping model.",
+      "what_it_is": "A mix of informational and light commercial queries around freshness—how it’s achieved, why it matters, and where to find freshly roasted beans—searched by quality-conscious buyers across geographies.",
+      "how_to_use_it": "Develop a dedicated 'Freshness Guaranteed' pillar page explaining Sofia’s roast-to-ship timeline, packaging (valve-sealed bags), shelf-life guidance, and freshness tips—positioned as both trust-building content and a conversion accelerator for online orders."
+     },
+     {
+      "cluster_id": 4,
+      "cluster_name": "Single origin coffee basics",
+      "head_term": "coffee single origin",
+      "keywords": [
+       "single origin coffee",
+       "coffee single origin",
+       "single origin coffee beans",
+       "single origin coffee bean",
+       "coffee bean single origin",
+       "coffee beans single origin",
+       "single origin coffee near me",
+       "what is single origin coffee",
+       "what is a single origin coffee",
+       "single origin coffee uk",
+       "single origin coffee meaning",
+       "what does single origin coffee mean",
+       "single origin coffee definition",
+       "single origin coffee beans uk",
+       "meaning of single origin coffee"
+      ],
+      "intent": "informational",
+      "avg_volume": 157,
+      "avg_difficulty": 2.9,
+      "rationale": "Single origin meaning and basics.",
+      "name": "Single origin coffee basics",
+      "total_volume": 2360,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "single origin coffee": {
+        "volume": 590,
+        "intent": "informational",
+        "cpc": 3.25
+       },
+       "coffee single origin": {
+        "volume": 590,
+        "intent": "informational",
+        "cpc": 3.25
+       },
+       "single origin coffee beans": {
+        "volume": 170,
+        "intent": "informational",
+        "cpc": 3.84
+       },
+       "single origin coffee bean": {
+        "volume": 170,
+        "intent": "informational",
+        "cpc": 3.84
+       },
+       "coffee bean single origin": {
+        "volume": 170,
+        "intent": "informational",
+        "cpc": 3.84
+       },
+       "coffee beans single origin": {
+        "volume": 170,
+        "intent": "informational",
+        "cpc": 3.84
+       },
+       "single origin coffee near me": {
+        "volume": 110,
+        "difficulty": 29,
+        "intent": "informational",
+        "cpc": 0.14
+       },
+       "what is single origin coffee": {
+        "volume": 90,
+        "difficulty": 5,
+        "intent": "informational",
+        "cpc": 0.79
+       },
+       "what is a single origin coffee": {
+        "volume": 90,
+        "intent": "informational",
+        "cpc": 0.79
+       },
+       "single origin coffee uk": {
+        "volume": 50,
+        "intent": "informational",
+        "cpc": 1.7
+       },
+       "single origin coffee meaning": {
+        "volume": 40,
+        "difficulty": 2,
+        "intent": "informational"
+       },
+       "what does single origin coffee mean": {
+        "volume": 40,
+        "intent": "informational",
+        "cpc": 0.9
+       },
+       "single origin coffee definition": {
+        "volume": 40,
+        "intent": "informational"
+       },
+       "single origin coffee beans uk": {
+        "volume": 30,
+        "intent": "informational",
+        "cpc": 1.79
+       },
+       "meaning of single origin coffee": {
+        "volume": 10,
+        "difficulty": 2,
+        "intent": "informational"
+       }
+      },
+      "metrics": {
+       "keyword_count": 15,
+       "total_volume": 2360,
+       "max_volume": 590,
+       "median_volume": 90,
+       "avg_difficulty": 2.9,
+       "max_difficulty": 29,
+       "difficulty_measured_for": 13,
+       "avg_cpc": 1.86,
+       "max_cpc": 3.84,
+       "commercial_keywords": 0,
+       "commercial_share": 0.0,
+       "top_keywords": [
+        {
+         "keyword": "single origin coffee",
+         "volume": 590,
+         "difficulty": 0,
+         "cpc": 3.25,
+         "intent": "informational"
+        },
+        {
+         "keyword": "coffee single origin",
+         "volume": 590,
+         "difficulty": 0,
+         "cpc": 3.25,
+         "intent": "informational"
+        },
+        {
+         "keyword": "single origin coffee beans",
+         "volume": 170,
+         "difficulty": 0,
+         "cpc": 3.84,
+         "intent": "informational"
+        },
+        {
+         "keyword": "single origin coffee bean",
+         "volume": 170,
+         "difficulty": 0,
+         "cpc": 3.84,
+         "intent": "informational"
+        },
+        {
+         "keyword": "coffee bean single origin",
+         "volume": 170,
+         "difficulty": 0,
+         "cpc": 3.84,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "high",
+      "opportunity_rule": "1000+ total volume at difficulty 30 or below",
+      "selection_reason": "Directly relevant to Sofia Specialty Coffee’s core offering—educating its international and English-speaking audience on what makes its single-origin beans distinctive, supporting both in-café experience and online bean sales.",
+      "what_it_is": "An informational cluster about the definition, characteristics, and appeal of single-origin coffee, searched by curious coffee drinkers, newcomers to specialty coffee, and potential buyers evaluating quality and transparency.",
+      "how_to_use_it": "Create a foundational 'What Is Single-Origin Coffee?' page that tells Sofia Specialty Coffee’s story—highlighting its direct trade relationships, roast profiles, and tasting notes—with clear CTAs to try specific single-origin bags online or taste them in the café."
+     },
+     {
+      "name": "coffee shop Sofia",
+      "cluster_name": "coffee shop Sofia",
+      "head_term": "coffee shop Sofia",
+      "keywords": [
+       "coffee shop Sofia",
+       "freya coffee shop sofia",
+       "sofia coffee shop"
+      ],
+      "intent": "informational",
+      "total_volume": 30,
+      "avg_difficulty": null,
+      "market": "UK-EN",
+      "proposed": true,
+      "proposed_at": "2026-09-03T13:46:09.120196+00:00",
+      "selection_reason": "Proposed after the pipeline ran, as a scoped keyword re-seed on \"coffee shop Sofia\". It did not go through the validation or selection gates, so judge it on the 3 keyword(s) below rather than on a pipeline verdict.",
+      "seed_stats": [
+       {
+        "keyword": "freya coffee shop sofia",
+        "volume": 10,
+        "difficulty": null,
+        "cpc": null,
+        "intent": "informational"
+       },
+       {
+        "keyword": "coffee shop sofia",
+        "volume": 10,
+        "difficulty": null,
+        "cpc": null,
+        "intent": "informational"
+       },
+       {
+        "keyword": "sofia coffee shop",
+        "volume": 10,
+        "difficulty": null,
+        "cpc": null,
+        "intent": "informational"
+       }
+      ]
+     },
+     {
+      "name": "AeroPress coffee recipes",
+      "cluster_name": "AeroPress coffee recipes",
+      "head_term": "AeroPress coffee recipes",
+      "keywords": [
+       "AeroPress coffee recipes",
+       "aeropress coffee maker recipes",
+       "aeropress recipes iced coffee"
+      ],
+      "intent": "informational",
+      "total_volume": 50,
+      "avg_difficulty": 50,
+      "market": "UK-EN",
+      "proposed": true,
+      "proposed_at": "2026-09-03T13:47:12.977261+00:00",
+      "selection_reason": "Proposed after the pipeline ran, as a scoped keyword re-seed on \"AeroPress coffee recipes\". It did not go through the validation or selection gates, so judge it on the 3 keyword(s) below rather than on a pipeline verdict.",
+      "seed_stats": [
+       {
+        "keyword": "aeropress coffee recipes",
+        "volume": 40,
+        "difficulty": 50,
+        "cpc": null,
+        "intent": "informational"
+       },
+       {
+        "keyword": "aeropress coffee maker recipes",
+        "volume": 10,
+        "difficulty": null,
+        "cpc": null,
+        "intent": "informational"
+       },
+       {
+        "keyword": "aeropress recipes iced coffee",
+        "volume": null,
+        "difficulty": null,
+        "cpc": null,
+        "intent": "informational"
+       }
+      ]
+     }
+    ],
+    "discarded": [
+     {
+      "cluster_id": 1,
+      "cluster_name": "Specialty coffee brands and roasters",
+      "head_term": "square mile coffee",
+      "keywords": [
+       "square mile coffee",
+       "coffee roaster london",
+       "assembly coffee roasters",
+       "uk specialty coffee roasters",
+       "specialty coffee roaster",
+       "specialty coffee roaster near me",
+       "james gourmet coffee beans",
+       "uk coffee roasters list",
+       "artesano specialty coffee roaster",
+       "roaster specialty coffee house",
+       "coffee specialty roaster pte ltd",
+       "roaster specialty coffee",
+       "letefoho specialty coffee roaster",
+       "tame rabbit specialty coffee & roaster",
+       "frankie's beans specialty coffee roaster"
+      ],
+      "intent": "informational",
+      "avg_volume": 650,
+      "avg_difficulty": 7,
+      "rationale": "Brand and roaster discovery searches.",
+      "name": "Specialty coffee brands and roasters",
+      "total_volume": 9750,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "square mile coffee": {
+        "volume": 8100,
+        "difficulty": 8,
+        "intent": "informational",
+        "cpc": 0.56
+       },
+       "coffee roaster london": {
+        "volume": 1000,
+        "difficulty": 55,
+        "intent": "informational",
+        "cpc": 3.13
+       },
+       "assembly coffee roasters": {
+        "volume": 170,
+        "difficulty": 4,
+        "intent": "informational",
+        "cpc": 0.77
+       },
+       "uk specialty coffee roasters": {
+        "volume": 140,
+        "intent": "informational",
+        "cpc": 2.37
+       },
+       "specialty coffee roaster": {
+        "volume": 110,
+        "difficulty": 10,
+        "intent": "informational",
+        "cpc": 0.64
+       },
+       "specialty coffee roaster near me": {
+        "volume": 90,
+        "difficulty": 26,
+        "intent": "informational",
+        "cpc": 0.26
+       },
+       "james gourmet coffee beans": {
+        "volume": 50,
+        "intent": "informational",
+        "cpc": 4.13
+       },
+       "uk coffee roasters list": {
+        "volume": 20,
+        "intent": "informational",
+        "cpc": 3.45
+       },
+       "artesano specialty coffee roaster": {
+        "volume": 20,
+        "intent": "informational"
+       },
+       "roaster specialty coffee house": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "coffee specialty roaster pte ltd": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "roaster specialty coffee": {
+        "volume": 10,
+        "difficulty": 3,
+        "intent": "informational"
+       },
+       "letefoho specialty coffee roaster": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "tame rabbit specialty coffee & roaster": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "frankie's beans specialty coffee roaster": {
+        "intent": "informational"
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 25/100 - Third-party roaster names & navigational vendor searches — zero strategic ownership; violates 'no external vendor' rule. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 5,
+      "cluster_name": "Single origin vs blend and best",
+      "head_term": "blend vs single origin coffee",
+      "keywords": [
+       "best freshly roasted coffee beans uk",
+       "single origin coffee vs blend",
+       "coffee blends vs single origin",
+       "coffee blend vs single origin",
+       "blend vs single origin coffee",
+       "single origin vs blend coffee",
+       "coffee single origin vs blend",
+       "single origin vs blended coffee",
+       "best fresh roasted coffee beans",
+       "best single origin coffee",
+       "best coffee single origin",
+       "is single origin coffee better",
+       "best fresh roasted coffee beans uk",
+       "best single origin coffee beans",
+       "best organic single origin coffee"
+      ],
+      "intent": "commercial",
+      "avg_volume": 38,
+      "avg_difficulty": 32.2,
+      "rationale": "Comparing and buying best options.",
+      "name": "Single origin vs blend and best",
+      "total_volume": 570,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "best freshly roasted coffee beans uk": {
+        "volume": 50,
+        "intent": "commercial",
+        "cpc": 3.92
+       },
+       "single origin coffee vs blend": {
+        "volume": 50,
+        "intent": "commercial",
+        "cpc": 1.77
+       },
+       "coffee blends vs single origin": {
+        "volume": 50,
+        "difficulty": 39,
+        "intent": "commercial",
+        "cpc": 3.39
+       },
+       "coffee blend vs single origin": {
+        "volume": 50,
+        "intent": "commercial",
+        "cpc": 3.39
+       },
+       "blend vs single origin coffee": {
+        "volume": 50,
+        "intent": "commercial",
+        "cpc": 1.77
+       },
+       "single origin vs blend coffee": {
+        "volume": 50,
+        "intent": "commercial",
+        "cpc": 3.39
+       },
+       "coffee single origin vs blend": {
+        "volume": 50,
+        "intent": "commercial",
+        "cpc": 1.77
+       },
+       "single origin vs blended coffee": {
+        "volume": 50,
+        "intent": "commercial",
+        "cpc": 3.39
+       },
+       "best fresh roasted coffee beans": {
+        "volume": 30,
+        "intent": "commercial",
+        "cpc": 3.58
+       },
+       "best single origin coffee": {
+        "volume": 30,
+        "difficulty": 45,
+        "intent": "commercial",
+        "cpc": 1.95
+       },
+       "best coffee single origin": {
+        "volume": 30,
+        "difficulty": 45,
+        "intent": "commercial",
+        "cpc": 1.95
+       },
+       "is single origin coffee better": {
+        "volume": 30,
+        "intent": "informational",
+        "cpc": 3.85
+       },
+       "best fresh roasted coffee beans uk": {
+        "volume": 20,
+        "intent": "commercial",
+        "cpc": 6.23
+       },
+       "best single origin coffee beans": {
+        "volume": 20,
+        "intent": "commercial",
+        "cpc": 1.91
+       },
+       "best organic single origin coffee": {
+        "volume": 10,
+        "intent": "commercial"
+       }
+      },
+      "metrics": {
+       "keyword_count": 15,
+       "total_volume": 570,
+       "max_volume": 50,
+       "median_volume": 50,
+       "avg_difficulty": 32.2,
+       "max_difficulty": 45,
+       "difficulty_measured_for": 4,
+       "avg_cpc": 2.82,
+       "max_cpc": 6.23,
+       "commercial_keywords": 14,
+       "commercial_share": 0.93,
+       "top_keywords": [
+        {
+         "keyword": "best freshly roasted coffee beans uk",
+         "volume": 50,
+         "difficulty": null,
+         "cpc": 3.92,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "single origin coffee vs blend",
+         "volume": 50,
+         "difficulty": 0,
+         "cpc": 1.77,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "coffee blends vs single origin",
+         "volume": 50,
+         "difficulty": 39,
+         "cpc": 3.39,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "coffee blend vs single origin",
+         "volume": 50,
+         "difficulty": null,
+         "cpc": 3.39,
+         "intent": "commercial"
+        },
+        {
+         "keyword": "blend vs single origin coffee",
+         "volume": 50,
+         "difficulty": null,
+         "cpc": 1.77,
+         "intent": "commercial"
+        }
+       ]
+      },
+      "opportunity": "medium",
+      "opportunity_rule": "300+ total volume",
+      "discard_reason": "Off-topic: While comparative intent is valuable, the head term and top keywords ('best freshly roasted coffee beans uk', 'single origin vs blend') reflect broad, third-party review-style searches—not aligned with Sofia’s local-Sofia identity or its focus on storytelling and origin transparency; also"
+     },
+     {
+      "cluster_id": 6,
+      "cluster_name": "Origin-specific single origin coffee",
+      "head_term": "ombligon",
+      "keywords": [
+       "colombian single origin coffee",
+       "colombia single origin coffee",
+       "single origin coffee colombia",
+       "single origin colombian coffee",
+       "ombligon",
+       "single origin organic coffee",
+       "organic single origin coffee",
+       "lidl single origin coffee",
+       "m&s single origin coffee",
+       "brazil single origin coffee",
+       "brazilian single origin coffee",
+       "lofbergs brazil single origin whole coffee beans 1kg",
+       "lavazza single origin coffee",
+       "starbucks single-origin coffee",
+       "single origin coffee kenya"
+      ],
+      "intent": "informational",
+      "avg_volume": 30,
+      "avg_difficulty": 5,
+      "rationale": "Country and brand single origin.",
+      "name": "Origin-specific single origin coffee",
+      "total_volume": 450,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "colombian single origin coffee": {
+        "volume": 50,
+        "intent": "informational",
+        "cpc": 0.51
+       },
+       "colombia single origin coffee": {
+        "volume": 50,
+        "difficulty": 40,
+        "intent": "informational",
+        "cpc": 0.51
+       },
+       "single origin coffee colombia": {
+        "volume": 50,
+        "difficulty": 40,
+        "intent": "informational",
+        "cpc": 0.51
+       },
+       "single origin colombian coffee": {
+        "volume": 50,
+        "intent": "informational",
+        "cpc": 0.51
+       },
+       "ombligon": {
+        "volume": 50,
+        "intent": "informational",
+        "cpc": 0.3700000047683716,
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "single origin organic coffee": {
+        "volume": 30,
+        "intent": "informational",
+        "cpc": 2.07
+       },
+       "organic single origin coffee": {
+        "volume": 30,
+        "intent": "informational",
+        "cpc": 2.07
+       },
+       "lidl single origin coffee": {
+        "volume": 30,
+        "intent": "informational",
+        "cpc": 0.22
+       },
+       "m&s single origin coffee": {
+        "volume": 20,
+        "intent": "informational",
+        "cpc": 0.02
+       },
+       "brazil single origin coffee": {
+        "volume": 20,
+        "intent": "informational",
+        "cpc": 0.18
+       },
+       "brazilian single origin coffee": {
+        "volume": 20,
+        "intent": "informational",
+        "cpc": 0.18
+       },
+       "lofbergs brazil single origin whole coffee beans 1kg": {
+        "volume": 20,
+        "intent": "informational",
+        "cpc": 0.28
+       },
+       "lavazza single origin coffee": {
+        "volume": 10,
+        "intent": "informational"
+       },
+       "starbucks single-origin coffee": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 0.75
+       },
+       "single origin coffee kenya": {
+        "volume": 10,
+        "intent": "informational",
+        "cpc": 5.91
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 40/100 - Mixed: Colombia/Brazil origins are viable; 'Lidl', 'M&S', 'ombligon' are competitor/vendor terms — dilute authority and intent. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 7,
+      "cluster_name": "Latte art and coffee art learning",
+      "head_term": "coffee art course",
+      "keywords": [
+       "coffee art course",
+       "latte art course",
+       "coffee art class",
+       "coffee art book",
+       "latte art names",
+       "latte art name",
+       "latte art workshop",
+       "workshop latte art",
+       "latte art types"
+      ],
+      "intent": "informational",
+      "avg_volume": 289,
+      "avg_difficulty": 1,
+      "rationale": "Latte art learning and design.",
+      "name": "Latte art and coffee art learning",
+      "total_volume": 2601,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "coffee art course": {
+        "volume": 720,
+        "intent": "informational",
+        "cpc": 1.5699999332427979,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "latte art course": {
+        "volume": 590,
+        "intent": "informational",
+        "cpc": 1.3899999856948853,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "coffee art class": {
+        "volume": 590,
+        "intent": "informational",
+        "cpc": 1.3899999856948853,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "coffee art book": {
+        "volume": 210,
+        "intent": "informational",
+        "cpc": 0.23999999463558197,
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "latte art names": {
+        "volume": 110,
+        "intent": "informational",
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "latte art name": {
+        "volume": 110,
+        "intent": "informational",
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "latte art workshop": {
+        "volume": 90,
+        "intent": "informational",
+        "cpc": 1.2100000381469727,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "workshop latte art": {
+        "volume": 90,
+        "intent": "informational",
+        "cpc": 1.8899999856948853,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "latte art types": {
+        "volume": 90,
+        "difficulty": 8,
+        "intent": "informational",
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 30/100 - Pure training/education intent — no evidence Sofia offers latte art courses; off-brand, low conversion, zero alignment with roasting/shop core. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 8,
+      "cluster_name": "Coffee tasting and cupping",
+      "head_term": "coffee beans tasting pack",
+      "keywords": [
+       "coffee beans tasting pack",
+       "cupping spoon",
+       "coffee cupping spoons",
+       "coffee tasting experience near me",
+       "coffee taster packs",
+       "coffee taster set"
+      ],
+      "intent": "informational",
+      "avg_volume": 113,
+      "avg_difficulty": null,
+      "rationale": "Tasting tools and experiences.",
+      "name": "Coffee tasting and cupping",
+      "total_volume": 678,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "coffee beans tasting pack": {
+        "volume": 210,
+        "intent": "informational",
+        "cpc": 2.759999990463257,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "cupping spoon": {
+        "volume": 110,
+        "intent": "informational",
+        "cpc": 1.2799999713897705,
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "coffee cupping spoons": {
+        "volume": 110,
+        "intent": "informational",
+        "cpc": 1.2599999904632568,
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "coffee tasting experience near me": {
+        "volume": 90,
+        "intent": "informational",
+        "cpc": 1.25,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "coffee taster packs": {
+        "volume": 90,
+        "intent": "informational",
+        "cpc": 2.680000066757202,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "coffee taster set": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 2.5299999713897705,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 55/100 - Too narrow (6 keywords); overlaps with Cluster 2 (freshness) and Cluster 3/4 (education); 'tasting pack' could live under subscription or education pillar. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 9,
+      "cluster_name": "Fermented coffee processing",
+      "head_term": "co ferment coffee",
+      "keywords": [
+       "co fermented coffee",
+       "co ferment coffee",
+       "fermented coffee",
+       "fermentation of coffee beans",
+       "is coffee fermented",
+       "coffee drying"
+      ],
+      "intent": "informational",
+      "avg_volume": 128,
+      "avg_difficulty": 2,
+      "rationale": "Fermentation processing topics.",
+      "name": "Fermented coffee processing",
+      "total_volume": 768,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "co fermented coffee": {
+        "volume": 210,
+        "intent": "informational",
+        "cpc": 1.4700000286102295,
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "co ferment coffee": {
+        "volume": 210,
+        "intent": "informational",
+        "cpc": 1.4700000286102295,
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "fermented coffee": {
+        "volume": 140,
+        "intent": "informational",
+        "cpc": 1.8199999332427979,
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "fermentation of coffee beans": {
+        "volume": 70,
+        "difficulty": 12,
+        "intent": "informational",
+        "cpc": 1.8799999952316284,
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "is coffee fermented": {
+        "volume": 70,
+        "intent": "informational",
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       },
+       "coffee drying": {
+        "volume": 70,
+        "intent": "informational",
+        "owned_by": [
+         "tanat.coffee"
+        ]
+       }
+      },
+      "discard_reason": "Parked by the validation gate: coherence 45/100 - Overly technical, low-volume, mismatched intent — no indication Sofia highlights fermentation; risks alienating mainstream audience. The keywords do not hold together as one topic, so it was not put to selection."
+     },
+     {
+      "cluster_id": 10,
+      "cluster_name": "Pods, subscriptions, and ready coffee",
+      "head_term": "coffee pod subscription",
+      "keywords": [
+       "coffee pod subscription",
+       "specialty coffee pods",
+       "canned cold coffee",
+       "cold brew coffee can",
+       "cold brew coffee canned",
+       "canned cold brew coffee",
+       "cold brew coffee cans",
+       "cold brew coffee in can",
+       "coffee pod gift",
+       "coffee pod gift set",
+       "coffee bag tote",
+       "buy coffee beans online",
+       "coffee beans delivery",
+       "specialty coffee subscription",
+       "coffee subscription"
+      ],
+      "intent": "commercial",
+      "avg_volume": 67,
+      "avg_difficulty": 0.9,
+      "rationale": "Convenience and subscription coffee.",
+      "name": "Pods, subscriptions, and ready coffee",
+      "total_volume": 1000,
+      "market": "UK-EN",
+      "keyword_stats": {
+       "coffee pod subscription": {
+        "volume": 260,
+        "intent": "informational",
+        "cpc": 5.210000038146973,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "specialty coffee pods": {
+        "volume": 90,
+        "intent": "informational",
+        "cpc": 2.059999942779541,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "canned cold coffee": {
+        "volume": 90,
+        "intent": "informational",
+        "cpc": 1.0199999809265137,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "cold brew coffee can": {
+        "volume": 70,
+        "difficulty": 7,
+        "intent": "informational",
+        "cpc": 2.0199999809265137,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "cold brew coffee canned": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 2.049999952316284,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "canned cold brew coffee": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 2.0199999809265137,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "cold brew coffee cans": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 2.0199999809265137,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "cold brew coffee in can": {
+        "volume": 70,
+        "difficulty": 6,
+        "intent": "informational",
+        "cpc": 2.049999952316284,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "coffee pod gift": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 4.349999904632568,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "coffee pod gift set": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 2.3399999141693115,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "coffee bag tote": {
+        "volume": 70,
+        "intent": "informational",
+        "cpc": 0.44999998807907104,
+        "owned_by": [
+         "kissthehippo.com"
+        ]
+       },
+       "buy coffee beans online": {
+        "intent": "informational"
+       },
+       "coffee beans delivery": {
+        "intent": "informational"
+       },
+       "specialty coffee subscription": {
+        "intent": "informational"
+       },
+       "coffee subscription": {
+        "intent": "informational"
+       }
+      },
+      "metrics": {
+       "keyword_count": 15,
+       "total_volume": 1000,
+       "max_volume": 260,
+       "median_volume": 70,
+       "avg_difficulty": 0.9,
+       "max_difficulty": 7,
+       "difficulty_measured_for": 15,
+       "avg_cpc": 1.71,
+       "max_cpc": 5.21,
+       "commercial_keywords": 0,
+       "commercial_share": 0.0,
+       "top_keywords": [
+        {
+         "keyword": "coffee pod subscription",
+         "volume": 260,
+         "difficulty": 0,
+         "cpc": 5.210000038146973,
+         "intent": "informational"
+        },
+        {
+         "keyword": "specialty coffee pods",
+         "volume": 90,
+         "difficulty": 0,
+         "cpc": 2.059999942779541,
+         "intent": "informational"
+        },
+        {
+         "keyword": "canned cold coffee",
+         "volume": 90,
+         "difficulty": 0,
+         "cpc": 1.0199999809265137,
+         "intent": "informational"
+        },
+        {
+         "keyword": "cold brew coffee can",
+         "volume": 70,
+         "difficulty": 7,
+         "cpc": 2.0199999809265137,
+         "intent": "informational"
+        },
+        {
+         "keyword": "cold brew coffee canned",
+         "volume": 70,
+         "difficulty": 0,
+         "cpc": 2.049999952316284,
+         "intent": "informational"
+        }
+       ]
+      },
+      "opportunity": "high",
+      "opportunity_rule": "1000+ total volume at difficulty 30 or below",
+      "discard_reason": "Off-topic: Sofia Specialty Coffee does not sell pods, canned cold brew, or subscription boxes—none of these formats appear in its current product lineup or brand positioning, so pursuing this would attract mismatched intent and dilute messaging."
+     },
+     {
+      "name": "best specialty coffee shop Sofia",
+      "cluster_name": "best specialty coffee shop Sofia",
+      "head_term": "best specialty coffee shop Sofia",
+      "keywords": [
+       "best specialty coffee shop Sofia"
+      ],
+      "intent": "",
+      "total_volume": 0,
+      "avg_difficulty": null,
+      "market": "UK-EN",
+      "proposed": true,
+      "proposed_at": "2026-09-03T13:45:58.283066+00:00",
+      "selection_reason": "Proposed after the pipeline ran, as a scoped keyword re-seed on \"best specialty coffee shop Sofia\". It did not go through the validation or selection gates, so judge it on the 1 keyword(s) below rather than on a pipeline verdict.",
+      "seed_stats": [],
+      "discard_reason": "The exact long-tail returned zero measured UK-English volume; replaced with the broader measured 'coffee shop Sofia' cluster containing three live search terms.",
+      "discarded_at": "2026-09-03T13:46:17.336241+00:00"
+     }
+    ],
+    "selected": true
+   }
+  },
+  {
+   "id": "pillars",
+   "label": "Content pillars",
+   "status": "done",
+   "artifact": {
+    "pillars": [
+     {
+      "cluster_id": 4,
+      "cluster_name": "Single origin coffee basics",
+      "pillar_title": "What Is Single Origin Coffee? A Complete Beginner’s Guide",
+      "pillar_type": "guide",
+      "priority": 1,
+      "rationale": "Highest total_volume (2360) among all clusters, extremely low avg_difficulty (2.9), and top keyword 'single origin coffee' has zero difficulty — making it the easiest high-volume informational opportunity to rank for quickly."
+     },
+     {
+      "cluster_id": 2,
+      "cluster_name": "Fresh roasted coffee beans info",
+      "pillar_title": "Fresh Roasted Coffee Beans: How to Buy, Store & Enjoy Them",
+      "pillar_type": "hub",
+      "priority": 2,
+      "rationale": "Strong total_volume (1990) and notable commercial_share (0.27) with 8 commercial keywords — indicating clear purchase-path potential — plus top keyword 'fresh roasted coffee beans' has high volume (720) and moderate difficulty (11), supporting both traffic and conversion intent."
+     }
+    ],
+    "skipped": [
+     {
+      "cluster_id": 5,
+      "reason": "Cluster ID 5 is not present in the input data."
+     }
+    ]
+   }
+  },
+  {
+   "id": "brief",
+   "label": "The brief",
+   "status": "done",
+   "artifact": {
+    "the_call": {
+     "pillar": "What Is Single Origin Coffee? A Complete Beginner’s Guide",
+     "why": "Build this first because it is the largest selected cluster by total_volume (2360) and the easiest to win at avg_difficulty 2.9. The next largest selected cluster, Fresh roasted coffee beans info, has total_volume 1990 but avg_difficulty 23.9, so it is a strong follow-up rather than the first move."
+    },
+    "out_answer": [
+     {
+      "who": "buno.com.au",
+      "for_what": "the People also ask answer for 'Are fresh roasted coffee beans better?'"
+     },
+     {
+      "who": "balancecoffee.co.uk",
+      "for_what": "the People also ask answer for 'What is the best coffee bean in the UK?'"
+     },
+     {
+      "who": "clivecoffee.com",
+      "for_what": "the People also ask answer for 'Do coffee beans need to be freshly roasted?'"
+     }
+    ],
+    "pieces": [
+     {
+      "title": "What Is Meant by Single Origin Coffee? A Beginner’s Definition",
+      "question": "What is meant by single origin coffee?",
+      "question_source": "people_also_ask",
+      "cluster": "Single origin coffee basics",
+      "target_keyword": "what is single origin coffee",
+      "format": "explainer",
+      "asked_under": "coffee single origin",
+      "currently_answered_by": "caffenero.com",
+      "answered_by_url": "https://www.caffenero.com/uk/journal/the-difference-between-single-origin-and-blend",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "Is Single Origin Coffee Better Than a Blend? A Roaster’s Comparison",
+      "question": "Is single origin coffee better than a blend?",
+      "question_source": "people_also_ask",
+      "cluster": "Single origin coffee basics",
+      "target_keyword": "single origin coffee",
+      "format": "comparison",
+      "asked_under": "coffee single origin",
+      "currently_answered_by": "reddit.com",
+      "answered_by_url": "https://www.reddit.com/r/Coffee/comments/hvv1dg/blends_vs_single_origins/",
+      "answered_by_source": "serp"
+     },
+     {
+      "title": "Are Fresh Roasted Coffee Beans Better? Why Roast Dates Matter",
+      "question": "Are fresh roasted coffee beans better?",
+      "question_source": "people_also_ask",
+      "cluster": "Fresh roasted coffee beans info",
+      "target_keyword": "fresh roasted coffee beans",
+      "format": "explainer",
+      "asked_under": "coffee beans fresh roasted",
+      "currently_answered_by": "buno.com.au"
+     },
+     {
+      "title": "What Is the Best Coffee Bean in the UK? Fresh Roasted Picks",
+      "question": "What is the best coffee bean in the UK?",
+      "question_source": "people_also_ask",
+      "cluster": "Fresh roasted coffee beans info",
+      "target_keyword": "fresh roasted coffee beans uk",
+      "format": "list",
+      "asked_under": "coffee beans fresh roasted",
+      "currently_answered_by": "balancecoffee.co.uk"
+     },
+     {
+      "title": "Do Coffee Beans Need to Be Freshly Roasted? A Roaster’s Answer",
+      "question": "Do coffee beans need to be freshly roasted?",
+      "question_source": "people_also_ask",
+      "cluster": "Fresh roasted coffee beans info",
+      "target_keyword": "coffee beans fresh roasted",
+      "format": "explainer",
+      "asked_under": "coffee beans fresh roasted",
+      "currently_answered_by": "clivecoffee.com"
+     },
+     {
+      "title": "Is Coffee Good in Bulgaria? A Guide to Sofia’s Coffee Scene",
+      "question": "Is coffee good in Bulgaria?",
+      "question_source": "people_also_ask",
+      "cluster": "coffee shop Sofia",
+      "target_keyword": "coffee shop Sofia",
+      "format": "guide",
+      "asked_under": "coffee shop Sofia",
+      "currently_answered_by": "lvacavliev.medium.com",
+      "answered_by_url": "https://lvacavliev.medium.com/bulgarian-coffee-drinking-habits-are-rooted-in-centuries-of-historic-oppression-b5217b1617b7",
+      "answered_by_source": "serp"
+     }
+    ],
+    "parked": [
+     {
+      "cluster": "Specialty coffee brands and roasters",
+      "why": "Parked by the validation gate: coherence 25/100 - Third-party roaster names and navigational vendor searches have zero strategic ownership, violate the no external vendor rule, and do not hold together as one topic."
+     },
+     {
+      "cluster": "Single origin vs blend and best",
+      "why": "Off-topic: While comparative intent is valuable, the head term and top keywords reflect broad, third-party review-style searches not aligned with Sofia’s local-Sofia identity or its focus on storytelling and origin transparency."
+     },
+     {
+      "cluster": "Origin-specific single origin coffee",
+      "why": "Parked by the validation gate: coherence 40/100 - Mixed origins plus competitor and vendor terms dilute authority and intent, so the keywords do not hold together as one topic."
+     },
+     {
+      "cluster": "Latte art and coffee art learning",
+      "why": "Parked by the validation gate: coherence 30/100 - Pure training and education intent with no evidence Sofia offers latte art courses is off-brand, low conversion, and zero alignment with the roasting and shop core."
+     },
+     {
+      "cluster": "Coffee tasting and cupping",
+      "why": "Parked by the validation gate: coherence 55/100 - The cluster is too narrow, overlaps with freshness and education topics, and the keywords do not hold together as one topic."
+     },
+     {
+      "cluster": "Fermented coffee processing",
+      "why": "Parked by the validation gate: coherence 45/100 - The topic is overly technical, low-volume, mismatched in intent, and risks alienating the mainstream audience."
+     },
+     {
+      "cluster": "Pods, subscriptions, and ready coffee",
+      "why": "Off-topic: Sofia Specialty Coffee does not sell pods, canned cold brew, or subscription boxes, so pursuing this would attract mismatched intent and dilute messaging."
+     },
+     {
+      "cluster": "best specialty coffee shop Sofia",
+      "why": "The exact long-tail returned zero measured UK-English volume; it was replaced with the broader measured coffee shop Sofia cluster."
+     }
+    ],
+    "written_at": "2026-09-03T13:51:54.279760+00:00",
+    "stale": false,
+    "based_on": {
+     "selected": [
+      "Fresh roasted coffee beans info",
+      "Single origin coffee basics",
+      "coffee shop Sofia"
+     ],
+     "parked": [
+      "Specialty coffee brands and roasters",
+      "Single origin vs blend and best",
+      "Origin-specific single origin coffee",
+      "Latte art and coffee art learning",
+      "Coffee tasting and cupping",
+      "Fermented coffee processing",
+      "Pods, subscriptions, and ready coffee",
+      "best specialty coffee shop Sofia"
+     ],
+     "questions_observed": {
+      "Fresh roasted coffee beans info": 4,
+      "Single origin coffee basics": 4,
+      "coffee shop Sofia": 4
+     }
+    }
+   }
+  }
+ ],
+ "ended": "2026-09-03T13:45:58.166730+00:00",
+ "summary": "Now I’ll synthesize everything into a **clear, actionable content strategy** — grounded entirely in the pipeline’s verified outputs.\n\n---\n\n### ✅ Summary of the UK-EN Content Strategy\n\nThe strategy is built on **two high-opportunity, low-difficulty clusters**, both validated for relevance and SERP alignment:\n\n| Cluster | Why it was selected | Key metrics | Strategic use |\n|--------|---------------------|-------------|----------------|\n| **Single origin coffee basics** | Highest total volume (2,360/mo), zero difficulty on top terms (`single origin coffee`, `coffee single origin`), and perfect alignment with your storytelling as a Sofia-based roaster sourcing distinct beans. | Avg. difficulty: **2.9**, CPC up to £3.84, 15 keywords | Foundational educational pillar — builds trust, supports SEO, and primes buyers for your single-origin offerings (in café + online). |\n| **Fresh roasted coffee beans info** | Strong commercial intent (8 transactional keywords), location-flexible queries like `fresh roasted coffee beans uk`, and clear freshness differentiation — critical for DTC conversion. | Total volume: **1,990/mo**, avg. difficulty: **23.9**, commercial share: **27%** | Conversion-focused pillar — explains *why freshness matters*, how you deliver it (roast-to-ship timeline, packaging), and links directly to bean sales. |\n\n🔍 **SERP insight**: Both clusters were merged from related themes (e.g., “Buy fresh roasted coffee beans” → merged into “Fresh roasted coffee beans info” with **78% SERP overlap**) — meaning one well-structured page can serve multiple intents, avoiding internal competition.\n\n---\n\n### 📝 AI-Citability Brief: What to Write & Why\n\nGoogle is already answering these exact questions — and citing sources like Caffenero, Reddit, Batch Coffee, and Balance Coffee. To win visibility, your content must answer *the same questions*, in *the same format*, with *more authority and specificity*.\n\nHere are the **6 highest-priority, engine-ready sections**, pulled directly from SERP analysis:\n\n1. **“What Is Single Origin Coffee?”**  \n   → Answer the PAA question *verbatim*: *“What is meant by single origin coffee?”*  \n   → First two sentences must define it clearly (e.g., *“Single origin coffee comes from one specific geographic region — a single farm, co-op, or country — and reflects the unique terroir, varietal, and processing method.”*)  \n   → Then immediately tie it to Sofia Specialty Coffee: *“At our Sofia roastery, we source single-origin beans directly from smallholder farms in Ethiopia, Colombia, and Costa Rica — each batch traceable and roasted within 48 hours of arrival.”*\n\n2. **“Single Origin vs Blends: Which Is Better?”**  \n   → Compare objectively, then position your blends as intentional (e.g., “Our Sofia Blend is crafted for balance and espresso clarity — but if you want to taste the soil, climate, and harvest of one place, single origin is the choice.”)\n\n3. **“Why Is Single Origin More Expensive?”**  \n   → Focus on transparency, smaller lots, direct trade costs, and quality control — not markup. Use your Sofia story: *“We pay 30% above Fair Trade minimums — verified by our roast-date-stamped bags and farm photos.”*\n\n4. **“Are Freshly Roasted Beans Better?”**  \n   → Lead with science (peak CO₂ degassing window, volatile compound decay), then your process: *“We roast every Tuesday and Thursday, ship within 24h, and seal in valve bags — so your beans arrive at peak flavour, 3–7 days post-roast.”*\n\n5. **“Best Fresh Coffee Beans in the UK to Try”**  \n   → This is a *list* opportunity. Position yourself *within* the UK market: *“While many UK roasters focus on London or Manchester, Sofia Specialty Coffee offers something different: European-roasted, small-batch, single-origin beans shipped directly from Bulgaria — with full roast-date transparency and free UK shipping on orders over £35.”*\n\n6. **“Which Roasted Beans Are Best for Home Brewing?”**  \n   → Match brew method to origin & roast: *“For pour-over: try our Ethiopian Yirgacheffe (light roast, floral/citrus) — best brewed 4–10 days post-roast. For French press: our Colombian Huila (medium roast, chocolate/nutty) shines 7–14 days post-roast.”*\n\n💡 **Critical note**: These are *not blog topics* — they’re **page sections**. Each should be a dedicated H2 heading on its respective pillar page, with the first two sentences written *as the direct answer* — so Google can lift and cite them.\n\n---\n\n### 🧭 Pillar Pages (Your Content Anchors)\n\n| Pillar Title | Type | Priority | Why It Works |\n|--------------|------|----------|--------------|\n| **What Is Single Origin Coffee? A Complete Beginner’s Guide** | Guide | 1 | Highest-volume, lowest-difficulty cluster. Builds topical authority and captures early-funnel traffic. |\n| **Fresh Roasted Coffee Beans: How to Buy, Store & Enjoy Them** | Hub | 2 | Bridges education + commerce — answers freshness questions *then* directs to shop, subscription, or café visit. |\n\n✅ Both pillars should live as **dedicated, evergreen pages** on your site (e.g., `/single-origin-coffee`, `/fresh-roasted-coffee-beans`) — not blog posts — because users searching these terms have strong purchase intent and expect definitive, brand-owned answers.\n\n---\n\n### 🚀 Next Steps (Optional — Confirm if You’d Like Them)\n\nWould you like me to:\n- ✍️ **Generate full first drafts** of both pillar pages (SEO-optimized, answer-first, with natural CTAs)?  \n- 📅 **Build a 6-week content calendar**, scheduling these pillars + supporting blog posts (e.g., “A Day in the Sofia Roastery”, “How We Source Coffee in Ethiopia”)?  \n- 🔍 Run a **technical SEO audit** of your current site to ensure these new pages land with maximum crawlability and indexing speed?\n\nJust say the word — and I’ll execute it immediately.\n\nOtherwise, this is your complete, data-validated UK content strategy: focused, conversion-aware, and built to rank.",
+ "pinned": true,
+ "pin_note": "SEO content strategy for a specialty coffee roaster and coffee shop in Sofia, aimed at visitors who plan their trip from the UK (United Kingdom, English). Started in chat, clarified in conversation, steered mid-run; two clusters proposed and one parked over WebMCP along the way.",
+ "archived": false
+}
